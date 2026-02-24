@@ -1,0 +1,9 @@
+{
+	"GulpfileConfiguration": {
+		"EntrypointInputSourceFile": "{~Data:AppData.CWD~}/{~Data:AppData.Package.main~}",
+		"LibraryObjectName": "retoldRemote",
+		"LibraryOutputFolder": "{~Data:AppData.CWD~}/web-application/",
+		"LibraryUniminifiedFileName": "retold-remote.{~Data:Record.BuildFileLabel~}js",
+		"LibraryMinifiedFileName": "retold-remote.{~Data:Record.BuildFileLabel~}min.js"
+	}
+}

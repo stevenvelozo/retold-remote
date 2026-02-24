@@ -1,0 +1,7 @@
+{
+	"Name": "Retold Remote",
+	"MainViewportViewIdentifier": "ContentEditor-Layout",
+	"AutoSolveAfterInitialize": true,
+	"AutoRenderMainViewportViewAfterInitialize": false,
+	"AutoRenderViewsAfterInitialize": false
+}

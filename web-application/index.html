@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Retold Remote</title>
+	<link rel="stylesheet" href="css/retold-remote.css">
+	<style id="PICT-CSS"></style>
+</head>
+<body>
+	<div id="ContentEditor-Application-Container"></div>
+
+	<!-- Pict framework -->
+	<script src="js/pict.min.js"></script>
+	<!-- CodeJar (code editor engine for pict-section-code) -->
+	<script src="codejar.js"></script>
+	<!-- Retold Remote application bundle -->
+	<script src="retold-remote.min.js"></script>
+	<script>
+		Pict.safeLoadPictApplication(RetoldRemoteApplication, 2);
+	</script>
+</body>
+</html>

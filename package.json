@@ -1,0 +1,68 @@
+{
+	"name": "retold-remote",
+	"version": "0.0.1",
+	"description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
+	"main": "source/Pict-RetoldRemote-Bundle.js",
+	"bin": {
+		"retold-remote": "source/cli/RetoldRemote-CLI-Run.js",
+		"rr": "source/cli/RetoldRemote-CLI-Run.js"
+	},
+	"files": [
+		"source/",
+		"web-application/",
+		"html/",
+		"css/",
+		"server.js",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"start": "node server.js",
+		"build": "npx quack build && npx quack copy",
+		"test": "npx mocha -u tdd --exit --timeout 30000 test/*_test.js",
+		"prepack": "npm run build"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"dependencies": {
+		"retold-content-system": "file:../retold-content-system",
+		"fable": "^3.1.58",
+		"fable-serviceproviderbase": "^3.0.16",
+		"orator": "^6.0.2",
+		"orator-serviceserver-restify": "^2.0.7",
+		"pict": "^1.0.350",
+		"pict-application": "^1.0.32",
+		"pict-provider": "^1.0.10",
+		"pict-view": "^1.0.66",
+		"pict-section-code": "file:../../modules/pict/pict-section-code",
+		"pict-section-filebrowser": "^0.0.1",
+		"pict-service-commandlineutility": "^1.0.18"
+	},
+	"optionalDependencies": {
+		"sharp": "^0.33.0"
+	},
+	"devDependencies": {
+		"quackage": "^1.0.56"
+	},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./web-application/"
+		},
+		{
+			"from": "./css/**",
+			"to": "./web-application/css/"
+		},
+		{
+			"from": "./node_modules/pict/dist/pict.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict/dist/pict.min.js.map",
+			"to": "./web-application/js/"
+		}
+	]
+}
