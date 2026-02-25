@@ -102,32 +102,6 @@ const _ViewConfiguration =
 		{
 			display: none;
 		}
-		/* Collapse toggle */
-		.content-editor-sidebar-toggle
-		{
-			position: absolute;
-			top: 8px;
-			right: -20px;
-			width: 20px;
-			height: 28px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: var(--retold-bg-tertiary);
-			border: 1px solid var(--retold-border);
-			border-left: none;
-			border-radius: 0 4px 4px 0;
-			cursor: pointer;
-			z-index: 10;
-			color: var(--retold-text-muted);
-			font-size: 11px;
-			line-height: 1;
-			transition: color 0.15s;
-		}
-		.content-editor-sidebar-toggle:hover
-		{
-			color: var(--retold-text-primary);
-		}
 		/* Resize handle */
 		.content-editor-resize-handle
 		{
@@ -186,6 +160,17 @@ const _ViewConfiguration =
 			background: var(--retold-bg-selected);
 			color: var(--retold-accent);
 		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row.sidebar-focused
+		{
+			outline: 2px solid var(--retold-accent);
+			outline-offset: -2px;
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
+		.content-editor-sidebar-inner.keyboard-focused
+		{
+			box-shadow: inset 0 0 0 1px var(--retold-accent);
+		}
 		#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs
 		{
 			color: var(--retold-text-muted);
@@ -233,7 +218,6 @@ const _ViewConfiguration =
 				<div id="ContentEditor-TopBar-Container"></div>
 				<div class="content-editor-body">
 					<div class="content-editor-sidebar-wrap" style="width: 250px;">
-						<div class="content-editor-sidebar-toggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()">&#9664;</div>
 						<div class="content-editor-sidebar-inner">
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
@@ -412,6 +396,13 @@ class RetoldRemoteLayoutView extends libPictView
 		}
 
 		tmpHandle.addEventListener('mousedown', onMouseDown);
+
+		// Double-click on resize handle collapses the sidebar
+		tmpHandle.addEventListener('dblclick', function (pEvent)
+		{
+			pEvent.preventDefault();
+			tmpSelf.toggleSidebar();
+		});
 	}
 }
 

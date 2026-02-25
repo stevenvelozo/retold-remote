@@ -52,7 +52,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
 		let tmpCachePath = this.options.ThumbnailCachePath
-			|| libPath.join(this.contentPath, '.retold-remote-cache');
+			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'thumbnails');
 
 		this.toolDetector = new libToolDetector();
 		this.capabilities = this.toolDetector.detect();

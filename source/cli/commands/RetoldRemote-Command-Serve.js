@@ -21,6 +21,17 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		this.options.CommandOptions.push(
 			{ Name: '-H, --hashed-filenames', Description: 'Enable hashed filenames mode (short hashes instead of full paths in URLs).', Default: false });
 
+		this.options.CommandOptions.push(
+			{ Name: '-c, --cache-path [path]', Description: 'Root cache directory (defaults to ./dist/retold-cache/).', Default: '' });
+		this.options.CommandOptions.push(
+			{ Name: '--cache-thumbnails [path]', Description: 'Override thumbnails cache directory.', Default: '' });
+		this.options.CommandOptions.push(
+			{ Name: '--cache-archives [path]', Description: 'Override archives cache directory.', Default: '' });
+		this.options.CommandOptions.push(
+			{ Name: '--cache-video-frames [path]', Description: 'Override video-frames cache directory.', Default: '' });
+		this.options.CommandOptions.push(
+			{ Name: '--cache-audio-waveforms [path]', Description: 'Override audio-waveforms cache directory.', Default: '' });
+
 		this.addCommand();
 	}
 
@@ -51,12 +62,34 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 
 		let tmpHashedFilenames = !!(this.CommandOptions.hashedFilenames);
 
+		// Resolve cache paths: individual overrides > root override > default
+		let tmpCacheRoot = this.CommandOptions.cachePath
+			? libPath.resolve(this.CommandOptions.cachePath)
+			: null;
+		let tmpCacheThumbnails = this.CommandOptions.cacheThumbnails
+			? libPath.resolve(this.CommandOptions.cacheThumbnails)
+			: null;
+		let tmpCacheArchives = this.CommandOptions.cacheArchives
+			? libPath.resolve(this.CommandOptions.cacheArchives)
+			: null;
+		let tmpCacheVideoFrames = this.CommandOptions.cacheVideoFrames
+			? libPath.resolve(this.CommandOptions.cacheVideoFrames)
+			: null;
+		let tmpCacheAudioWaveforms = this.CommandOptions.cacheAudioWaveforms
+			? libPath.resolve(this.CommandOptions.cacheAudioWaveforms)
+			: null;
+
 		tmpSetupServer(
 			{
 				ContentPath: tmpContentPath,
 				DistPath: tmpDistPath,
 				Port: tmpPort,
-				HashedFilenames: tmpHashedFilenames
+				HashedFilenames: tmpHashedFilenames,
+				CacheRoot: tmpCacheRoot,
+				CacheThumbnails: tmpCacheThumbnails,
+				CacheArchives: tmpCacheArchives,
+				CacheVideoFrames: tmpCacheVideoFrames,
+				CacheAudioWaveforms: tmpCacheAudioWaveforms
 			},
 			function (pError, pServerInfo)
 			{

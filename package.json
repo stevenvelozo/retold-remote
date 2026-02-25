@@ -25,7 +25,6 @@
 	"author": "steven velozo <steven@velozo.com>",
 	"license": "MIT",
 	"dependencies": {
-		"retold-content-system": "file:../retold-content-system",
 		"fable": "^3.1.58",
 		"fable-serviceproviderbase": "^3.0.16",
 		"orator": "^6.0.2",
@@ -33,10 +32,12 @@
 		"pict": "^1.0.350",
 		"pict-application": "^1.0.32",
 		"pict-provider": "^1.0.10",
-		"pict-view": "^1.0.66",
 		"pict-section-code": "file:../../modules/pict/pict-section-code",
 		"pict-section-filebrowser": "^0.0.1",
-		"pict-service-commandlineutility": "^1.0.18"
+		"pict-service-commandlineutility": "^1.0.18",
+		"pict-view": "^1.0.66",
+		"retold-content-system": "file:../retold-content-system",
+		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {
 		"sharp": "^0.33.0"

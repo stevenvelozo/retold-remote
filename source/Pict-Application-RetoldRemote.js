@@ -18,6 +18,8 @@ const libViewSettingsPanel = require('./views/PictView-Remote-SettingsPanel.js')
 const libViewGallery = require('./views/PictView-Remote-Gallery.js');
 const libViewMediaViewer = require('./views/PictView-Remote-MediaViewer.js');
 const libViewImageViewer = require('./views/PictView-Remote-ImageViewer.js');
+const libViewVideoExplorer = require('./views/PictView-Remote-VideoExplorer.js');
+const libViewAudioExplorer = require('./views/PictView-Remote-AudioExplorer.js');
 
 // Application configuration
 const _DefaultConfiguration = require('./Pict-Application-RetoldRemote-Configuration.json');
@@ -47,6 +49,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addView('RetoldRemote-MediaViewer', libViewMediaViewer.default_configuration, libViewMediaViewer);
 		this.pict.addView('RetoldRemote-ImageViewer', libViewImageViewer.default_configuration, libViewImageViewer);
 		this.pict.addView('RetoldRemote-SettingsPanel', libViewSettingsPanel.default_configuration, libViewSettingsPanel);
+		this.pict.addView('RetoldRemote-VideoExplorer', libViewVideoExplorer.default_configuration, libViewVideoExplorer);
+		this.pict.addView('RetoldRemote-AudioExplorer', libViewAudioExplorer.default_configuration, libViewAudioExplorer);
 
 		// Add new providers
 		this.pict.addProvider('RetoldRemote-Provider', libProviderRetoldRemote.default_configuration, libProviderRetoldRemote);
@@ -168,6 +172,13 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (pFileEntry && pFileEntry.Type === 'file')
 				{
 					tmpSelf.navigateToFile(pFileEntry.Path);
+				}
+				else if (pFileEntry && (pFileEntry.Type === 'folder' || pFileEntry.Type === 'archive'))
+				{
+					// Single-click on a folder or archive navigates into it
+					let tmpCurrentLocation = (tmpSelf.pict.AppData.PictFileBrowser && tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation) || '';
+					let tmpNewPath = tmpCurrentLocation ? (tmpCurrentLocation + '/' + pFileEntry.Name) : pFileEntry.Name;
+					tmpSelf.loadFileList(tmpNewPath);
 				}
 			};
 		}
@@ -539,6 +550,26 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				return;
 			}
 			this.navigateToFile(tmpFilePath);
+		}
+		else if (tmpParts[0] === 'explore' && tmpParts.length >= 2)
+		{
+			let tmpRawPath = tmpParts.slice(1).join('/');
+			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
+			let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+			if (tmpVEX)
+			{
+				tmpVEX.showExplorer(tmpFilePath);
+			}
+		}
+		else if (tmpParts[0] === 'explore-audio' && tmpParts.length >= 2)
+		{
+			let tmpRawPath = tmpParts.slice(1).join('/');
+			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
+			let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
+			if (tmpAEX)
+			{
+				tmpAEX.showExplorer(tmpFilePath);
+			}
 		}
 		else if (tmpParts[0] === 'edit' && tmpParts.length >= 2)
 		{

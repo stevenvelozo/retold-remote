@@ -16,6 +16,8 @@ class GalleryNavigationProvider extends libPictProvider
 		this._columnsPerRow = 4;
 		this._keydownBound = false;
 		this._helpPanelVisible = false;
+		this._sidebarFocused = false;
+		this._sidebarCursorIndex = 0;
 	}
 
 	/**
@@ -96,9 +98,21 @@ class GalleryNavigationProvider extends libPictProvider
 			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
 			let tmpActiveMode = tmpRemote.ActiveMode;
 
-			if (tmpActiveMode === 'gallery')
+			if (tmpActiveMode === 'gallery' && tmpSelf._sidebarFocused)
+			{
+				tmpSelf._handleSidebarKey(pEvent);
+			}
+			else if (tmpActiveMode === 'gallery')
 			{
 				tmpSelf._handleGalleryKey(pEvent);
+			}
+			else if (tmpActiveMode === 'video-explorer')
+			{
+				tmpSelf._handleVideoExplorerKey(pEvent);
+			}
+			else if (tmpActiveMode === 'audio-explorer')
+			{
+				tmpSelf._handleAudioExplorerKey(pEvent);
 			}
 			else if (tmpActiveMode === 'viewer')
 			{
@@ -202,6 +216,146 @@ class GalleryNavigationProvider extends libPictProvider
 				pEvent.preventDefault();
 				this._toggleDistractionFree();
 				break;
+
+			case 'Tab':
+				pEvent.preventDefault();
+				this._focusSidebar();
+				break;
+		}
+	}
+
+	/**
+	 * Handle keyboard events when the sidebar file list has focus.
+	 */
+	_handleSidebarKey(pEvent)
+	{
+		let tmpRows = document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');
+		let tmpCount = tmpRows.length;
+
+		if (tmpCount === 0)
+		{
+			// Nothing in the sidebar, bail back to gallery
+			this._blurSidebar();
+			return;
+		}
+
+		switch (pEvent.key)
+		{
+			case 'ArrowDown':
+				pEvent.preventDefault();
+				this._moveSidebarCursor(Math.min(this._sidebarCursorIndex + 1, tmpCount - 1));
+				break;
+
+			case 'ArrowUp':
+				pEvent.preventDefault();
+				this._moveSidebarCursor(Math.max(this._sidebarCursorIndex - 1, 0));
+				break;
+
+			case 'Home':
+				pEvent.preventDefault();
+				this._moveSidebarCursor(0);
+				break;
+
+			case 'End':
+				pEvent.preventDefault();
+				this._moveSidebarCursor(tmpCount - 1);
+				break;
+
+			case 'Enter':
+				pEvent.preventDefault();
+				{
+					// Click the focused row to open it (folder or file)
+					let tmpRow = tmpRows[this._sidebarCursorIndex];
+					if (tmpRow)
+					{
+						// Fire the dblclick handler which opens folders / selects files
+						let tmpDblClickHandler = tmpRow.getAttribute('ondblclick');
+						if (tmpDblClickHandler)
+						{
+							new Function(tmpDblClickHandler).call(tmpRow);
+						}
+					}
+				}
+				break;
+
+			case 'Escape':
+			case 'Tab':
+				pEvent.preventDefault();
+				this._blurSidebar();
+				break;
+		}
+	}
+
+	/**
+	 * Move focus into the sidebar file list.
+	 */
+	_focusSidebar()
+	{
+		let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
+		if (!tmpWrap || tmpWrap.classList.contains('collapsed'))
+		{
+			return;
+		}
+
+		this._sidebarFocused = true;
+		this._sidebarCursorIndex = 0;
+
+		// Apply visual focus ring on the sidebar
+		let tmpInner = document.querySelector('.content-editor-sidebar-inner');
+		if (tmpInner)
+		{
+			tmpInner.classList.add('keyboard-focused');
+		}
+
+		this._moveSidebarCursor(0);
+	}
+
+	/**
+	 * Return focus from sidebar back to the gallery.
+	 */
+	_blurSidebar()
+	{
+		this._sidebarFocused = false;
+
+		// Remove sidebar focus ring
+		let tmpInner = document.querySelector('.content-editor-sidebar-inner');
+		if (tmpInner)
+		{
+			tmpInner.classList.remove('keyboard-focused');
+		}
+
+		// Remove highlight from all rows
+		let tmpRows = document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');
+		for (let i = 0; i < tmpRows.length; i++)
+		{
+			tmpRows[i].classList.remove('sidebar-focused');
+		}
+	}
+
+	/**
+	 * Move the sidebar cursor to a new index and highlight the row.
+	 */
+	_moveSidebarCursor(pIndex)
+	{
+		let tmpRows = document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');
+		if (tmpRows.length === 0)
+		{
+			return;
+		}
+
+		// Remove old highlight
+		if (this._sidebarCursorIndex < tmpRows.length)
+		{
+			tmpRows[this._sidebarCursorIndex].classList.remove('sidebar-focused');
+		}
+
+		this._sidebarCursorIndex = pIndex;
+
+		// Apply new highlight and scroll into view
+		if (pIndex < tmpRows.length)
+		{
+			tmpRows[pIndex].classList.add('sidebar-focused');
+			tmpRows[pIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 		}
 	}
 
@@ -265,9 +419,82 @@ class GalleryNavigationProvider extends libPictProvider
 				this._cycleFitMode();
 				break;
 
+			case 'Enter':
+				pEvent.preventDefault();
+				this._openWithVLC();
+				break;
+
 			case 'd':
 				pEvent.preventDefault();
 				this._toggleDistractionFree();
+				break;
+		}
+	}
+
+	/**
+	 * Handle keyboard events in video explorer mode.
+	 */
+	_handleVideoExplorerKey(pEvent)
+	{
+		switch (pEvent.key)
+		{
+			case 'Escape':
+				pEvent.preventDefault();
+				let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+				if (tmpVEX)
+				{
+					tmpVEX.goBack();
+				}
+				break;
+		}
+	}
+
+	/**
+	 * Handle keyboard events in audio explorer mode.
+	 */
+	_handleAudioExplorerKey(pEvent)
+	{
+		let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
+		if (!tmpAEX)
+		{
+			return;
+		}
+
+		switch (pEvent.key)
+		{
+			case 'Escape':
+				pEvent.preventDefault();
+				if (tmpAEX._selectionStart >= 0)
+				{
+					tmpAEX.clearSelection();
+				}
+				else
+				{
+					tmpAEX.goBack();
+				}
+				break;
+			case '+':
+			case '=':
+				pEvent.preventDefault();
+				tmpAEX.zoomIn();
+				break;
+			case '-':
+			case '_':
+				pEvent.preventDefault();
+				tmpAEX.zoomOut();
+				break;
+			case '0':
+				pEvent.preventDefault();
+				tmpAEX.zoomToFit();
+				break;
+			case 'z':
+			case 'Z':
+				pEvent.preventDefault();
+				tmpAEX.zoomToSelection();
+				break;
+			case ' ':
+				pEvent.preventDefault();
+				tmpAEX.playSelection();
 				break;
 		}
 	}
@@ -321,9 +548,9 @@ class GalleryNavigationProvider extends libPictProvider
 
 		let tmpItem = tmpItems[tmpIndex];
 
-		if (tmpItem.Type === 'folder')
+		if (tmpItem.Type === 'folder' || tmpItem.Type === 'archive')
 		{
-			// Navigate into the folder
+			// Navigate into the folder or archive
 			let tmpApp = this.pict.PictApplication;
 			if (tmpApp && tmpApp.loadFileList)
 			{
@@ -353,7 +580,9 @@ class GalleryNavigationProvider extends libPictProvider
 			return;
 		}
 
-		let tmpParent = tmpCurrentLocation.replace(/\/[^/]+\/?$/, '') || '';
+		let tmpParent = tmpCurrentLocation.indexOf('/') >= 0
+			? tmpCurrentLocation.replace(/\/[^/]+\/?$/, '')
+			: '';
 		let tmpApp = this.pict.PictApplication;
 		if (tmpApp && tmpApp.loadFileList)
 		{
@@ -522,6 +751,7 @@ class GalleryNavigationProvider extends libPictProvider
 			['← → ↑ ↓', 'Navigate tiles'],
 			['Enter', 'Open selected item'],
 			['Escape', 'Go up one folder'],
+			['Tab', 'Focus sidebar file list'],
 			['Home / End', 'Jump to first / last'],
 			['g', 'Toggle gallery / list view'],
 			['/', 'Focus search bar'],
@@ -539,6 +769,26 @@ class GalleryNavigationProvider extends libPictProvider
 		}
 		tmpHTML += '</div>';
 
+		// Sidebar shortcuts
+		tmpHTML += '<div class="retold-remote-help-section">';
+		tmpHTML += '<div class="retold-remote-help-section-title">Sidebar (Tab to focus)</div>';
+
+		let tmpSidebarShortcuts =
+		[
+			['↑ / ↓', 'Navigate file list'],
+			['Enter', 'Open selected item'],
+			['Home / End', 'Jump to first / last'],
+			['Escape / Tab', 'Return to gallery']
+		];
+		for (let i = 0; i < tmpSidebarShortcuts.length; i++)
+		{
+			tmpHTML += '<div class="retold-remote-help-row">';
+			tmpHTML += '<kbd class="retold-remote-help-key">' + tmpSidebarShortcuts[i][0] + '</kbd>';
+			tmpHTML += '<span class="retold-remote-help-desc">' + tmpSidebarShortcuts[i][1] + '</span>';
+			tmpHTML += '</div>';
+		}
+		tmpHTML += '</div>';
+
 		// Viewer shortcuts
 		tmpHTML += '<div class="retold-remote-help-section">';
 		tmpHTML += '<div class="retold-remote-help-section-title">Media Viewer</div>';
@@ -551,6 +801,7 @@ class GalleryNavigationProvider extends libPictProvider
 			['f', 'Toggle fullscreen'],
 			['i', 'Toggle file info'],
 			['Space', 'Play / pause media'],
+			['Enter', 'Open video in VLC'],
 			['z', 'Cycle fit mode'],
 			['+ / -', 'Zoom in / out'],
 			['0', 'Reset zoom'],
@@ -585,7 +836,11 @@ class GalleryNavigationProvider extends libPictProvider
 
 		// Active mode indicator
 		tmpHTML += '<div class="retold-remote-help-footer">';
-		tmpHTML += 'Current mode: <strong>' + (tmpActiveMode === 'viewer' ? 'Media Viewer' : 'Gallery') + '</strong>';
+		let tmpModeLabel = 'Gallery';
+		if (tmpActiveMode === 'viewer') tmpModeLabel = 'Media Viewer';
+		else if (tmpActiveMode === 'video-explorer') tmpModeLabel = 'Video Explorer';
+		else if (tmpActiveMode === 'audio-explorer') tmpModeLabel = 'Audio Explorer';
+		tmpHTML += 'Current mode: <strong>' + tmpModeLabel + '</strong>';
 		tmpHTML += '</div>';
 
 		tmpHTML += '</div>'; // end flyout
@@ -736,14 +991,27 @@ class GalleryNavigationProvider extends libPictProvider
 
 	_toggleFullscreen()
 	{
-		let tmpViewer = document.getElementById('RetoldRemote-Viewer-Container');
-		if (!tmpViewer) return;
-
 		if (document.fullscreenElement)
 		{
 			document.exitFullscreen();
+			return;
 		}
-		else
+
+		// When viewing a video, fullscreen the video element itself
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		if (tmpRemote.CurrentViewerMediaType === 'video')
+		{
+			let tmpVideo = document.getElementById('RetoldRemote-VideoPlayer');
+			if (tmpVideo)
+			{
+				tmpVideo.requestFullscreen();
+				return;
+			}
+		}
+
+		// For other media types, fullscreen the viewer container
+		let tmpViewer = document.getElementById('RetoldRemote-Viewer-Container');
+		if (tmpViewer)
 		{
 			tmpViewer.requestFullscreen();
 		}
@@ -811,6 +1079,95 @@ class GalleryNavigationProvider extends libPictProvider
 		{
 			tmpImageViewer.cycleFitMode();
 		}
+	}
+
+	/**
+	 * Open the current video file with VLC via the server endpoint.
+	 */
+	_openWithVLC()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// Only works for video files
+		if (tmpRemote.CurrentViewerMediaType !== 'video')
+		{
+			return;
+		}
+
+		// Check if VLC is available
+		let tmpCapabilities = tmpRemote.ServerCapabilities || {};
+		if (!tmpCapabilities.vlc)
+		{
+			return;
+		}
+
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath)
+		{
+			return;
+		}
+
+		// Show a brief toast
+		this._showToast('Opening in VLC...');
+
+		// POST to the server to open the file
+		fetch('/api/media/open',
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ path: tmpFilePath })
+		})
+		.then((pResponse) =>
+		{
+			return pResponse.json();
+		})
+		.then((pData) =>
+		{
+			if (!pData.Success)
+			{
+				this._showToast('Failed to open: ' + (pData.Error || 'Unknown error'));
+			}
+		})
+		.catch((pError) =>
+		{
+			this._showToast('Failed to open: ' + pError.message);
+		});
+	}
+
+	/**
+	 * Show a brief toast notification in the viewer.
+	 *
+	 * @param {string} pMessage - Text to display
+	 */
+	_showToast(pMessage)
+	{
+		let tmpIndicator = document.getElementById('RetoldRemote-FitIndicator');
+		if (!tmpIndicator)
+		{
+			tmpIndicator = document.createElement('div');
+			tmpIndicator.id = 'RetoldRemote-FitIndicator';
+			tmpIndicator.className = 'retold-remote-fit-indicator';
+
+			let tmpContainer = document.querySelector('.retold-remote-viewer-body');
+			if (tmpContainer)
+			{
+				tmpContainer.appendChild(tmpIndicator);
+			}
+		}
+
+		tmpIndicator.textContent = pMessage;
+		tmpIndicator.classList.add('visible');
+
+		if (this._toastTimeout)
+		{
+			clearTimeout(this._toastTimeout);
+		}
+
+		let tmpSelf = this;
+		this._toastTimeout = setTimeout(function ()
+		{
+			tmpIndicator.classList.remove('visible');
+		}, 1500);
 	}
 }
 

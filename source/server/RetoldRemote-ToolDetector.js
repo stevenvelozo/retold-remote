@@ -31,7 +31,10 @@ class ToolDetector
 			sharp: this._detectSharp(),
 			imagemagick: this._detectCommand('identify --version'),
 			ffmpeg: this._detectCommand('ffmpeg -version'),
-			ffprobe: this._detectCommand('ffprobe -version')
+			ffprobe: this._detectCommand('ffprobe -version'),
+			vlc: this._detectVLC(),
+			p7zip: this._detectCommand('7z --help'),
+			audiowaveform: this._detectCommand('audiowaveform --version')
 		};
 
 		return this._capabilities;
@@ -53,6 +56,32 @@ class ToolDetector
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Check if VLC is available.  On macOS, check for the .app bundle.
+	 * On Linux, check the vlc command.
+	 *
+	 * @returns {boolean}
+	 */
+	_detectVLC()
+	{
+		// macOS: check for VLC.app
+		try
+		{
+			const libFS = require('fs');
+			if (libFS.existsSync('/Applications/VLC.app'))
+			{
+				return true;
+			}
+		}
+		catch (pError)
+		{
+			// ignore
+		}
+
+		// Linux / other: try vlc --version
+		return this._detectCommand('vlc --version');
 	}
 
 	/**

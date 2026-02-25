@@ -91,6 +91,7 @@ const _FallbackExtensionMap =
 	'.zip': 'file-archive', '.tar': 'file-archive', '.gz': 'file-archive',
 	'.rar': 'file-archive', '.7z': 'file-archive', '.bz2': 'file-archive',
 	'.xz': 'file-archive', '.tgz': 'file-archive',
+	'.cbz': 'file-archive', '.cbr': 'file-archive',
 
 	// Audio
 	'.mp3': 'file-audio', '.wav': 'file-audio', '.flac': 'file-audio',

@@ -950,6 +950,11 @@ class RetoldRemoteGalleryView extends libPictView
 				tmpHTML += '<div class="retold-remote-tile-thumb-icon"><span class="retold-remote-icon retold-remote-icon-md">' + (tmpIconProvider ? tmpIconProvider.getIcon('folder', 48) : '') + '</span></div>';
 				tmpHTML += '<span class="retold-remote-tile-badge retold-remote-tile-badge-folder">Folder</span>';
 			}
+			else if (tmpItem.Type === 'archive')
+			{
+				tmpHTML += '<div class="retold-remote-tile-thumb-icon"><span class="retold-remote-icon retold-remote-icon-md">' + (tmpIconProvider ? tmpIconProvider.getIcon('file-archive', 48) : '') + '</span></div>';
+				tmpHTML += '<span class="retold-remote-tile-badge retold-remote-tile-badge-folder">Archive</span>';
+			}
 			else if (tmpCategory === 'image' && tmpProvider)
 			{
 				let tmpThumbURL = tmpProvider.getThumbnailURL(tmpItem.Path, 400, 300);
@@ -1012,6 +1017,10 @@ class RetoldRemoteGalleryView extends libPictView
 			{
 				tmpHTML += '<div class="retold-remote-tile-meta">Folder</div>';
 			}
+			else if (tmpItem.Type === 'archive')
+			{
+				tmpHTML += '<div class="retold-remote-tile-meta">Archive' + (tmpItem.Size ? ' · ' + this._formatFileSize(tmpItem.Size) : '') + '</div>';
+			}
 
 			tmpHTML += '</div>'; // end tile
 		}
@@ -1047,7 +1056,7 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '<div class="retold-remote-list-icon">' + tmpIcon + '</div>';
 			tmpHTML += '<div class="retold-remote-list-name">' + this._escapeHTML(tmpItem.Name) + '</div>';
 
-			if (tmpItem.Type === 'file' && tmpItem.Size !== undefined)
+			if ((tmpItem.Type === 'file' || tmpItem.Type === 'archive') && tmpItem.Size !== undefined)
 			{
 				tmpHTML += '<div class="retold-remote-list-size">' + this._formatFileSize(tmpItem.Size) + '</div>';
 			}
@@ -1400,6 +1409,7 @@ class RetoldRemoteGalleryView extends libPictView
 	_getCategory(pExtension, pType)
 	{
 		if (pType === 'folder') return 'folder';
+		if (pType === 'archive') return 'archive';
 		// Delegate to the filter/sort provider if available
 		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
 		if (tmpFilterSort)

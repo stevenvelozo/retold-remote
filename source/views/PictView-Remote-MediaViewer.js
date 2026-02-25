@@ -147,6 +147,91 @@ const _ViewConfiguration =
 		.retold-remote-code-viewer-container .pict-code-editor .tag { color: #E06C75; }
 		.retold-remote-code-viewer-container .pict-code-editor .attr-name { color: #D19A66; }
 		.retold-remote-code-viewer-container .pict-code-editor .attr-value { color: #98C379; }
+		/* Video wrap with stats bar */
+		.retold-remote-video-wrap
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			max-width: 100%;
+			max-height: 100%;
+			width: 100%;
+			height: 100%;
+		}
+		.retold-remote-video-wrap video
+		{
+			flex: 1;
+			min-height: 0;
+			max-width: 100%;
+			max-height: calc(100% - 40px);
+			object-fit: contain;
+		}
+		.retold-remote-video-stats
+		{
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 6px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			width: 100%;
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+			white-space: nowrap;
+			overflow-x: auto;
+		}
+		.retold-remote-video-stats span
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.retold-remote-video-stats .retold-remote-video-stat-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-video-stats .retold-remote-video-stat-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-explore-btn
+		{
+			margin-left: auto;
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-explore-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-vlc-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-vlc-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
 	`
 };
 
@@ -260,26 +345,73 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 	_buildVideoHTML(pURL, pFileName)
 	{
-		return '<video controls autoplay preload="metadata" '
-			+ 'style="max-width: 100%; max-height: 100%;" '
+		let tmpHTML = '<div class="retold-remote-video-wrap">';
+
+		tmpHTML += '<video controls autoplay preload="metadata" '
 			+ 'id="RetoldRemote-VideoPlayer">'
 			+ '<source src="' + pURL + '">'
 			+ 'Your browser does not support the video tag.'
 			+ '</video>';
+
+		// Stats bar below the video
+		tmpHTML += '<div class="retold-remote-video-stats" id="RetoldRemote-VideoStats">';
+		tmpHTML += '<span class="retold-remote-video-stat-label">Loading info...</span>';
+
+		// Explore Video button (only when ffmpeg is available)
+		let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
+		if (tmpCapabilities.ffmpeg)
+		{
+			tmpHTML += '<button class="retold-remote-explore-btn" '
+				+ 'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
+				+ 'title="Explore frames from this video">'
+				+ '&#128270; Explore Video'
+				+ '</button>';
+		}
+
+		// VLC button (only shown when VLC capability is available)
+		if (tmpCapabilities.vlc)
+		{
+			tmpHTML += '<button class="retold-remote-vlc-btn" '
+				+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '
+				+ 'title="Open with VLC (Enter)">'
+				+ '&#9654; Open ' + this._escapeHTML(pFileName) + ' with VLC'
+				+ '</button>';
+		}
+
+		tmpHTML += '</div>'; // end stats
+		tmpHTML += '</div>'; // end wrap
+
+		return tmpHTML;
 	}
 
 	_buildAudioHTML(pURL, pFileName)
 	{
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
 		let tmpIconHTML = tmpIconProvider ? '<span class="retold-remote-icon retold-remote-icon-lg">' + tmpIconProvider.getIcon('music-note', 64) + '</span>' : '&#127925;';
-		return '<div style="text-align: center; padding: 40px;">'
+
+		let tmpHTML = '<div style="text-align: center; padding: 40px;">'
 			+ '<div style="margin-bottom: 24px;">' + tmpIconHTML + '</div>'
 			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this._escapeHTML(pFileName) + '</div>'
 			+ '<audio controls autoplay preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'
 			+ '<source src="' + pURL + '">'
 			+ 'Your browser does not support the audio tag.'
-			+ '</audio>'
-			+ '</div>';
+			+ '</audio>';
+
+		// Explore Audio button (available when ffprobe is present)
+		let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
+		if (tmpCapabilities.ffprobe || tmpCapabilities.ffmpeg)
+		{
+			tmpHTML += '<div style="margin-top: 20px;">'
+				+ '<button class="retold-remote-explore-btn" '
+				+ 'onclick="pict.views[\'RetoldRemote-AudioExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
+				+ 'title="Explore waveform and extract segments from this audio">'
+				+ '&#128202; Explore Audio'
+				+ '</button>'
+				+ '</div>';
+		}
+
+		tmpHTML += '</div>';
+		return tmpHTML;
 	}
 
 	_buildDocumentHTML(pURL, pFileName, pFilePath)
@@ -452,10 +584,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 	}
 
 	/**
-	 * Fetch file info and populate the overlay.
+	 * Fetch file info and populate the overlay and video stats bar.
 	 */
 	_loadFileInfo(pFilePath)
 	{
+		let tmpSelf = this;
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		if (!tmpProvider)
 		{
@@ -465,46 +598,102 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpProvider.fetchMediaProbe(pFilePath,
 			(pError, pData) =>
 			{
-				let tmpOverlay = document.getElementById('RetoldRemote-FileInfo-Overlay');
-				if (!tmpOverlay || !pData)
+				if (!pData)
 				{
 					return;
 				}
 
-				let tmpHTML = '';
+				// Populate the info overlay
+				let tmpOverlay = document.getElementById('RetoldRemote-FileInfo-Overlay');
+				if (tmpOverlay)
+				{
+					let tmpHTML = '';
 
-				if (pData.Size !== undefined)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">' + this._formatFileSize(pData.Size) + '</span></div>';
-				}
-				if (pData.Width && pData.Height)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">' + pData.Width + ' x ' + pData.Height + '</span></div>';
-				}
-				if (pData.Duration)
-				{
-					let tmpMin = Math.floor(pData.Duration / 60);
-					let tmpSec = Math.floor(pData.Duration % 60);
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">' + tmpMin + ':' + (tmpSec < 10 ? '0' : '') + tmpSec + '</span></div>';
-				}
-				if (pData.Codec)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">' + pData.Codec + '</span></div>';
-				}
-				if (pData.Format)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">' + pData.Format + '</span></div>';
-				}
-				if (pData.Modified)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">' + new Date(pData.Modified).toLocaleString() + '</span></div>';
-				}
-				if (pData.Path)
-				{
-					tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">' + pData.Path + '</span></div>';
+					if (pData.Size !== undefined)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">' + tmpSelf._formatFileSize(pData.Size) + '</span></div>';
+					}
+					if (pData.Width && pData.Height)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">' + pData.Width + ' x ' + pData.Height + '</span></div>';
+					}
+					if (pData.Duration)
+					{
+						let tmpMin = Math.floor(pData.Duration / 60);
+						let tmpSec = Math.floor(pData.Duration % 60);
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">' + tmpMin + ':' + (tmpSec < 10 ? '0' : '') + tmpSec + '</span></div>';
+					}
+					if (pData.Codec)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">' + pData.Codec + '</span></div>';
+					}
+					if (pData.Format)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">' + pData.Format + '</span></div>';
+					}
+					if (pData.Modified)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">' + new Date(pData.Modified).toLocaleString() + '</span></div>';
+					}
+					if (pData.Path)
+					{
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">' + pData.Path + '</span></div>';
+					}
+
+					tmpOverlay.innerHTML = tmpHTML;
 				}
 
-				tmpOverlay.innerHTML = tmpHTML;
+				// Populate the video stats bar (if viewing a video)
+				let tmpStatsBar = document.getElementById('RetoldRemote-VideoStats');
+				if (tmpStatsBar)
+				{
+					let tmpStatsHTML = '';
+
+					if (pData.Duration)
+					{
+						let tmpMin = Math.floor(pData.Duration / 60);
+						let tmpSec = Math.floor(pData.Duration % 60);
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">' + tmpMin + ':' + (tmpSec < 10 ? '0' : '') + tmpSec + '</span></span>';
+					}
+					if (pData.Width && pData.Height)
+					{
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">' + pData.Width + '×' + pData.Height + '</span></span>';
+					}
+					if (pData.Codec)
+					{
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">' + pData.Codec + '</span></span>';
+					}
+					if (pData.Bitrate)
+					{
+						let tmpBitrate = pData.Bitrate;
+						let tmpBitrateStr;
+						if (tmpBitrate >= 1000000)
+						{
+							tmpBitrateStr = (tmpBitrate / 1000000).toFixed(1) + ' Mbps';
+						}
+						else if (tmpBitrate >= 1000)
+						{
+							tmpBitrateStr = Math.round(tmpBitrate / 1000) + ' kbps';
+						}
+						else
+						{
+							tmpBitrateStr = tmpBitrate + ' bps';
+						}
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">' + tmpBitrateStr + '</span></span>';
+					}
+					if (pData.Size !== undefined)
+					{
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">' + tmpSelf._formatFileSize(pData.Size) + '</span></span>';
+					}
+
+					// Preserve the Explore and VLC buttons if they exist
+					let tmpExploreBtn = tmpStatsBar.querySelector('.retold-remote-explore-btn');
+					let tmpExploreHTML = tmpExploreBtn ? tmpExploreBtn.outerHTML : '';
+					let tmpVLCBtn = tmpStatsBar.querySelector('.retold-remote-vlc-btn');
+					let tmpVLCHTML = tmpVLCBtn ? tmpVLCBtn.outerHTML : '';
+
+					tmpStatsBar.innerHTML = tmpStatsHTML + tmpExploreHTML + tmpVLCHTML;
+				}
 			});
 	}
 

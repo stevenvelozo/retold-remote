@@ -103,7 +103,7 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		return pItems.filter((pItem) =>
 		{
-			if (pItem.Type === 'folder')
+			if (pItem.Type === 'folder' || pItem.Type === 'archive')
 			{
 				return true;
 			}
@@ -138,7 +138,7 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		return pItems.filter((pItem) =>
 		{
-			if (pItem.Type === 'folder')
+			if (pItem.Type === 'folder' || pItem.Type === 'archive')
 			{
 				return true;
 			}
@@ -159,7 +159,7 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		return pItems.filter((pItem) =>
 		{
-			if (pItem.Type === 'folder')
+			if (pItem.Type === 'folder' || pItem.Type === 'archive')
 			{
 				return true;
 			}
@@ -193,7 +193,7 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		return pItems.filter((pItem) =>
 		{
-			if (pItem.Type === 'folder')
+			if (pItem.Type === 'folder' || pItem.Type === 'archive')
 			{
 				return true;
 			}
@@ -229,11 +229,13 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		return pItems.slice().sort((pA, pB) =>
 		{
-			// 'folder-first' mode: folders always sort before files
+			// 'folder-first' mode: containers (folders + archives) always sort before files
 			if (pSortField === 'folder-first')
 			{
-				if (pA.Type === 'folder' && pB.Type !== 'folder') return -1;
-				if (pA.Type !== 'folder' && pB.Type === 'folder') return 1;
+				let tmpAIsContainer = (pA.Type === 'folder' || pA.Type === 'archive');
+				let tmpBIsContainer = (pB.Type === 'folder' || pB.Type === 'archive');
+				if (tmpAIsContainer && !tmpBIsContainer) return -1;
+				if (!tmpAIsContainer && tmpBIsContainer) return 1;
 				// Both same type: sort by name ascending
 				let tmpNameA = (pA.Name || '').toLowerCase();
 				let tmpNameB = (pB.Name || '').toLowerCase();
@@ -316,7 +318,7 @@ class GalleryFilterSortProvider extends libPictProvider
 		for (let i = 0; i < tmpRaw.length; i++)
 		{
 			let tmpItem = tmpRaw[i];
-			if (tmpItem.Type === 'folder')
+			if (tmpItem.Type === 'folder' || tmpItem.Type === 'archive')
 			{
 				continue;
 			}

@@ -1,0 +1,411 @@
+/**
+ * Retold Remote -- Video Frame Extraction Service
+ *
+ * Extracts evenly-spaced frames from a video using ffmpeg/ffprobe.
+ * Frames are cached so repeated requests are instant.
+ *
+ * API:
+ *   extractFrames(pAbsPath, pRelPath, pOptions, fCallback)
+ *     -> { Frames: [{ Index, Timestamp, TimestampFormatted, Path }], Duration, ... }
+ *
+ * @license MIT
+ */
+const libFableServiceProviderBase = require('fable-serviceproviderbase');
+const libFs = require('fs');
+const libPath = require('path');
+const libCrypto = require('crypto');
+const libChildProcess = require('child_process');
+
+const _DefaultServiceConfiguration =
+{
+	"ContentPath": ".",
+	"CachePath": null,
+	"DefaultFrameCount": 20,
+	"DefaultFrameWidth": 640,
+	"DefaultFrameHeight": 360,
+	"DefaultFrameFormat": "jpg",
+	"SkipSeconds": 1,
+	"MinFrameInterval": 2
+};
+
+class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
+{
+	constructor(pFable, pOptions, pServiceHash)
+	{
+		super(pFable, pOptions, pServiceHash);
+
+		this.serviceType = 'RetoldRemoteVideoFrameService';
+
+		// Merge with defaults
+		for (let tmpKey in _DefaultServiceConfiguration)
+		{
+			if (!(tmpKey in this.options))
+			{
+				this.options[tmpKey] = _DefaultServiceConfiguration[tmpKey];
+			}
+		}
+
+		this.contentPath = libPath.resolve(this.options.ContentPath);
+
+		this.cachePath = this.options.CachePath
+			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'video-frames');
+
+		// Ensure cache directory exists
+		if (!libFs.existsSync(this.cachePath))
+		{
+			libFs.mkdirSync(this.cachePath, { recursive: true });
+		}
+
+		this.fable.log.info(`Video Frame Service: cache at ${this.cachePath}`);
+	}
+
+	/**
+	 * Get the cache directory for a specific video file.
+	 * The key is based on the absolute path and modification time,
+	 * so cache is automatically invalidated when the file changes.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the video
+	 * @param {number} pMtimeMs - Modification time in ms
+	 * @param {number} pFrameCount - Number of frames requested
+	 * @param {number} pWidth - Frame width
+	 * @param {number} pHeight - Frame height
+	 * @returns {string} Absolute path to the cache directory for this video
+	 */
+	_getCacheDir(pAbsPath, pMtimeMs, pFrameCount, pWidth, pHeight)
+	{
+		let tmpInput = `${pAbsPath}:${pMtimeMs}:${pFrameCount}:${pWidth}x${pHeight}`;
+		let tmpHash = libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
+		return libPath.join(this.cachePath, tmpHash);
+	}
+
+	/**
+	 * Probe a video file with ffprobe to get its duration.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the video
+	 * @param {Function} fCallback - Callback(pError, { duration, width, height, codec })
+	 */
+	_probeVideo(pAbsPath, fCallback)
+	{
+		try
+		{
+			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams "${pAbsPath}"`;
+			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 1024 * 1024, timeout: 15000 });
+			let tmpData = JSON.parse(tmpOutput.toString());
+
+			let tmpResult = {};
+
+			if (tmpData.format)
+			{
+				tmpResult.duration = parseFloat(tmpData.format.duration) || null;
+				tmpResult.bitrate = parseInt(tmpData.format.bit_rate, 10) || null;
+				tmpResult.size = parseInt(tmpData.format.size, 10) || null;
+			}
+
+			if (tmpData.streams)
+			{
+				for (let i = 0; i < tmpData.streams.length; i++)
+				{
+					let tmpStream = tmpData.streams[i];
+					if (tmpStream.codec_type === 'video')
+					{
+						tmpResult.width = tmpStream.width;
+						tmpResult.height = tmpStream.height;
+						tmpResult.codec = tmpStream.codec_name;
+						break;
+					}
+				}
+			}
+
+			return fCallback(null, tmpResult);
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Extract a single frame from a video at a given timestamp.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the video
+	 * @param {number} pTimestamp - Timestamp in seconds
+	 * @param {string} pOutputPath - Absolute path for the output image
+	 * @param {number} pWidth - Target width
+	 * @param {number} pHeight - Target height
+	 * @param {string} pFormat - Output format (jpg, png, webp)
+	 * @returns {boolean} True if extraction succeeded
+	 */
+	_extractFrame(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat)
+	{
+		try
+		{
+			// Format timestamp as HH:MM:SS.mmm for ffmpeg
+			let tmpHours = Math.floor(pTimestamp / 3600);
+			let tmpMinutes = Math.floor((pTimestamp % 3600) / 60);
+			let tmpSeconds = pTimestamp % 60;
+			let tmpTimeStr = `${String(tmpHours).padStart(2, '0')}:${String(tmpMinutes).padStart(2, '0')}:${tmpSeconds.toFixed(3).padStart(6, '0')}`;
+
+			let tmpCodec = (pFormat === 'png') ? 'png' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
+
+			let tmpCmd = `ffmpeg -ss ${tmpTimeStr} -i "${pAbsPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -c:v ${tmpCodec} -y "${pOutputPath}"`;
+			libChildProcess.execSync(tmpCmd, { stdio: 'ignore', timeout: 30000 });
+			return libFs.existsSync(pOutputPath);
+		}
+		catch (pError)
+		{
+			this.fable.log.warn(`Frame extraction failed at ${pTimestamp}s: ${pError.message}`);
+			return false;
+		}
+	}
+
+	/**
+	 * Format a timestamp in seconds to a human-readable string.
+	 *
+	 * @param {number} pSeconds - Timestamp in seconds
+	 * @returns {string} Formatted string like "1:23:45" or "12:34"
+	 */
+	_formatTimestamp(pSeconds)
+	{
+		let tmpHours = Math.floor(pSeconds / 3600);
+		let tmpMinutes = Math.floor((pSeconds % 3600) / 60);
+		let tmpSecs = Math.floor(pSeconds % 60);
+
+		if (tmpHours > 0)
+		{
+			return `${tmpHours}:${String(tmpMinutes).padStart(2, '0')}:${String(tmpSecs).padStart(2, '0')}`;
+		}
+		return `${tmpMinutes}:${String(tmpSecs).padStart(2, '0')}`;
+	}
+
+	/**
+	 * Calculate evenly-spaced timestamps for frame extraction.
+	 * Skips the first and last few seconds (configurable).
+	 *
+	 * @param {number} pDuration - Total video duration in seconds
+	 * @param {number} pFrameCount - Desired number of frames
+	 * @param {number} pSkipSeconds - Seconds to skip at start and end
+	 * @returns {number[]} Array of timestamps in seconds
+	 */
+	_calculateTimestamps(pDuration, pFrameCount, pSkipSeconds)
+	{
+		let tmpStart = Math.min(pSkipSeconds, pDuration * 0.05);
+		let tmpEnd = pDuration - Math.min(pSkipSeconds, pDuration * 0.05);
+
+		// If the video is very short, just grab what we can
+		if (tmpEnd <= tmpStart)
+		{
+			tmpStart = 0;
+			tmpEnd = pDuration;
+		}
+
+		let tmpUsableDuration = tmpEnd - tmpStart;
+
+		// Don't extract more frames than we have seconds for
+		let tmpMinInterval = this.options.MinFrameInterval;
+		let tmpMaxFrames = Math.max(1, Math.floor(tmpUsableDuration / tmpMinInterval));
+		let tmpActualFrameCount = Math.min(pFrameCount, tmpMaxFrames);
+
+		if (tmpActualFrameCount <= 1)
+		{
+			return [tmpStart + tmpUsableDuration / 2];
+		}
+
+		let tmpTimestamps = [];
+		let tmpInterval = tmpUsableDuration / (tmpActualFrameCount - 1);
+
+		for (let i = 0; i < tmpActualFrameCount; i++)
+		{
+			tmpTimestamps.push(tmpStart + (i * tmpInterval));
+		}
+
+		return tmpTimestamps;
+	}
+
+	/**
+	 * Extract evenly-spaced frames from a video.
+	 * Results are cached for fast repeated access.
+	 *
+	 * @param {string}   pAbsPath    - Absolute path to the video file
+	 * @param {string}   pRelPath    - Relative path (for the response)
+	 * @param {object}   pOptions    - { count, width, height, format }
+	 * @param {Function} fCallback   - Callback(pError, pResult)
+	 */
+	extractFrames(pAbsPath, pRelPath, pOptions, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpCount = parseInt(pOptions.count, 10) || this.options.DefaultFrameCount;
+		let tmpWidth = parseInt(pOptions.width, 10) || this.options.DefaultFrameWidth;
+		let tmpHeight = parseInt(pOptions.height, 10) || this.options.DefaultFrameHeight;
+		let tmpFormat = pOptions.format || this.options.DefaultFrameFormat;
+
+		// Clamp values
+		tmpCount = Math.min(Math.max(tmpCount, 1), 100);
+		tmpWidth = Math.min(Math.max(tmpWidth, 64), 1920);
+		tmpHeight = Math.min(Math.max(tmpHeight, 64), 1080);
+
+		// Validate format
+		if (!{ 'jpg': true, 'png': true, 'webp': true }[tmpFormat])
+		{
+			tmpFormat = 'jpg';
+		}
+
+		// Get file stats for cache key
+		let tmpStat;
+		try
+		{
+			tmpStat = libFs.statSync(pAbsPath);
+		}
+		catch (pError)
+		{
+			return fCallback(new Error('File not found.'));
+		}
+
+		let tmpCacheDir = this._getCacheDir(pAbsPath, tmpStat.mtimeMs, tmpCount, tmpWidth, tmpHeight);
+
+		// Check if we have a cached manifest
+		let tmpManifestPath = libPath.join(tmpCacheDir, 'manifest.json');
+		if (libFs.existsSync(tmpManifestPath))
+		{
+			try
+			{
+				let tmpManifest = JSON.parse(libFs.readFileSync(tmpManifestPath, 'utf8'));
+				this.fable.log.info(`Video frames cache hit for ${pRelPath}`);
+				return fCallback(null, tmpManifest);
+			}
+			catch (pError)
+			{
+				// Corrupted manifest, regenerate
+			}
+		}
+
+		// Probe the video for duration
+		this._probeVideo(pAbsPath,
+			(pError, pVideoInfo) =>
+			{
+				if (pError || !pVideoInfo || !pVideoInfo.duration)
+				{
+					return fCallback(new Error('Could not probe video. ffprobe may not be available.'));
+				}
+
+				let tmpDuration = pVideoInfo.duration;
+
+				// Calculate timestamps
+				let tmpTimestamps = tmpSelf._calculateTimestamps(
+					tmpDuration, tmpCount, tmpSelf.options.SkipSeconds);
+
+				// Ensure cache directory exists
+				if (!libFs.existsSync(tmpCacheDir))
+				{
+					libFs.mkdirSync(tmpCacheDir, { recursive: true });
+				}
+
+				let tmpFrames = [];
+				let tmpExtractedCount = 0;
+
+				tmpSelf.fable.log.info(`Extracting ${tmpTimestamps.length} frames from ${pRelPath} (${tmpDuration.toFixed(1)}s)`);
+
+				for (let i = 0; i < tmpTimestamps.length; i++)
+				{
+					let tmpTimestamp = tmpTimestamps[i];
+					let tmpFrameFilename = `frame_${String(i).padStart(4, '0')}.${tmpFormat}`;
+					let tmpFramePath = libPath.join(tmpCacheDir, tmpFrameFilename);
+
+					let tmpSuccess = tmpSelf._extractFrame(
+						pAbsPath, tmpTimestamp, tmpFramePath, tmpWidth, tmpHeight, tmpFormat);
+
+					if (tmpSuccess)
+					{
+						let tmpFrameStat = libFs.statSync(tmpFramePath);
+						tmpFrames.push(
+						{
+							Index: i,
+							Timestamp: tmpTimestamp,
+							TimestampFormatted: tmpSelf._formatTimestamp(tmpTimestamp),
+							Filename: tmpFrameFilename,
+							Size: tmpFrameStat.size
+						});
+						tmpExtractedCount++;
+					}
+				}
+
+				if (tmpExtractedCount === 0)
+				{
+					return fCallback(new Error('Failed to extract any frames from the video.'));
+				}
+
+				let tmpResult =
+				{
+					Success: true,
+					Path: pRelPath,
+					Duration: tmpDuration,
+					DurationFormatted: tmpSelf._formatTimestamp(tmpDuration),
+					VideoWidth: pVideoInfo.width,
+					VideoHeight: pVideoInfo.height,
+					Codec: pVideoInfo.codec,
+					Bitrate: pVideoInfo.bitrate,
+					FileSize: pVideoInfo.size || tmpStat.size,
+					FrameCount: tmpExtractedCount,
+					FrameWidth: tmpWidth,
+					FrameHeight: tmpHeight,
+					FrameFormat: tmpFormat,
+					CacheKey: libPath.basename(tmpCacheDir),
+					Frames: tmpFrames
+				};
+
+				// Write manifest to cache
+				try
+				{
+					libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+				}
+				catch (pWriteError)
+				{
+					tmpSelf.fable.log.warn(`Could not write frame manifest: ${pWriteError.message}`);
+				}
+
+				tmpSelf.fable.log.info(`Extracted ${tmpExtractedCount} frames for ${pRelPath}`);
+				return fCallback(null, tmpResult);
+			});
+	}
+
+	/**
+	 * Get the absolute path to a cached frame image.
+	 *
+	 * @param {string} pCacheKey - The cache key (directory name)
+	 * @param {string} pFilename - The frame filename
+	 * @returns {string|null} Absolute path or null if not found
+	 */
+	getFramePath(pCacheKey, pFilename)
+	{
+		// Sanitize inputs to prevent directory traversal
+		if (!pCacheKey || !pFilename)
+		{
+			return null;
+		}
+		if (pCacheKey.includes('..') || pCacheKey.includes('/') || pCacheKey.includes('\\'))
+		{
+			return null;
+		}
+		if (pFilename.includes('..') || pFilename.includes('/') || pFilename.includes('\\'))
+		{
+			return null;
+		}
+
+		let tmpPath = libPath.join(this.cachePath, pCacheKey, pFilename);
+
+		// Double-check it's under our cache dir
+		let tmpResolved = libPath.resolve(tmpPath);
+		if (!tmpResolved.startsWith(this.cachePath))
+		{
+			return null;
+		}
+
+		if (libFs.existsSync(tmpPath))
+		{
+			return tmpPath;
+		}
+
+		return null;
+	}
+}
+
+module.exports = RetoldRemoteVideoFrameService;
