@@ -657,6 +657,18 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
 					let tmpPathParam = (tmpParsedUrl.query && tmpParsedUrl.query.path) || '';
+
+					// Resolve hash to path if hashed filenames is enabled
+					// (server.pre runs before server.use middleware, so hash resolution hasn't happened yet)
+					if (tmpHashedFilenames && /^[a-f0-9]{10}$/.test(tmpPathParam))
+					{
+						let tmpResolved = tmpPathRegistry.resolve(tmpPathParam);
+						if (tmpResolved !== null)
+						{
+							tmpPathParam = tmpResolved;
+						}
+					}
+
 					let tmpArchiveInfo = tmpArchiveService.parseArchivePath(tmpPathParam);
 
 					if (!tmpArchiveInfo)
@@ -776,6 +788,17 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
 					let tmpPathParam = (tmpParsedUrl.query && tmpParsedUrl.query.path) || '';
+
+					// Resolve hash to path if hashed filenames is enabled
+					if (tmpHashedFilenames && /^[a-f0-9]{10}$/.test(tmpPathParam))
+					{
+						let tmpResolved = tmpPathRegistry.resolve(tmpPathParam);
+						if (tmpResolved !== null)
+						{
+							tmpPathParam = tmpResolved;
+						}
+					}
+
 					let tmpArchiveInfo = tmpArchiveService.parseArchivePath(tmpPathParam);
 
 					if (!tmpArchiveInfo || !tmpArchiveInfo.innerPath)

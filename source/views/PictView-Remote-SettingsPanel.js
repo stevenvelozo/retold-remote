@@ -186,6 +186,22 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleDistractionFreeNav(this.checked)">';
 		tmpHTML += '</div>';
 
+		// Autoplay video
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Autoplay video</span>';
+		tmpHTML += '<input type="checkbox" class="retold-remote-settings-checkbox"'
+			+ (tmpRemote.AutoplayVideo ? ' checked' : '')
+			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleAutoplay(\'AutoplayVideo\', this.checked)">';
+		tmpHTML += '</div>';
+
+		// Autoplay audio
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Autoplay audio</span>';
+		tmpHTML += '<input type="checkbox" class="retold-remote-settings-checkbox"'
+			+ (tmpRemote.AutoplayAudio ? ' checked' : '')
+			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleAutoplay(\'AutoplayAudio\', this.checked)">';
+		tmpHTML += '</div>';
+
 		tmpHTML += '</div>'; // end gallery section
 
 		// Server capabilities
@@ -293,6 +309,13 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		{
 			this.pict.PictApplication.loadFileList();
 		});
+	}
+
+	toggleAutoplay(pKey, pChecked)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote[pKey] = pChecked;
+		this.pict.PictApplication.saveSettings();
 	}
 
 	toggleDistractionFreeNav(pChecked)

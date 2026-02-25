@@ -81,6 +81,21 @@ class GalleryNavigationProvider extends libPictProvider
 				return;
 			}
 
+			// F9 toggles sidebar focus from any mode
+			if (pEvent.key === 'F9')
+			{
+				pEvent.preventDefault();
+				if (tmpSelf._sidebarFocused)
+				{
+					tmpSelf._blurSidebar();
+				}
+				else
+				{
+					tmpSelf._focusSidebar();
+				}
+				return;
+			}
+
 			// Don't capture keys when an input is focused
 			if (pEvent.target.tagName === 'INPUT' || pEvent.target.tagName === 'TEXTAREA' || pEvent.target.isContentEditable)
 			{
@@ -217,11 +232,7 @@ class GalleryNavigationProvider extends libPictProvider
 				this._toggleDistractionFree();
 				break;
 
-			case 'Tab':
-				pEvent.preventDefault();
-				this._focusSidebar();
-				break;
-		}
+			}
 	}
 
 	/**
@@ -279,7 +290,6 @@ class GalleryNavigationProvider extends libPictProvider
 				break;
 
 			case 'Escape':
-			case 'Tab':
 				pEvent.preventDefault();
 				this._blurSidebar();
 				break;
@@ -751,7 +761,7 @@ class GalleryNavigationProvider extends libPictProvider
 			['← → ↑ ↓', 'Navigate tiles'],
 			['Enter', 'Open selected item'],
 			['Escape', 'Go up one folder'],
-			['Tab', 'Focus sidebar file list'],
+			['F9', 'Toggle sidebar focus'],
 			['Home / End', 'Jump to first / last'],
 			['g', 'Toggle gallery / list view'],
 			['/', 'Focus search bar'],
@@ -771,14 +781,14 @@ class GalleryNavigationProvider extends libPictProvider
 
 		// Sidebar shortcuts
 		tmpHTML += '<div class="retold-remote-help-section">';
-		tmpHTML += '<div class="retold-remote-help-section-title">Sidebar (Tab to focus)</div>';
+		tmpHTML += '<div class="retold-remote-help-section-title">Sidebar (F9 to focus)</div>';
 
 		let tmpSidebarShortcuts =
 		[
 			['↑ / ↓', 'Navigate file list'],
 			['Enter', 'Open selected item'],
 			['Home / End', 'Jump to first / last'],
-			['Escape / Tab', 'Return to gallery']
+			['Escape / F9', 'Return to gallery']
 		];
 		for (let i = 0; i < tmpSidebarShortcuts.length; i++)
 		{
@@ -823,6 +833,7 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpGlobalShortcuts =
 		[
 			['F1', 'Toggle this help panel'],
+			['F9', 'Toggle sidebar focus'],
 			['Escape', 'Close help panel']
 		];
 		for (let i = 0; i < tmpGlobalShortcuts.length; i++)
@@ -850,7 +861,7 @@ class GalleryNavigationProvider extends libPictProvider
 	}
 
 	/**
-	 * F2 — Toggle the settings/configuration panel.
+	 * F9 — Toggle the settings/configuration panel.
 	 * Opens the sidebar if collapsed, switches to the Settings tab,
 	 * or toggles back to the Files tab if Settings is already showing.
 	 */

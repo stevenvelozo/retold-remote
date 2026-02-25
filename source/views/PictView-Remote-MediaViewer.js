@@ -347,7 +347,8 @@ class RetoldRemoteMediaViewerView extends libPictView
 	{
 		let tmpHTML = '<div class="retold-remote-video-wrap">';
 
-		tmpHTML += '<video controls autoplay preload="metadata" '
+		let tmpAutoplayVideo = this.pict.AppData.RetoldRemote.AutoplayVideo ? ' autoplay' : '';
+		tmpHTML += '<video controls' + tmpAutoplayVideo + ' preload="metadata" '
 			+ 'id="RetoldRemote-VideoPlayer">'
 			+ '<source src="' + pURL + '">'
 			+ 'Your browser does not support the video tag.'
@@ -392,7 +393,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		let tmpHTML = '<div style="text-align: center; padding: 40px;">'
 			+ '<div style="margin-bottom: 24px;">' + tmpIconHTML + '</div>'
 			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this._escapeHTML(pFileName) + '</div>'
-			+ '<audio controls autoplay preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'
+			+ '<audio controls' + (this.pict.AppData.RetoldRemote.AutoplayAudio ? ' autoplay' : '') + ' preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'
 			+ '<source src="' + pURL + '">'
 			+ 'Your browser does not support the audio tag.'
 			+ '</audio>';

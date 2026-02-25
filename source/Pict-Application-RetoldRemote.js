@@ -90,6 +90,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			ImageFitMode: 'auto',
 			SidebarCollapsed: false,
 			SidebarWidth: 250,
+			AutoplayVideo: false,
+			AutoplayAudio: false,
 
 			// Filter state
 			FilterState:
@@ -476,9 +478,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				let tmpBrowseFragId = (tmpBrowseFragProvider && tmpCurrentPath) ? tmpBrowseFragProvider.getFragmentIdentifier(tmpCurrentPath) : tmpCurrentPath;
 				window.location.hash = tmpBrowseFragId ? '#/browse/' + tmpBrowseFragId : '#/browse/';
 
-				// Fetch folder summary for topbar info
+				// Fetch folder summary for topbar info (skip for archive paths — they are not filesystem directories)
 				let tmpMediaProvider = tmpSelf.pict.providers['RetoldRemote-Provider'];
-				if (tmpMediaProvider)
+				let tmpIsArchivePath = /\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz)(\/|$)/i.test(tmpCurrentPath);
+				if (tmpMediaProvider && !tmpIsArchivePath)
 				{
 					tmpMediaProvider.fetchFolderSummary(tmpCurrentPath,
 						(pError, pSummary) =>
@@ -519,7 +522,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	 */
 	resolveHash()
 	{
-		let tmpHash = (window.location.hash || '').replace(/^#\/?/, '');
+		let tmpHash = decodeURIComponent((window.location.hash || '').replace(/^#\/?/, ''));
 
 		if (!tmpHash)
 		{
@@ -601,7 +604,9 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				SortField: tmpRemote.SortField,
 				SortDirection: tmpRemote.SortDirection,
 				FilterPresets: tmpRemote.FilterPresets,
-				FilterPanelOpen: tmpRemote.FilterPanelOpen
+				FilterPanelOpen: tmpRemote.FilterPanelOpen,
+				AutoplayVideo: tmpRemote.AutoplayVideo,
+				AutoplayAudio: tmpRemote.AutoplayAudio
 			};
 			localStorage.setItem('retold-remote-settings', JSON.stringify(tmpSettings));
 		}
@@ -641,6 +646,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (tmpSettings.SortDirection) tmpRemote.SortDirection = tmpSettings.SortDirection;
 				if (Array.isArray(tmpSettings.FilterPresets)) tmpRemote.FilterPresets = tmpSettings.FilterPresets;
 				if (typeof (tmpSettings.FilterPanelOpen) === 'boolean') tmpRemote.FilterPanelOpen = tmpSettings.FilterPanelOpen;
+				if (typeof (tmpSettings.AutoplayVideo) === 'boolean') tmpRemote.AutoplayVideo = tmpSettings.AutoplayVideo;
+				if (typeof (tmpSettings.AutoplayAudio) === 'boolean') tmpRemote.AutoplayAudio = tmpSettings.AutoplayAudio;
 			}
 		}
 		catch (pError)

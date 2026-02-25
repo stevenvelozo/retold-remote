@@ -280,6 +280,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		this._frameData = null;
 		this._selectedFrameIndex = -1;
 		this._frameCount = 20;
+		this._fullResFrames = false;
 	}
 
 	/**
@@ -331,6 +332,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpHTML += '<option value="60"' + (this._frameCount === 60 ? ' selected' : '') + '>60</option>';
 		tmpHTML += '<option value="100"' + (this._frameCount === 100 ? ' selected' : '') + '>100</option>';
 		tmpHTML += '</select>';
+		tmpHTML += '<label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;">';
+		tmpHTML += '<input type="checkbox" id="RetoldRemote-VEX-FullRes"' + (this._fullResFrames ? ' checked' : '') + ' onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFullResChange(this.checked)">';
+		tmpHTML += 'Full Res Frames</label>';
 		tmpHTML += '<button class="retold-remote-vex-refresh-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].refresh()">Refresh</button>';
 		tmpHTML += '</div>';
 
@@ -375,6 +379,10 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
 
 		let tmpURL = '/api/media/video-frames?path=' + tmpPathParam + '&count=' + this._frameCount;
+		if (this._fullResFrames)
+		{
+			tmpURL += '&width=1920&height=1080';
+		}
 
 		fetch(tmpURL)
 			.then((pResponse) => pResponse.json())
@@ -586,6 +594,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	onFrameCountChange(pValue)
 	{
 		this._frameCount = parseInt(pValue, 10) || 20;
+		this.refresh();
+	}
+
+	/**
+	 * Handle full-res checkbox change.
+	 *
+	 * @param {boolean} pChecked - Whether full res is enabled
+	 */
+	onFullResChange(pChecked)
+	{
+		this._fullResFrames = pChecked;
+		this.refresh();
 	}
 
 	/**

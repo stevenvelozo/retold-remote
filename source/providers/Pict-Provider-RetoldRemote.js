@@ -174,8 +174,17 @@ class RetoldRemoteProvider extends libPictProvider
 	 */
 	getContentURL(pPath)
 	{
-		// Always use the /content/ static route for actual file serving.
-		// Encode each path segment individually to preserve directory separators.
+		// When hashed filenames is enabled, use the /content-hashed/<hash> route
+		// so the real file path is never exposed to the browser.
+		if (this.pict.AppData.RetoldRemote.HashedFilenames)
+		{
+			let tmpHash = this.getHashForPath(pPath);
+			if (tmpHash)
+			{
+				return '/content-hashed/' + tmpHash;
+			}
+		}
+		// Fallback: encode each path segment individually to preserve directory separators.
 		let tmpSegments = pPath.split('/').map((pSeg) => encodeURIComponent(pSeg));
 		return '/content/' + tmpSegments.join('/');
 	}
