@@ -368,6 +368,81 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Extract a single frame at an arbitrary timestamp and save it into
+	 * an existing cache directory.  Returns the frame metadata on success.
+	 *
+	 * @param {string}   pAbsPath   - Absolute path to the video file
+	 * @param {string}   pCacheKey  - Existing cache directory name (from extractFrames)
+	 * @param {number}   pTimestamp - Timestamp in seconds
+	 * @param {object}   pOptions   - { width, height, format }
+	 * @param {Function} fCallback  - Callback(pError, pFrameInfo)
+	 */
+	extractSingleFrame(pAbsPath, pCacheKey, pTimestamp, pOptions, fCallback)
+	{
+		let tmpWidth = parseInt(pOptions.width, 10) || this.options.DefaultFrameWidth;
+		let tmpHeight = parseInt(pOptions.height, 10) || this.options.DefaultFrameHeight;
+		let tmpFormat = pOptions.format || this.options.DefaultFrameFormat;
+
+		// Clamp
+		tmpWidth = Math.min(Math.max(tmpWidth, 64), 1920);
+		tmpHeight = Math.min(Math.max(tmpHeight, 64), 1080);
+		if (!{ 'jpg': true, 'png': true, 'webp': true }[tmpFormat])
+		{
+			tmpFormat = 'jpg';
+		}
+
+		// Sanitize cache key
+		if (!pCacheKey || pCacheKey.includes('..') || pCacheKey.includes('/') || pCacheKey.includes('\\'))
+		{
+			return fCallback(new Error('Invalid cache key.'));
+		}
+
+		let tmpCacheDir = libPath.join(this.cachePath, pCacheKey);
+		if (!libFs.existsSync(tmpCacheDir))
+		{
+			return fCallback(new Error('Cache directory not found. Extract frames first.'));
+		}
+
+		// Generate a unique filename based on timestamp to avoid collisions
+		let tmpTimestampStr = pTimestamp.toFixed(3).replace('.', '_');
+		let tmpFilename = `frame_custom_${tmpTimestampStr}.${tmpFormat}`;
+		let tmpOutputPath = libPath.join(tmpCacheDir, tmpFilename);
+
+		// If already extracted, return immediately
+		if (libFs.existsSync(tmpOutputPath))
+		{
+			let tmpStat = libFs.statSync(tmpOutputPath);
+			return fCallback(null,
+			{
+				Success: true,
+				Timestamp: pTimestamp,
+				TimestampFormatted: this._formatTimestamp(pTimestamp),
+				Filename: tmpFilename,
+				Size: tmpStat.size
+			});
+		}
+
+		this.fable.log.info(`Extracting single frame at ${pTimestamp.toFixed(2)}s from ${pAbsPath}`);
+
+		let tmpSuccess = this._extractFrame(pAbsPath, pTimestamp, tmpOutputPath, tmpWidth, tmpHeight, tmpFormat);
+
+		if (!tmpSuccess)
+		{
+			return fCallback(new Error('Failed to extract frame at ' + pTimestamp.toFixed(2) + 's'));
+		}
+
+		let tmpStat = libFs.statSync(tmpOutputPath);
+		return fCallback(null,
+		{
+			Success: true,
+			Timestamp: pTimestamp,
+			TimestampFormatted: this._formatTimestamp(pTimestamp),
+			Filename: tmpFilename,
+			Size: tmpStat.size
+		});
+	}
+
+	/**
 	 * Get the absolute path to a cached frame image.
 	 *
 	 * @param {string} pCacheKey - The cache key (directory name)

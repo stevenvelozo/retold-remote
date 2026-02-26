@@ -38,6 +38,7 @@ const libRetoldRemotePathRegistry = require('../server/RetoldRemote-PathRegistry
 const libRetoldRemoteArchiveService = require('../server/RetoldRemote-ArchiveService.js');
 const libRetoldRemoteVideoFrameService = require('../server/RetoldRemote-VideoFrameService.js');
 const libRetoldRemoteAudioWaveformService = require('../server/RetoldRemote-AudioWaveformService.js');
+const libRetoldRemoteEbookService = require('../server/RetoldRemote-EbookService.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -102,12 +103,15 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 		|| libPath.join(tmpCacheRoot, 'video-frames');
 	let tmpCacheAudioWaveforms = pOptions.CacheAudioWaveforms
 		|| libPath.join(tmpCacheRoot, 'audio-waveforms');
+	let tmpCacheEbooks = pOptions.CacheEbooks
+		|| libPath.join(tmpCacheRoot, 'ebook-conversions');
 
 	tmpFable.log.info(`Cache root: ${tmpCacheRoot}`);
 	tmpFable.log.info(`  Thumbnails:       ${tmpCacheThumbnails}`);
 	tmpFable.log.info(`  Archives:         ${tmpCacheArchives}`);
 	tmpFable.log.info(`  Video frames:     ${tmpCacheVideoFrames}`);
 	tmpFable.log.info(`  Audio waveforms:  ${tmpCacheAudioWaveforms}`);
+	tmpFable.log.info(`  Ebook conversions: ${tmpCacheEbooks}`);
 
 	// Set up the archive service
 	let tmpArchiveService = new libRetoldRemoteArchiveService(tmpFable,
@@ -128,6 +132,13 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	{
 		ContentPath: tmpContentPath,
 		CachePath: tmpCacheAudioWaveforms
+	});
+
+	// Set up the ebook conversion service
+	let tmpEbookService = new libRetoldRemoteEbookService(tmpFable,
+	{
+		ContentPath: tmpContentPath,
+		CachePath: tmpCacheEbooks
 	});
 
 	// Set up the media service
@@ -416,6 +427,75 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					}
 				});
 
+			// --- GET /api/media/video-frame-at ---
+			// Extract a single frame at an arbitrary timestamp (for timeline click).
+			tmpServiceServer.get('/api/media/video-frame-at',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+						let tmpCacheKey = tmpQuery.cacheKey;
+						let tmpTimestamp = parseFloat(tmpQuery.timestamp);
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+						if (!tmpCacheKey || typeof (tmpCacheKey) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing cacheKey parameter.' });
+							return fNext();
+						}
+						if (isNaN(tmpTimestamp) || tmpTimestamp < 0)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid timestamp.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						tmpVideoFrameService.extractSingleFrame(tmpAbsPath, tmpCacheKey, tmpTimestamp,
+						{
+							width: tmpQuery.width,
+							height: tmpQuery.height,
+							format: tmpQuery.format
+						},
+						(pError, pResult) =>
+						{
+							if (pError)
+							{
+								pResponse.send(400, { Success: false, Error: pError.message });
+								return fNext();
+							}
+
+							pResponse.send(pResult);
+							return fNext();
+						});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
 			// --- GET /api/media/audio-waveform ---
 			// Extract waveform peak data from an audio file for the Audio Explorer.
 			tmpServiceServer.get('/api/media/audio-waveform',
@@ -547,6 +627,101 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								pResponse.send(500, { Success: false, Error: pStreamError.message });
 								return fNext();
 							}
+						});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/ebook-convert ---
+			// Convert an ebook (MOBI, AZW, etc.) to EPUB for in-browser reading.
+			tmpServiceServer.get('/api/media/ebook-convert',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						tmpEbookService.convertToEpub(tmpAbsPath, tmpRelPath,
+						(pError, pResult) =>
+						{
+							if (pError)
+							{
+								pResponse.send(400, { Success: false, Error: pError.message });
+								return fNext();
+							}
+
+							pResponse.send(pResult);
+							return fNext();
+						});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/ebook/:cacheKey/:filename ---
+			// Serve a cached converted ebook file.
+			tmpServiceServer.get('/api/media/ebook/:cacheKey/:filename',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpCacheKey = pRequest.params.cacheKey;
+						let tmpFilename = pRequest.params.filename;
+
+						let tmpEbookPath = tmpEbookService.getConvertedPath(tmpCacheKey, tmpFilename);
+
+						if (!tmpEbookPath)
+						{
+							pResponse.send(404, { Success: false, Error: 'Ebook not found.' });
+							return fNext();
+						}
+
+						let tmpStat = libFs.statSync(tmpEbookPath);
+
+						pResponse.writeHead(200,
+						{
+							'Content-Type': 'application/epub+zip',
+							'Content-Length': tmpStat.size,
+							'Cache-Control': 'public, max-age=86400'
+						});
+
+						let tmpStream = libFs.createReadStream(tmpEbookPath);
+						tmpStream.pipe(pResponse);
+						tmpStream.on('end', () => { return fNext(false); });
+						tmpStream.on('error', () =>
+						{
+							pResponse.send(500, { Error: 'Failed to serve ebook.' });
+							return fNext(false);
 						});
 					}
 					catch (pError)

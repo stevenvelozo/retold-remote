@@ -96,6 +96,40 @@ class GalleryNavigationProvider extends libPictProvider
 				return;
 			}
 
+			// / toggles filter bar from any context (including when search is focused)
+			if (pEvent.key === '/')
+			{
+				// If the search input is currently focused, / should hide the bar
+				let tmpSearchInput = document.getElementById('RetoldRemote-Gallery-Search');
+				if (pEvent.target === tmpSearchInput)
+				{
+					pEvent.preventDefault();
+					tmpSelf._hideFilterBar();
+					tmpSearchInput.blur();
+					return;
+				}
+
+				// If another input is focused, let it type normally
+				if (pEvent.target.tagName === 'INPUT' || pEvent.target.tagName === 'TEXTAREA' || pEvent.target.isContentEditable)
+				{
+					return;
+				}
+
+				// Otherwise toggle the filter bar
+				pEvent.preventDefault();
+				tmpSelf._toggleFilterBar();
+				return;
+			}
+
+			// Escape from the search input hides the filter bar
+			if (pEvent.key === 'Escape' && pEvent.target.id === 'RetoldRemote-Gallery-Search')
+			{
+				pEvent.preventDefault();
+				pEvent.target.blur();
+				tmpSelf._hideFilterBar();
+				return;
+			}
+
 			// Don't capture keys when an input is focused
 			if (pEvent.target.tagName === 'INPUT' || pEvent.target.tagName === 'TEXTAREA' || pEvent.target.isContentEditable)
 			{
@@ -185,9 +219,9 @@ class GalleryNavigationProvider extends libPictProvider
 				this._toggleViewMode();
 				break;
 
-			case '/':
+			case 'x':
 				pEvent.preventDefault();
-				this._focusSearch();
+				this._clearAllFilters();
 				break;
 
 			case 'Home':
@@ -203,6 +237,8 @@ class GalleryNavigationProvider extends libPictProvider
 			case 'f':
 				pEvent.preventDefault();
 				{
+					// Ensure the filter bar is visible first
+					this._showFilterBar();
 					let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
 					if (tmpGalleryView)
 					{
@@ -214,11 +250,16 @@ class GalleryNavigationProvider extends libPictProvider
 			case 's':
 				pEvent.preventDefault();
 				{
-					let tmpSortSelect = document.getElementById('RetoldRemote-Gallery-Sort');
-					if (tmpSortSelect)
+					// Ensure the filter bar is visible first
+					this._showFilterBar();
+					setTimeout(() =>
 					{
-						tmpSortSelect.focus();
-					}
+						let tmpSortSelect = document.getElementById('RetoldRemote-Gallery-Sort');
+						if (tmpSortSelect)
+						{
+							tmpSortSelect.focus();
+						}
+					}, 50);
 				}
 				break;
 
@@ -707,6 +748,95 @@ class GalleryNavigationProvider extends libPictProvider
 	}
 
 	// ──────────────────────────────────────────────
+	// Filter bar toggle
+	// ──────────────────────────────────────────────
+
+	/**
+	 * Toggle the filter bar visibility.
+	 * If hidden, show it and focus the search input.
+	 * If visible, hide it.
+	 */
+	_toggleFilterBar()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		if (tmpRemote.FilterBarVisible)
+		{
+			this._hideFilterBar();
+		}
+		else
+		{
+			this._showFilterBar();
+		}
+	}
+
+	/**
+	 * Show the filter bar and focus the search input.
+	 */
+	_showFilterBar()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		if (tmpRemote.FilterBarVisible)
+		{
+			// Already visible — just focus search
+			let tmpSearch = document.getElementById('RetoldRemote-Gallery-Search');
+			if (tmpSearch)
+			{
+				tmpSearch.focus();
+			}
+			return;
+		}
+
+		tmpRemote.FilterBarVisible = true;
+
+		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
+		if (tmpGalleryView)
+		{
+			tmpGalleryView.renderGallery();
+		}
+
+		// Focus the search input after render
+		setTimeout(() =>
+		{
+			let tmpSearch = document.getElementById('RetoldRemote-Gallery-Search');
+			if (tmpSearch)
+			{
+				tmpSearch.focus();
+			}
+		}, 50);
+	}
+
+	/**
+	 * Hide the filter bar.
+	 */
+	_hideFilterBar()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.FilterBarVisible = false;
+
+		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
+		if (tmpGalleryView)
+		{
+			tmpGalleryView.renderGallery();
+		}
+	}
+
+	/**
+	 * Clear all active filters and update the gallery.
+	 */
+	_clearAllFilters()
+	{
+		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
+		if (tmpGalleryView)
+		{
+			tmpGalleryView.clearAllFilters();
+		}
+
+		this._showToast('Filters cleared');
+	}
+
+	// ──────────────────────────────────────────────
 	// Help panel
 	// ──────────────────────────────────────────────
 
@@ -764,9 +894,10 @@ class GalleryNavigationProvider extends libPictProvider
 			['F9', 'Toggle sidebar focus'],
 			['Home / End', 'Jump to first / last'],
 			['g', 'Toggle gallery / list view'],
-			['/', 'Focus search bar'],
-			['f', 'Toggle filter panel'],
+			['/', 'Toggle filter bar &amp; search'],
+			['f', 'Toggle advanced filter panel'],
 			['s', 'Focus sort dropdown'],
+			['x', 'Clear all filters'],
 			['c', 'Settings / config panel'],
 			['d', 'Distraction-free mode']
 		];

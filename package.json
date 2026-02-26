@@ -25,6 +25,7 @@
 	"author": "steven velozo <steven@velozo.com>",
 	"license": "MIT",
 	"dependencies": {
+		"epubjs": "^0.3.93",
 		"fable": "^3.1.58",
 		"fable-serviceproviderbase": "^3.0.16",
 		"orator": "^6.0.2",
@@ -63,6 +64,10 @@
 		},
 		{
 			"from": "./node_modules/pict/dist/pict.min.js.map",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/epubjs/dist/epub.min.js",
 			"to": "./web-application/js/"
 		}
 	]

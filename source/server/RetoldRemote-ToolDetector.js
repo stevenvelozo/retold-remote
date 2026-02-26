@@ -34,7 +34,8 @@ class ToolDetector
 			ffprobe: this._detectCommand('ffprobe -version'),
 			vlc: this._detectVLC(),
 			p7zip: this._detectCommand('7z --help'),
-			audiowaveform: this._detectCommand('audiowaveform --version')
+			audiowaveform: this._detectCommand('audiowaveform --version'),
+			ebook_convert: this._detectCommand('ebook-convert --version')
 		};
 
 		return this._capabilities;

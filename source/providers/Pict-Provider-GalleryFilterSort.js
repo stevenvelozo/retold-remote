@@ -84,6 +84,44 @@ class GalleryFilterSortProvider extends libPictProvider
 			return pItems;
 		}
 
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpCaseSensitive = tmpRemote.SearchCaseSensitive || false;
+		let tmpRegex = tmpRemote.SearchRegex || false;
+
+		if (tmpRegex)
+		{
+			// Regex mode
+			let tmpRegexObj;
+			try
+			{
+				tmpRegexObj = new RegExp(pQuery, tmpCaseSensitive ? '' : 'i');
+			}
+			catch (pError)
+			{
+				// Invalid regex — store error for UI feedback and return all items
+				tmpRemote._searchRegexError = pError.message;
+				return pItems;
+			}
+
+			tmpRemote._searchRegexError = null;
+			return pItems.filter((pItem) =>
+			{
+				return tmpRegexObj.test(pItem.Name);
+			});
+		}
+
+		// Plain text mode
+		tmpRemote._searchRegexError = null;
+
+		if (tmpCaseSensitive)
+		{
+			return pItems.filter((pItem) =>
+			{
+				return pItem.Name.includes(pQuery);
+			});
+		}
+
+		// Default: case-insensitive substring match
 		let tmpQuery = pQuery.toLowerCase();
 		return pItems.filter((pItem) =>
 		{
@@ -419,7 +457,15 @@ class GalleryFilterSortProvider extends libPictProvider
 		// Search query
 		if (tmpRemote.SearchQuery)
 		{
-			tmpChips.push({ key: 'search', label: 'Search: "' + tmpRemote.SearchQuery + '"' });
+			let tmpSearchLabel = 'Search: "' + tmpRemote.SearchQuery + '"';
+			let tmpSearchFlags = [];
+			if (tmpRemote.SearchCaseSensitive) tmpSearchFlags.push('Aa');
+			if (tmpRemote.SearchRegex) tmpSearchFlags.push('.*');
+			if (tmpSearchFlags.length > 0)
+			{
+				tmpSearchLabel += ' [' + tmpSearchFlags.join(', ') + ']';
+			}
+			tmpChips.push({ key: 'search', label: tmpSearchLabel });
 		}
 
 		return tmpChips;
@@ -489,6 +535,7 @@ class GalleryFilterSortProvider extends libPictProvider
 		else if (pKey === 'search')
 		{
 			tmpRemote.SearchQuery = '';
+			tmpRemote._searchRegexError = null;
 		}
 	}
 
@@ -504,6 +551,9 @@ class GalleryFilterSortProvider extends libPictProvider
 		}
 
 		tmpRemote.SearchQuery = '';
+		tmpRemote.SearchCaseSensitive = false;
+		tmpRemote.SearchRegex = false;
+		tmpRemote._searchRegexError = null;
 		tmpRemote.GalleryFilter = 'all';
 		tmpRemote.FilterState =
 		{

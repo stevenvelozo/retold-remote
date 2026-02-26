@@ -113,6 +113,44 @@ const _ViewConfiguration =
 		{
 			color: var(--retold-text-placeholder);
 		}
+		.retold-remote-gallery-search-options
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-shrink: 0;
+		}
+		.retold-remote-gallery-search-option
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			font-size: 0.68rem;
+			color: var(--retold-text-dim);
+			cursor: pointer;
+			white-space: nowrap;
+			user-select: none;
+		}
+		.retold-remote-gallery-search-option:hover
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-gallery-search-option input[type="checkbox"]
+		{
+			margin: 0;
+			cursor: pointer;
+			accent-color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search-option.active
+		{
+			color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search-regex-error
+		{
+			font-size: 0.68rem;
+			color: #e06c75;
+			white-space: nowrap;
+		}
 		/* Filter chips */
 		.retold-remote-filter-chips
 		{
@@ -635,6 +673,12 @@ class RetoldRemoteGalleryView extends libPictView
 		let tmpThumbnailSize = tmpRemote.ThumbnailSize || 'medium';
 		let tmpCursorIndex = tmpRemote.GalleryCursorIndex || 0;
 
+		// Capture search input focus state before re-render so we can restore it
+		let tmpSearchEl = document.getElementById('RetoldRemote-Gallery-Search');
+		let tmpSearchHadFocus = tmpSearchEl && (document.activeElement === tmpSearchEl);
+		let tmpSearchSelStart = tmpSearchHadFocus ? tmpSearchEl.selectionStart : 0;
+		let tmpSearchSelEnd = tmpSearchHadFocus ? tmpSearchEl.selectionEnd : 0;
+
 		// Build header with type filters, sort, filter toggle, and search
 		let tmpHTML = this._buildHeaderHTML(tmpRemote.FilterState ? tmpRemote.FilterState.MediaType : 'all');
 
@@ -652,6 +696,17 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '<div>Empty folder</div>';
 			tmpHTML += '</div>';
 			tmpContainer.innerHTML = tmpHTML;
+
+			// Restore search focus even on empty results
+			if (tmpSearchHadFocus)
+			{
+				let tmpNewSearch = document.getElementById('RetoldRemote-Gallery-Search');
+				if (tmpNewSearch)
+				{
+					tmpNewSearch.focus();
+					tmpNewSearch.setSelectionRange(tmpSearchSelStart, tmpSearchSelEnd);
+				}
+			}
 			return;
 		}
 
@@ -667,6 +722,17 @@ class RetoldRemoteGalleryView extends libPictView
 
 		tmpContainer.innerHTML = tmpHTML;
 
+		// Restore search input focus and cursor position after re-render
+		if (tmpSearchHadFocus)
+		{
+			let tmpNewSearch = document.getElementById('RetoldRemote-Gallery-Search');
+			if (tmpNewSearch)
+			{
+				tmpNewSearch.focus();
+				tmpNewSearch.setSelectionRange(tmpSearchSelStart, tmpSearchSelEnd);
+			}
+		}
+
 		// Set up lazy loading for thumbnail images
 		this._setupLazyLoading();
 
@@ -676,6 +742,13 @@ class RetoldRemoteGalleryView extends libPictView
 		{
 			tmpNavProvider.recalculateColumns();
 		}
+
+		// Update the top bar filter icon state
+		let tmpTopBarView = this.pict.views['ContentEditor-TopBar'];
+		if (tmpTopBarView && tmpTopBarView.updateFilterIcon)
+		{
+			tmpTopBarView.updateFilterIcon();
+		}
 	}
 
 	// ──────────────────────────────────────────────
@@ -684,10 +757,18 @@ class RetoldRemoteGalleryView extends libPictView
 
 	/**
 	 * Build the gallery header with type filters, sort dropdown, filter toggle, and search.
+	 * The filter bar is hidden by default; toggled via / key or the top bar filter icon.
 	 */
 	_buildHeaderHTML(pActiveFilter)
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// If the filter bar is not visible, don't render the header
+		if (!tmpRemote.FilterBarVisible)
+		{
+			return '';
+		}
+
 		let tmpFilters = [
 			{ key: 'all', label: 'All' },
 			{ key: 'images', label: 'Images' },
@@ -754,6 +835,24 @@ class RetoldRemoteGalleryView extends libPictView
 			+ 'placeholder="Search files... (/)" '
 			+ 'value="' + this._escapeHTML(tmpSearchValue) + '" '
 			+ 'oninput="pict.views[\'RetoldRemote-Gallery\'].onSearchInput(this.value)">';
+
+		// Case sensitivity and regex checkboxes
+		let tmpCaseSensitive = tmpRemote.SearchCaseSensitive || false;
+		let tmpRegex = tmpRemote.SearchRegex || false;
+		tmpHTML += '<div class="retold-remote-gallery-search-options">';
+		tmpHTML += '<label class="retold-remote-gallery-search-option' + (tmpCaseSensitive ? ' active' : '') + '">'
+			+ '<input type="checkbox" ' + (tmpCaseSensitive ? 'checked ' : '')
+			+ 'onchange="pict.views[\'RetoldRemote-Gallery\'].onSearchCaseSensitiveChange(this.checked)">'
+			+ 'Aa</label>';
+		tmpHTML += '<label class="retold-remote-gallery-search-option' + (tmpRegex ? ' active' : '') + '">'
+			+ '<input type="checkbox" ' + (tmpRegex ? 'checked ' : '')
+			+ 'onchange="pict.views[\'RetoldRemote-Gallery\'].onSearchRegexChange(this.checked)">'
+			+ '.*</label>';
+		if (tmpRemote._searchRegexError)
+		{
+			tmpHTML += '<span class="retold-remote-gallery-search-regex-error" title="' + this._escapeHTML(tmpRemote._searchRegexError) + '">invalid regex</span>';
+		}
+		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
 		return tmpHTML;
@@ -1178,7 +1277,37 @@ class RetoldRemoteGalleryView extends libPictView
 	onSearchInput(pValue)
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
-		tmpRemote.SearchQuery = (pValue || '').toLowerCase();
+		tmpRemote.SearchQuery = pValue || '';
+
+		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
+		if (tmpFilterSort)
+		{
+			tmpFilterSort.applyFilterSort();
+		}
+	}
+
+	/**
+	 * Handle case-sensitive checkbox change.
+	 */
+	onSearchCaseSensitiveChange(pChecked)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.SearchCaseSensitive = pChecked;
+
+		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
+		if (tmpFilterSort)
+		{
+			tmpFilterSort.applyFilterSort();
+		}
+	}
+
+	/**
+	 * Handle regex checkbox change.
+	 */
+	onSearchRegexChange(pChecked)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.SearchRegex = pChecked;
 
 		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
 		if (tmpFilterSort)

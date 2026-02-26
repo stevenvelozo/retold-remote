@@ -80,6 +80,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			GalleryCursorIndex: 0,          // Currently highlighted item
 			GalleryFilter: 'all',           // 'all', 'images', 'video', 'audio', 'documents'
 			SearchQuery: '',
+			SearchCaseSensitive: false,
+			SearchRegex: false,
 			ServerCapabilities: {},         // From /api/media/capabilities
 			FolderSummary: null,            // From /api/media/folder-summary
 			CurrentViewerFile: '',          // File being viewed
@@ -111,6 +113,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			SortDirection: 'asc',           // 'asc', 'desc'
 
 			// Filter panel UI
+			FilterBarVisible: false,
 			FilterPanelOpen: false,
 
 			// Saved filter presets

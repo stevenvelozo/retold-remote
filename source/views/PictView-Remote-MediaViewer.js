@@ -232,6 +232,128 @@ const _ViewConfiguration =
 			background: var(--retold-accent);
 			color: var(--retold-bg-primary);
 		}
+		/* Ebook reader */
+		.retold-remote-ebook-wrap
+		{
+			display: flex;
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.retold-remote-ebook-toc
+		{
+			width: 240px;
+			flex-shrink: 0;
+			background: var(--retold-bg-secondary);
+			border-right: 1px solid var(--retold-border);
+			overflow-y: auto;
+			font-size: 0.78rem;
+			padding: 8px 0;
+		}
+		.retold-remote-ebook-toc.collapsed
+		{
+			display: none;
+		}
+		.retold-remote-ebook-toc-item
+		{
+			display: block;
+			padding: 6px 16px;
+			color: var(--retold-text-secondary);
+			text-decoration: none;
+			cursor: pointer;
+			transition: background 0.1s, color 0.1s;
+			border: none;
+			background: none;
+			width: 100%;
+			text-align: left;
+			font-family: inherit;
+			font-size: inherit;
+		}
+		.retold-remote-ebook-toc-item:hover
+		{
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-ebook-toc-item.indent-1
+		{
+			padding-left: 32px;
+		}
+		.retold-remote-ebook-toc-item.indent-2
+		{
+			padding-left: 48px;
+		}
+		.retold-remote-ebook-reader
+		{
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			min-width: 0;
+			position: relative;
+		}
+		.retold-remote-ebook-content
+		{
+			flex: 1;
+			position: relative;
+			overflow: hidden;
+		}
+		.retold-remote-ebook-content iframe
+		{
+			border: none;
+		}
+		.retold-remote-ebook-controls
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-ebook-page-btn
+		{
+			padding: 6px 20px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.82rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-ebook-page-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-ebook-toc-btn
+		{
+			padding: 6px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			font-family: inherit;
+		}
+		.retold-remote-ebook-toc-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-ebook-loading
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.85rem;
+		}
 	`
 };
 
@@ -324,6 +446,16 @@ class RetoldRemoteMediaViewerView extends libPictView
 		if (pMediaType === 'text')
 		{
 			this._loadCodeViewer(tmpContentURL, pFilePath);
+		}
+
+		// Load ebook viewer for epub/mobi
+		if (pMediaType === 'document')
+		{
+			let tmpExt = pFilePath.replace(/^.*\./, '').toLowerCase();
+			if (tmpExt === 'epub' || tmpExt === 'mobi')
+			{
+				this._loadEbookViewer(tmpContentURL, pFilePath);
+			}
 		}
 
 		// Update topbar
@@ -424,6 +556,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 			return '<iframe src="' + pURL + '" '
 				+ 'style="width: 100%; height: 100%; border: none;">'
 				+ '</iframe>';
+		}
+
+		if (tmpExtension === 'epub' || tmpExtension === 'mobi')
+		{
+			return this._buildEbookHTML(pURL, pFileName, pFilePath);
 		}
 
 		// For other document types, show a download link
@@ -571,6 +708,278 @@ class RetoldRemoteMediaViewerView extends libPictView
 					tmpContainer.innerHTML = '<div class="retold-remote-code-viewer-loading">Failed to load file: ' + pError.message + '</div>';
 				}
 			});
+	}
+
+	/**
+	 * Build the HTML shell for the ebook reader.
+	 */
+	_buildEbookHTML(pURL, pFileName, pFilePath)
+	{
+		return '<div class="retold-remote-ebook-wrap">'
+			+ '<div class="retold-remote-ebook-toc collapsed" id="RetoldRemote-EbookTOC"></div>'
+			+ '<div class="retold-remote-ebook-reader">'
+			+ '<div class="retold-remote-ebook-content" id="RetoldRemote-EbookContent">'
+			+ '<div class="retold-remote-ebook-loading">Loading ebook...</div>'
+			+ '</div>'
+			+ '<div class="retold-remote-ebook-controls">'
+			+ '<button class="retold-remote-ebook-toc-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleEbookTOC()">&#9776; TOC</button>'
+			+ '<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookPrevPage()">&larr; Prev</button>'
+			+ '<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookNextPage()">Next &rarr;</button>'
+			+ '</div>'
+			+ '</div>'
+			+ '</div>';
+	}
+
+	/**
+	 * Load and render an ebook using epub.js.
+	 * For EPUB files, fetch directly. For MOBI files, convert server-side first.
+	 *
+	 * @param {string} pContentURL - Content URL for the file
+	 * @param {string} pFilePath   - Relative file path
+	 */
+	_loadEbookViewer(pContentURL, pFilePath)
+	{
+		let tmpSelf = this;
+		let tmpExtension = pFilePath.replace(/^.*\./, '').toLowerCase();
+
+		if (tmpExtension === 'mobi')
+		{
+			// Convert MOBI to EPUB server-side first
+			let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
+			if (!tmpCapabilities.ebook_convert)
+			{
+				let tmpContent = document.getElementById('RetoldRemote-EbookContent');
+				if (tmpContent)
+				{
+					tmpContent.innerHTML = '<div class="retold-remote-ebook-loading">'
+						+ 'MOBI viewing requires Calibre (ebook-convert) on the server.<br>'
+						+ '<a href="' + pContentURL + '" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'
+						+ '</div>';
+				}
+				return;
+			}
+
+			let tmpContent = document.getElementById('RetoldRemote-EbookContent');
+			if (tmpContent)
+			{
+				tmpContent.innerHTML = '<div class="retold-remote-ebook-loading">Converting MOBI to EPUB...</div>';
+			}
+
+			let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+			let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
+
+			fetch('/api/media/ebook-convert?path=' + tmpPathParam)
+				.then((pResponse) => pResponse.json())
+				.then((pData) =>
+				{
+					if (!pData || !pData.Success)
+					{
+						throw new Error(pData ? pData.Error : 'Conversion failed.');
+					}
+
+					// Fetch the converted EPUB and render
+					let tmpEpubURL = '/api/media/ebook/' + pData.CacheKey + '/' + pData.OutputFilename;
+					tmpSelf._renderEpub(tmpEpubURL);
+				})
+				.catch((pError) =>
+				{
+					let tmpEl = document.getElementById('RetoldRemote-EbookContent');
+					if (tmpEl)
+					{
+						tmpEl.innerHTML = '<div class="retold-remote-ebook-loading">Failed to convert: '
+							+ tmpSelf._escapeHTML(pError.message)
+							+ '<br><a href="' + pContentURL + '" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'
+							+ '</div>';
+					}
+				});
+		}
+		else
+		{
+			// EPUB — render directly
+			this._renderEpub(pContentURL);
+		}
+	}
+
+	/**
+	 * Initialize epub.js and render an EPUB into the viewer container.
+	 *
+	 * @param {string} pEpubURL - URL to fetch the EPUB from
+	 */
+	_renderEpub(pEpubURL)
+	{
+		let tmpSelf = this;
+
+		// Check that epub.js is available
+		if (typeof (window) === 'undefined' || typeof (window.ePub) !== 'function')
+		{
+			let tmpEl = document.getElementById('RetoldRemote-EbookContent');
+			if (tmpEl)
+			{
+				tmpEl.innerHTML = '<div class="retold-remote-ebook-loading">epub.js library not loaded.</div>';
+			}
+			return;
+		}
+
+		// Destroy any previous book instance
+		if (this._activeBook)
+		{
+			try { this._activeBook.destroy(); } catch (e) { /* ignore */ }
+			this._activeBook = null;
+			this._activeRendition = null;
+		}
+
+		let tmpContentEl = document.getElementById('RetoldRemote-EbookContent');
+		if (!tmpContentEl)
+		{
+			return;
+		}
+
+		// Clear loading message
+		tmpContentEl.innerHTML = '';
+
+		// Fetch the EPUB as an ArrayBuffer and open with epub.js
+		fetch(pEpubURL)
+			.then((pResponse) =>
+			{
+				if (!pResponse.ok)
+				{
+					throw new Error('HTTP ' + pResponse.status);
+				}
+				return pResponse.arrayBuffer();
+			})
+			.then((pBuffer) =>
+			{
+				let tmpBook = window.ePub(pBuffer);
+				tmpSelf._activeBook = tmpBook;
+
+				let tmpRendition = tmpBook.renderTo(tmpContentEl,
+				{
+					width: '100%',
+					height: '100%',
+					spread: 'none'
+				});
+
+				tmpSelf._activeRendition = tmpRendition;
+
+				tmpRendition.display();
+
+				// Apply theme for dark backgrounds
+				tmpRendition.themes.default(
+				{
+					'body':
+					{
+						'color': 'var(--retold-text-primary, #d4d4d4)',
+						'background': 'var(--retold-bg-primary, #1e1e1e)',
+						'font-family': 'Georgia, "Times New Roman", serif',
+						'line-height': '1.6',
+						'padding': '20px 40px'
+					},
+					'a':
+					{
+						'color': 'var(--retold-accent, #569cd6)'
+					}
+				});
+
+				// Load table of contents
+				tmpBook.loaded.navigation.then((pNav) =>
+				{
+					tmpSelf._renderEbookTOC(pNav.toc);
+				});
+			})
+			.catch((pError) =>
+			{
+				if (tmpContentEl)
+				{
+					tmpContentEl.innerHTML = '<div class="retold-remote-ebook-loading">Failed to load ebook: '
+						+ tmpSelf._escapeHTML(pError.message) + '</div>';
+				}
+			});
+	}
+
+	/**
+	 * Render the table of contents for the ebook.
+	 *
+	 * @param {Array} pToc - epub.js navigation TOC array
+	 */
+	_renderEbookTOC(pToc)
+	{
+		let tmpTocEl = document.getElementById('RetoldRemote-EbookTOC');
+		if (!tmpTocEl || !pToc)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+		let tmpHTML = '';
+
+		let tmpBuildItems = function (pItems, pDepth)
+		{
+			for (let i = 0; i < pItems.length; i++)
+			{
+				let tmpItem = pItems[i];
+				let tmpIndentClass = pDepth > 0 ? ' indent-' + Math.min(pDepth, 2) : '';
+				tmpHTML += '<button class="retold-remote-ebook-toc-item' + tmpIndentClass + '" '
+					+ 'data-href="' + tmpSelf._escapeHTML(tmpItem.href) + '" '
+					+ 'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'
+					+ tmpSelf._escapeHTML(tmpItem.label.trim())
+					+ '</button>';
+
+				if (tmpItem.subitems && tmpItem.subitems.length > 0)
+				{
+					tmpBuildItems(tmpItem.subitems, pDepth + 1);
+				}
+			}
+		};
+
+		tmpBuildItems(pToc, 0);
+		tmpTocEl.innerHTML = tmpHTML;
+	}
+
+	/**
+	 * Navigate to a chapter in the ebook by href.
+	 *
+	 * @param {string} pHref - Chapter href from the TOC
+	 */
+	ebookGoToChapter(pHref)
+	{
+		if (this._activeRendition && pHref)
+		{
+			this._activeRendition.display(pHref);
+		}
+	}
+
+	/**
+	 * Go to the previous page in the ebook.
+	 */
+	ebookPrevPage()
+	{
+		if (this._activeRendition)
+		{
+			this._activeRendition.prev();
+		}
+	}
+
+	/**
+	 * Go to the next page in the ebook.
+	 */
+	ebookNextPage()
+	{
+		if (this._activeRendition)
+		{
+			this._activeRendition.next();
+		}
+	}
+
+	/**
+	 * Toggle the table of contents sidebar.
+	 */
+	toggleEbookTOC()
+	{
+		let tmpTocEl = document.getElementById('RetoldRemote-EbookTOC');
+		if (tmpTocEl)
+		{
+			tmpTocEl.classList.toggle('collapsed');
+		}
 	}
 
 	_buildFallbackHTML(pURL, pFileName)

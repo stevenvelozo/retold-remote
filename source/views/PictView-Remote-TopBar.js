@@ -81,6 +81,53 @@ const _ViewConfiguration =
 			color: var(--retold-text-primary);
 			border-color: var(--retold-accent);
 		}
+		.retold-remote-topbar-filter-btn
+		{
+			position: relative;
+			padding: 4px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.82rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+			font-family: inherit;
+			line-height: 1;
+		}
+		.retold-remote-topbar-filter-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-topbar-filter-btn.filter-active
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
+		}
+		.retold-remote-topbar-filter-btn.filter-bar-open
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-text-muted);
+			background: rgba(128, 128, 128, 0.06);
+		}
+		.retold-remote-topbar-filter-badge
+		{
+			position: absolute;
+			top: -4px;
+			right: -4px;
+			min-width: 14px;
+			height: 14px;
+			line-height: 14px;
+			padding: 0 3px;
+			border-radius: 7px;
+			background: var(--retold-accent);
+			color: var(--retold-bg-tertiary);
+			font-size: 0.55rem;
+			font-weight: 700;
+			text-align: center;
+		}
 	`,
 
 	Templates:
@@ -93,6 +140,7 @@ const _ViewConfiguration =
 					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
+						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
 						<button class="retold-remote-topbar-btn" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar">&#9776;</button>
 					</div>
 				</div>
@@ -155,6 +203,79 @@ class RetoldRemoteTopBarView extends libPictView
 		}
 
 		tmpLocationEl.innerHTML = tmpHTML;
+	}
+
+	/**
+	 * Toggle the filter bar visibility.
+	 * If hidden, show it and focus the search box.
+	 * If visible, hide it.
+	 */
+	toggleFilterBar()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.FilterBarVisible = !tmpRemote.FilterBarVisible;
+
+		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
+		if (tmpGalleryView)
+		{
+			tmpGalleryView.renderGallery();
+		}
+
+		this.updateFilterIcon();
+
+		// If we just opened the bar, focus the search input
+		if (tmpRemote.FilterBarVisible)
+		{
+			setTimeout(() =>
+			{
+				let tmpSearch = document.getElementById('RetoldRemote-Gallery-Search');
+				if (tmpSearch)
+				{
+					tmpSearch.focus();
+				}
+			}, 50);
+		}
+	}
+
+	/**
+	 * Update the filter icon in the top bar to reflect active filter state.
+	 */
+	updateFilterIcon()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-FilterBtn');
+		if (!tmpBtn)
+		{
+			return;
+		}
+
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
+		let tmpActiveChipCount = tmpFilterSort ? tmpFilterSort.getActiveFilterChips().length : 0;
+		let tmpBarVisible = tmpRemote.FilterBarVisible || false;
+
+		// Reset classes
+		tmpBtn.classList.remove('filter-active', 'filter-bar-open');
+
+		if (tmpActiveChipCount > 0)
+		{
+			// Active filters: show funnel icon with badge
+			tmpBtn.classList.add('filter-active');
+			tmpBtn.innerHTML = '&#9683;<span class="retold-remote-topbar-filter-badge">' + tmpActiveChipCount + '</span>';
+			tmpBtn.title = tmpActiveChipCount + ' active filter' + (tmpActiveChipCount > 1 ? 's' : '') + ' (/)';
+		}
+		else if (tmpBarVisible)
+		{
+			// Bar open but no filters: show open-state icon
+			tmpBtn.classList.add('filter-bar-open');
+			tmpBtn.innerHTML = '&#9698;';
+			tmpBtn.title = 'Hide filter bar (/)';
+		}
+		else
+		{
+			// Default: no filters, bar hidden
+			tmpBtn.innerHTML = '&#9698;';
+			tmpBtn.title = 'Toggle filter bar (/)';
+		}
 	}
 
 	/**
