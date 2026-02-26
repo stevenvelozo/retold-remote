@@ -33,11 +33,11 @@
 		"pict": "^1.0.350",
 		"pict-application": "^1.0.32",
 		"pict-provider": "^1.0.10",
-		"pict-section-code": "file:../../modules/pict/pict-section-code",
+		"pict-section-code": "^1.0.2",
 		"pict-section-filebrowser": "^0.0.1",
 		"pict-service-commandlineutility": "^1.0.18",
 		"pict-view": "^1.0.66",
-		"retold-content-system": "file:../retold-content-system",
+		"retold-content-system": "^1.0.1",
 		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {

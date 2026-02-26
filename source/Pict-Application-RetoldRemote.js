@@ -86,7 +86,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			FolderSummary: null,            // From /api/media/folder-summary
 			CurrentViewerFile: '',          // File being viewed
 			CurrentViewerMediaType: '',     // Media type of viewed file
-			HashedFilenames: false,         // From /api/remote/settings
+			HashedFilenames: true,         // From /api/remote/settings
 			ShowHiddenFiles: false,
 			DistractionFreeShowNav: true,
 			ImageFitMode: 'auto',
