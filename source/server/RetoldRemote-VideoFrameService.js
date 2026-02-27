@@ -147,7 +147,8 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 			let tmpCodec = (pFormat === 'png') ? 'png' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
 
-			let tmpCmd = `ffmpeg -ss ${tmpTimeStr} -i "${pAbsPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -c:v ${tmpCodec} -y "${pOutputPath}"`;
+			let tmpMuxer = (pFormat === 'png') ? 'image2' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
+			let tmpCmd = `ffmpeg -ss ${tmpTimeStr} -i "${pAbsPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpMuxer} -y "${pOutputPath}"`;
 			libChildProcess.execSync(tmpCmd, { stdio: 'ignore', timeout: 30000 });
 			return libFs.existsSync(pOutputPath);
 		}

@@ -78,6 +78,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			RawFileList: [],                // Unfiltered server response
 			GalleryItems: [],               // Filtered+sorted file list (single source of truth)
 			GalleryCursorIndex: 0,          // Currently highlighted item
+			FolderCursorHistory: {},        // Map of folder path -> last cursor index
 			GalleryFilter: 'all',           // 'all', 'images', 'video', 'audio', 'documents'
 			SearchQuery: '',
 			SearchCaseSensitive: false,
@@ -467,7 +468,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				{
 					// Fallback if provider not ready
 					tmpRemote.GalleryItems = pFileList || [];
-					tmpRemote.GalleryCursorIndex = 0;
+					let tmpSavedIndex = tmpRemote.FolderCursorHistory && tmpRemote.FolderCursorHistory[tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation || ''];
+					tmpRemote.GalleryCursorIndex = (typeof tmpSavedIndex === 'number' && tmpSavedIndex < (pFileList || []).length) ? tmpSavedIndex : 0;
 					let tmpGalleryView = tmpSelf.pict.views['RetoldRemote-Gallery'];
 					if (tmpGalleryView)
 					{

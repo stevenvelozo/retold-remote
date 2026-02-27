@@ -1237,7 +1237,7 @@ if(startDot===-1)startDot=i;else if(preDotState!==1)preDotState=1;}else if(start
 // have a good chance at having a non-empty extension
 preDotState=-1;}}if(startDot===-1||end===-1||// We saw a non-dot character immediately before the dot
 preDotState===0||// The (right-most) trimmed path component is exactly '..'
-preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":86}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
+preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":77}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
 MainViewportViewIdentifier:'Default-View',MainViewportRenderableHash:false,MainViewportDestinationAddress:false,MainViewportDefaultDataAddress:false,// Whether or not we should automatically render the main viewport and other autorender views after we initialize the pict application
 AutoSolveAfterInitialize:true,AutoRenderMainViewportViewAfterInitialize:true,AutoRenderViewsAfterInitialize:false,AutoLoginAfterInitialize:false,AutoLoadDataAfterLogin:false,ConfigurationOnlyViews:[],Manifests:{},// The prefix to prepend on all template destination hashes
 IdentifierAddressPrefix:'PICT-'};/**
@@ -1439,1168 +1439,7 @@ let tmpLoadedViews=Object.keys(this.pict.views);// Sort the views by their prior
 // If they are all the default priority 0, it will end up being add order due to JSON Object Property Key order stuff
 tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-this.pict.views[b].options.AutoRenderOrdinal;});for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoRender){tmpAnticipate.anticipate(tmpView.renderAsync.bind(tmpView));}}tmpAnticipate.wait(pError=>{this.lastAutoRenderTimestamp=this.fable.log.getTimeStamp();if(this.pict.LogNoisiness>0){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAutoViewsAsync complete.`);}return tmpCallback(pError);});}/**
 	 * @return {boolean}
-	 */get isPictApplication(){return true;}}module.exports=PictApplication;},{"../package.json":43,"fable-serviceproviderbase":20}],45:[function(require,module,exports){module.exports={"Name":"Pict Docuserve","Hash":"Docuserve","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"Docuserve-Pict-Application"}};},{}],46:[function(require,module,exports){const libPictApplication=require('pict-application');// Provider
-const libDocumentationProvider=require('./providers/Pict-Provider-Docuserve-Documentation.js');// Views
-const libViewLayout=require('./views/PictView-Docuserve-Layout.js');const libViewTopBar=require('./views/PictView-Docuserve-TopBar.js');const libViewSidebar=require('./views/PictView-Docuserve-Sidebar.js');const libViewSplash=require('./views/PictView-Docuserve-Splash.js');const libViewContent=require('./views/PictView-Docuserve-Content.js');const libViewSearch=require('./views/PictView-Docuserve-Search.js');class DocuserveApplication extends libPictApplication{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Add the documentation provider
-this.pict.addProvider('Docuserve-Documentation',libDocumentationProvider.default_configuration,libDocumentationProvider);// Add views
-this.pict.addView('Docuserve-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('Docuserve-TopBar',libViewTopBar.default_configuration,libViewTopBar);this.pict.addView('Docuserve-Sidebar',libViewSidebar.default_configuration,libViewSidebar);this.pict.addView('Docuserve-Splash',libViewSplash.default_configuration,libViewSplash);this.pict.addView('Docuserve-Content',libViewContent.default_configuration,libViewContent);this.pict.addView('Docuserve-Search',libViewSearch.default_configuration,libViewSearch);}onAfterInitializeAsync(fCallback){// Initialize application state
-this.pict.AppData.Docuserve={CatalogLoaded:false,Catalog:null,CoverLoaded:false,Cover:null,SidebarLoaded:false,SidebarGroups:[],TopBarLoaded:false,TopBar:null,ErrorPageLoaded:false,ErrorPageHTML:null,KeywordIndexLoaded:false,KeywordDocumentCount:0,CurrentGroup:'',CurrentModule:'',CurrentPath:'',// Whether the sidebar is currently visible
-SidebarVisible:true,// Base URL for local docs (relative to where the app is served)
-DocsBaseURL:'',// URL for the catalog JSON
-CatalogURL:'retold-catalog.json'};// Load the catalog, then render the layout
-let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];tmpDocProvider.loadCatalog(()=>{// Set the page title from _cover.md or _topbar.md
-let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){document.title=tmpDocuserve.Cover.Title.replace(/<[^>]*>/g,'');}else if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar&&tmpDocuserve.TopBar.Brand){document.title=tmpDocuserve.TopBar.Brand.replace(/<[^>]*>/g,'');}// Render the layout shell, which triggers child view rendering
-this.pict.views['Docuserve-Layout'].render();return super.onAfterInitializeAsync(fCallback);});}/**
-	 * Read the current window.location.hash and dispatch to the correct handler.
-	 *
-	 * Route patterns:
-	 *   #/Home                         -> showView('Docuserve-Splash')
-	 *   #/search/<query>               -> navigateToSearch(query)
-	 *   #/page/<docpath>               -> navigateToPage(docpath)
-	 *   #/doc/<group>/<module>          -> navigateToModule(group, module)
-	 *   #/doc/<group>/<module>/<path>   -> navigateToModulePath(group, module, path)
-	 */resolveHash(){let tmpHash=(window.location.hash||'').replace(/^#\/?/,'');if(!tmpHash||tmpHash==='Home'){this.showView('Docuserve-Splash');return;}let tmpParts=tmpHash.split('/');if(tmpParts[0]==='search'){let tmpQuery=decodeURIComponent(tmpParts.slice(1).join('/'));this.navigateToSearch(tmpQuery);return;}if(tmpParts[0]==='page'&&tmpParts.length>=2){// Rejoin everything after 'page/' in case the path has slashes
-let tmpDocPath=tmpParts.slice(1).join('/');this.navigateToPage(tmpDocPath);return;}if(tmpParts[0]==='doc'&&tmpParts.length>=3){let tmpGroup=tmpParts[1];let tmpModule=tmpParts[2];if(tmpParts.length>=4){let tmpPath=tmpParts.slice(3).join('/');this.navigateToModulePath(tmpGroup,tmpModule,tmpPath);}else{this.navigateToModule(tmpGroup,tmpModule);}return;}// Unknown route — treat as a page
-this.navigateToPage(tmpHash);}/**
-	 * Navigate to a hash route.
-	 *
-	 * Sets window.location.hash, which triggers the hashchange listener in the
-	 * layout view, which calls resolveHash() automatically.
-	 *
-	 * @param {string} pRoute - The route path (e.g. '/Home', '/page/quick-start')
-	 */navigateTo(pRoute){window.location.hash=pRoute;}/**
-	 * Show a specific view in the content area.
-	 *
-	 * @param {string} pViewIdentifier - The view identifier to render
-	 */showView(pViewIdentifier){if(pViewIdentifier in this.pict.views){this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath='';this.pict.views[pViewIdentifier].render();// Update sidebar to clear module nav and refresh active states
-this.pict.views['Docuserve-Sidebar'].clearModuleNav();this.pict.views['Docuserve-Sidebar'].renderSidebarGroups();}}/**
-	 * Navigate to a module's documentation.
-	 *
-	 * @param {string} pGroup - The group key
-	 * @param {string} pModule - The module name
-	 */navigateToModule(pGroup,pModule){this.navigateToModulePath(pGroup,pModule,'README.md');}/**
-	 * Navigate to a specific path within a module's documentation.
-	 *
-	 * @param {string} pGroup - The group key
-	 * @param {string} pModule - The module name
-	 * @param {string} pPath - The document path
-	 */navigateToModulePath(pGroup,pModule,pPath){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpContentView=this.pict.views['Docuserve-Content'];let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];// Update current navigation state
-this.pict.AppData.Docuserve.CurrentGroup=pGroup;this.pict.AppData.Docuserve.CurrentModule=pModule;this.pict.AppData.Docuserve.CurrentPath=pPath;// Render the content view shell and show loading
-tmpContentView.render();tmpContentView.showLoading();// Update sidebar to show active module and module-specific nav
-tmpSidebarView.renderSidebarGroups();tmpSidebarView.renderModuleNav(pGroup,pModule);// Resolve the document URL and fetch it
-let tmpURL=tmpDocProvider.resolveDocumentURL(pGroup,pModule,pPath||'README.md');if(!tmpURL){tmpContentView.displayContent(tmpDocProvider.getErrorPageHTML(pGroup+'/'+pModule));return;}let tmpDocPath=pPath||'README.md';tmpDocProvider.fetchDocument(tmpURL,(pError,pHTML)=>{if(!pError){tmpContentView.displayContent(pHTML);return;}// Remote fetch failed — try a local fallback using the
-// group/module/path as a relative path.  This handles cases
-// where the catalog contains entries (e.g. example apps)
-// that don't correspond to real GitHub repositories.
-let tmpLocalPath=pGroup+'/'+pModule+'/'+tmpDocPath;tmpDocProvider.fetchLocalDocument(tmpLocalPath,(pLocalError,pLocalHTML)=>{tmpContentView.displayContent(pLocalHTML);},pGroup,pModule,tmpDocPath);},pGroup,pModule,tmpDocPath);}/**
-	 * Navigate to a local documentation page (e.g. architecture.md).
-	 *
-	 * @param {string} pDocPath - The doc path without extension
-	 */navigateToPage(pDocPath){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpContentView=this.pict.views['Docuserve-Content'];let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];// Update state
-this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath=pDocPath;// Render the content view shell and show loading
-tmpContentView.render();tmpContentView.showLoading();// Clear module-specific sidebar nav
-tmpSidebarView.clearModuleNav();tmpSidebarView.renderSidebarGroups();// Fetch the local document
-let tmpPath=pDocPath;if(!tmpPath.match(/\.md$/)){tmpPath=tmpPath+'.md';}tmpDocProvider.fetchLocalDocument(tmpPath,(pError,pHTML)=>{// fetchDocument always provides displayable HTML in pHTML,
-// even on error, so we can use it directly.
-tmpContentView.displayContent(pHTML);});}/**
-	 * Navigate to the search page with an optional query.
-	 *
-	 * @param {string} pQuery - The search query (may be empty for blank search page)
-	 */navigateToSearch(pQuery){let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];let tmpSearchView=this.pict.views['Docuserve-Search'];// Update state
-this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath='';// Clear module-specific sidebar nav
-tmpSidebarView.clearModuleNav();tmpSidebarView.renderSidebarGroups();// Render the search view with the query
-tmpSearchView.render();tmpSearchView.showSearch(pQuery||'');}}module.exports=DocuserveApplication;module.exports.default_configuration=require('./Pict-Application-Docuserve-Configuration.json');},{"./Pict-Application-Docuserve-Configuration.json":45,"./providers/Pict-Provider-Docuserve-Documentation.js":47,"./views/PictView-Docuserve-Content.js":48,"./views/PictView-Docuserve-Layout.js":49,"./views/PictView-Docuserve-Search.js":50,"./views/PictView-Docuserve-Sidebar.js":51,"./views/PictView-Docuserve-Splash.js":52,"./views/PictView-Docuserve-TopBar.js":53,"pict-application":44}],47:[function(require,module,exports){const libPictProvider=require('pict-provider');const libLunr=require('lunr');const libPictSectionContent=require('pict-section-content');const libPictContentProvider=libPictSectionContent.PictContentProvider;/**
- * Documentation Provider for Docuserve
- *
- * Loads the Indoctrinate-generated catalog and keyword index,
- * fetches markdown documents from local paths or raw GitHub URLs,
- * and parses them into HTML for rendering.
- */class DocuserveDocumentationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._Catalog=null;this._ContentCache={};// Create an instance of the content provider for markdown parsing
-this._ContentProvider=this.pict.addProvider('Pict-Content',libPictContentProvider.default_configuration,libPictContentProvider);}/**
-	 * Create a link resolver closure for the content provider.
-	 *
-	 * Wraps docuserve-specific link resolution (catalog-aware routing,
-	 * GitHub URL matching) into a callback compatible with the
-	 * pict-section-content link resolver pattern.
-	 *
-	 * @param {string} [pCurrentGroup] - The current group key
-	 * @param {string} [pCurrentModule] - The current module name
-	 * @param {string} [pCurrentDocPath] - The current document path
-	 * @returns {Function} A link resolver callback
-	 */_createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath){return(pHref,pLinkText)=>{// Convert internal doc links to hash routes
-if(pHref.match(/^\//)||pHref.match(/^[^:]+\.md/)){let tmpRoute=this.convertDocLink(pHref,pCurrentGroup,pCurrentModule,pCurrentDocPath);return{href:tmpRoute};}// Check if this is a GitHub URL that matches a catalog module
-let tmpCatalogRoute=this.resolveGitHubURLToRoute(pHref);if(tmpCatalogRoute){return{href:tmpCatalogRoute};}// Use default behavior for other links
-return null;};}/**
-	 * Load all documentation data sources: catalog, _cover.md, _sidebar.md.
-	 *
-	 * Loads the catalog first (it provides the fallback data), then attempts
-	 * to load _cover.md and _sidebar.md in parallel.  If those markdown files
-	 * exist they drive the splash and sidebar views; otherwise the catalog
-	 * data is used as a fallback.
-	 *
-	 * @param {Function} fCallback - Callback when all loading is complete
-	 */loadCatalog(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpCatalogURL=this.pict.AppData.Docuserve.CatalogURL||'retold-catalog.json';let tmpLoadOptionalFiles=()=>{// Load _cover.md, _sidebar.md, _topbar.md, errorpage.md and keyword index in parallel.
-// When all are done, if we still have no sidebar data, try to auto-discover
-// a README.md so the site works with plain markdown folders.
-let tmpPending=5;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// If no sidebar data was populated by catalog or _sidebar.md,
-// try to auto-discover a README.md to provide minimal navigation.
-if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info(`Docuserve: No catalog at [${tmpCatalogURL}]; running in standalone mode.`);return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
-this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.log.info(`Docuserve: Catalog load error (${pError}); continuing in standalone mode.`);tmpLoadOptionalFiles();});}/**
-	 * Auto-discover sidebar content when no catalog or _sidebar.md is available.
-	 *
-	 * Attempts to fetch README.md from the docs root.  If found, creates a
-	 * minimal sidebar with a single "Docs" group containing a README entry.
-	 * This lets pict-docuserve work with nothing but a folder of markdown.
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */autoDiscoverSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'README.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(pMarkdown){// Extract a title from the first heading in the README
-let tmpTitleMatch=pMarkdown.match(/^#+\s+(.+)/m);let tmpTitle=tmpTitleMatch?tmpTitleMatch[1].trim():'Docs';// Build a minimal sidebar group so the sidebar has something to show
-this.pict.AppData.Docuserve.SidebarGroups=[{Name:tmpTitle,Key:'docs',Route:'#/page/README',Modules:[]}];// Also set this as a fallback cover title if we have no cover
-if(!this.pict.AppData.Docuserve.CoverLoaded){this.pict.AppData.Docuserve.Cover={Title:tmpTitle,Tagline:'',Description:'',Highlights:[],Actions:[{Text:'Read the Docs',Href:'README.md'}]};this.pict.AppData.Docuserve.CoverLoaded=true;}}else{this.log.info('Docuserve: No README.md found; sidebar will be empty.');}return tmpCallback();}).catch(pError=>{this.log.info(`Docuserve: README.md discovery failed (${pError}).`);return tmpCallback();});}/**
-	 * Fetch and parse _cover.md into structured data for the splash view.
-	 *
-	 * The expected _cover.md format follows the docsify convention:
-	 *   # Title
-	 *   > Tagline
-	 *   Description paragraph text.
-	 *   - **Group** — description
-	 *   [Link Text](url)
-	 *
-	 * Parsed result stored in this.pict.AppData.Docuserve.Cover:
-	 *   { Title, Tagline, Description, Highlights: [{Label, Text}], Actions: [{Text, Href}] }
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */loadCover(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_cover.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _cover.md found; splash will use catalog data.');return tmpCallback();}this.pict.AppData.Docuserve.Cover=this.parseCover(pMarkdown);this.pict.AppData.Docuserve.CoverLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _cover.md: ${pError}`);return tmpCallback();});}/**
-	 * Parse _cover.md markdown text into a structured object.
-	 *
-	 * @param {string} pMarkdown - Raw _cover.md content
-	 * @returns {Object} Parsed cover data
-	 */parseCover(pMarkdown){let tmpCover={Title:'',Tagline:'',Description:'',Highlights:[],Actions:[]};let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i].trim();if(!tmpLine){continue;}// Heading — the title
-let tmpHeadingMatch=tmpLine.match(/^#+\s+(.+)/);if(tmpHeadingMatch){tmpCover.Title=tmpHeadingMatch[1].trim();continue;}// Blockquote — the tagline
-let tmpBlockquoteMatch=tmpLine.match(/^>\s*(.*)/);if(tmpBlockquoteMatch){tmpCover.Tagline=tmpBlockquoteMatch[1].trim();continue;}// Bullet list — highlights (e.g. "- **Fable** — Core ecosystem, DI, config")
-let tmpBulletMatch=tmpLine.match(/^[-*+]\s+(.*)/);if(tmpBulletMatch){let tmpBulletContent=tmpBulletMatch[1];// Try to split on bold label: **Label** — rest
-let tmpLabelMatch=tmpBulletContent.match(/^\*\*([^*]+)\*\*\s*[-—:]\s*(.*)/);if(tmpLabelMatch){tmpCover.Highlights.push({Label:tmpLabelMatch[1].trim(),Text:tmpLabelMatch[2].trim()});}else{tmpCover.Highlights.push({Label:'',Text:tmpBulletContent.trim()});}continue;}// Bare link — action button (e.g. "[Get Started](getting-started.md)")
-let tmpLinkMatch=tmpLine.match(/^\[([^\]]+)\]\(([^)]+)\)\s*$/);if(tmpLinkMatch){tmpCover.Actions.push({Text:tmpLinkMatch[1].trim(),Href:tmpLinkMatch[2].trim()});continue;}// Otherwise it's description text
-if(!tmpCover.Description){tmpCover.Description=tmpLine;}else{tmpCover.Description+=' '+tmpLine;}}return tmpCover;}/**
-	 * Fetch and parse _sidebar.md into structured navigation data.
-	 *
-	 * The expected _sidebar.md format follows the docsify convention:
-	 *   - [Home](/)
-	 *   - Group Title
-	 *     - [module-name](/group/module/)
-	 *   - [Group Title](group.md)
-	 *     - [module-name](/group/module/)
-	 *
-	 * If _sidebar.md is successfully loaded and parsed, its data replaces
-	 * the catalog-inferred SidebarGroups in AppData.
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */loadSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_sidebar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _sidebar.md found; sidebar will use catalog data.');return tmpCallback();}let tmpSidebarData=this.parseSidebarMarkdown(pMarkdown);if(tmpSidebarData&&tmpSidebarData.length>0){this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarData;this.pict.AppData.Docuserve.SidebarLoaded=true;}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _sidebar.md: ${pError}`);return tmpCallback();});}/**
-	 * Fetch and parse _topbar.md into structured data for the top bar view.
-	 *
-	 * The expected _topbar.md format:
-	 *   # Brand Name
-	 *   - [Link Text](url)
-	 *   - [Link Text](url)
-	 *
-	 * The heading becomes the brand/title shown on the left.  List items become
-	 * navigation links.  External links (starting with http) render on the
-	 * right side; internal links render in the centre nav area.
-	 *
-	 * Parsed result stored in this.pict.AppData.Docuserve.TopBar:
-	 *   { Brand, NavLinks: [{Text, Href, External}], ExternalLinks: [{Text, Href}] }
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */loadTopbar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_topbar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _topbar.md found; top bar will use defaults.');return tmpCallback();}this.pict.AppData.Docuserve.TopBar=this.parseTopbar(pMarkdown);this.pict.AppData.Docuserve.TopBarLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _topbar.md: ${pError}`);return tmpCallback();});}/**
-	 * Parse _topbar.md markdown text into a structured object.
-	 *
-	 * @param {string} pMarkdown - Raw _topbar.md content
-	 * @returns {Object} Parsed top bar data { Brand, NavLinks, ExternalLinks }
-	 */parseTopbar(pMarkdown){let tmpTopBar={Brand:'',NavLinks:[],ExternalLinks:[]};let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i].trim();if(!tmpLine){continue;}// Heading — the brand name
-let tmpHeadingMatch=tmpLine.match(/^#+\s+(.+)/);if(tmpHeadingMatch){tmpTopBar.Brand=tmpHeadingMatch[1].trim();continue;}// Bullet list item with link
-let tmpBulletMatch=tmpLine.match(/^[-*+]\s+(.*)/);if(tmpBulletMatch){let tmpContent=tmpBulletMatch[1].trim();let tmpLinkMatch=tmpContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpLinkMatch){let tmpText=tmpLinkMatch[1].trim();let tmpHref=tmpLinkMatch[2].trim();// External links (http/https) go to the right side
-if(tmpHref.match(/^https?:\/\//)){tmpTopBar.ExternalLinks.push({Text:tmpText,Href:tmpHref});}else{// Internal link — convert to hash route
-let tmpRoute=this.convertSidebarLink(tmpHref);tmpTopBar.NavLinks.push({Text:tmpText,Href:tmpRoute});}}continue;}}return tmpTopBar;}/**
-	 * Fetch and parse errorpage.md into HTML for use as a custom error page.
-	 *
-	 * The errorpage.md is a standard markdown file.  If it contains the
-	 * placeholder `{{path}}` anywhere in its source, that token will be
-	 * replaced with the actual requested path at display time (via
-	 * getErrorPageHTML).
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */loadErrorPage(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'errorpage.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No errorpage.md found; errors will use default page.');return tmpCallback();}this.pict.AppData.Docuserve.ErrorPageHTML=this._ContentProvider.parseMarkdown(pMarkdown);this.pict.AppData.Docuserve.ErrorPageLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading errorpage.md: ${pError}`);return tmpCallback();});}/**
-	 * Load the keyword search index (retold-keyword-index.json).
-	 *
-	 * If the index file exists, hydrates a lunr.Index for client-side search
-	 * and stores the document metadata map.  If the file is not found, search
-	 * features will simply not appear in the UI.
-	 *
-	 * @param {Function} fCallback - Callback when done
-	 */loadKeywordIndex(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'retold-keyword-index.json').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pIndexData=>{if(!pIndexData||!pIndexData.LunrIndex||!pIndexData.Documents){this.log.info('Docuserve: No keyword index found; search will be unavailable.');return tmpCallback();}try{this._LunrIndex=libLunr.Index.load(pIndexData.LunrIndex);this._KeywordDocuments=pIndexData.Documents;this.pict.AppData.Docuserve.KeywordIndexLoaded=true;this.pict.AppData.Docuserve.KeywordDocumentCount=pIndexData.DocumentCount||0;this.log.info(`Docuserve: Keyword index loaded (${pIndexData.DocumentCount||0} documents).`);}catch(pError){this.log.warn(`Docuserve: Error hydrating lunr index: ${pError}`);}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading keyword index: ${pError}`);return tmpCallback();});}/**
-	 * Check whether a group/module pair exists in the loaded catalog.
-	 *
-	 * Used by search() to decide whether a result should route to
-	 * #/doc/ (catalog module → GitHub raw URL) or #/page/ (local doc).
-	 *
-	 * @param {string} pGroup - The group key (e.g. "fable")
-	 * @param {string} pModule - The module name (e.g. "fable")
-	 * @returns {boolean} True if the module is found in the catalog
-	 */isModuleInCatalog(pGroup,pModule){if(!this._Catalog||!this._Catalog.Groups){return false;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name===pModule){return true;}}}return false;}/**
-	 * Find the catalog group key that contains a given module name.
-	 *
-	 * Searches all groups in the catalog for a module with the given name.
-	 * This is used to resolve sidebar links where the path uses a conceptual
-	 * group name (e.g. "fable") that doesn't match the catalog group key
-	 * (e.g. "modules").
-	 *
-	 * @param {string} pModuleName - The module name to find (e.g. "fable")
-	 * @returns {string|null} The catalog group key (e.g. "modules") or null
-	 */findModuleGroupKey(pModuleName){if(!this._Catalog||!this._Catalog.Groups){return null;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];for(let j=0;j<tmpGroup.Modules.length;j++){if(tmpGroup.Modules[j].Name===pModuleName){return tmpGroup.Key;}}}return null;}/**
-	 * Check whether a group key exists in the loaded catalog.
-	 *
-	 * Used to dynamically validate group keys instead of hardcoding them.
-	 *
-	 * @param {string} pGroupKey - The group key (e.g. "fable", "example_applications")
-	 * @returns {boolean} True if the group is found in the catalog
-	 */isGroupInCatalog(pGroupKey){if(!this._Catalog||!this._Catalog.Groups){return false;}for(let i=0;i<this._Catalog.Groups.length;i++){if(this._Catalog.Groups[i].Key===pGroupKey){return true;}}return false;}/**
-	 * Search the keyword index for documents matching a query.
-	 *
-	 * Returns an array of result objects sorted by relevance:
-	 *   [{ Key, Title, Group, Module, DocPath, Score, Route }]
-	 *
-	 * @param {string} pQuery - The search query
-	 * @returns {Array} Search results (empty if no index or no matches)
-	 */search(pQuery){if(!this._LunrIndex||!this._KeywordDocuments||!pQuery||!pQuery.trim()){return[];}let tmpResults=[];try{let tmpLunrResults=this._LunrIndex.search(pQuery);for(let i=0;i<tmpLunrResults.length;i++){let tmpRef=tmpLunrResults[i].ref;let tmpScore=tmpLunrResults[i].score;let tmpDoc=this._KeywordDocuments[tmpRef];if(!tmpDoc){continue;}// Build the hash route from the document key (group/module/docpath)
-let tmpParts=tmpRef.split('/');let tmpRoute='';if(tmpParts.length>=2){// Check whether this group/module exists in the catalog.
-// If it does, route to #/doc/ which fetches from GitHub.
-// If not, fall back to #/page/ which fetches locally.
-let tmpGroup=tmpParts[0];let tmpModule=tmpParts[1];if(this.isModuleInCatalog(tmpGroup,tmpModule)){tmpRoute='#/doc/'+tmpRef;}else{// Local document — route via #/page/ using the full ref path
-tmpRoute='#/page/'+tmpRef;}}tmpResults.push({Key:tmpRef,Title:tmpDoc.Title||tmpRef,Group:tmpDoc.Group||'',Module:tmpDoc.Module||'',DocPath:tmpDoc.DocPath||'',Score:tmpScore,Route:tmpRoute});}}catch(pError){this.log.warn(`Docuserve: Search error: ${pError}`);}return tmpResults;}/**
-	 * Get the error page HTML for a given requested path.
-	 *
-	 * If a custom errorpage.md was loaded, its parsed HTML is returned with
-	 * the `{{path}}` placeholder replaced by the actual requested path.
-	 * Otherwise a default not-found HTML block is returned.
-	 *
-	 * @param {string} pRequestedPath - The path that was not found
-	 * @returns {string} HTML to display
-	 */getErrorPageHTML(pRequestedPath){let tmpPath=pRequestedPath||'unknown';if(this.pict.AppData.Docuserve.ErrorPageLoaded&&this.pict.AppData.Docuserve.ErrorPageHTML){// Replace the {{path}} placeholder with the actual requested path
-return this.pict.AppData.Docuserve.ErrorPageHTML.replace(/\{\{path\}\}/g,this._ContentProvider.escapeHTML(tmpPath));}// Default fallback
-return'<div class="docuserve-not-found">'+'<h2>Page Not Found</h2>'+'<p>The document <code>'+this._ContentProvider.escapeHTML(tmpPath)+'</code> could not be loaded.</p>'+'<p><a href="#/Home">Return to the home page</a></p>'+'</div>';}/**
-	 * Parse _sidebar.md into the SidebarGroups format the sidebar view consumes.
-	 *
-	 * Returns an array of group objects:
-	 *   [{ Name, Key, Route, Modules: [{ Name, HasDocs, Group, Route }] }]
-	 *
-	 * Top-level items (no indent) become groups.  Indented child items become
-	 * modules within the preceding group.  The special "Home" entry is stored
-	 * as a group with no modules.
-	 *
-	 * @param {string} pMarkdown - Raw _sidebar.md content
-	 * @returns {Array} Parsed sidebar groups
-	 */parseSidebarMarkdown(pMarkdown){let tmpGroups=[];let tmpCurrentGroup=null;let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];if(!tmpLine.trim()){continue;}// Detect indent level: child items have 2+ leading spaces
-let tmpIndentMatch=tmpLine.match(/^(\s*)/);let tmpIndent=tmpIndentMatch?tmpIndentMatch[1].length:0;let tmpContent=tmpLine.trim();// Must start with a list marker
-let tmpListMatch=tmpContent.match(/^[-*+]\s+(.*)/);if(!tmpListMatch){continue;}let tmpItemContent=tmpListMatch[1].trim();// Parse link if present: [Text](href)
-let tmpLinkMatch=tmpItemContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpIndent<2){// Top-level item — this is a group header or standalone link
-if(tmpLinkMatch){let tmpName=tmpLinkMatch[1].trim();let tmpHref=tmpLinkMatch[2].trim();// Derive a group key from the href or name
-let tmpKey=this.deriveGroupKey(tmpName,tmpHref);let tmpRoute=this.convertSidebarLink(tmpHref);tmpCurrentGroup={Name:tmpName,Key:tmpKey,Route:tmpRoute,Modules:[]};tmpGroups.push(tmpCurrentGroup);}else{// Plain text group header (no link)
-let tmpName=tmpItemContent;let tmpKey=tmpName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');tmpCurrentGroup={Name:tmpName,Key:tmpKey,Route:'',Modules:[]};tmpGroups.push(tmpCurrentGroup);}}else if(tmpCurrentGroup){// Indented item — this is a module within the current group
-if(tmpLinkMatch){let tmpModuleName=tmpLinkMatch[1].trim();let tmpModuleHref=tmpLinkMatch[2].trim();let tmpModuleRoute=this.convertSidebarLink(tmpModuleHref);tmpCurrentGroup.Modules.push({Name:tmpModuleName,HasDocs:true,Group:tmpCurrentGroup.Key,Route:tmpModuleRoute});}else{// Plain text child entry (no docs link)
-tmpCurrentGroup.Modules.push({Name:tmpItemContent,HasDocs:false,Group:tmpCurrentGroup.Key,Route:''});}}}return tmpGroups;}/**
-	 * Convert a docsify-style sidebar link href into a docuserve hash route.
-	 *
-	 * Handles these forms:
-	 *   /                        -> #/Home
-	 *   /group/module/           -> #/doc/group/module
-	 *   /group/module/path.md    -> #/doc/group/module/path.md
-	 *   something.md             -> #/page/something
-	 *
-	 * @param {string} pHref - The original sidebar link href
-	 * @returns {string} The converted hash route
-	 */convertSidebarLink(pHref){if(!pHref){return'';}// Root home link
-if(pHref==='/'){return'#/Home';}// Bare hash link (e.g. "#fable") — docsify convention for the home/readme page.
-// Navigate to the first available content route in the sidebar, skipping
-// #/Home since the cover page is already displaying that.
-if(pHref.match(/^#[^/]/)){let tmpSidebarGroups=this.pict.AppData.Docuserve.SidebarGroups;if(tmpSidebarGroups){for(let g=0;g<tmpSidebarGroups.length;g++){let tmpModules=tmpSidebarGroups[g].Modules;if(tmpModules){for(let m=0;m<tmpModules.length;m++){if(tmpModules[m].HasDocs&&tmpModules[m].Route&&tmpModules[m].Route!=='#/Home'){return tmpModules[m].Route;}}}if(tmpSidebarGroups[g].Route&&tmpSidebarGroups[g].Route!=='#/Home'){return tmpSidebarGroups[g].Route;}}}return'#/Home';}// Strip leading/trailing slashes for parsing
-let tmpPath=pHref.replace(/^\//,'').replace(/\/$/,'');if(!tmpPath){return'#/Home';}let tmpParts=tmpPath.split('/');// Check if it's a module path (group/module) — both the group
-// AND the module must exist in the catalog, otherwise treat it
-// as a local page reference (e.g. docs subfolder).
-if(tmpParts.length>=2){if(this.isGroupInCatalog(tmpParts[0])&&this.isModuleInCatalog(tmpParts[0],tmpParts[1])){return'#/doc/'+tmpPath;}// Fallback: the path may use a conceptual group name (e.g. "fable/fable")
-// where the first part isn't a catalog group key. Try to find the module
-// (second part) in any catalog group and rewrite the route.
-let tmpActualGroup=this.findModuleGroupKey(tmpParts[1]);if(tmpActualGroup){let tmpRemainder=tmpParts.slice(2).join('/');if(tmpRemainder){return'#/doc/'+tmpActualGroup+'/'+tmpParts[1]+'/'+tmpRemainder;}return'#/doc/'+tmpActualGroup+'/'+tmpParts[1];}}// Local page reference
-if(tmpPath.match(/\.md$/)){return'#/page/'+tmpPath.replace(/\.md$/,'');}return'#/page/'+tmpPath;}/**
-	 * Derive a short group key from a sidebar group name or href.
-	 *
-	 * @param {string} pName - The display name (e.g. "Fable — Core Ecosystem")
-	 * @param {string} pHref - The link href (e.g. "fable.md")
-	 * @returns {string} A short key (e.g. "fable")
-	 */deriveGroupKey(pName,pHref){// Try href first — "fable.md" -> "fable"
-if(pHref&&pHref!=='/'){let tmpFromHref=pHref.replace(/^\//,'').replace(/\.md$/,'').replace(/\/$/,'');if(tmpFromHref&&!tmpFromHref.includes('/')){return tmpFromHref.toLowerCase();}}// Fall back to first word of name lowercased
-let tmpFirstWord=pName.split(/[\s—\-:]+/)[0];return tmpFirstWord.toLowerCase().replace(/[^a-z0-9]/g,'');}/**
-	 * Build structured sidebar data from the catalog for the sidebar view.
-	 *
-	 * @param {Object} pCatalog - The parsed retold-catalog.json
-	 */buildSidebarData(pCatalog){let tmpSidebarGroups=[];for(let i=0;i<pCatalog.Groups.length;i++){let tmpGroup=pCatalog.Groups[i];let tmpGroupEntry={Name:tmpGroup.Name,Key:tmpGroup.Key,Description:tmpGroup.Description,Modules:[]};for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];tmpGroupEntry.Modules.push({Name:tmpModule.Name,HasDocs:tmpModule.HasDocs,Group:tmpGroup.Key,Route:'#/doc/'+tmpGroup.Key+'/'+tmpModule.Name});}tmpSidebarGroups.push(tmpGroupEntry);}this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarGroups;}/**
-	 * Resolve a document URL from group/module/path to a fetchable URL.
-	 *
-	 * @param {string} pGroup - The group key (e.g. 'fable')
-	 * @param {string} pModule - The module name (e.g. 'fable')
-	 * @param {string} pPath - The document path within the module docs (e.g. 'README.md')
-	 * @returns {string} The resolved URL
-	 */resolveDocumentURL(pGroup,pModule,pPath){if(!this._Catalog){return null;}let tmpOrg=this._Catalog.GitHubOrg||'stevenvelozo';let tmpDefaultBranch=this._Catalog.DefaultBranch||'master';// Find the module in the catalog
-for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}let tmpBranch=tmpModule.Branch||tmpDefaultBranch;let tmpDocPath=pPath||'README.md';return'https://raw.githubusercontent.com/'+tmpOrg+'/'+tmpModule.Repo+'/'+tmpBranch+'/docs/'+tmpDocPath;}}return null;}/**
-	 * Resolve a GitHub repository URL to an internal hash route.
-	 *
-	 * If the URL matches a module in the loaded catalog, returns the
-	 * corresponding #/doc/ route so the link navigates within docuserve
-	 * instead of leaving to GitHub.
-	 *
-	 * @param {string} pURL - A GitHub URL (e.g. "https://github.com/stevenvelozo/fable")
-	 * @returns {string|null} The hash route (e.g. "#/doc/fable/fable") or null if not a catalog module
-	 */resolveGitHubURLToRoute(pURL){if(!this._Catalog||!this._Catalog.Groups||!pURL){return null;}// Match https://github.com/{org}/{repo} with optional trailing path/slash
-let tmpMatch=pURL.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)/);if(!tmpMatch){return null;}let tmpOrg=tmpMatch[1];let tmpRepo=tmpMatch[2];// Only resolve URLs that match the catalog's GitHub org
-if(tmpOrg!==this._Catalog.GitHubOrg){return null;}// Search catalog for a module with a matching Repo
-for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Repo===tmpRepo){return'#/doc/'+tmpGroup.Key+'/'+tmpModule.Name;}}}return null;}/**
-	 * Resolve the GitHub Pages documentation URL for a module.
-	 *
-	 * Returns a URL like https://stevenvelozo.github.io/pict-view/ if the
-	 * module exists in the catalog.
-	 *
-	 * @param {string} pGroup - The group key
-	 * @param {string} pModule - The module name
-	 * @returns {string|null} The GitHub Pages URL or null
-	 */resolveGitHubPagesURL(pGroup,pModule){if(!this._Catalog||!this._Catalog.Groups){return null;}let tmpOrg=this._Catalog.GitHubOrg||'stevenvelozo';for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}if(!tmpModule.HasDocs){return null;}return'https://'+tmpOrg+'.github.io/'+tmpModule.Repo+'/';}}return null;}/**
-	 * Get the module-specific sidebar entries for a given group/module.
-	 *
-	 * @param {string} pGroup - The group key
-	 * @param {string} pModule - The module name
-	 * @returns {Array|null} The sidebar entries or null
-	 */getModuleSidebar(pGroup,pModule){if(!this._Catalog){return null;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}return tmpModule.Sidebar||null;}}return null;}/**
-	 * Fetch a markdown document and convert it to HTML.
-	 *
-	 * @param {string} pURL - The URL to fetch
-	 * @param {Function} fCallback - Callback receiving (error, htmlContent)
-	 * @param {string} [pCurrentGroup] - The current group key for link resolution
-	 * @param {string} [pCurrentModule] - The current module name for link resolution
-	 * @param {string} [pCurrentDocPath] - The current document path for link resolution
-	 */fetchDocument(pURL,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pURL){return tmpCallback('No URL provided','');}// Check cache
-if(this._ContentCache[pURL]){return tmpCallback(null,this._ContentCache[pURL]);}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){return tmpCallback('Document not found',this.getErrorPageHTML(pURL));}let tmpHTML=this._ContentProvider.parseMarkdown(pMarkdown,this._createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath));this._ContentCache[pURL]=tmpHTML;return tmpCallback(null,tmpHTML);}).catch(pError=>{this.log.warn(`Docuserve: Error fetching document [${pURL}]: ${pError}`);return tmpCallback(pError,this.getErrorPageHTML(pURL));});}/**
-	 * Fetch a local document relative to the docs folder.
-	 *
-	 * @param {string} pPath - The relative path (e.g. 'architecture.md')
-	 * @param {Function} fCallback - Callback receiving (error, htmlContent)
-	 * @param {string} [pCurrentGroup] - The current group key for link resolution
-	 * @param {string} [pCurrentModule] - The current module name for link resolution
-	 * @param {string} [pCurrentDocPath] - The current document path for link resolution
-	 */fetchLocalDocument(pPath,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath){let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';let tmpURL=tmpDocsBase+pPath;this.fetchDocument(tmpURL,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath);}/**
-	 * Convert a docsify-style internal link to a hash route for docuserve.
-	 *
-	 * When module context is provided, relative links (e.g. "api.md" or
-	 * "./settings-manager.md") are resolved within the current module and
-	 * document directory rather than falling back to the docs root.
-	 *
-	 * @param {string} pHref - The original link href
-	 * @param {string} [pCurrentGroup] - The current group key (e.g. "fable")
-	 * @param {string} [pCurrentModule] - The current module name (e.g. "fable")
-	 * @param {string} [pCurrentDocPath] - The current document path within the module (e.g. "services/README.md")
-	 * @returns {string} The converted hash route
-	 */convertDocLink(pHref,pCurrentGroup,pCurrentModule,pCurrentDocPath){// Strip leading ./ prefix for relative paths
-let tmpPath=pHref.replace(/^\.\//,'');// Remove leading slash
-tmpPath=tmpPath.replace(/^\//,'');// If it looks like an absolute module path (group/module/...), route directly.
-// Both the group AND the module must exist in the catalog, otherwise treat
-// as a local page reference (e.g. docs subfolder like modules/modules.md).
-let tmpParts=tmpPath.split('/');if(tmpParts.length>=2){if(this.isGroupInCatalog(tmpParts[0])&&this.isModuleInCatalog(tmpParts[0],tmpParts[1])){return'#/doc/'+tmpPath;}}// If we have module context, resolve relative to current document's directory
-if(pCurrentGroup&&pCurrentModule){// Determine the directory of the current document
-let tmpDocDir='';if(pCurrentDocPath){let tmpDirParts=pCurrentDocPath.split('/');if(tmpDirParts.length>1){tmpDirParts.pop();// Remove filename
-tmpDocDir=tmpDirParts.join('/')+'/';}}return'#/doc/'+pCurrentGroup+'/'+pCurrentModule+'/'+tmpDocDir+tmpPath;}// Local doc page (no module context)
-if(tmpPath.match(/\.md$/)){let tmpPageKey=tmpPath.replace(/\.md$/,'');return'#/page/'+tmpPageKey;}return'#/page/'+tmpPath;}}module.exports=DocuserveDocumentationProvider;module.exports.default_configuration={ProviderIdentifier:"Docuserve-Documentation",AutoInitialize:true,AutoInitializeOrdinal:0};},{"lunr":32,"pict-provider":55,"pict-section-content":59}],48:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"Docuserve-Content",DefaultRenderable:"Docuserve-Content-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,// The parent pict-section-content CSS must be included here because
-// pict-view's Object.assign replaces the CSS property entirely when
-// the child provides its own.  We cannot read the parent's
-// default_configuration.CSS at module scope because browserify's
-// module initialisation order does not guarantee it is populated yet.
-CSS:/*css*/`
-		.pict-content {
-			padding: 2em 3em;
-			max-width: 900px;
-			margin: 0 auto;
-		}
-		.pict-content-loading {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			min-height: 200px;
-			color: #8A7F72;
-			font-size: 1em;
-		}
-		.pict-content h1 {
-			font-size: 2em;
-			color: #3D3229;
-			border-bottom: 1px solid #DDD6CA;
-			padding-bottom: 0.3em;
-			margin-top: 0;
-		}
-		.pict-content h2 {
-			font-size: 1.5em;
-			color: #3D3229;
-			border-bottom: 1px solid #EAE3D8;
-			padding-bottom: 0.25em;
-			margin-top: 1.5em;
-		}
-		.pict-content h3 {
-			font-size: 1.25em;
-			color: #3D3229;
-			margin-top: 1.25em;
-		}
-		.pict-content h4, .pict-content h5, .pict-content h6 {
-			color: #5E5549;
-			margin-top: 1em;
-		}
-		.pict-content p {
-			line-height: 1.7;
-			color: #423D37;
-			margin: 0.75em 0;
-		}
-		.pict-content a {
-			color: #2E7D74;
-			text-decoration: none;
-		}
-		.pict-content a:hover {
-			text-decoration: underline;
-		}
-		.pict-content pre {
-			background: #3D3229;
-			color: #E8E0D4;
-			padding: 1.25em;
-			border-radius: 6px;
-			overflow-x: auto;
-			line-height: 1.5;
-			font-size: 0.9em;
-		}
-		.pict-content code {
-			background: #F0ECE4;
-			padding: 0.15em 0.4em;
-			border-radius: 3px;
-			font-size: 0.9em;
-			color: #9E6B47;
-		}
-		.pict-content pre code {
-			background: none;
-			padding: 0;
-			color: inherit;
-			font-size: inherit;
-		}
-		.pict-content blockquote {
-			border-left: 4px solid #2E7D74;
-			margin: 1em 0;
-			padding: 0.5em 1em;
-			background: #F7F5F0;
-			color: #5E5549;
-		}
-		.pict-content blockquote p {
-			margin: 0.25em 0;
-		}
-		.pict-content ul, .pict-content ol {
-			padding-left: 2em;
-			line-height: 1.8;
-		}
-		.pict-content li {
-			margin: 0.25em 0;
-			color: #423D37;
-		}
-		.pict-content hr {
-			border: none;
-			border-top: 1px solid #DDD6CA;
-			margin: 2em 0;
-		}
-		.pict-content table {
-			width: 100%;
-			border-collapse: collapse;
-			margin: 1em 0;
-		}
-		.pict-content table th {
-			background: #F5F0E8;
-			border: 1px solid #DDD6CA;
-			padding: 0.6em 0.8em;
-			text-align: left;
-			font-weight: 600;
-			color: #3D3229;
-		}
-		.pict-content table td {
-			border: 1px solid #DDD6CA;
-			padding: 0.5em 0.8em;
-			color: #423D37;
-		}
-		.pict-content table tr:nth-child(even) {
-			background: #F7F5F0;
-		}
-		.pict-content img {
-			max-width: 100%;
-			height: auto;
-		}
-		.pict-content pre.mermaid {
-			background: #fff;
-			color: #3D3229;
-			text-align: center;
-			padding: 1em;
-		}
-		.pict-content .pict-content-katex-display {
-			text-align: center;
-			margin: 1em 0;
-			padding: 0.5em;
-			overflow-x: auto;
-		}
-		.pict-content .pict-content-katex-inline {
-			display: inline;
-		}
-		.docuserve-module-external-link {
-			padding: 0.5em 0;
-			margin-bottom: 0.5em;
-			border-bottom: 1px solid #EAE3D8;
-			font-size: 0.85em;
-			text-align: right;
-		}
-		.docuserve-module-external-link a {
-			color: #2E7D74;
-			text-decoration: none;
-		}
-		.docuserve-module-external-link a:hover {
-			text-decoration: underline;
-		}
-		.docuserve-not-found {
-			text-align: center;
-			padding: 3em 1em;
-			color: #5E5549;
-		}
-		.docuserve-not-found h2 {
-			color: #8A7F72;
-			font-size: 1.5em;
-			border-bottom: none;
-		}
-		.docuserve-not-found code {
-			background: #F0ECE4;
-			padding: 0.15em 0.4em;
-			border-radius: 3px;
-			font-size: 0.9em;
-			color: #9E6B47;
-		}
-	`,Templates:[{Hash:"Docuserve-Content-Template",Template:/*html*/`
-<div class="pict-content" id="Docuserve-Content-Body">
-	<div class="pict-content-loading">Loading documentation...</div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-Content-Display",TemplateHash:"Docuserve-Content-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveContentView extends libPictContentView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
-	 * Display parsed HTML content in the content area.
-	 *
-	 * When viewing a module's documentation, prepends a link to the
-	 * module's own GitHub Pages documentation site.
-	 *
-	 * @param {string} pHTMLContent - The HTML to display
-	 */displayContent(pHTMLContent){let tmpHTML=pHTMLContent;let tmpGroup=this.pict.AppData.Docuserve.CurrentGroup;let tmpModule=this.pict.AppData.Docuserve.CurrentModule;if(tmpGroup&&tmpModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(tmpDocProvider){let tmpPagesURL=tmpDocProvider.resolveGitHubPagesURL(tmpGroup,tmpModule);if(tmpPagesURL){tmpHTML='<div class="docuserve-module-external-link">'+'<a href="'+tmpPagesURL+'" target="_blank" rel="noopener">'+'&#x2197; View '+tmpModule+' documentation site'+'</a>'+'</div>'+tmpHTML;}}}super.displayContent(tmpHTML,'Docuserve-Content-Body');}/**
-	 * Show a loading indicator.
-	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":59}],49:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/`
-		#Docuserve-Application-Container {
-			display: flex;
-			flex-direction: column;
-			height: 100vh;
-			overflow: hidden;
-		}
-		#Docuserve-TopBar-Container {
-			flex-shrink: 0;
-		}
-		.docuserve-body {
-			display: flex;
-			flex: 1;
-			min-height: 0;
-		}
-		#Docuserve-Sidebar-Container {
-			flex-shrink: 0;
-			width: 280px;
-			overflow-y: auto;
-			background-color: #F5F0E8;
-		}
-		#Docuserve-Content-Container {
-			flex: 1;
-			min-width: 0;
-			overflow-y: auto;
-		}
-	`,Templates:[{Hash:"Docuserve-Layout-Shell-Template",Template:/*html*/`
-<div id="Docuserve-TopBar-Container"></div>
-<div class="docuserve-body">
-	<div id="Docuserve-Sidebar-Container"></div>
-	<div id="Docuserve-Content-Container"></div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-Layout-Shell",TemplateHash:"Docuserve-Layout-Shell-Template",DestinationAddress:"#Docuserve-Application-Container",RenderMethod:"replace"}]};class DocuserveLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// After the layout shell is rendered, render the child views into their containers
-this.pict.views['Docuserve-TopBar'].render();this.pict.views['Docuserve-Sidebar'].render();// Show the splash screen initially
-this.pict.views['Docuserve-Splash'].render();// Inject all view CSS into the PICT-CSS style element
-this.pict.CSSMap.injectCSS();// Resolve the current hash on initial load
-this.pict.PictApplication.resolveHash();// Listen for hash changes so that plain <a href="#/..."> links trigger
-// navigation.  This covers sidebar links, splash action buttons,
-// in-content links, and browser back/forward navigation.
-if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
-		.docuserve-search {
-			padding: 2em 3em;
-			max-width: 900px;
-			margin: 0 auto;
-		}
-		.docuserve-search-header {
-			margin-bottom: 1.5em;
-		}
-		.docuserve-search-header h1 {
-			font-size: 1.75em;
-			color: #3D3229;
-			margin: 0 0 0.75em 0;
-		}
-		.docuserve-search-input {
-			width: 100%;
-			padding: 0.75em 1em;
-			font-size: 1.1em;
-			border: 2px solid #D4CCBE;
-			border-radius: 6px;
-			outline: none;
-			box-sizing: border-box;
-			transition: border-color 0.15s;
-		}
-		.docuserve-search-input:focus {
-			border-color: #2E7D74;
-		}
-		.docuserve-search-status {
-			margin-top: 0.75em;
-			font-size: 0.9em;
-			color: #8A7F72;
-		}
-		.docuserve-search-results {
-			margin-top: 1em;
-		}
-		.docuserve-search-result {
-			display: block;
-			padding: 1em 1.25em;
-			margin-bottom: 0.5em;
-			border: 1px solid #EAE3D8;
-			border-radius: 6px;
-			text-decoration: none;
-			color: inherit;
-			transition: border-color 0.15s, box-shadow 0.15s;
-		}
-		.docuserve-search-result:hover {
-			border-color: #2E7D74;
-			box-shadow: 0 2px 8px rgba(46, 125, 116, 0.1);
-		}
-		.docuserve-search-result-title {
-			font-size: 1.05em;
-			font-weight: 600;
-			color: #2E7D74;
-			margin-bottom: 0.25em;
-		}
-		.docuserve-search-result-breadcrumb {
-			font-size: 0.8em;
-			color: #8A7F72;
-			margin-bottom: 0.2em;
-		}
-		.docuserve-search-result-path {
-			font-size: 0.8em;
-			color: #A39889;
-			font-family: monospace;
-		}
-		.docuserve-search-empty {
-			text-align: center;
-			padding: 3em 1em;
-			color: #8A7F72;
-			font-size: 1em;
-		}
-	`,Templates:[{Hash:"Docuserve-Search-Template",Template:/*html*/`
-<div class="docuserve-search">
-	<div class="docuserve-search-header">
-		<h1>Search Documentation</h1>
-		<input type="text" class="docuserve-search-input" id="Docuserve-Search-Input" placeholder="Search across all modules...">
-		<div id="Docuserve-Search-Status" class="docuserve-search-status"></div>
-	</div>
-	<div id="Docuserve-Search-Results" class="docuserve-search-results"></div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-Search-Display",TemplateHash:"Docuserve-Search-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveSearchView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Attach the search input listener
-let tmpInput=document.getElementById('Docuserve-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SearchDebounceTimer){clearTimeout(this._SearchDebounceTimer);}this._SearchDebounceTimer=setTimeout(()=>{this.performSearch(tmpInput.value);},250);});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
-	 * Show the search page with an optional initial query.
-	 *
-	 * @param {string} pQuery - The initial search query
-	 */showSearch(pQuery){let tmpInput=document.getElementById('Docuserve-Search-Input');if(tmpInput){tmpInput.value=pQuery||'';tmpInput.focus();}if(pQuery&&pQuery.trim()){this.performSearch(pQuery);}else{let tmpDocCount=this.pict.AppData.Docuserve.KeywordDocumentCount||0;let tmpStatusMsg=tmpDocCount>0?'Search across '+tmpDocCount+' documents.':'Enter a search term to find documentation.';this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpStatusMsg);this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');}// Scroll to top
-let tmpContentContainer=document.getElementById('Docuserve-Content-Container');if(tmpContentContainer){tmpContentContainer.scrollTop=0;}}/**
-	 * Perform a search and render the results.
-	 *
-	 * @param {string} pQuery - The search query
-	 */performSearch(pQuery){if(!pQuery||!pQuery.trim()){let tmpDocCount=this.pict.AppData.Docuserve.KeywordDocumentCount||0;let tmpStatusMsg=tmpDocCount>0?'Search across '+tmpDocCount+' documents.':'Enter a search term to find documentation.';this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpStatusMsg);this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');return;}let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpResults=tmpDocProvider.search(pQuery);// Update status
-if(tmpResults.length===0){this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status','No results found for \''+this.escapeHTML(pQuery)+'\'.');this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');return;}this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpResults.length+' result'+(tmpResults.length!==1?'s':'')+' for \''+this.escapeHTML(pQuery)+'\'');// Render results
-let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];let tmpBreadcrumb='';if(tmpResult.Group&&tmpResult.Module){tmpBreadcrumb=tmpResult.Group+' &rsaquo; '+tmpResult.Module;}tmpHTML+='<a class="docuserve-search-result" href="'+tmpResult.Route+'">';tmpHTML+='<div class="docuserve-search-result-title">'+this.escapeHTML(tmpResult.Title)+'</div>';if(tmpBreadcrumb){tmpHTML+='<div class="docuserve-search-result-breadcrumb">'+tmpBreadcrumb+'</div>';}if(tmpResult.DocPath){tmpHTML+='<div class="docuserve-search-result-path">'+this.escapeHTML(tmpResult.DocPath)+'</div>';}tmpHTML+='</a>';}this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results',tmpHTML);}/**
-	 * Escape HTML special characters.
-	 *
-	 * @param {string} pText - The text to escape
-	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
-		.docuserve-sidebar {
-			border-right: 1px solid #DDD6CA;
-			padding: 1em 0;
-			padding-top: 0;
-			min-height: 100%;
-			position: relative;
-		}
-		.docuserve-sidebar-header {
-			display: flex;
-			justify-content: flex-end;
-			padding: 0.4em 0.5em 0;
-		}
-		.docuserve-sidebar-close {
-			background: none;
-			border: none;
-			color: #8A7F72;
-			font-size: 1.2em;
-			cursor: pointer;
-			padding: 0.2em 0.4em;
-			line-height: 1;
-		}
-		.docuserve-sidebar-close:hover {
-			color: #2E7D74;
-		}
-		.docuserve-sidebar-search {
-			padding: 0 1em 1em 1em;
-			border-bottom: 1px solid #EAE3D8;
-			margin-bottom: 0.5em;
-		}
-		.docuserve-sidebar-search input {
-			width: 100%;
-			padding: 0.5em 0.75em;
-			border: 1px solid #D4CCBE;
-			border-radius: 4px;
-			font-size: 0.85em;
-			outline: none;
-			box-sizing: border-box;
-		}
-		.docuserve-sidebar-search input:focus {
-			border-color: #2E7D74;
-		}
-		.docuserve-sidebar-search-results {
-			margin-top: 0.5em;
-		}
-		.docuserve-sidebar-search-results a {
-			display: block;
-			padding: 0.4em 0.5em;
-			color: #423D37;
-			text-decoration: none;
-			font-size: 0.82em;
-			border-radius: 3px;
-			transition: background-color 0.1s;
-			cursor: pointer;
-		}
-		.docuserve-sidebar-search-results a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
-		}
-		.docuserve-sidebar-search-result-title {
-			font-weight: 600;
-			color: #3D3229;
-		}
-		.docuserve-sidebar-search-results a:hover .docuserve-sidebar-search-result-title {
-			color: #2E7D74;
-		}
-		.docuserve-sidebar-search-result-meta {
-			font-size: 0.9em;
-			color: #8A7F72;
-		}
-		.docuserve-sidebar-search-all {
-			display: block;
-			padding: 0.4em 0.5em;
-			font-size: 0.82em;
-			color: #2E7D74;
-			text-decoration: none;
-			font-weight: 600;
-			cursor: pointer;
-			border-top: 1px solid #EAE3D8;
-			margin-top: 0.25em;
-			padding-top: 0.5em;
-		}
-		.docuserve-sidebar-search-all:hover {
-			text-decoration: underline;
-		}
-		.docuserve-sidebar-home {
-			padding: 0.5em 1.25em;
-			font-weight: 600;
-			font-size: 0.85em;
-			text-transform: uppercase;
-			letter-spacing: 0.03em;
-		}
-		.docuserve-sidebar-home a {
-			color: #5E5549;
-			text-decoration: none;
-			cursor: pointer;
-			user-select: none;
-		}
-		.docuserve-sidebar-home a:hover {
-			color: #2E7D74;
-		}
-		.docuserve-sidebar-group {
-			margin-top: 0.25em;
-		}
-		.docuserve-sidebar-group-title {
-			display: block;
-			padding: 0.5em 1.25em;
-			font-weight: 600;
-			font-size: 0.85em;
-			color: #5E5549;
-			text-decoration: none;
-			text-transform: uppercase;
-			letter-spacing: 0.03em;
-			cursor: pointer;
-			user-select: none;
-			transition: background-color 0.1s, color 0.1s;
-		}
-		.docuserve-sidebar-group-title:hover {
-			color: #2E7D74;
-			background-color: #EAE3D8;
-		}
-		a.docuserve-sidebar-group-title.active {
-			color: #2E7D74;
-			background-color: #E0EDEB;
-		}
-		.docuserve-sidebar-modules {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-		}
-		.docuserve-sidebar-modules li {
-			padding: 0;
-		}
-		.docuserve-sidebar-modules a {
-			display: block;
-			padding: 0.3em 1.25em 0.3em 2em;
-			color: #5E5549;
-			text-decoration: none;
-			font-size: 0.85em;
-			transition: background-color 0.1s, color 0.1s;
-			cursor: pointer;
-		}
-		.docuserve-sidebar-modules a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
-		}
-		.docuserve-sidebar-modules a.active {
-			color: #2E7D74;
-			font-weight: 600;
-			background-color: #E0EDEB;
-		}
-		.docuserve-sidebar-modules .no-docs {
-			display: block;
-			padding: 0.3em 1.25em 0.3em 2em;
-			color: #A39889;
-			font-size: 0.85em;
-		}
-		.docuserve-sidebar-module-nav {
-			border-top: 1px solid #EAE3D8;
-			margin-top: 0.5em;
-			padding-top: 0.5em;
-		}
-		.docuserve-sidebar-module-nav-section {
-			padding: 0.4em 1.25em;
-			font-weight: 600;
-			font-size: 0.8em;
-			color: #8A7F72;
-			text-transform: uppercase;
-			letter-spacing: 0.02em;
-		}
-		.docuserve-sidebar-module-nav a {
-			display: block;
-			padding: 0.25em 1.25em 0.25em 2.25em;
-			color: #5E5549;
-			text-decoration: none;
-			font-size: 0.82em;
-			transition: background-color 0.1s, color 0.1s;
-			cursor: pointer;
-		}
-		.docuserve-sidebar-module-nav a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
-		}
-	`,Templates:[{Hash:"Docuserve-Sidebar-Template",Template:/*html*/`
-<div class="docuserve-sidebar">
-	<div class="docuserve-sidebar-header">
-		<button class="docuserve-sidebar-close" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&times;</button>
-	</div>
-	<div id="Docuserve-Sidebar-Search" class="docuserve-sidebar-search" style="display:none;">
-		<input type="text" placeholder="Search docs..." id="Docuserve-Sidebar-Search-Input">
-		<div id="Docuserve-Sidebar-Search-Results" class="docuserve-sidebar-search-results"></div>
-	</div>
-	<div class="docuserve-sidebar-home">
-		<a onclick="{~P~}.PictApplication.navigateTo('/Home')">Home</a>
-	</div>
-	<div id="Docuserve-Sidebar-Groups"></div>
-	<div id="Docuserve-Sidebar-ModuleNav"></div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();// Conditionally show the search box if the keyword index is loaded
-let tmpSearchContainer=document.getElementById('Docuserve-Sidebar-Search');if(tmpSearchContainer&&this.pict.AppData.Docuserve.KeywordIndexLoaded){tmpSearchContainer.style.display='';let tmpInput=document.getElementById('Docuserve-Sidebar-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SidebarSearchDebounceTimer){clearTimeout(this._SidebarSearchDebounceTimer);}this._SidebarSearchDebounceTimer=setTimeout(()=>{this.performSidebarSearch(tmpInput.value);},250);});}}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
-	 * Render the sidebar group navigation from catalog data.
-	 */renderSidebarGroups(){let tmpGroups=this.pict.AppData.Docuserve.SidebarGroups;if(!tmpGroups||tmpGroups.length<1){// Empty sidebar -- don't show a permanent loading message
-this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-Groups','');return;}let tmpHTML='';for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];tmpHTML+='<div class="docuserve-sidebar-group">';// Determine the route for the group title: use the group's own route,
-// or fall back to the first module with docs.
-let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.Modules.length;k++){if(tmpGroup.Modules[k].HasDocs&&tmpGroup.Modules[k].Route){tmpGroupRoute=tmpGroup.Modules[k].Route;break;}}}if(tmpGroupRoute){let tmpGroupActiveClass='';let tmpCurrentHash=window.location.hash||'';if(this.pict.AppData.Docuserve.CurrentGroup===tmpGroup.Key||tmpCurrentHash===tmpGroupRoute){tmpGroupActiveClass=' active';}tmpHTML+='<a class="docuserve-sidebar-group-title'+tmpGroupActiveClass+'" href="'+tmpGroupRoute+'">'+this.escapeHTML(tmpGroup.Name)+'</a>';}else{tmpHTML+='<div class="docuserve-sidebar-group-title">'+this.escapeHTML(tmpGroup.Name)+'</div>';}tmpHTML+='<ul class="docuserve-sidebar-modules">';for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.HasDocs){let tmpActiveClass='';if(this.pict.AppData.Docuserve.CurrentGroup===tmpModule.Group&&this.pict.AppData.Docuserve.CurrentModule===tmpModule.Name){tmpActiveClass=' class="active"';}tmpHTML+='<li><a'+tmpActiveClass+' href="'+tmpModule.Route+'">'+this.escapeHTML(tmpModule.Name)+'</a></li>';}else{tmpHTML+='<li><span class="no-docs">'+this.escapeHTML(tmpModule.Name)+'</span></li>';}}tmpHTML+='</ul>';tmpHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-Groups',tmpHTML);}/**
-	 * Render module-specific sub-navigation when viewing a module.
-	 *
-	 * @param {string} pGroup - The group key
-	 * @param {string} pModule - The module name
-	 */renderModuleNav(pGroup,pModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(!tmpDocProvider){return;}let tmpSidebar=tmpDocProvider.getModuleSidebar(pGroup,pModule);if(!tmpSidebar){this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav','');return;}let tmpRoutePrefix='#/doc/'+pGroup+'/'+pModule+'/';let tmpHTML='<div class="docuserve-sidebar-module-nav">';for(let i=0;i<tmpSidebar.length;i++){let tmpEntry=tmpSidebar[i];if(tmpEntry.Children){tmpHTML+='<div class="docuserve-sidebar-module-nav-section">'+this.escapeHTML(tmpEntry.Title)+'</div>';for(let j=0;j<tmpEntry.Children.length;j++){let tmpChild=tmpEntry.Children[j];if(tmpChild.Path){tmpHTML+='<a href="'+tmpRoutePrefix+tmpChild.Path+'">'+this.escapeHTML(tmpChild.Title)+'</a>';}}}else if(tmpEntry.Path){tmpHTML+='<a href="'+tmpRoutePrefix+tmpEntry.Path+'">'+this.escapeHTML(tmpEntry.Title)+'</a>';}}tmpHTML+='</div>';this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav',tmpHTML);}/**
-	 * Perform a sidebar search and render inline results.
-	 *
-	 * Shows up to 8 results as compact links.  If there are results, also
-	 * shows a "See all results" link to the dedicated search page.
-	 *
-	 * @param {string} pQuery - The search query
-	 */performSidebarSearch(pQuery){let tmpResultsEl=document.getElementById('Docuserve-Sidebar-Search-Results');if(!tmpResultsEl){return;}if(!pQuery||!pQuery.trim()){tmpResultsEl.innerHTML='';return;}let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpResults=tmpDocProvider.search(pQuery);if(tmpResults.length===0){tmpResultsEl.innerHTML='<div style="padding: 0.4em 0.5em; font-size: 0.82em; color: #8A7F72;">No results found.</div>';return;}let tmpMaxResults=8;let tmpHTML='';for(let i=0;i<tmpResults.length&&i<tmpMaxResults;i++){let tmpResult=tmpResults[i];let tmpMeta='';if(tmpResult.Group&&tmpResult.Module){tmpMeta=tmpResult.Group+' / '+tmpResult.Module;}tmpHTML+='<a href="'+tmpResult.Route+'">';tmpHTML+='<div class="docuserve-sidebar-search-result-title">'+this.escapeHTML(tmpResult.Title)+'</div>';if(tmpMeta){tmpHTML+='<div class="docuserve-sidebar-search-result-meta">'+this.escapeHTML(tmpMeta)+'</div>';}tmpHTML+='</a>';}if(tmpResults.length>tmpMaxResults){let tmpEncodedQuery=encodeURIComponent(pQuery);tmpHTML+='<a class="docuserve-sidebar-search-all" href="#/search/'+tmpEncodedQuery+'">See all '+tmpResults.length+' results</a>';}tmpResultsEl.innerHTML=tmpHTML;}/**
-	 * Toggle the sidebar visibility and update the top bar hamburger button.
-	 */toggleSidebar(){this.pict.AppData.Docuserve.SidebarVisible=!this.pict.AppData.Docuserve.SidebarVisible;let tmpContainer=document.getElementById('Docuserve-Sidebar-Container');let tmpToggle=document.getElementById('Docuserve-TopBar-Toggle');if(this.pict.AppData.Docuserve.SidebarVisible){if(tmpContainer)tmpContainer.style.display='';if(tmpToggle)tmpToggle.style.display='none';}else{if(tmpContainer)tmpContainer.style.display='none';if(tmpToggle)tmpToggle.style.display='inline-block';}}/**
-	 * Clear the module-specific sub-navigation.
-	 */clearModuleNav(){this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav','');}/**
-	 * Escape HTML special characters.
-	 *
-	 * @param {string} pText - The text to escape
-	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
-		.docuserve-splash {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			min-height: calc(100vh - 56px);
-			padding: 3em 2em;
-			text-align: center;
-			background: linear-gradient(135deg, #F5F0E8 0%, #E4EFED 100%);
-		}
-		.docuserve-splash h1 {
-			font-size: 3em;
-			font-weight: 700;
-			color: #3D3229;
-			margin: 0 0 0.25em 0;
-		}
-		.docuserve-splash h1 small {
-			font-size: 0.4em;
-			font-weight: 400;
-			color: #7A7568;
-			vertical-align: middle;
-			margin-left: 0.15em;
-		}
-		.docuserve-splash-tagline {
-			font-size: 1.25em;
-			color: #7A7568;
-			margin-bottom: 1.5em;
-			font-style: italic;
-		}
-		.docuserve-splash-description {
-			font-size: 1em;
-			color: #5E5549;
-			max-width: 600px;
-			line-height: 1.7;
-			margin-bottom: 2em;
-		}
-		.docuserve-splash-highlights {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-			gap: 1.25em;
-			max-width: 900px;
-			width: 100%;
-			margin-bottom: 2.5em;
-		}
-		.docuserve-splash-highlight-card {
-			background: #fff;
-			border: 1px solid #DDD6CA;
-			border-radius: 8px;
-			padding: 1.25em;
-			text-align: left;
-			transition: box-shadow 0.2s, border-color 0.2s;
-		}
-		.docuserve-splash-highlight-card:hover {
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-			border-color: #2E7D74;
-		}
-		.docuserve-splash-highlight-card h3 {
-			margin: 0 0 0.5em 0;
-			color: #3D3229;
-			font-size: 1em;
-		}
-		.docuserve-splash-highlight-card p {
-			margin: 0;
-			color: #7A7568;
-			font-size: 0.85em;
-			line-height: 1.5;
-		}
-		.docuserve-splash-actions {
-			display: flex;
-			gap: 1em;
-			flex-wrap: wrap;
-			justify-content: center;
-		}
-		.docuserve-splash-actions a {
-			display: inline-block;
-			padding: 0.7em 1.5em;
-			border-radius: 6px;
-			font-size: 0.95em;
-			font-weight: 600;
-			text-decoration: none;
-			transition: background-color 0.15s, color 0.15s;
-			cursor: pointer;
-		}
-		.docuserve-splash-actions .primary {
-			background-color: #2E7D74;
-			color: #fff;
-		}
-		.docuserve-splash-actions .primary:hover {
-			background-color: #256861;
-		}
-		.docuserve-splash-actions .secondary {
-			background-color: #fff;
-			color: #3D3229;
-			border: 2px solid #2E7D74;
-		}
-		.docuserve-splash-actions .secondary:hover {
-			border-color: #256861;
-			color: #2E7D74;
-		}
-	`,Templates:[{Hash:"Docuserve-Splash-Template",Template:/*html*/`
-<div class="docuserve-splash">
-	<h1 id="Docuserve-Splash-Title"></h1>
-	<div class="docuserve-splash-tagline" id="Docuserve-Splash-Tagline"></div>
-	<div class="docuserve-splash-description" id="Docuserve-Splash-Description"></div>
-	<div class="docuserve-splash-highlights" id="Docuserve-Splash-Highlights"></div>
-	<div class="docuserve-splash-actions" id="Docuserve-Splash-Actions"></div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-Splash-Content",TemplateHash:"Docuserve-Splash-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocusserveSplashView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover){this.renderFromCover(tmpDocuserve.Cover);}else{this.renderFromCatalog(tmpDocuserve);}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
-	 * Render the splash screen from parsed _cover.md data.
-	 *
-	 * @param {Object} pCover - The parsed cover data { Title, Tagline, Description, Highlights, Actions }
-	 */renderFromCover(pCover){this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Title',this.sanitizeTitle(pCover.Title));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Tagline',this.escapeHTML(pCover.Tagline));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Description',this.escapeHTML(pCover.Description));// Render highlight cards
-let tmpHighlightsHTML='';for(let i=0;i<pCover.Highlights.length;i++){let tmpHighlight=pCover.Highlights[i];tmpHighlightsHTML+='<div class="docuserve-splash-highlight-card">';if(tmpHighlight.Label){tmpHighlightsHTML+='<h3>'+this.escapeHTML(tmpHighlight.Label)+'</h3>';}tmpHighlightsHTML+='<p>'+this.escapeHTML(tmpHighlight.Text)+'</p>';tmpHighlightsHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Highlights',tmpHighlightsHTML);// Render action buttons
-let tmpActionsHTML='';let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];for(let i=0;i<pCover.Actions.length;i++){let tmpAction=pCover.Actions[i];let tmpClass=i===0?'primary':'secondary';let tmpHref=tmpAction.Href;// External links open in new tab
-if(tmpHref.match(/^https?:\/\//)){tmpActionsHTML+='<a class="'+tmpClass+'" href="'+this.escapeHTML(tmpHref)+'" target="_blank" rel="noopener">'+this.escapeHTML(tmpAction.Text)+'</a>';}else{// Internal links go through the app router
-let tmpRoute=tmpDocProvider.convertSidebarLink(tmpHref);tmpActionsHTML+='<a class="'+tmpClass+'" href="'+this.escapeHTML(tmpRoute)+'">'+this.escapeHTML(tmpAction.Text)+'</a>';}}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Actions',tmpActionsHTML);}/**
-	 * Render the splash screen from catalog data as a fallback when _cover.md
-	 * is not available.
-	 *
-	 * @param {Object} pDocuserve - The AppData.Docuserve state
-	 */renderFromCatalog(pDocuserve){// Derive the title from whatever data is available, falling back to the page title or 'Documentation'
-let tmpTitle='Documentation';let tmpTagline='';if(pDocuserve.CatalogLoaded&&pDocuserve.Catalog&&pDocuserve.Catalog.Name){tmpTitle=pDocuserve.Catalog.Name;}else if(pDocuserve.TopBarLoaded&&pDocuserve.TopBar&&pDocuserve.TopBar.Brand){tmpTitle=pDocuserve.TopBar.Brand;}else if(typeof document!=='undefined'&&document.title){tmpTitle=document.title;}if(pDocuserve.CatalogLoaded&&pDocuserve.Catalog&&pDocuserve.Catalog.Description){tmpTagline=pDocuserve.Catalog.Description;}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Title',this.escapeHTML(tmpTitle));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Tagline',this.escapeHTML(tmpTagline));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Description','');// Build highlight cards from catalog groups
-let tmpHighlightsHTML='';let tmpGroups=pDocuserve.SidebarGroups||[];for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];// Skip groups with no modules (like "Home" or "Getting Started")
-if(!tmpGroup.Modules||tmpGroup.Modules.length<1){continue;}let tmpDescription=tmpGroup.Description||tmpGroup.Modules.length+' modules';tmpHighlightsHTML+='<div class="docuserve-splash-highlight-card">';tmpHighlightsHTML+='<h3>'+this.escapeHTML(tmpGroup.Name)+'</h3>';tmpHighlightsHTML+='<p>'+this.escapeHTML(tmpDescription)+'</p>';tmpHighlightsHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Highlights',tmpHighlightsHTML);// Default action buttons
-this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Actions','');}/**
-	 * Sanitize a title string, preserving only <small> tags.
-	 * All other HTML is escaped.
-	 *
-	 * @param {string} pText - The raw title text
-	 * @returns {string} The sanitized title HTML
-	 */sanitizeTitle(pText){if(!pText){return'';}// Escape everything first, then restore <small> and </small>
-return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
-	 * Escape HTML special characters.
-	 *
-	 * @param {string} pText - The text to escape
-	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
-		.docuserve-topbar {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			background-color: #3D3229;
-			color: #E8E0D4;
-			padding: 0 1.5em;
-			height: 56px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-			position: sticky;
-			top: 0;
-			z-index: 100;
-		}
-		.docuserve-topbar-brand {
-			font-size: 1.25em;
-			font-weight: 600;
-			letter-spacing: 0.02em;
-			color: #E8E0D4;
-			text-decoration: none;
-			cursor: pointer;
-		}
-		.docuserve-topbar-brand small {
-			font-size: 0.65em;
-			font-weight: 400;
-			color: #8A7F72;
-			margin-left: 0.2em;
-		}
-		.docuserve-topbar-brand:hover {
-			color: #fff;
-		}
-		.docuserve-topbar-nav {
-			display: flex;
-			align-items: center;
-			gap: 0.25em;
-		}
-		.docuserve-topbar-nav a {
-			color: #B5AA9A;
-			text-decoration: none;
-			padding: 0.5em 0.75em;
-			border-radius: 4px;
-			font-size: 0.9em;
-			transition: background-color 0.15s, color 0.15s;
-			cursor: pointer;
-		}
-		.docuserve-topbar-nav a:hover {
-			background-color: #524438;
-			color: #fff;
-		}
-		.docuserve-topbar-links {
-			display: flex;
-			align-items: center;
-			gap: 0.5em;
-		}
-		.docuserve-topbar-links a {
-			color: #8A7F72;
-			text-decoration: none;
-			font-size: 0.85em;
-			padding: 0.4em 0.6em;
-			border-radius: 4px;
-			transition: background-color 0.15s, color 0.15s;
-		}
-		.docuserve-topbar-links a:hover {
-			background-color: #524438;
-			color: #E8E0D4;
-		}
-		.docuserve-topbar-toggle {
-			display: none;
-			background: none;
-			border: none;
-			color: #B5AA9A;
-			font-size: 1.3em;
-			cursor: pointer;
-			padding: 0.3em 0.5em;
-			margin-left: 0.5em;
-			line-height: 1;
-		}
-		.docuserve-topbar-toggle:hover {
-			color: #fff;
-		}
-		.docuserve-topbar-right {
-			display: flex;
-			align-items: center;
-		}
-	`,Templates:[{Hash:"Docuserve-TopBar-Template",Template:/*html*/`
-<div class="docuserve-topbar">
-	<a id="Docuserve-TopBar-Brand" class="docuserve-topbar-brand" href="#/Home"></a>
-	<div id="Docuserve-TopBar-Nav" class="docuserve-topbar-nav"></div>
-	<div class="docuserve-topbar-right">
-		<div id="Docuserve-TopBar-Links" class="docuserve-topbar-links"></div>
-		<button id="Docuserve-TopBar-Toggle" class="docuserve-topbar-toggle" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&#9776;</button>
-	</div>
-</div>
-`}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
-	 * Populate the top bar from _topbar.md data or fall back to defaults.
-	 */renderTopBarContent(){let tmpDocuserve=this.pict.AppData.Docuserve;let tmpBrandEl=document.getElementById('Docuserve-TopBar-Brand');let tmpNavEl=document.getElementById('Docuserve-TopBar-Nav');let tmpLinksEl=document.getElementById('Docuserve-TopBar-Links');if(!tmpBrandEl||!tmpNavEl||!tmpLinksEl){return;}if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar){// Data-driven from _topbar.md
-let tmpTopBar=tmpDocuserve.TopBar;// Brand
-tmpBrandEl.innerHTML=this.sanitizeTitle(tmpTopBar.Brand||'Documentation');// Navigation links (centre)
-let tmpNavHTML='<a href="#/Home">Home</a>';for(let i=0;i<tmpTopBar.NavLinks.length;i++){let tmpLink=tmpTopBar.NavLinks[i];tmpNavHTML+='<a href="'+tmpLink.Href+'">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpNavEl.innerHTML=tmpNavHTML;// External links (right side) — search link first if keyword index is available
-let tmpLinksHTML='';if(tmpDocuserve.KeywordIndexLoaded){tmpLinksHTML+='<a href="#/search/">Search</a>';}for(let i=0;i<tmpTopBar.ExternalLinks.length;i++){let tmpLink=tmpTopBar.ExternalLinks[i];tmpLinksHTML+='<a href="'+this.escapeHTML(tmpLink.Href)+'" target="_blank" rel="noopener">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpLinksEl.innerHTML=tmpLinksHTML;}else{// Fallback: use brand from cover or a default, and just show Home
-let tmpBrand='Documentation';if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){tmpBrand=tmpDocuserve.Cover.Title;}else if(tmpDocuserve.CatalogLoaded&&tmpDocuserve.Catalog&&tmpDocuserve.Catalog.Name){tmpBrand=tmpDocuserve.Catalog.Name;}tmpBrandEl.innerHTML=this.sanitizeTitle(tmpBrand);tmpNavEl.innerHTML='<a href="#/Home">Home</a>';tmpLinksEl.innerHTML=tmpDocuserve.KeywordIndexLoaded?'<a href="#/search/">Search</a>':'';}}/**
-	 * Sanitize a title string, preserving only <small> tags.
-	 */sanitizeTitle(pText){if(!pText){return'';}return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
-	 * Escape HTML special characters.
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],54:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],55:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
+	 */get isPictApplication(){return true;}}module.exports=PictApplication;},{"../package.json":43,"fable-serviceproviderbase":20}],45:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],46:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,AutoLoadDataWithApp:true,AutoLoadDataOrdinal:0,AutoSolveWithApp:true,AutoSolveOrdinal:0,Manifests:{},Templates:[]};class PictProvider extends libFableServiceBase{/**
 	 * @param {import('fable')} pFable - The Fable instance.
@@ -2664,7 +1503,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data post-load.
 	 *
 	 * @return {void}
-	 */onAfterSaveDataAsync(fCallback){return fCallback();}}module.exports=PictProvider;},{"../package.json":54,"fable-serviceproviderbase":20}],56:[function(require,module,exports){/**
+	 */onAfterSaveDataAsync(fCallback){return fCallback();}}module.exports=PictProvider;},{"../package.json":45,"fable-serviceproviderbase":20}],47:[function(require,module,exports){/**
  * Simple syntax highlighter for use with CodeJar.
  *
  * Provides basic keyword/string/number/comment highlighting for common languages.
@@ -2732,7 +1571,7 @@ if(tmpMatch[1]){// Comment
 tmpResult+=`<span class="comment">${escapeHTML(tmpFullMatch)}</span>`;}else if(tmpTagGroupIndex>0&&tmpMatch[tmpTagGroupIndex]){// HTML tag — highlight tag name, attributes, and values
 tmpResult+=highlightHTMLTag(tmpFullMatch);}else{// String, template literal, or regex
 tmpResult+=`<span class="string">${escapeHTML(tmpFullMatch)}</span>`;}tmpLastIndex=tmpLanguageDef.tokenizer.lastIndex;}// Add any remaining code after the last match
-if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}pElement.innerHTML=tmpResult;};}module.exports=createHighlighter;module.exports.LanguageDefinitions=_LanguageDefinitions;},{}],57:[function(require,module,exports){module.exports={"RenderOnLoad":true,"DefaultRenderable":"CodeEditor-Wrap","DefaultDestinationAddress":"#CodeEditor-Container-Div","Templates":[{"Hash":"CodeEditor-Container","Template":"<!-- CodeEditor-Container Rendering Soon -->"}],"Renderables":[{"RenderableHash":"CodeEditor-Wrap","TemplateHash":"CodeEditor-Container","DestinationAddress":"#CodeEditor-Container-Div"}],"TargetElementAddress":"#CodeEditor-Container-Div",// Address in AppData or other Pict address space to read/write code content
+if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}pElement.innerHTML=tmpResult;};}module.exports=createHighlighter;module.exports.LanguageDefinitions=_LanguageDefinitions;},{}],48:[function(require,module,exports){module.exports={"RenderOnLoad":true,"DefaultRenderable":"CodeEditor-Wrap","DefaultDestinationAddress":"#CodeEditor-Container-Div","Templates":[{"Hash":"CodeEditor-Container","Template":"<!-- CodeEditor-Container Rendering Soon -->"}],"Renderables":[{"RenderableHash":"CodeEditor-Wrap","TemplateHash":"CodeEditor-Container","DestinationAddress":"#CodeEditor-Container-Div"}],"TargetElementAddress":"#CodeEditor-Container-Div",// Address in AppData or other Pict address space to read/write code content
 "CodeDataAddress":false,// The language for syntax highlighting (e.g. "javascript", "html", "css", "json")
 "Language":"javascript",// Whether the editor is read-only
 "ReadOnly":false,// Tab character: use tab or spaces
@@ -2808,7 +1647,7 @@ if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);t
 .pict-code-editor-wrap .pict-code-editor .tag { color: #E45649; }
 .pict-code-editor-wrap .pict-code-editor .attr-name { color: #986801; }
 .pict-code-editor-wrap .pict-code-editor .attr-value { color: #50A14F; }
-`};},{}],58:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
+`};},{}],49:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
 this.codeJar=null;// The highlight function (can be overridden)
 this._highlightFunction=null;// The current language
 this._language=this.options.Language||'javascript';}onBeforeInitialize(){super.onBeforeInitialize();this._codeJarPrototype=null;this.targetElement=false;// Build the default highlight function for the configured language
@@ -2893,10 +1732,10 @@ let tmpCode=this.codeJar.toString();this.codeJar.destroy();this.codeJar=this._co
 	 * Marshal code content from the data address into the view.
 	 */marshalToView(){super.marshalToView();if(this.codeJar&&this.options.CodeDataAddress){let tmpCode=this._resolveCodeContent();if(typeof tmpCode==='string'){this.codeJar.updateCode(tmpCode);this._updateLineNumbers();}}}/**
 	 * Marshal the current code content back to the data address.
-	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":56,"./Pict-Section-Code-DefaultConfiguration.js":57,"pict-view":85}],59:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
+	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":47,"./Pict-Section-Code-DefaultConfiguration.js":48,"pict-view":76}],50:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
 // The main content view class
 module.exports=require('./views/Pict-View-Content.js');// The content provider (markdown parsing, HTML escaping)
-module.exports.PictContentProvider=require('./providers/Pict-Provider-Content.js');},{"./providers/Pict-Provider-Content.js":60,"./views/Pict-View-Content.js":61}],60:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
+module.exports.PictContentProvider=require('./providers/Pict-Provider-Content.js');},{"./providers/Pict-Provider-Content.js":51,"./views/Pict-View-Content.js":52}],51:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
  * Content Provider for Pict Section Content
  *
  * A general-purpose markdown-to-HTML parser with support for:
@@ -2980,7 +1819,7 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55,"pict-section-code":58}],61:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":46,"pict-section-code":49}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
 		.pict-content {
 			padding: 2em 3em;
 			max-width: 900px;
@@ -3203,7 +2042,7 @@ let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-disp
 	 *
 	 * @param {string} [pMessage] - Loading message (defaults to 'Loading content...')
 	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],62:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
+	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],53:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
 // These are the four core state values for the file browser.
 // They live in AppData at the addresses below.
 "StateAddresses":{"Layout":"AppData.PictFileBrowser.Layout","RootLocation":"AppData.PictFileBrowser.RootLocation","CurrentLocation":"AppData.PictFileBrowser.CurrentLocation","CurrentFile":"AppData.PictFileBrowser.CurrentFile"},// Default state values
@@ -3555,7 +2394,7 @@ let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-disp
 			color: #8A7F72;
 			font-style: italic;
 		}
-	`};},{}],63:[function(require,module,exports){// Pict Section FileBrowser
+	`};},{}],54:[function(require,module,exports){// Pict Section FileBrowser
 // A composable file browser section with browsing, listing, and viewing views.
 // The main container view
 module.exports=require('./views/Pict-View-FileBrowser.js');// --- Providers (base classes for each view type) ---
@@ -3563,7 +2402,7 @@ module.exports.PictFileBrowserBrowseProvider=require('./providers/Pict-Provider-
 module.exports.PictViewBrowseTree=require('./views/Pict-View-FileBrowser-BrowseTree.js');module.exports.PictViewBrowseSearch=require('./views/Pict-View-FileBrowser-BrowseSearch.js');// --- Listing Views ---
 module.exports.PictViewListDetail=require('./views/Pict-View-FileBrowser-ListDetail.js');module.exports.PictViewListIcons=require('./views/Pict-View-FileBrowser-ListIcons.js');// --- Viewing Views ---
 module.exports.PictViewFileInfo=require('./views/Pict-View-FileBrowser-ViewFileInfo.js');module.exports.PictViewImageViewer=require('./views/Pict-View-FileBrowser-ViewImage.js');// --- Service (Fable service with REST endpoints + static web app) ---
-module.exports.FileBrowserService=require('./services/Pict-Service-FileBrowser.js');},{"./providers/Pict-Provider-FileBrowserBrowse.js":64,"./providers/Pict-Provider-FileBrowserIcons.js":65,"./providers/Pict-Provider-FileBrowserLayout.js":66,"./providers/Pict-Provider-FileBrowserList.js":67,"./providers/Pict-Provider-FileBrowserView.js":68,"./services/Pict-Service-FileBrowser.js":69,"./views/Pict-View-FileBrowser-BrowseSearch.js":70,"./views/Pict-View-FileBrowser-BrowseTree.js":71,"./views/Pict-View-FileBrowser-ListDetail.js":72,"./views/Pict-View-FileBrowser-ListIcons.js":73,"./views/Pict-View-FileBrowser-ViewFileInfo.js":74,"./views/Pict-View-FileBrowser-ViewImage.js":75,"./views/Pict-View-FileBrowser.js":76}],64:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Browse","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+module.exports.FileBrowserService=require('./services/Pict-Service-FileBrowser.js');},{"./providers/Pict-Provider-FileBrowserBrowse.js":55,"./providers/Pict-Provider-FileBrowserIcons.js":56,"./providers/Pict-Provider-FileBrowserLayout.js":57,"./providers/Pict-Provider-FileBrowserList.js":58,"./providers/Pict-Provider-FileBrowserView.js":59,"./services/Pict-Service-FileBrowser.js":60,"./views/Pict-View-FileBrowser-BrowseSearch.js":61,"./views/Pict-View-FileBrowser-BrowseTree.js":62,"./views/Pict-View-FileBrowser-ListDetail.js":63,"./views/Pict-View-FileBrowser-ListIcons.js":64,"./views/Pict-View-FileBrowser-ViewFileInfo.js":65,"./views/Pict-View-FileBrowser-ViewImage.js":66,"./views/Pict-View-FileBrowser.js":67}],55:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Browse","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for browsing-type views (tree navigation, search).
  *
  * Subclass or override to customize how folder structures are resolved,
@@ -3618,7 +2457,7 @@ this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmp
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserBrowseProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],65:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ---- Color palette (matches filebrowser CSS) ----
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserBrowseProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":46}],56:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ---- Color palette (matches filebrowser CSS) ----
 const _Colors={Primary:'#3D3229',Accent:'#2E7D74',Muted:'#8A7F72',Light:'#F5F0E8',WarmBeige:'#EAE3D8',TealTint:'#E0EDE9',Lavender:'#E8E0F0',AmberTint:'#F0E8D0'};// ====================================================================
 // RETRO / HAND-DRAWN SVG ICON SET
 //
@@ -3711,7 +2550,7 @@ return this.getIcon('file',tmpSize);}/**
 	 */getExtensionMap(){return Object.assign({},this._extensionMap);}/**
 	 * Inject CSS classes for icon sizing into the pict CSSMap.
 	 * Called automatically by views that use icons.
-	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('PictFileBrowserIcons','.pict-fb-svg-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.pict-fb-svg-icon svg { display: block; }\n'+'.pict-fb-tree-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-detail-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-icon-graphic svg { width: 36px; height: 36px; }\n'+'.pict-fb-tree-toggle svg { width: 10px; height: 10px; }\n');this._cssInjected=true;}}}module.exports=PictFileBrowserIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInIcons=_BuiltInIcons;module.exports.ExtensionMap=_ExtensionMap;module.exports.Colors=_Colors;},{"pict-provider":55}],66:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Layout","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('PictFileBrowserIcons','.pict-fb-svg-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.pict-fb-svg-icon svg { display: block; }\n'+'.pict-fb-tree-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-detail-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-icon-graphic svg { width: 36px; height: 36px; }\n'+'.pict-fb-tree-toggle svg { width: 10px; height: 10px; }\n');this._cssInjected=true;}}}module.exports=PictFileBrowserIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInIcons=_BuiltInIcons;module.exports.ExtensionMap=_ExtensionMap;module.exports.Colors=_Colors;},{"pict-provider":46}],57:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Layout","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Layout definitions.
  *
  * Each layout specifies:
@@ -3773,7 +2612,7 @@ this.layouts=JSON.parse(JSON.stringify(_BuiltInLayouts));}/**
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserLayoutProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInLayouts=_BuiltInLayouts;},{"pict-provider":55}],67:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-List","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserLayoutProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInLayouts=_BuiltInLayouts;},{"pict-provider":46}],58:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-List","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for listing-type views (detail list, icon grid).
  *
  * Handles file list retrieval, sorting, filtering, and selection.
@@ -3832,7 +2671,7 @@ if(pEntry.Type==='folder'){return'\uD83D\uDCC1';}let tmpExt=(pEntry.Extension||'
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserListProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],68:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-View","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserListProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":46}],59:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-View","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for viewing-type views (file info, image preview).
  *
  * Handles retrieval of the currently selected file's metadata and
@@ -3868,7 +2707,7 @@ let tmpExt=(tmpEntry.Extension||'').toLowerCase();let tmpImageExtensions=['.jpg'
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserViewProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],69:[function(require,module,exports){(function(__dirname){(function(){/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserViewProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":46}],60:[function(require,module,exports){(function(__dirname){(function(){/**
 * Pict FileBrowser Service
 *
 * A Fable service that provides:
@@ -3979,7 +2818,7 @@ tmpNodes.sort((pA,pB)=>{return pA.Name.localeCompare(pB.Name);});return fCallbac
 	 *
 	 * @param {string} pRelativePath - Path relative to basePath
 	 * @param {Function} fCallback - Callback(pError, pInfo)
-	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":110}],70:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
+	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":113}],61:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
 <div class="pict-fb-search">
 	<input type="text" class="pict-fb-search-input"
 		id="Pict-FileBrowser-SearchInput"
@@ -4014,7 +2853,7 @@ this._lastResults=tmpResults;}/**
 	 * Handle clicking a search result.
 	 *
 	 * @param {number} pIndex - The result index
-	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],71:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
+	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],62:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
 <div class="pict-fb-tree-node{~D:Record.SelectedClass~}" style="padding-left: {~D:Record.Indent~}px;" data-path="{~D:Record.Path~}" onclick="{~D:Record.ClickHandler~}">
 	<span class="{~D:Record.ToggleClass~}" onclick="{~D:Record.ToggleHandler~}">{~D:Record.ToggleIcon~}</span>
 	<span class="pict-fb-tree-icon">{~D:Record.Icon~}</span>
@@ -4071,7 +2910,7 @@ let tmpCached=tmpBrowseProvider.getChildFolders(pPath);if(!tmpCached){if(typeof 
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],72:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],63:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
 <div class="pict-fb-detail" id="Pict-FileBrowser-DetailList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-Breadcrumb"></div>
 	<div class="pict-fb-detail-header">
@@ -4123,7 +2962,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Current-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],64:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
 <div id="Pict-FileBrowser-IconList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-IconBreadcrumb"></div>
 	<div class="pict-fb-icons" id="Pict-FileBrowser-IconGrid"></div>
@@ -4161,7 +3000,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],65:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
 <div class="pict-fb-fileinfo-title">{~D:Record.Name~}</div>
 <table class="pict-fb-fileinfo-table">
 	<tr>
@@ -4194,7 +3033,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with file info.
 	 */onAfterRender(pRenderable){this.rebuildFileInfo();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the file info display.
-	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
+	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],66:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
  * Viewing view that displays an image preview for the currently selected file.
  *
  * If the selected file is an image and has a URL or ThumbnailURL, it renders
@@ -4203,7 +3042,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with the image or message.
 	 */onAfterRender(pRenderable){this.rebuildImageView();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the image viewer display.
-	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],76:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
+	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],67:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
  * Main FileBrowser view.
  *
  * Renders the outer container layout (browse pane, list pane, view pane)
@@ -4233,7 +3072,7 @@ if(!this.pict.AppData.PictFileBrowser.FileList){this.pict.AppData.PictFileBrowse
 	 *
 	 * @param {string} pKey - One of: Layout, RootLocation, CurrentLocation, CurrentFile
 	 * @param {*} pValue - The value to set
-	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":62,"../providers/Pict-Provider-FileBrowserBrowse.js":64,"../providers/Pict-Provider-FileBrowserIcons.js":65,"../providers/Pict-Provider-FileBrowserLayout.js":66,"../providers/Pict-Provider-FileBrowserList.js":67,"../providers/Pict-Provider-FileBrowserView.js":68,"pict-view":85}],77:[function(require,module,exports){/**
+	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":53,"../providers/Pict-Provider-FileBrowserBrowse.js":55,"../providers/Pict-Provider-FileBrowserIcons.js":56,"../providers/Pict-Provider-FileBrowserLayout.js":57,"../providers/Pict-Provider-FileBrowserList.js":58,"../providers/Pict-Provider-FileBrowserView.js":59,"pict-view":76}],68:[function(require,module,exports){/**
  * Pict-MDE-CodeMirror: Helper module for PictSectionMarkdownEditor
  *
  * Handles CodeMirror editor instance creation, extension configuration,
@@ -4303,7 +3142,7 @@ continue;}// Build a human-readable size label
 let tmpSizeBytes=Math.round(tmpPayloadLength*0.75);// base64 to bytes approx
 let tmpSizeLabel;if(tmpSizeBytes>=1024*1024){tmpSizeLabel=(tmpSizeBytes/(1024*1024)).toFixed(1)+'MB';}else if(tmpSizeBytes>=1024){tmpSizeLabel=Math.round(tmpSizeBytes/1024)+'KB';}else{tmpSizeLabel=tmpSizeBytes+'B';}let tmpMimeType=tmpMatch[1]||'image';let tmpWidgetLabel=`\u2026${tmpSizeLabel})`;// Replace from the start of the base64 payload to after the closing paren
 let tmpWidget=tmpDecoration.replace({widget:new DataURIWidget(tmpWidgetLabel)});tmpDecorations.push(tmpWidget.range(tmpPayloadStart,tmpPayloadEnd+1));}}return tmpDecoration.set(tmpDecorations,true);}// Create the ViewPlugin
-let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],78:[function(require,module,exports){/**
+let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],69:[function(require,module,exports){/**
  * Pict-MDE-DragAndReorder: Helper module for PictSectionMarkdownEditor
  *
  * Handles segment drag-and-drop reordering, active segment management,
@@ -4385,7 +3224,7 @@ tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.se
 	 * Reset the sidebar back to default sticky positioning (no cursor tracking).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],79:[function(require,module,exports){/**
+	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],70:[function(require,module,exports){/**
  * Pict-MDE-Formatting: Helper module for PictSectionMarkdownEditor
  *
  * Handles markdown formatting operations (bold, italic, code, heading, link)
@@ -4414,7 +3253,7 @@ let tmpLine=tmpState.doc.lineAt(tmpFrom);let tmpLineText=tmpLine.text;// Toggle:
 if(tmpLineText.startsWith(tmpFormat.prefix)){tmpChanges={from:tmpLine.from,to:tmpLine.from+tmpFormat.prefix.length,insert:''};}else{tmpChanges={from:tmpLine.from,insert:tmpFormat.prefix};}tmpEditor.dispatch({changes:tmpChanges});}else if(tmpFormat.before&&tmpFormat.after){// Surround style (links)
 if(tmpHasSelection){let tmpInsert=tmpFormat.before+tmpSelectedText+tmpFormat.after;tmpChanges={from:tmpFrom,to:tmpTo,insert:tmpInsert};// Place cursor on the "url" part
 tmpCursorPos=tmpFrom+tmpFormat.before.length+tmpSelectedText.length+2;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos,head:tmpCursorPos+3}});}else{let tmpInsert=tmpFormat.before+tmpFormat.after;tmpChanges={from:tmpFrom,insert:tmpInsert};tmpCursorPos=tmpFrom+tmpFormat.before.length;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos}});}}// Re-focus the editor after clicking a sidebar button
-tmpEditor.focus();};};},{}],80:[function(require,module,exports){/**
+tmpEditor.focus();};};},{}],71:[function(require,module,exports){/**
  * Pict-MDE-ImageHandling: Helper module for PictSectionMarkdownEditor
  *
  * Handles image operations: file picker, file processing (hook or base64
@@ -4472,7 +3311,7 @@ let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt
 	 */pView._wireImageDragEvents=function _wireImageDragEvents(pEditorContainer,pSegmentIndex){pEditorContainer.addEventListener('dragover',pEvent=>{// Only handle file drags, not segment-reorder drags
 if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.types||pEvent.dataTransfer.types.indexOf('Files')<0){return;}pEvent.preventDefault();pEvent.dataTransfer.dropEffect='copy';pEditorContainer.classList.add('pict-mde-image-dragover');});pEditorContainer.addEventListener('dragleave',pEvent=>{// Only clear if actually leaving the element
 if(!pEditorContainer.contains(pEvent.relatedTarget)){pEditorContainer.classList.remove('pict-mde-image-dragover');}});pEditorContainer.addEventListener('drop',pEvent=>{pEditorContainer.classList.remove('pict-mde-image-dragover');// Only handle file drops, not segment-reorder drops
-if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],81:[function(require,module,exports){/**
+if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],72:[function(require,module,exports){/**
  * Pict-MDE-RichPreview: Helper module for PictSectionMarkdownEditor
  *
  * Handles rich content preview rendering via pict-section-content:
@@ -4547,7 +3386,7 @@ pView._renderedViewGeneration++;let tmpGeneration=pView._renderedViewGeneration;
 let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-content`);if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
 	 * Switch back from rendered view to the editing view: rebuild the
 	 * full editor UI from the data.
-	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":59}],82:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
+	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":50}],73:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
 	<div class="pict-mde-left-controls">
 		<div class="pict-mde-quadrant-tl"></div>
 		<div class="pict-mde-quadrant-bl"></div>
@@ -5055,7 +3894,7 @@ let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-
 {
 	display: flex;
 }
-`};},{}],83:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
+`};},{}],74:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
 const libFormatting=require('./Pict-MDE-Formatting.js');const libImageHandling=require('./Pict-MDE-ImageHandling.js');const libDragAndReorder=require('./Pict-MDE-DragAndReorder.js');const libRichPreview=require('./Pict-MDE-RichPreview.js');const libCodeMirror=require('./Pict-MDE-CodeMirror.js');class PictSectionMarkdownEditor extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// CodeMirror prototype references (injected by consumer or found on window)
 this._codeMirrorModules=null;// Map of segment index to CodeMirror EditorView instance
 this._segmentEditors={};// Internal segment counter (monotonically increasing for unique IDs)
@@ -5282,7 +4121,7 @@ this._swapHiddenPreviewState(tmpLogicalIndex,tmpLogicalIndex+1);this._buildEdito
 	 */marshalFromView(){super.marshalFromView();this._marshalAllEditorsToData();}/**
 	 * Destroy all editors and clean up.
 	 */destroy(){for(let tmpIndex in this._segmentEditors){if(this._segmentEditors[tmpIndex]){this._segmentEditors[tmpIndex].destroy();}}this._segmentEditors={};// Clear rich preview debounce timers
-for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":77,"./Pict-MDE-DragAndReorder.js":78,"./Pict-MDE-Formatting.js":79,"./Pict-MDE-ImageHandling.js":80,"./Pict-MDE-RichPreview.js":81,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":82,"pict-section-content":59,"pict-view":85}],84:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.67","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.348","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.63","fable-serviceproviderbase":"^3.0.19"}};},{}],85:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
+for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":68,"./Pict-MDE-DragAndReorder.js":69,"./Pict-MDE-Formatting.js":70,"./Pict-MDE-ImageHandling.js":71,"./Pict-MDE-RichPreview.js":72,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":73,"pict-section-content":50,"pict-view":76}],75:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.67","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.348","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.63","fable-serviceproviderbase":"^3.0.19"}};},{}],76:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,// If this is set to true, when the App autorenders (on load) this will.
 // After the App initializes, render will be called as soon as it's added.
@@ -5573,7 +4412,7 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":84,"fable-serviceproviderbase":20}],86:[function(require,module,exports){// shim for using process in browser
+	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":75,"fable-serviceproviderbase":20}],77:[function(require,module,exports){// shim for using process in browser
 var process=module.exports={};// cached from whatever global is present so that test runners that stub it
 // don't break things.  But we need to wrap it in a try catch in case it is
 // wrapped in strict mode code which doesn't define any globals.  It's inside a
@@ -5591,7 +4430,7 @@ return cachedClearTimeout.call(null,marker);}catch(e){// same as above but when 
 // Some versions of I.E. have different rules for clearTimeout vs setTimeout
 return cachedClearTimeout.call(this,marker);}}}var queue=[];var draining=false;var currentQueue;var queueIndex=-1;function cleanUpNextTick(){if(!draining||!currentQueue){return;}draining=false;if(currentQueue.length){queue=currentQueue.concat(queue);}else{queueIndex=-1;}if(queue.length){drainQueue();}}function drainQueue(){if(draining){return;}var timeout=runTimeout(cleanUpNextTick);draining=true;var len=queue.length;while(len){currentQueue=queue;queue=[];while(++queueIndex<len){if(currentQueue){currentQueue[queueIndex].run();}}queueIndex=-1;len=queue.length;}currentQueue=null;draining=false;runClearTimeout(timeout);}process.nextTick=function(fun){var args=new Array(arguments.length-1);if(arguments.length>1){for(var i=1;i<arguments.length;i++){args[i-1]=arguments[i];}}queue.push(new Item(fun,args));if(queue.length===1&&!draining){runTimeout(drainQueue);}};// v8 likes predictible objects
 function Item(fun,array){this.fun=fun;this.array=array;}Item.prototype.run=function(){this.fun.apply(null,this.array);};process.title='browser';process.browser=true;process.env={};process.argv=[];process.version='';// empty string to avoid regexp issues
-process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],87:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
+process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],78:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
 	 * The `punycode` object.
 	 * @name punycode
 	 * @type Object
@@ -5746,7 +4585,7 @@ for/* no condition */(q=delta,k=base;;k+=base){t=k<=bias?tMin:k>=bias+tMax?tMax:
 if(typeof define=='function'&&typeof define.amd=='object'&&define.amd){define('punycode',function(){return punycode;});}else if(freeExports&&freeModule){if(module.exports==freeExports){// in Node.js, io.js, or RingoJS v0.8.0+
 freeModule.exports=punycode;}else{// in Narwhal or RingoJS v0.7.0-
 for(key in punycode){punycode.hasOwnProperty(key)&&(freeExports[key]=punycode[key]);}}}else{// in Rhino or a web browser
-root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],88:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],89:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":88,"./parse":90,"./stringify":91}],90:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
+root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],79:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],80:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":79,"./parse":81,"./stringify":82}],81:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
 // application/x-www-form-urlencoded body and the encoding of the page containing
 // the form is iso-8859-1, or when the submitted form has an accept-charset
 // attribute of iso-8859-1. Presumably also with other charsets that do not contain
@@ -5759,13 +4598,13 @@ var i;var charset=options.charset;if(options.charsetSentinel){for(i=0;i<parts.le
 }}}for(i=0;i<parts.length;++i){if(i===skipIndex){continue;}var part=parts[i];var bracketEqualsPos=part.indexOf(']=');var pos=bracketEqualsPos===-1?part.indexOf('='):bracketEqualsPos+1;var key;var val;if(pos===-1){key=options.decoder(part,defaults.decoder,charset,'key');val=options.strictNullHandling?null:'';}else{key=options.decoder(part.slice(0,pos),defaults.decoder,charset,'key');if(key!==null){val=utils.maybeMap(parseArrayValue(part.slice(pos+1),options,isArray(obj[key])?obj[key].length:0),function(encodedVal){return options.decoder(encodedVal,defaults.decoder,charset,'value');});}}if(val&&options.interpretNumericEntities&&charset==='iso-8859-1'){val=interpretNumericEntities(String(val));}if(part.indexOf('[]=')>-1){val=isArray(val)?[val]:val;}if(options.comma&&isArray(val)&&val.length>options.arrayLimit){if(options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}val=utils.combine([],val,options.arrayLimit,options.plainObjects);}if(key!==null){var existing=has.call(obj,key);if(existing&&(options.duplicates==='combine'||part.indexOf('[]=')>-1)){obj[key]=utils.combine(obj[key],val,options.arrayLimit,options.plainObjects);}else if(!existing||options.duplicates==='last'){obj[key]=val;}}}return obj;};var parseObject=function(chain,val,options,valuesParsed){var currentArrayLength=0;if(chain.length>0&&chain[chain.length-1]==='[]'){var parentKey=chain.slice(0,-1).join('');currentArrayLength=Array.isArray(val)&&val[parentKey]?val[parentKey].length:0;}var leaf=valuesParsed?val:parseArrayValue(val,options,currentArrayLength);for(var i=chain.length-1;i>=0;--i){var obj;var root=chain[i];if(root==='[]'&&options.parseArrays){if(utils.isOverflow(leaf)){// leaf is already an overflow object, preserve it
 obj=leaf;}else{obj=options.allowEmptyArrays&&(leaf===''||options.strictNullHandling&&leaf===null)?[]:utils.combine([],leaf,options.arrayLimit,options.plainObjects);}}else{obj=options.plainObjects?{__proto__:null}:{};var cleanRoot=root.charAt(0)==='['&&root.charAt(root.length-1)===']'?root.slice(1,-1):root;var decodedRoot=options.decodeDotInKeys?cleanRoot.replace(/%2E/g,'.'):cleanRoot;var index=parseInt(decodedRoot,10);var isValidArrayIndex=!isNaN(index)&&root!==decodedRoot&&String(index)===decodedRoot&&index>=0&&options.parseArrays;if(!options.parseArrays&&decodedRoot===''){obj={0:leaf};}else if(isValidArrayIndex&&index<options.arrayLimit){obj=[];obj[index]=leaf;}else if(isValidArrayIndex&&options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}else if(isValidArrayIndex){obj[index]=leaf;utils.markOverflow(obj,index);}else if(decodedRoot!=='__proto__'){obj[decodedRoot]=leaf;}}leaf=obj;}return leaf;};var splitKeyIntoSegments=function splitKeyIntoSegments(givenKey,options){var key=options.allowDots?givenKey.replace(/\.([^.[]+)/g,'[$1]'):givenKey;if(options.depth<=0){if(!options.plainObjects&&has.call(Object.prototype,key)){if(!options.allowPrototypes){return;}}return[key];}var brackets=/(\[[^[\]]*])/;var child=/(\[[^[\]]*])/g;var segment=brackets.exec(key);var parent=segment?key.slice(0,segment.index):key;var keys=[];if(parent){if(!options.plainObjects&&has.call(Object.prototype,parent)){if(!options.allowPrototypes){return;}}keys[keys.length]=parent;}var i=0;while((segment=child.exec(key))!==null&&i<options.depth){i+=1;var segmentContent=segment[1].slice(1,-1);if(!options.plainObjects&&has.call(Object.prototype,segmentContent)){if(!options.allowPrototypes){return;}}keys[keys.length]=segment[1];}if(segment){if(options.strictDepth===true){throw new RangeError('Input depth exceeded depth option of '+options.depth+' and strictDepth is true');}keys[keys.length]='['+key.slice(segment.index)+']';}return keys;};var parseKeys=function parseQueryStringKeys(givenKey,val,options,valuesParsed){if(!givenKey){return;}var keys=splitKeyIntoSegments(givenKey,options);if(!keys){return;}return parseObject(keys,val,options,valuesParsed);};var normalizeParseOptions=function normalizeParseOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.decodeDotInKeys!=='undefined'&&typeof opts.decodeDotInKeys!=='boolean'){throw new TypeError('`decodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.decoder!==null&&typeof opts.decoder!=='undefined'&&typeof opts.decoder!=='function'){throw new TypeError('Decoder has to be a function.');}if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}if(typeof opts.throwOnLimitExceeded!=='undefined'&&typeof opts.throwOnLimitExceeded!=='boolean'){throw new TypeError('`throwOnLimitExceeded` option must be a boolean');}var charset=typeof opts.charset==='undefined'?defaults.charset:opts.charset;var duplicates=typeof opts.duplicates==='undefined'?defaults.duplicates:opts.duplicates;if(duplicates!=='combine'&&duplicates!=='first'&&duplicates!=='last'){throw new TypeError('The duplicates option must be either combine, first, or last');}var allowDots=typeof opts.allowDots==='undefined'?opts.decodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,allowPrototypes:typeof opts.allowPrototypes==='boolean'?opts.allowPrototypes:defaults.allowPrototypes,allowSparse:typeof opts.allowSparse==='boolean'?opts.allowSparse:defaults.allowSparse,arrayLimit:typeof opts.arrayLimit==='number'?opts.arrayLimit:defaults.arrayLimit,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,comma:typeof opts.comma==='boolean'?opts.comma:defaults.comma,decodeDotInKeys:typeof opts.decodeDotInKeys==='boolean'?opts.decodeDotInKeys:defaults.decodeDotInKeys,decoder:typeof opts.decoder==='function'?opts.decoder:defaults.decoder,delimiter:typeof opts.delimiter==='string'||utils.isRegExp(opts.delimiter)?opts.delimiter:defaults.delimiter,// eslint-disable-next-line no-implicit-coercion, no-extra-parens
 depth:typeof opts.depth==='number'||opts.depth===false?+opts.depth:defaults.depth,duplicates:duplicates,ignoreQueryPrefix:opts.ignoreQueryPrefix===true,interpretNumericEntities:typeof opts.interpretNumericEntities==='boolean'?opts.interpretNumericEntities:defaults.interpretNumericEntities,parameterLimit:typeof opts.parameterLimit==='number'?opts.parameterLimit:defaults.parameterLimit,parseArrays:opts.parseArrays!==false,plainObjects:typeof opts.plainObjects==='boolean'?opts.plainObjects:defaults.plainObjects,strictDepth:typeof opts.strictDepth==='boolean'?!!opts.strictDepth:defaults.strictDepth,strictMerge:typeof opts.strictMerge==='boolean'?!!opts.strictMerge:defaults.strictMerge,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling,throwOnLimitExceeded:typeof opts.throwOnLimitExceeded==='boolean'?opts.throwOnLimitExceeded:false};};module.exports=function(str,opts){var options=normalizeParseOptions(opts);if(str===''||str===null||typeof str==='undefined'){return options.plainObjects?{__proto__:null}:{};}var tempObj=typeof str==='string'?parseValues(str,options):str;var obj=options.plainObjects?{__proto__:null}:{};// Iterate over the keys and setup the new object
-var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":92}],91:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
+var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":83}],82:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
 indices:false,serializeDate:function serializeDate(date){return toISO.call(date);},skipNulls:false,strictNullHandling:false};var isNonNullishPrimitive=function isNonNullishPrimitive(v){return typeof v==='string'||typeof v==='number'||typeof v==='boolean'||typeof v==='symbol'||typeof v==='bigint';};var sentinel={};var stringify=function stringify(object,prefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,sideChannel){var obj=object;var tmpSc=sideChannel;var step=0;var findFlag=false;while((tmpSc=tmpSc.get(sentinel))!==void undefined&&!findFlag){// Where object last appeared in the ref tree
 var pos=tmpSc.get(object);step+=1;if(typeof pos!=='undefined'){if(pos===step){throw new RangeError('Cyclic object value');}else{findFlag=true;// Break while
 }}if(typeof tmpSc.get(sentinel)==='undefined'){step=0;}}if(typeof filter==='function'){obj=filter(prefix,obj);}else if(obj instanceof Date){obj=serializeDate(obj);}else if(generateArrayPrefix==='comma'&&isArray(obj)){obj=utils.maybeMap(obj,function(value){if(value instanceof Date){return serializeDate(value);}return value;});}if(obj===null){if(strictNullHandling){return encoder&&!encodeValuesOnly?encoder(prefix,defaults.encoder,charset,'key',format):prefix;}obj='';}if(isNonNullishPrimitive(obj)||utils.isBuffer(obj)){if(encoder){var keyValue=encodeValuesOnly?prefix:encoder(prefix,defaults.encoder,charset,'key',format);return[formatter(keyValue)+'='+formatter(encoder(obj,defaults.encoder,charset,'value',format))];}return[formatter(prefix)+'='+formatter(String(obj))];}var values=[];if(typeof obj==='undefined'){return values;}var objKeys;if(generateArrayPrefix==='comma'&&isArray(obj)){// we need to join elements in
 if(encodeValuesOnly&&encoder){obj=utils.maybeMap(obj,encoder);}objKeys=[{value:obj.length>0?obj.join(',')||null:void undefined}];}else if(isArray(filter)){objKeys=filter;}else{var keys=Object.keys(obj);objKeys=sort?keys.sort(sort):keys;}var encodedPrefix=encodeDotInKeys?String(prefix).replace(/\./g,'%2E'):String(prefix);var adjustedPrefix=commaRoundTrip&&isArray(obj)&&obj.length===1?encodedPrefix+'[]':encodedPrefix;if(allowEmptyArrays&&isArray(obj)&&obj.length===0){return adjustedPrefix+'[]';}for(var j=0;j<objKeys.length;++j){var key=objKeys[j];var value=typeof key==='object'&&key&&typeof key.value!=='undefined'?key.value:obj[key];if(skipNulls&&value===null){continue;}var encodedKey=allowDots&&encodeDotInKeys?String(key).replace(/\./g,'%2E'):String(key);var keyPrefix=isArray(obj)?typeof generateArrayPrefix==='function'?generateArrayPrefix(adjustedPrefix,encodedKey):adjustedPrefix:adjustedPrefix+(allowDots?'.'+encodedKey:'['+encodedKey+']');sideChannel.set(object,step);var valueSideChannel=getSideChannel();valueSideChannel.set(sentinel,sideChannel);pushToArray(values,stringify(value,keyPrefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,generateArrayPrefix==='comma'&&encodeValuesOnly&&isArray(obj)?null:encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,valueSideChannel));}return values;};var normalizeStringifyOptions=function normalizeStringifyOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.encodeDotInKeys!=='undefined'&&typeof opts.encodeDotInKeys!=='boolean'){throw new TypeError('`encodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.encoder!==null&&typeof opts.encoder!=='undefined'&&typeof opts.encoder!=='function'){throw new TypeError('Encoder has to be a function.');}var charset=opts.charset||defaults.charset;if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}var format=formats['default'];if(typeof opts.format!=='undefined'){if(!has.call(formats.formatters,opts.format)){throw new TypeError('Unknown format option provided.');}format=opts.format;}var formatter=formats.formatters[format];var filter=defaults.filter;if(typeof opts.filter==='function'||isArray(opts.filter)){filter=opts.filter;}var arrayFormat;if(opts.arrayFormat in arrayPrefixGenerators){arrayFormat=opts.arrayFormat;}else if('indices'in opts){arrayFormat=opts.indices?'indices':'repeat';}else{arrayFormat=defaults.arrayFormat;}if('commaRoundTrip'in opts&&typeof opts.commaRoundTrip!=='boolean'){throw new TypeError('`commaRoundTrip` must be a boolean, or absent');}var allowDots=typeof opts.allowDots==='undefined'?opts.encodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{addQueryPrefix:typeof opts.addQueryPrefix==='boolean'?opts.addQueryPrefix:defaults.addQueryPrefix,allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,arrayFormat:arrayFormat,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,commaRoundTrip:!!opts.commaRoundTrip,delimiter:typeof opts.delimiter==='undefined'?defaults.delimiter:opts.delimiter,encode:typeof opts.encode==='boolean'?opts.encode:defaults.encode,encodeDotInKeys:typeof opts.encodeDotInKeys==='boolean'?opts.encodeDotInKeys:defaults.encodeDotInKeys,encoder:typeof opts.encoder==='function'?opts.encoder:defaults.encoder,encodeValuesOnly:typeof opts.encodeValuesOnly==='boolean'?opts.encodeValuesOnly:defaults.encodeValuesOnly,filter:filter,format:format,formatter:formatter,serializeDate:typeof opts.serializeDate==='function'?opts.serializeDate:defaults.serializeDate,skipNulls:typeof opts.skipNulls==='boolean'?opts.skipNulls:defaults.skipNulls,sort:typeof opts.sort==='function'?opts.sort:null,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling};};module.exports=function(object,opts){var obj=object;var options=normalizeStringifyOptions(opts);var objKeys;var filter;if(typeof options.filter==='function'){filter=options.filter;obj=filter('',obj);}else if(isArray(options.filter)){filter=options.filter;objKeys=filter;}var keys=[];if(typeof obj!=='object'||obj===null){return'';}var generateArrayPrefix=arrayPrefixGenerators[options.arrayFormat];var commaRoundTrip=generateArrayPrefix==='comma'&&options.commaRoundTrip;if(!objKeys){objKeys=Object.keys(obj);}if(options.sort){objKeys.sort(options.sort);}var sideChannel=getSideChannel();for(var i=0;i<objKeys.length;++i){var key=objKeys[i];var value=obj[key];if(options.skipNulls&&value===null){continue;}pushToArray(keys,stringify(value,key,generateArrayPrefix,commaRoundTrip,options.allowEmptyArrays,options.strictNullHandling,options.skipNulls,options.encodeDotInKeys,options.encode?options.encoder:null,options.filter,options.sort,options.allowDots,options.serializeDate,options.format,options.formatter,options.encodeValuesOnly,options.charset,sideChannel));}var joined=keys.join(options.delimiter);var prefix=options.addQueryPrefix===true?'?':'';if(options.charsetSentinel){if(options.charset==='iso-8859-1'){// encodeURIComponent('&#10003;'), the "numeric entity" representation of a checkmark
 prefix+='utf8=%26%2310003%3B&';}else{// encodeURIComponent('✓')
-prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":88,"./utils":92,"side-channel":109}],92:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
+prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":79,"./utils":83,"side-channel":112}],83:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
 // Stores the current max numeric index for O(1) lookup
 var overflowChannel=getSideChannel();var markOverflow=function markOverflow(obj,maxIndex){overflowChannel.set(obj,maxIndex);return obj;};var isOverflow=function isOverflow(obj){return overflowChannel.has(obj);};var getMaxIndex=function getMaxIndex(obj){return overflowChannel.get(obj);};var setMaxIndex=function setMaxIndex(obj,maxIndex){overflowChannel.set(obj,maxIndex);};var hexTable=function(){var array=[];for(var i=0;i<256;++i){array[array.length]='%'+((i<16?'0':'')+i.toString(16)).toUpperCase();}return array;}();var compactQueue=function compactQueue(queue){while(queue.length>1){var item=queue.pop();var obj=item.obj[item.prop];if(isArray(obj)){var compacted=[];for(var j=0;j<obj.length;++j){if(typeof obj[j]!=='undefined'){compacted[compacted.length]=obj[j];}}item.obj[item.prop]=compacted;}}};var arrayToObject=function arrayToObject(source,options){var obj=options&&options.plainObjects?{__proto__:null}:{};for(var i=0;i<source.length;++i){if(typeof source[i]!=='undefined'){obj[i]=source[i];}}return obj;};var merge=function merge(target,source,options){/* eslint no-param-reassign: 0 */if(!source){return target;}if(typeof source!=='object'&&typeof source!=='function'){if(isArray(target)){var nextIndex=target.length;if(options&&typeof options.arrayLimit==='number'&&nextIndex>options.arrayLimit){return markOverflow(arrayToObject(target.concat(source),options),nextIndex);}target[nextIndex]=source;}else if(target&&typeof target==='object'){if(isOverflow(target)){// Add at next numeric index for overflow objects
 var newIndex=getMaxIndex(target)+1;target[newIndex]=source;setMaxIndex(target,newIndex);}else if(options&&options.strictMerge){return[target,source];}else if(options&&(options.plainObjects||options.allowPrototypes)||!has.call(Object.prototype,source)){target[source]=true;}}else{return[target,source];}return target;}if(!target||typeof target!=='object'){if(isOverflow(source)){// Create new object with target at 0, source values shifted by 1
@@ -5782,7 +4621,1267 @@ if(str.length===0){return str;}var string=str;if(typeof str==='symbol'){string=S
 ||c>=0x61&&c<=0x7A// A-Z
 ||format===formats.RFC1738&&(c===0x28||c===0x29)// ( )
 ){arr[arr.length]=segment.charAt(i);continue;}if(c<0x80){arr[arr.length]=hexTable[c];continue;}if(c<0x800){arr[arr.length]=hexTable[0xC0|c>>6]+hexTable[0x80|c&0x3F];continue;}if(c<0xD800||c>=0xE000){arr[arr.length]=hexTable[0xE0|c>>12]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];continue;}i+=1;c=0x10000+((c&0x3FF)<<10|segment.charCodeAt(i)&0x3FF);arr[arr.length]=hexTable[0xF0|c>>18]+hexTable[0x80|c>>12&0x3F]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];}out+=arr.join('');}return out;};var compact=function compact(value){var queue=[{obj:{o:value},prop:'o'}];var refs=[];for(var i=0;i<queue.length;++i){var item=queue[i];var obj=item.obj[item.prop];var keys=Object.keys(obj);for(var j=0;j<keys.length;++j){var key=keys[j];var val=obj[key];if(typeof val==='object'&&val!==null&&refs.indexOf(val)===-1){queue[queue.length]={obj:obj,prop:key};refs[refs.length]=val;}}}compactQueue(queue);return value;};var isRegExp=function isRegExp(obj){return Object.prototype.toString.call(obj)==='[object RegExp]';};var isBuffer=function isBuffer(obj){if(!obj||typeof obj!=='object'){return false;}return!!(obj.constructor&&obj.constructor.isBuffer&&obj.constructor.isBuffer(obj));};var combine=function combine(a,b,arrayLimit,plainObjects){// If 'a' is already an overflow object, add to it
-if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":88,"side-channel":109}],93:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],94:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
+if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":79,"side-channel":112}],84:[function(require,module,exports){module.exports={"Name":"Pict Docuserve","Hash":"Docuserve","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"Docuserve-Pict-Application"}};},{}],85:[function(require,module,exports){const libPictApplication=require('pict-application');// Provider
+const libDocumentationProvider=require('./providers/Pict-Provider-Docuserve-Documentation.js');// Views
+const libViewLayout=require('./views/PictView-Docuserve-Layout.js');const libViewTopBar=require('./views/PictView-Docuserve-TopBar.js');const libViewSidebar=require('./views/PictView-Docuserve-Sidebar.js');const libViewSplash=require('./views/PictView-Docuserve-Splash.js');const libViewContent=require('./views/PictView-Docuserve-Content.js');const libViewSearch=require('./views/PictView-Docuserve-Search.js');class DocuserveApplication extends libPictApplication{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Add the documentation provider
+this.pict.addProvider('Docuserve-Documentation',libDocumentationProvider.default_configuration,libDocumentationProvider);// Add views
+this.pict.addView('Docuserve-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('Docuserve-TopBar',libViewTopBar.default_configuration,libViewTopBar);this.pict.addView('Docuserve-Sidebar',libViewSidebar.default_configuration,libViewSidebar);this.pict.addView('Docuserve-Splash',libViewSplash.default_configuration,libViewSplash);this.pict.addView('Docuserve-Content',libViewContent.default_configuration,libViewContent);this.pict.addView('Docuserve-Search',libViewSearch.default_configuration,libViewSearch);}onAfterInitializeAsync(fCallback){// Initialize application state
+this.pict.AppData.Docuserve={CatalogLoaded:false,Catalog:null,CoverLoaded:false,Cover:null,SidebarLoaded:false,SidebarGroups:[],TopBarLoaded:false,TopBar:null,ErrorPageLoaded:false,ErrorPageHTML:null,KeywordIndexLoaded:false,KeywordDocumentCount:0,CurrentGroup:'',CurrentModule:'',CurrentPath:'',// Whether the sidebar is currently visible
+SidebarVisible:true,// Base URL for local docs (relative to where the app is served)
+DocsBaseURL:'',// URL for the catalog JSON
+CatalogURL:'retold-catalog.json'};// Load the catalog, then render the layout
+let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];tmpDocProvider.loadCatalog(()=>{// Set the page title from _cover.md or _topbar.md
+let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){document.title=tmpDocuserve.Cover.Title.replace(/<[^>]*>/g,'');}else if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar&&tmpDocuserve.TopBar.Brand){document.title=tmpDocuserve.TopBar.Brand.replace(/<[^>]*>/g,'');}// Render the layout shell, which triggers child view rendering
+this.pict.views['Docuserve-Layout'].render();return super.onAfterInitializeAsync(fCallback);});}/**
+	 * Read the current window.location.hash and dispatch to the correct handler.
+	 *
+	 * Route patterns:
+	 *   #/Home                         -> showView('Docuserve-Splash')
+	 *   #/search/<query>               -> navigateToSearch(query)
+	 *   #/page/<docpath>               -> navigateToPage(docpath)
+	 *   #/doc/<group>/<module>          -> navigateToModule(group, module)
+	 *   #/doc/<group>/<module>/<path>   -> navigateToModulePath(group, module, path)
+	 */resolveHash(){let tmpHash=(window.location.hash||'').replace(/^#\/?/,'');if(!tmpHash||tmpHash==='Home'){this.showView('Docuserve-Splash');return;}let tmpParts=tmpHash.split('/');if(tmpParts[0]==='search'){let tmpQuery=decodeURIComponent(tmpParts.slice(1).join('/'));this.navigateToSearch(tmpQuery);return;}if(tmpParts[0]==='page'&&tmpParts.length>=2){// Rejoin everything after 'page/' in case the path has slashes
+let tmpDocPath=tmpParts.slice(1).join('/');this.navigateToPage(tmpDocPath);return;}if(tmpParts[0]==='doc'&&tmpParts.length>=3){let tmpGroup=tmpParts[1];let tmpModule=tmpParts[2];if(tmpParts.length>=4){let tmpPath=tmpParts.slice(3).join('/');this.navigateToModulePath(tmpGroup,tmpModule,tmpPath);}else{this.navigateToModule(tmpGroup,tmpModule);}return;}// Unknown route — treat as a page
+this.navigateToPage(tmpHash);}/**
+	 * Navigate to a hash route.
+	 *
+	 * Sets window.location.hash, which triggers the hashchange listener in the
+	 * layout view, which calls resolveHash() automatically.
+	 *
+	 * @param {string} pRoute - The route path (e.g. '/Home', '/page/quick-start')
+	 */navigateTo(pRoute){window.location.hash=pRoute;}/**
+	 * Show a specific view in the content area.
+	 *
+	 * @param {string} pViewIdentifier - The view identifier to render
+	 */showView(pViewIdentifier){if(pViewIdentifier in this.pict.views){this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath='';this.pict.views[pViewIdentifier].render();// Update sidebar to clear module nav and refresh active states
+this.pict.views['Docuserve-Sidebar'].clearModuleNav();this.pict.views['Docuserve-Sidebar'].renderSidebarGroups();}}/**
+	 * Navigate to a module's documentation.
+	 *
+	 * @param {string} pGroup - The group key
+	 * @param {string} pModule - The module name
+	 */navigateToModule(pGroup,pModule){this.navigateToModulePath(pGroup,pModule,'README.md');}/**
+	 * Navigate to a specific path within a module's documentation.
+	 *
+	 * @param {string} pGroup - The group key
+	 * @param {string} pModule - The module name
+	 * @param {string} pPath - The document path
+	 */navigateToModulePath(pGroup,pModule,pPath){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpContentView=this.pict.views['Docuserve-Content'];let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];// Update current navigation state
+this.pict.AppData.Docuserve.CurrentGroup=pGroup;this.pict.AppData.Docuserve.CurrentModule=pModule;this.pict.AppData.Docuserve.CurrentPath=pPath;// Render the content view shell and show loading
+tmpContentView.render();tmpContentView.showLoading();// Update sidebar to show active module and module-specific nav
+tmpSidebarView.renderSidebarGroups();tmpSidebarView.renderModuleNav(pGroup,pModule);// Resolve the document URL and fetch it
+let tmpURL=tmpDocProvider.resolveDocumentURL(pGroup,pModule,pPath||'README.md');if(!tmpURL){tmpContentView.displayContent(tmpDocProvider.getErrorPageHTML(pGroup+'/'+pModule));return;}let tmpDocPath=pPath||'README.md';tmpDocProvider.fetchDocument(tmpURL,(pError,pHTML)=>{if(!pError){tmpContentView.displayContent(pHTML);return;}// Remote fetch failed — try a local fallback using the
+// group/module/path as a relative path.  This handles cases
+// where the catalog contains entries (e.g. example apps)
+// that don't correspond to real GitHub repositories.
+let tmpLocalPath=pGroup+'/'+pModule+'/'+tmpDocPath;tmpDocProvider.fetchLocalDocument(tmpLocalPath,(pLocalError,pLocalHTML)=>{tmpContentView.displayContent(pLocalHTML);},pGroup,pModule,tmpDocPath);},pGroup,pModule,tmpDocPath);}/**
+	 * Navigate to a local documentation page (e.g. architecture.md).
+	 *
+	 * @param {string} pDocPath - The doc path without extension
+	 */navigateToPage(pDocPath){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpContentView=this.pict.views['Docuserve-Content'];let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];// Update state
+this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath=pDocPath;// Render the content view shell and show loading
+tmpContentView.render();tmpContentView.showLoading();// Clear module-specific sidebar nav
+tmpSidebarView.clearModuleNav();tmpSidebarView.renderSidebarGroups();// Fetch the local document
+let tmpPath=pDocPath;if(!tmpPath.match(/\.md$/)){tmpPath=tmpPath+'.md';}tmpDocProvider.fetchLocalDocument(tmpPath,(pError,pHTML)=>{// fetchDocument always provides displayable HTML in pHTML,
+// even on error, so we can use it directly.
+tmpContentView.displayContent(pHTML);});}/**
+	 * Navigate to the search page with an optional query.
+	 *
+	 * @param {string} pQuery - The search query (may be empty for blank search page)
+	 */navigateToSearch(pQuery){let tmpSidebarView=this.pict.views['Docuserve-Sidebar'];let tmpSearchView=this.pict.views['Docuserve-Search'];// Update state
+this.pict.AppData.Docuserve.CurrentGroup='';this.pict.AppData.Docuserve.CurrentModule='';this.pict.AppData.Docuserve.CurrentPath='';// Clear module-specific sidebar nav
+tmpSidebarView.clearModuleNav();tmpSidebarView.renderSidebarGroups();// Render the search view with the query
+tmpSearchView.render();tmpSearchView.showSearch(pQuery||'');}}module.exports=DocuserveApplication;module.exports.default_configuration=require('./Pict-Application-Docuserve-Configuration.json');},{"./Pict-Application-Docuserve-Configuration.json":84,"./providers/Pict-Provider-Docuserve-Documentation.js":86,"./views/PictView-Docuserve-Content.js":87,"./views/PictView-Docuserve-Layout.js":88,"./views/PictView-Docuserve-Search.js":89,"./views/PictView-Docuserve-Sidebar.js":90,"./views/PictView-Docuserve-Splash.js":91,"./views/PictView-Docuserve-TopBar.js":92,"pict-application":44}],86:[function(require,module,exports){const libPictProvider=require('pict-provider');const libLunr=require('lunr');const libPictSectionContent=require('pict-section-content');const libPictContentProvider=libPictSectionContent.PictContentProvider;/**
+ * Documentation Provider for Docuserve
+ *
+ * Loads the Indoctrinate-generated catalog and keyword index,
+ * fetches markdown documents from local paths or raw GitHub URLs,
+ * and parses them into HTML for rendering.
+ */class DocuserveDocumentationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._Catalog=null;this._ContentCache={};// Create an instance of the content provider for markdown parsing
+this._ContentProvider=this.pict.addProvider('Pict-Content',libPictContentProvider.default_configuration,libPictContentProvider);}/**
+	 * Create a link resolver closure for the content provider.
+	 *
+	 * Wraps docuserve-specific link resolution (catalog-aware routing,
+	 * GitHub URL matching) into a callback compatible with the
+	 * pict-section-content link resolver pattern.
+	 *
+	 * @param {string} [pCurrentGroup] - The current group key
+	 * @param {string} [pCurrentModule] - The current module name
+	 * @param {string} [pCurrentDocPath] - The current document path
+	 * @returns {Function} A link resolver callback
+	 */_createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath){return(pHref,pLinkText)=>{// Convert internal doc links to hash routes
+if(pHref.match(/^\//)||pHref.match(/^[^:]+\.md/)){let tmpRoute=this.convertDocLink(pHref,pCurrentGroup,pCurrentModule,pCurrentDocPath);return{href:tmpRoute};}// Check if this is a GitHub URL that matches a catalog module
+let tmpCatalogRoute=this.resolveGitHubURLToRoute(pHref);if(tmpCatalogRoute){return{href:tmpCatalogRoute};}// Use default behavior for other links
+return null;};}/**
+	 * Create an image resolver closure for the content provider.
+	 *
+	 * Resolves relative image URLs against the directory of the document
+	 * being rendered, so that images referenced with relative paths in
+	 * markdown (e.g. `![graph](diagram.svg)`) resolve correctly even
+	 * when the page uses hash-based routing.
+	 *
+	 * @param {string} pDocURL - The URL the markdown document was fetched from
+	 * @returns {Function} An image resolver callback: (pSrc, pAlt) => resolvedSrc
+	 */_createImageResolver(pDocURL){// Extract the directory portion of the document URL
+let tmpBaseDir='';if(pDocURL){let tmpLastSlash=pDocURL.lastIndexOf('/');if(tmpLastSlash>=0){tmpBaseDir=pDocURL.substring(0,tmpLastSlash+1);}}return(pSrc,pAlt)=>{// Leave absolute URLs, data URIs, and root-relative paths unchanged
+if(pSrc.match(/^https?:\/\//)||pSrc.match(/^data:/)||pSrc.match(/^\//)){return pSrc;}// Prepend the document's directory to make relative paths work
+return tmpBaseDir+pSrc;};}/**
+	 * Load all documentation data sources: catalog, _cover.md, _sidebar.md.
+	 *
+	 * Loads the catalog first (it provides the fallback data), then attempts
+	 * to load _cover.md and _sidebar.md in parallel.  If those markdown files
+	 * exist they drive the splash and sidebar views; otherwise the catalog
+	 * data is used as a fallback.
+	 *
+	 * @param {Function} fCallback - Callback when all loading is complete
+	 */loadCatalog(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpCatalogURL=this.pict.AppData.Docuserve.CatalogURL||'retold-catalog.json';let tmpLoadOptionalFiles=()=>{// Load _cover.md, _sidebar.md, _topbar.md, errorpage.md and keyword index in parallel.
+// When all are done, if we still have no sidebar data, try to auto-discover
+// a README.md so the site works with plain markdown folders.
+let tmpPending=5;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// If no sidebar data was populated by catalog or _sidebar.md,
+// try to auto-discover a README.md to provide minimal navigation.
+if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info(`Docuserve: No catalog at [${tmpCatalogURL}]; running in standalone mode.`);return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
+this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.log.info(`Docuserve: Catalog load error (${pError}); continuing in standalone mode.`);tmpLoadOptionalFiles();});}/**
+	 * Auto-discover sidebar content when no catalog or _sidebar.md is available.
+	 *
+	 * Attempts to fetch README.md from the docs root.  If found, creates a
+	 * minimal sidebar with a single "Docs" group containing a README entry.
+	 * This lets pict-docuserve work with nothing but a folder of markdown.
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */autoDiscoverSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'README.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(pMarkdown){// Extract a title from the first heading in the README
+let tmpTitleMatch=pMarkdown.match(/^#+\s+(.+)/m);let tmpTitle=tmpTitleMatch?tmpTitleMatch[1].trim():'Docs';// Build a minimal sidebar group so the sidebar has something to show
+this.pict.AppData.Docuserve.SidebarGroups=[{Name:tmpTitle,Key:'docs',Route:'#/page/README',Modules:[]}];// Also set this as a fallback cover title if we have no cover
+if(!this.pict.AppData.Docuserve.CoverLoaded){this.pict.AppData.Docuserve.Cover={Title:tmpTitle,Tagline:'',Description:'',Highlights:[],Actions:[{Text:'Read the Docs',Href:'README.md'}]};this.pict.AppData.Docuserve.CoverLoaded=true;}}else{this.log.info('Docuserve: No README.md found; sidebar will be empty.');}return tmpCallback();}).catch(pError=>{this.log.info(`Docuserve: README.md discovery failed (${pError}).`);return tmpCallback();});}/**
+	 * Fetch and parse _cover.md into structured data for the splash view.
+	 *
+	 * The expected _cover.md format follows the docsify convention:
+	 *   # Title
+	 *   > Tagline
+	 *   Description paragraph text.
+	 *   - **Group** — description
+	 *   [Link Text](url)
+	 *
+	 * Parsed result stored in this.pict.AppData.Docuserve.Cover:
+	 *   { Title, Tagline, Description, Highlights: [{Label, Text}], Actions: [{Text, Href}] }
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadCover(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_cover.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _cover.md found; splash will use catalog data.');return tmpCallback();}this.pict.AppData.Docuserve.Cover=this.parseCover(pMarkdown);this.pict.AppData.Docuserve.CoverLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _cover.md: ${pError}`);return tmpCallback();});}/**
+	 * Parse _cover.md markdown text into a structured object.
+	 *
+	 * @param {string} pMarkdown - Raw _cover.md content
+	 * @returns {Object} Parsed cover data
+	 */parseCover(pMarkdown){let tmpCover={Title:'',Tagline:'',Description:'',Highlights:[],Actions:[]};let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i].trim();if(!tmpLine){continue;}// Heading — the title
+let tmpHeadingMatch=tmpLine.match(/^#+\s+(.+)/);if(tmpHeadingMatch){tmpCover.Title=tmpHeadingMatch[1].trim();continue;}// Blockquote — the tagline
+let tmpBlockquoteMatch=tmpLine.match(/^>\s*(.*)/);if(tmpBlockquoteMatch){tmpCover.Tagline=tmpBlockquoteMatch[1].trim();continue;}// Bullet list — highlights (e.g. "- **Fable** — Core ecosystem, DI, config")
+let tmpBulletMatch=tmpLine.match(/^[-*+]\s+(.*)/);if(tmpBulletMatch){let tmpBulletContent=tmpBulletMatch[1];// Try to split on bold label: **Label** — rest
+let tmpLabelMatch=tmpBulletContent.match(/^\*\*([^*]+)\*\*\s*[-—:]\s*(.*)/);if(tmpLabelMatch){tmpCover.Highlights.push({Label:tmpLabelMatch[1].trim(),Text:tmpLabelMatch[2].trim()});}else{tmpCover.Highlights.push({Label:'',Text:tmpBulletContent.trim()});}continue;}// Bare link — action button (e.g. "[Get Started](getting-started.md)")
+let tmpLinkMatch=tmpLine.match(/^\[([^\]]+)\]\(([^)]+)\)\s*$/);if(tmpLinkMatch){tmpCover.Actions.push({Text:tmpLinkMatch[1].trim(),Href:tmpLinkMatch[2].trim()});continue;}// Otherwise it's description text
+if(!tmpCover.Description){tmpCover.Description=tmpLine;}else{tmpCover.Description+=' '+tmpLine;}}return tmpCover;}/**
+	 * Fetch and parse _sidebar.md into structured navigation data.
+	 *
+	 * The expected _sidebar.md format follows the docsify convention:
+	 *   - [Home](/)
+	 *   - Group Title
+	 *     - [module-name](/group/module/)
+	 *   - [Group Title](group.md)
+	 *     - [module-name](/group/module/)
+	 *
+	 * If _sidebar.md is successfully loaded and parsed, its data replaces
+	 * the catalog-inferred SidebarGroups in AppData.
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_sidebar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _sidebar.md found; sidebar will use catalog data.');return tmpCallback();}let tmpSidebarData=this.parseSidebarMarkdown(pMarkdown);if(tmpSidebarData&&tmpSidebarData.length>0){this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarData;this.pict.AppData.Docuserve.SidebarLoaded=true;}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _sidebar.md: ${pError}`);return tmpCallback();});}/**
+	 * Fetch and parse _topbar.md into structured data for the top bar view.
+	 *
+	 * The expected _topbar.md format:
+	 *   # Brand Name
+	 *   - [Link Text](url)
+	 *   - [Link Text](url)
+	 *
+	 * The heading becomes the brand/title shown on the left.  List items become
+	 * navigation links.  External links (starting with http) render on the
+	 * right side; internal links render in the centre nav area.
+	 *
+	 * Parsed result stored in this.pict.AppData.Docuserve.TopBar:
+	 *   { Brand, NavLinks: [{Text, Href, External}], ExternalLinks: [{Text, Href}] }
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadTopbar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_topbar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _topbar.md found; top bar will use defaults.');return tmpCallback();}this.pict.AppData.Docuserve.TopBar=this.parseTopbar(pMarkdown);this.pict.AppData.Docuserve.TopBarLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _topbar.md: ${pError}`);return tmpCallback();});}/**
+	 * Parse _topbar.md markdown text into a structured object.
+	 *
+	 * @param {string} pMarkdown - Raw _topbar.md content
+	 * @returns {Object} Parsed top bar data { Brand, NavLinks, ExternalLinks }
+	 */parseTopbar(pMarkdown){let tmpTopBar={Brand:'',NavLinks:[],ExternalLinks:[]};let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i].trim();if(!tmpLine){continue;}// Heading — the brand name
+let tmpHeadingMatch=tmpLine.match(/^#+\s+(.+)/);if(tmpHeadingMatch){tmpTopBar.Brand=tmpHeadingMatch[1].trim();continue;}// Bullet list item with link
+let tmpBulletMatch=tmpLine.match(/^[-*+]\s+(.*)/);if(tmpBulletMatch){let tmpContent=tmpBulletMatch[1].trim();let tmpLinkMatch=tmpContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpLinkMatch){let tmpText=tmpLinkMatch[1].trim();let tmpHref=tmpLinkMatch[2].trim();// External links (http/https) go to the right side
+if(tmpHref.match(/^https?:\/\//)){tmpTopBar.ExternalLinks.push({Text:tmpText,Href:tmpHref});}else{// Internal link — convert to hash route
+let tmpRoute=this.convertSidebarLink(tmpHref);tmpTopBar.NavLinks.push({Text:tmpText,Href:tmpRoute});}}continue;}}return tmpTopBar;}/**
+	 * Fetch and parse errorpage.md into HTML for use as a custom error page.
+	 *
+	 * The errorpage.md is a standard markdown file.  If it contains the
+	 * placeholder `{{path}}` anywhere in its source, that token will be
+	 * replaced with the actual requested path at display time (via
+	 * getErrorPageHTML).
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadErrorPage(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'errorpage.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No errorpage.md found; errors will use default page.');return tmpCallback();}this.pict.AppData.Docuserve.ErrorPageHTML=this._ContentProvider.parseMarkdown(pMarkdown);this.pict.AppData.Docuserve.ErrorPageLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading errorpage.md: ${pError}`);return tmpCallback();});}/**
+	 * Load the keyword search index (retold-keyword-index.json).
+	 *
+	 * If the index file exists, hydrates a lunr.Index for client-side search
+	 * and stores the document metadata map.  If the file is not found, search
+	 * features will simply not appear in the UI.
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadKeywordIndex(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'retold-keyword-index.json').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pIndexData=>{if(!pIndexData||!pIndexData.LunrIndex||!pIndexData.Documents){this.log.info('Docuserve: No keyword index found; search will be unavailable.');return tmpCallback();}try{this._LunrIndex=libLunr.Index.load(pIndexData.LunrIndex);this._KeywordDocuments=pIndexData.Documents;this.pict.AppData.Docuserve.KeywordIndexLoaded=true;this.pict.AppData.Docuserve.KeywordDocumentCount=pIndexData.DocumentCount||0;this.log.info(`Docuserve: Keyword index loaded (${pIndexData.DocumentCount||0} documents).`);}catch(pError){this.log.warn(`Docuserve: Error hydrating lunr index: ${pError}`);}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading keyword index: ${pError}`);return tmpCallback();});}/**
+	 * Check whether a group/module pair exists in the loaded catalog.
+	 *
+	 * Used by search() to decide whether a result should route to
+	 * #/doc/ (catalog module → GitHub raw URL) or #/page/ (local doc).
+	 *
+	 * @param {string} pGroup - The group key (e.g. "fable")
+	 * @param {string} pModule - The module name (e.g. "fable")
+	 * @returns {boolean} True if the module is found in the catalog
+	 */isModuleInCatalog(pGroup,pModule){if(!this._Catalog||!this._Catalog.Groups){return false;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name===pModule){return true;}}}return false;}/**
+	 * Find the catalog group key that contains a given module name.
+	 *
+	 * Searches all groups in the catalog for a module with the given name.
+	 * This is used to resolve sidebar links where the path uses a conceptual
+	 * group name (e.g. "fable") that doesn't match the catalog group key
+	 * (e.g. "modules").
+	 *
+	 * @param {string} pModuleName - The module name to find (e.g. "fable")
+	 * @returns {string|null} The catalog group key (e.g. "modules") or null
+	 */findModuleGroupKey(pModuleName){if(!this._Catalog||!this._Catalog.Groups){return null;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];for(let j=0;j<tmpGroup.Modules.length;j++){if(tmpGroup.Modules[j].Name===pModuleName){return tmpGroup.Key;}}}return null;}/**
+	 * Check whether a group key exists in the loaded catalog.
+	 *
+	 * Used to dynamically validate group keys instead of hardcoding them.
+	 *
+	 * @param {string} pGroupKey - The group key (e.g. "fable", "example_applications")
+	 * @returns {boolean} True if the group is found in the catalog
+	 */isGroupInCatalog(pGroupKey){if(!this._Catalog||!this._Catalog.Groups){return false;}for(let i=0;i<this._Catalog.Groups.length;i++){if(this._Catalog.Groups[i].Key===pGroupKey){return true;}}return false;}/**
+	 * Search the keyword index for documents matching a query.
+	 *
+	 * Returns an array of result objects sorted by relevance:
+	 *   [{ Key, Title, Group, Module, DocPath, Score, Route }]
+	 *
+	 * @param {string} pQuery - The search query
+	 * @returns {Array} Search results (empty if no index or no matches)
+	 */search(pQuery){if(!this._LunrIndex||!this._KeywordDocuments||!pQuery||!pQuery.trim()){return[];}let tmpResults=[];try{let tmpLunrResults=this._LunrIndex.search(pQuery);for(let i=0;i<tmpLunrResults.length;i++){let tmpRef=tmpLunrResults[i].ref;let tmpScore=tmpLunrResults[i].score;let tmpDoc=this._KeywordDocuments[tmpRef];if(!tmpDoc){continue;}// Build the hash route from the document key (group/module/docpath)
+let tmpParts=tmpRef.split('/');let tmpRoute='';if(tmpParts.length>=2){// Check whether this group/module exists in the catalog.
+// If it does, route to #/doc/ which fetches from GitHub.
+// If not, fall back to #/page/ which fetches locally.
+let tmpGroup=tmpParts[0];let tmpModule=tmpParts[1];if(this.isModuleInCatalog(tmpGroup,tmpModule)){tmpRoute='#/doc/'+tmpRef;}else{// Local document — route via #/page/ using the full ref path
+tmpRoute='#/page/'+tmpRef;}}tmpResults.push({Key:tmpRef,Title:tmpDoc.Title||tmpRef,Group:tmpDoc.Group||'',Module:tmpDoc.Module||'',DocPath:tmpDoc.DocPath||'',Score:tmpScore,Route:tmpRoute});}}catch(pError){this.log.warn(`Docuserve: Search error: ${pError}`);}return tmpResults;}/**
+	 * Get the error page HTML for a given requested path.
+	 *
+	 * If a custom errorpage.md was loaded, its parsed HTML is returned with
+	 * the `{{path}}` placeholder replaced by the actual requested path.
+	 * Otherwise a default not-found HTML block is returned.
+	 *
+	 * @param {string} pRequestedPath - The path that was not found
+	 * @returns {string} HTML to display
+	 */getErrorPageHTML(pRequestedPath){let tmpPath=pRequestedPath||'unknown';if(this.pict.AppData.Docuserve.ErrorPageLoaded&&this.pict.AppData.Docuserve.ErrorPageHTML){// Replace the {{path}} placeholder with the actual requested path
+return this.pict.AppData.Docuserve.ErrorPageHTML.replace(/\{\{path\}\}/g,this._ContentProvider.escapeHTML(tmpPath));}// Default fallback
+return'<div class="docuserve-not-found">'+'<h2>Page Not Found</h2>'+'<p>The document <code>'+this._ContentProvider.escapeHTML(tmpPath)+'</code> could not be loaded.</p>'+'<p><a href="#/Home">Return to the home page</a></p>'+'</div>';}/**
+	 * Parse _sidebar.md into the SidebarGroups format the sidebar view consumes.
+	 *
+	 * Returns an array of group objects:
+	 *   [{ Name, Key, Route, Modules: [{ Name, HasDocs, Group, Route }] }]
+	 *
+	 * Top-level items (no indent) become groups.  Indented child items become
+	 * modules within the preceding group.  The special "Home" entry is stored
+	 * as a group with no modules.
+	 *
+	 * @param {string} pMarkdown - Raw _sidebar.md content
+	 * @returns {Array} Parsed sidebar groups
+	 */parseSidebarMarkdown(pMarkdown){let tmpGroups=[];let tmpCurrentGroup=null;let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];if(!tmpLine.trim()){continue;}// Detect indent level: child items have 2+ leading spaces
+let tmpIndentMatch=tmpLine.match(/^(\s*)/);let tmpIndent=tmpIndentMatch?tmpIndentMatch[1].length:0;let tmpContent=tmpLine.trim();// Must start with a list marker
+let tmpListMatch=tmpContent.match(/^[-*+]\s+(.*)/);if(!tmpListMatch){continue;}let tmpItemContent=tmpListMatch[1].trim();// Parse link if present: [Text](href)
+let tmpLinkMatch=tmpItemContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpIndent<2){// Top-level item — this is a group header or standalone link
+if(tmpLinkMatch){let tmpName=tmpLinkMatch[1].trim();let tmpHref=tmpLinkMatch[2].trim();// Derive a group key from the href or name
+let tmpKey=this.deriveGroupKey(tmpName,tmpHref);let tmpRoute=this.convertSidebarLink(tmpHref);tmpCurrentGroup={Name:tmpName,Key:tmpKey,Route:tmpRoute,Modules:[]};tmpGroups.push(tmpCurrentGroup);}else{// Plain text group header (no link)
+let tmpName=tmpItemContent;let tmpKey=tmpName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');tmpCurrentGroup={Name:tmpName,Key:tmpKey,Route:'',Modules:[]};tmpGroups.push(tmpCurrentGroup);}}else if(tmpCurrentGroup){// Indented item — this is a module within the current group
+if(tmpLinkMatch){let tmpModuleName=tmpLinkMatch[1].trim();let tmpModuleHref=tmpLinkMatch[2].trim();let tmpModuleRoute=this.convertSidebarLink(tmpModuleHref);tmpCurrentGroup.Modules.push({Name:tmpModuleName,HasDocs:true,Group:tmpCurrentGroup.Key,Route:tmpModuleRoute});}else{// Plain text child entry (no docs link)
+tmpCurrentGroup.Modules.push({Name:tmpItemContent,HasDocs:false,Group:tmpCurrentGroup.Key,Route:''});}}}return tmpGroups;}/**
+	 * Convert a docsify-style sidebar link href into a docuserve hash route.
+	 *
+	 * Handles these forms:
+	 *   /                        -> #/Home
+	 *   /group/module/           -> #/doc/group/module
+	 *   /group/module/path.md    -> #/doc/group/module/path.md
+	 *   something.md             -> #/page/something
+	 *
+	 * @param {string} pHref - The original sidebar link href
+	 * @returns {string} The converted hash route
+	 */convertSidebarLink(pHref){if(!pHref){return'';}// Root home link
+if(pHref==='/'){return'#/Home';}// Bare hash link (e.g. "#fable") — docsify convention for the home/readme page.
+// Navigate to the first available content route in the sidebar, skipping
+// #/Home since the cover page is already displaying that.
+if(pHref.match(/^#[^/]/)){let tmpSidebarGroups=this.pict.AppData.Docuserve.SidebarGroups;if(tmpSidebarGroups){for(let g=0;g<tmpSidebarGroups.length;g++){let tmpModules=tmpSidebarGroups[g].Modules;if(tmpModules){for(let m=0;m<tmpModules.length;m++){if(tmpModules[m].HasDocs&&tmpModules[m].Route&&tmpModules[m].Route!=='#/Home'){return tmpModules[m].Route;}}}if(tmpSidebarGroups[g].Route&&tmpSidebarGroups[g].Route!=='#/Home'){return tmpSidebarGroups[g].Route;}}}return'#/Home';}// Strip leading/trailing slashes for parsing
+let tmpPath=pHref.replace(/^\//,'').replace(/\/$/,'');if(!tmpPath){return'#/Home';}let tmpParts=tmpPath.split('/');// Check if it's a module path (group/module) — both the group
+// AND the module must exist in the catalog, otherwise treat it
+// as a local page reference (e.g. docs subfolder).
+if(tmpParts.length>=2){if(this.isGroupInCatalog(tmpParts[0])&&this.isModuleInCatalog(tmpParts[0],tmpParts[1])){return'#/doc/'+tmpPath;}// Fallback: the path may use a conceptual group name (e.g. "fable/fable")
+// where the first part isn't a catalog group key. Try to find the module
+// (second part) in any catalog group and rewrite the route.
+let tmpActualGroup=this.findModuleGroupKey(tmpParts[1]);if(tmpActualGroup){let tmpRemainder=tmpParts.slice(2).join('/');if(tmpRemainder){return'#/doc/'+tmpActualGroup+'/'+tmpParts[1]+'/'+tmpRemainder;}return'#/doc/'+tmpActualGroup+'/'+tmpParts[1];}}// Local page reference
+if(tmpPath.match(/\.md$/)){return'#/page/'+tmpPath.replace(/\.md$/,'');}return'#/page/'+tmpPath;}/**
+	 * Derive a short group key from a sidebar group name or href.
+	 *
+	 * @param {string} pName - The display name (e.g. "Fable — Core Ecosystem")
+	 * @param {string} pHref - The link href (e.g. "fable.md")
+	 * @returns {string} A short key (e.g. "fable")
+	 */deriveGroupKey(pName,pHref){// Try href first — "fable.md" -> "fable"
+if(pHref&&pHref!=='/'){let tmpFromHref=pHref.replace(/^\//,'').replace(/\.md$/,'').replace(/\/$/,'');if(tmpFromHref&&!tmpFromHref.includes('/')){return tmpFromHref.toLowerCase();}}// Fall back to first word of name lowercased
+let tmpFirstWord=pName.split(/[\s—\-:]+/)[0];return tmpFirstWord.toLowerCase().replace(/[^a-z0-9]/g,'');}/**
+	 * Build structured sidebar data from the catalog for the sidebar view.
+	 *
+	 * @param {Object} pCatalog - The parsed retold-catalog.json
+	 */buildSidebarData(pCatalog){let tmpSidebarGroups=[];for(let i=0;i<pCatalog.Groups.length;i++){let tmpGroup=pCatalog.Groups[i];let tmpGroupEntry={Name:tmpGroup.Name,Key:tmpGroup.Key,Description:tmpGroup.Description,Modules:[]};for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];tmpGroupEntry.Modules.push({Name:tmpModule.Name,HasDocs:tmpModule.HasDocs,Group:tmpGroup.Key,Route:'#/doc/'+tmpGroup.Key+'/'+tmpModule.Name});}tmpSidebarGroups.push(tmpGroupEntry);}this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarGroups;}/**
+	 * Resolve a document URL from group/module/path to a fetchable URL.
+	 *
+	 * @param {string} pGroup - The group key (e.g. 'fable')
+	 * @param {string} pModule - The module name (e.g. 'fable')
+	 * @param {string} pPath - The document path within the module docs (e.g. 'README.md')
+	 * @returns {string} The resolved URL
+	 */resolveDocumentURL(pGroup,pModule,pPath){if(!this._Catalog){return null;}let tmpOrg=this._Catalog.GitHubOrg||'stevenvelozo';let tmpDefaultBranch=this._Catalog.DefaultBranch||'master';// Find the module in the catalog
+for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}let tmpBranch=tmpModule.Branch||tmpDefaultBranch;let tmpDocPath=pPath||'README.md';return'https://raw.githubusercontent.com/'+tmpOrg+'/'+tmpModule.Repo+'/'+tmpBranch+'/docs/'+tmpDocPath;}}return null;}/**
+	 * Resolve a GitHub repository URL to an internal hash route.
+	 *
+	 * If the URL matches a module in the loaded catalog, returns the
+	 * corresponding #/doc/ route so the link navigates within docuserve
+	 * instead of leaving to GitHub.
+	 *
+	 * @param {string} pURL - A GitHub URL (e.g. "https://github.com/stevenvelozo/fable")
+	 * @returns {string|null} The hash route (e.g. "#/doc/fable/fable") or null if not a catalog module
+	 */resolveGitHubURLToRoute(pURL){if(!this._Catalog||!this._Catalog.Groups||!pURL){return null;}// Match https://github.com/{org}/{repo} with optional trailing path/slash
+let tmpMatch=pURL.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)/);if(!tmpMatch){return null;}let tmpOrg=tmpMatch[1];let tmpRepo=tmpMatch[2];// Only resolve URLs that match the catalog's GitHub org
+if(tmpOrg!==this._Catalog.GitHubOrg){return null;}// Search catalog for a module with a matching Repo
+for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Repo===tmpRepo){return'#/doc/'+tmpGroup.Key+'/'+tmpModule.Name;}}}return null;}/**
+	 * Resolve the GitHub Pages documentation URL for a module.
+	 *
+	 * Returns a URL like https://stevenvelozo.github.io/pict-view/ if the
+	 * module exists in the catalog.
+	 *
+	 * @param {string} pGroup - The group key
+	 * @param {string} pModule - The module name
+	 * @returns {string|null} The GitHub Pages URL or null
+	 */resolveGitHubPagesURL(pGroup,pModule){if(!this._Catalog||!this._Catalog.Groups){return null;}let tmpOrg=this._Catalog.GitHubOrg||'stevenvelozo';for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}if(!tmpModule.HasDocs){return null;}return'https://'+tmpOrg+'.github.io/'+tmpModule.Repo+'/';}}return null;}/**
+	 * Get the module-specific sidebar entries for a given group/module.
+	 *
+	 * @param {string} pGroup - The group key
+	 * @param {string} pModule - The module name
+	 * @returns {Array|null} The sidebar entries or null
+	 */getModuleSidebar(pGroup,pModule){if(!this._Catalog){return null;}for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups[i];if(tmpGroup.Key!==pGroup){continue;}for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.Name!==pModule){continue;}return tmpModule.Sidebar||null;}}return null;}/**
+	 * Fetch a markdown document and convert it to HTML.
+	 *
+	 * @param {string} pURL - The URL to fetch
+	 * @param {Function} fCallback - Callback receiving (error, htmlContent)
+	 * @param {string} [pCurrentGroup] - The current group key for link resolution
+	 * @param {string} [pCurrentModule] - The current module name for link resolution
+	 * @param {string} [pCurrentDocPath] - The current document path for link resolution
+	 */fetchDocument(pURL,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pURL){return tmpCallback('No URL provided','');}// Check cache
+if(this._ContentCache[pURL]){return tmpCallback(null,this._ContentCache[pURL]);}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){return tmpCallback('Document not found',this.getErrorPageHTML(pURL));}let tmpHTML=this._ContentProvider.parseMarkdown(pMarkdown,this._createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath),this._createImageResolver(pURL));this._ContentCache[pURL]=tmpHTML;return tmpCallback(null,tmpHTML);}).catch(pError=>{this.log.warn(`Docuserve: Error fetching document [${pURL}]: ${pError}`);return tmpCallback(pError,this.getErrorPageHTML(pURL));});}/**
+	 * Fetch a local document relative to the docs folder.
+	 *
+	 * @param {string} pPath - The relative path (e.g. 'architecture.md')
+	 * @param {Function} fCallback - Callback receiving (error, htmlContent)
+	 * @param {string} [pCurrentGroup] - The current group key for link resolution
+	 * @param {string} [pCurrentModule] - The current module name for link resolution
+	 * @param {string} [pCurrentDocPath] - The current document path for link resolution
+	 */fetchLocalDocument(pPath,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath){let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';let tmpURL=tmpDocsBase+pPath;this.fetchDocument(tmpURL,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath);}/**
+	 * Convert a docsify-style internal link to a hash route for docuserve.
+	 *
+	 * When module context is provided, relative links (e.g. "api.md" or
+	 * "./settings-manager.md") are resolved within the current module and
+	 * document directory rather than falling back to the docs root.
+	 *
+	 * @param {string} pHref - The original link href
+	 * @param {string} [pCurrentGroup] - The current group key (e.g. "fable")
+	 * @param {string} [pCurrentModule] - The current module name (e.g. "fable")
+	 * @param {string} [pCurrentDocPath] - The current document path within the module (e.g. "services/README.md")
+	 * @returns {string} The converted hash route
+	 */convertDocLink(pHref,pCurrentGroup,pCurrentModule,pCurrentDocPath){// Strip leading ./ prefix for relative paths
+let tmpPath=pHref.replace(/^\.\//,'');// Remove leading slash
+tmpPath=tmpPath.replace(/^\//,'');// If it looks like an absolute module path (group/module/...), route directly.
+// Both the group AND the module must exist in the catalog, otherwise treat
+// as a local page reference (e.g. docs subfolder like modules/modules.md).
+let tmpParts=tmpPath.split('/');if(tmpParts.length>=2){if(this.isGroupInCatalog(tmpParts[0])&&this.isModuleInCatalog(tmpParts[0],tmpParts[1])){return'#/doc/'+tmpPath;}}// If we have module context, resolve relative to current document's directory
+if(pCurrentGroup&&pCurrentModule){// Determine the directory of the current document
+let tmpDocDir='';if(pCurrentDocPath){let tmpDirParts=pCurrentDocPath.split('/');if(tmpDirParts.length>1){tmpDirParts.pop();// Remove filename
+tmpDocDir=tmpDirParts.join('/')+'/';}}return'#/doc/'+pCurrentGroup+'/'+pCurrentModule+'/'+tmpDocDir+tmpPath;}// Local doc page (no module context)
+if(tmpPath.match(/\.md$/)){let tmpPageKey=tmpPath.replace(/\.md$/,'');return'#/page/'+tmpPageKey;}return'#/page/'+tmpPath;}}module.exports=DocuserveDocumentationProvider;module.exports.default_configuration={ProviderIdentifier:"Docuserve-Documentation",AutoInitialize:true,AutoInitializeOrdinal:0};},{"lunr":32,"pict-provider":46,"pict-section-content":93}],87:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"Docuserve-Content",DefaultRenderable:"Docuserve-Content-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,// The parent pict-section-content CSS must be included here because
+// pict-view's Object.assign replaces the CSS property entirely when
+// the child provides its own.  We cannot read the parent's
+// default_configuration.CSS at module scope because browserify's
+// module initialisation order does not guarantee it is populated yet.
+CSS:/*css*/`
+		.pict-content {
+			padding: 2em 3em;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.pict-content-loading {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 200px;
+			color: #8A7F72;
+			font-size: 1em;
+		}
+		.pict-content h1 {
+			font-size: 2em;
+			color: #3D3229;
+			border-bottom: 1px solid #DDD6CA;
+			padding-bottom: 0.3em;
+			margin-top: 0;
+		}
+		.pict-content h2 {
+			font-size: 1.5em;
+			color: #3D3229;
+			border-bottom: 1px solid #EAE3D8;
+			padding-bottom: 0.25em;
+			margin-top: 1.5em;
+		}
+		.pict-content h3 {
+			font-size: 1.25em;
+			color: #3D3229;
+			margin-top: 1.25em;
+		}
+		.pict-content h4, .pict-content h5, .pict-content h6 {
+			color: #5E5549;
+			margin-top: 1em;
+		}
+		.pict-content p {
+			line-height: 1.7;
+			color: #423D37;
+			margin: 0.75em 0;
+		}
+		.pict-content a {
+			color: #2E7D74;
+			text-decoration: none;
+		}
+		.pict-content a:hover {
+			text-decoration: underline;
+		}
+		.pict-content pre {
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 1.25em;
+			border-radius: 6px;
+			overflow-x: auto;
+			line-height: 1.5;
+			font-size: 0.9em;
+		}
+		.pict-content code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
+		.pict-content pre code {
+			background: none;
+			padding: 0;
+			color: inherit;
+			font-size: inherit;
+		}
+		.pict-content blockquote {
+			border-left: 4px solid #2E7D74;
+			margin: 1em 0;
+			padding: 0.5em 1em;
+			background: #F7F5F0;
+			color: #5E5549;
+		}
+		.pict-content blockquote p {
+			margin: 0.25em 0;
+		}
+		.pict-content ul, .pict-content ol {
+			padding-left: 2em;
+			line-height: 1.8;
+		}
+		.pict-content li {
+			margin: 0.25em 0;
+			color: #423D37;
+		}
+		.pict-content hr {
+			border: none;
+			border-top: 1px solid #DDD6CA;
+			margin: 2em 0;
+		}
+		.pict-content table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 1em 0;
+		}
+		.pict-content table th {
+			background: #F5F0E8;
+			border: 1px solid #DDD6CA;
+			padding: 0.6em 0.8em;
+			text-align: left;
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.pict-content table td {
+			border: 1px solid #DDD6CA;
+			padding: 0.5em 0.8em;
+			color: #423D37;
+		}
+		.pict-content table tr:nth-child(even) {
+			background: #F7F5F0;
+		}
+		.pict-content img {
+			max-width: 100%;
+			height: auto;
+		}
+		.pict-content pre.mermaid {
+			background: #fff;
+			color: #3D3229;
+			text-align: center;
+			padding: 1em;
+		}
+		.pict-content .pict-content-katex-display {
+			text-align: center;
+			margin: 1em 0;
+			padding: 0.5em;
+			overflow-x: auto;
+		}
+		.pict-content .pict-content-katex-inline {
+			display: inline;
+		}
+		.docuserve-module-external-link {
+			padding: 0.5em 0;
+			margin-bottom: 0.5em;
+			border-bottom: 1px solid #EAE3D8;
+			font-size: 0.85em;
+			text-align: right;
+		}
+		.docuserve-module-external-link a {
+			color: #2E7D74;
+			text-decoration: none;
+		}
+		.docuserve-module-external-link a:hover {
+			text-decoration: underline;
+		}
+		.docuserve-not-found {
+			text-align: center;
+			padding: 3em 1em;
+			color: #5E5549;
+		}
+		.docuserve-not-found h2 {
+			color: #8A7F72;
+			font-size: 1.5em;
+			border-bottom: none;
+		}
+		.docuserve-not-found code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
+	`,Templates:[{Hash:"Docuserve-Content-Template",Template:/*html*/`
+<div class="pict-content" id="Docuserve-Content-Body">
+	<div class="pict-content-loading">Loading documentation...</div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Content-Display",TemplateHash:"Docuserve-Content-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveContentView extends libPictContentView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+	 * Display parsed HTML content in the content area.
+	 *
+	 * When viewing a module's documentation, prepends a link to the
+	 * module's own GitHub Pages documentation site.
+	 *
+	 * @param {string} pHTMLContent - The HTML to display
+	 */displayContent(pHTMLContent){let tmpHTML=pHTMLContent;let tmpGroup=this.pict.AppData.Docuserve.CurrentGroup;let tmpModule=this.pict.AppData.Docuserve.CurrentModule;if(tmpGroup&&tmpModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(tmpDocProvider){let tmpPagesURL=tmpDocProvider.resolveGitHubPagesURL(tmpGroup,tmpModule);if(tmpPagesURL){tmpHTML='<div class="docuserve-module-external-link">'+'<a href="'+tmpPagesURL+'" target="_blank" rel="noopener">'+'&#x2197; View '+tmpModule+' documentation site'+'</a>'+'</div>'+tmpHTML;}}}super.displayContent(tmpHTML,'Docuserve-Content-Body');}/**
+	 * Show a loading indicator.
+	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":93}],88:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/`
+		#Docuserve-Application-Container {
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			overflow: hidden;
+		}
+		#Docuserve-TopBar-Container {
+			flex-shrink: 0;
+		}
+		.docuserve-body {
+			display: flex;
+			flex: 1;
+			min-height: 0;
+		}
+		#Docuserve-Sidebar-Container {
+			flex-shrink: 0;
+			width: 280px;
+			overflow-y: auto;
+			background-color: #F5F0E8;
+		}
+		#Docuserve-Content-Container {
+			flex: 1;
+			min-width: 0;
+			overflow-y: auto;
+		}
+	`,Templates:[{Hash:"Docuserve-Layout-Shell-Template",Template:/*html*/`
+<div id="Docuserve-TopBar-Container"></div>
+<div class="docuserve-body">
+	<div id="Docuserve-Sidebar-Container"></div>
+	<div id="Docuserve-Content-Container"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Layout-Shell",TemplateHash:"Docuserve-Layout-Shell-Template",DestinationAddress:"#Docuserve-Application-Container",RenderMethod:"replace"}]};class DocuserveLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// After the layout shell is rendered, render the child views into their containers
+this.pict.views['Docuserve-TopBar'].render();this.pict.views['Docuserve-Sidebar'].render();// Show the splash screen initially
+this.pict.views['Docuserve-Splash'].render();// Inject all view CSS into the PICT-CSS style element
+this.pict.CSSMap.injectCSS();// Resolve the current hash on initial load
+this.pict.PictApplication.resolveHash();// Listen for hash changes so that plain <a href="#/..."> links trigger
+// navigation.  This covers sidebar links, splash action buttons,
+// in-content links, and browser back/forward navigation.
+if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],89:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-search {
+			padding: 2em 3em;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.docuserve-search-header {
+			margin-bottom: 1.5em;
+		}
+		.docuserve-search-header h1 {
+			font-size: 1.75em;
+			color: #3D3229;
+			margin: 0 0 0.75em 0;
+		}
+		.docuserve-search-input {
+			width: 100%;
+			padding: 0.75em 1em;
+			font-size: 1.1em;
+			border: 2px solid #D4CCBE;
+			border-radius: 6px;
+			outline: none;
+			box-sizing: border-box;
+			transition: border-color 0.15s;
+		}
+		.docuserve-search-input:focus {
+			border-color: #2E7D74;
+		}
+		.docuserve-search-status {
+			margin-top: 0.75em;
+			font-size: 0.9em;
+			color: #8A7F72;
+		}
+		.docuserve-search-results {
+			margin-top: 1em;
+		}
+		.docuserve-search-result {
+			display: block;
+			padding: 1em 1.25em;
+			margin-bottom: 0.5em;
+			border: 1px solid #EAE3D8;
+			border-radius: 6px;
+			text-decoration: none;
+			color: inherit;
+			transition: border-color 0.15s, box-shadow 0.15s;
+		}
+		.docuserve-search-result:hover {
+			border-color: #2E7D74;
+			box-shadow: 0 2px 8px rgba(46, 125, 116, 0.1);
+		}
+		.docuserve-search-result-title {
+			font-size: 1.05em;
+			font-weight: 600;
+			color: #2E7D74;
+			margin-bottom: 0.25em;
+		}
+		.docuserve-search-result-breadcrumb {
+			font-size: 0.8em;
+			color: #8A7F72;
+			margin-bottom: 0.2em;
+		}
+		.docuserve-search-result-path {
+			font-size: 0.8em;
+			color: #A39889;
+			font-family: monospace;
+		}
+		.docuserve-search-empty {
+			text-align: center;
+			padding: 3em 1em;
+			color: #8A7F72;
+			font-size: 1em;
+		}
+	`,Templates:[{Hash:"Docuserve-Search-Template",Template:/*html*/`
+<div class="docuserve-search">
+	<div class="docuserve-search-header">
+		<h1>Search Documentation</h1>
+		<input type="text" class="docuserve-search-input" id="Docuserve-Search-Input" placeholder="Search across all modules...">
+		<div id="Docuserve-Search-Status" class="docuserve-search-status"></div>
+	</div>
+	<div id="Docuserve-Search-Results" class="docuserve-search-results"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Search-Display",TemplateHash:"Docuserve-Search-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveSearchView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Attach the search input listener
+let tmpInput=document.getElementById('Docuserve-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SearchDebounceTimer){clearTimeout(this._SearchDebounceTimer);}this._SearchDebounceTimer=setTimeout(()=>{this.performSearch(tmpInput.value);},250);});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Show the search page with an optional initial query.
+	 *
+	 * @param {string} pQuery - The initial search query
+	 */showSearch(pQuery){let tmpInput=document.getElementById('Docuserve-Search-Input');if(tmpInput){tmpInput.value=pQuery||'';tmpInput.focus();}if(pQuery&&pQuery.trim()){this.performSearch(pQuery);}else{let tmpDocCount=this.pict.AppData.Docuserve.KeywordDocumentCount||0;let tmpStatusMsg=tmpDocCount>0?'Search across '+tmpDocCount+' documents.':'Enter a search term to find documentation.';this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpStatusMsg);this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');}// Scroll to top
+let tmpContentContainer=document.getElementById('Docuserve-Content-Container');if(tmpContentContainer){tmpContentContainer.scrollTop=0;}}/**
+	 * Perform a search and render the results.
+	 *
+	 * @param {string} pQuery - The search query
+	 */performSearch(pQuery){if(!pQuery||!pQuery.trim()){let tmpDocCount=this.pict.AppData.Docuserve.KeywordDocumentCount||0;let tmpStatusMsg=tmpDocCount>0?'Search across '+tmpDocCount+' documents.':'Enter a search term to find documentation.';this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpStatusMsg);this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');return;}let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpResults=tmpDocProvider.search(pQuery);// Update status
+if(tmpResults.length===0){this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status','No results found for \''+this.escapeHTML(pQuery)+'\'.');this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results','');return;}this.pict.ContentAssignment.assignContent('#Docuserve-Search-Status',tmpResults.length+' result'+(tmpResults.length!==1?'s':'')+' for \''+this.escapeHTML(pQuery)+'\'');// Render results
+let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];let tmpBreadcrumb='';if(tmpResult.Group&&tmpResult.Module){tmpBreadcrumb=tmpResult.Group+' &rsaquo; '+tmpResult.Module;}tmpHTML+='<a class="docuserve-search-result" href="'+tmpResult.Route+'">';tmpHTML+='<div class="docuserve-search-result-title">'+this.escapeHTML(tmpResult.Title)+'</div>';if(tmpBreadcrumb){tmpHTML+='<div class="docuserve-search-result-breadcrumb">'+tmpBreadcrumb+'</div>';}if(tmpResult.DocPath){tmpHTML+='<div class="docuserve-search-result-path">'+this.escapeHTML(tmpResult.DocPath)+'</div>';}tmpHTML+='</a>';}this.pict.ContentAssignment.assignContent('#Docuserve-Search-Results',tmpHTML);}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - The text to escape
+	 * @returns {string} The escaped text
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],90:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-sidebar {
+			border-right: 1px solid #DDD6CA;
+			padding: 1em 0;
+			padding-top: 0;
+			min-height: 100%;
+			position: relative;
+		}
+		.docuserve-sidebar-header {
+			display: flex;
+			justify-content: flex-end;
+			padding: 0.4em 0.5em 0;
+		}
+		.docuserve-sidebar-close {
+			background: none;
+			border: none;
+			color: #8A7F72;
+			font-size: 1.2em;
+			cursor: pointer;
+			padding: 0.2em 0.4em;
+			line-height: 1;
+		}
+		.docuserve-sidebar-close:hover {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search {
+			padding: 0 1em 1em 1em;
+			border-bottom: 1px solid #EAE3D8;
+			margin-bottom: 0.5em;
+		}
+		.docuserve-sidebar-search input {
+			width: 100%;
+			padding: 0.5em 0.75em;
+			border: 1px solid #D4CCBE;
+			border-radius: 4px;
+			font-size: 0.85em;
+			outline: none;
+			box-sizing: border-box;
+		}
+		.docuserve-sidebar-search input:focus {
+			border-color: #2E7D74;
+		}
+		.docuserve-sidebar-search-results {
+			margin-top: 0.5em;
+		}
+		.docuserve-sidebar-search-results a {
+			display: block;
+			padding: 0.4em 0.5em;
+			color: #423D37;
+			text-decoration: none;
+			font-size: 0.82em;
+			border-radius: 3px;
+			transition: background-color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-search-results a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search-result-title {
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.docuserve-sidebar-search-results a:hover .docuserve-sidebar-search-result-title {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search-result-meta {
+			font-size: 0.9em;
+			color: #8A7F72;
+		}
+		.docuserve-sidebar-search-all {
+			display: block;
+			padding: 0.4em 0.5em;
+			font-size: 0.82em;
+			color: #2E7D74;
+			text-decoration: none;
+			font-weight: 600;
+			cursor: pointer;
+			border-top: 1px solid #EAE3D8;
+			margin-top: 0.25em;
+			padding-top: 0.5em;
+		}
+		.docuserve-sidebar-search-all:hover {
+			text-decoration: underline;
+		}
+		.docuserve-sidebar-home {
+			padding: 0.5em 1.25em;
+			font-weight: 600;
+			font-size: 0.85em;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+		}
+		.docuserve-sidebar-home a {
+			color: #5E5549;
+			text-decoration: none;
+			cursor: pointer;
+			user-select: none;
+		}
+		.docuserve-sidebar-home a:hover {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-group {
+			margin-top: 0.25em;
+		}
+		.docuserve-sidebar-group-title {
+			display: block;
+			padding: 0.5em 1.25em;
+			font-weight: 600;
+			font-size: 0.85em;
+			color: #5E5549;
+			text-decoration: none;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			cursor: pointer;
+			user-select: none;
+			transition: background-color 0.1s, color 0.1s;
+		}
+		.docuserve-sidebar-group-title:hover {
+			color: #2E7D74;
+			background-color: #EAE3D8;
+		}
+		a.docuserve-sidebar-group-title.active {
+			color: #2E7D74;
+			background-color: #E0EDEB;
+		}
+		.docuserve-sidebar-modules {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.docuserve-sidebar-modules li {
+			padding: 0;
+		}
+		.docuserve-sidebar-modules a {
+			display: block;
+			padding: 0.3em 1.25em 0.3em 2em;
+			color: #5E5549;
+			text-decoration: none;
+			font-size: 0.85em;
+			transition: background-color 0.1s, color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-modules a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-modules a.active {
+			color: #2E7D74;
+			font-weight: 600;
+			background-color: #E0EDEB;
+		}
+		.docuserve-sidebar-modules .no-docs {
+			display: block;
+			padding: 0.3em 1.25em 0.3em 2em;
+			color: #A39889;
+			font-size: 0.85em;
+		}
+		.docuserve-sidebar-module-nav {
+			border-top: 1px solid #EAE3D8;
+			margin-top: 0.5em;
+			padding-top: 0.5em;
+		}
+		.docuserve-sidebar-module-nav-section {
+			padding: 0.4em 1.25em;
+			font-weight: 600;
+			font-size: 0.8em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.02em;
+		}
+		.docuserve-sidebar-module-nav a {
+			display: block;
+			padding: 0.25em 1.25em 0.25em 2.25em;
+			color: #5E5549;
+			text-decoration: none;
+			font-size: 0.82em;
+			transition: background-color 0.1s, color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-module-nav a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+	`,Templates:[{Hash:"Docuserve-Sidebar-Template",Template:/*html*/`
+<div class="docuserve-sidebar">
+	<div class="docuserve-sidebar-header">
+		<button class="docuserve-sidebar-close" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&times;</button>
+	</div>
+	<div id="Docuserve-Sidebar-Search" class="docuserve-sidebar-search" style="display:none;">
+		<input type="text" placeholder="Search docs..." id="Docuserve-Sidebar-Search-Input">
+		<div id="Docuserve-Sidebar-Search-Results" class="docuserve-sidebar-search-results"></div>
+	</div>
+	<div class="docuserve-sidebar-home">
+		<a onclick="{~P~}.PictApplication.navigateTo('/Home')">Home</a>
+	</div>
+	<div id="Docuserve-Sidebar-Groups"></div>
+	<div id="Docuserve-Sidebar-ModuleNav"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();// Conditionally show the search box if the keyword index is loaded
+let tmpSearchContainer=document.getElementById('Docuserve-Sidebar-Search');if(tmpSearchContainer&&this.pict.AppData.Docuserve.KeywordIndexLoaded){tmpSearchContainer.style.display='';let tmpInput=document.getElementById('Docuserve-Sidebar-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SidebarSearchDebounceTimer){clearTimeout(this._SidebarSearchDebounceTimer);}this._SidebarSearchDebounceTimer=setTimeout(()=>{this.performSidebarSearch(tmpInput.value);},250);});}}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Render the sidebar group navigation from catalog data.
+	 */renderSidebarGroups(){let tmpGroups=this.pict.AppData.Docuserve.SidebarGroups;if(!tmpGroups||tmpGroups.length<1){// Empty sidebar -- don't show a permanent loading message
+this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-Groups','');return;}let tmpHTML='';for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];tmpHTML+='<div class="docuserve-sidebar-group">';// Determine the route for the group title: use the group's own route,
+// or fall back to the first module with docs.
+let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.Modules.length;k++){if(tmpGroup.Modules[k].HasDocs&&tmpGroup.Modules[k].Route){tmpGroupRoute=tmpGroup.Modules[k].Route;break;}}}if(tmpGroupRoute){let tmpGroupActiveClass='';let tmpCurrentHash=window.location.hash||'';if(this.pict.AppData.Docuserve.CurrentGroup===tmpGroup.Key||tmpCurrentHash===tmpGroupRoute){tmpGroupActiveClass=' active';}tmpHTML+='<a class="docuserve-sidebar-group-title'+tmpGroupActiveClass+'" href="'+tmpGroupRoute+'">'+this.escapeHTML(tmpGroup.Name)+'</a>';}else{tmpHTML+='<div class="docuserve-sidebar-group-title">'+this.escapeHTML(tmpGroup.Name)+'</div>';}tmpHTML+='<ul class="docuserve-sidebar-modules">';for(let j=0;j<tmpGroup.Modules.length;j++){let tmpModule=tmpGroup.Modules[j];if(tmpModule.HasDocs){let tmpActiveClass='';if(this.pict.AppData.Docuserve.CurrentGroup===tmpModule.Group&&this.pict.AppData.Docuserve.CurrentModule===tmpModule.Name){tmpActiveClass=' class="active"';}tmpHTML+='<li><a'+tmpActiveClass+' href="'+tmpModule.Route+'">'+this.escapeHTML(tmpModule.Name)+'</a></li>';}else{tmpHTML+='<li><span class="no-docs">'+this.escapeHTML(tmpModule.Name)+'</span></li>';}}tmpHTML+='</ul>';tmpHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-Groups',tmpHTML);}/**
+	 * Render module-specific sub-navigation when viewing a module.
+	 *
+	 * @param {string} pGroup - The group key
+	 * @param {string} pModule - The module name
+	 */renderModuleNav(pGroup,pModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(!tmpDocProvider){return;}let tmpSidebar=tmpDocProvider.getModuleSidebar(pGroup,pModule);if(!tmpSidebar){this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav','');return;}let tmpRoutePrefix='#/doc/'+pGroup+'/'+pModule+'/';let tmpHTML='<div class="docuserve-sidebar-module-nav">';for(let i=0;i<tmpSidebar.length;i++){let tmpEntry=tmpSidebar[i];if(tmpEntry.Children){tmpHTML+='<div class="docuserve-sidebar-module-nav-section">'+this.escapeHTML(tmpEntry.Title)+'</div>';for(let j=0;j<tmpEntry.Children.length;j++){let tmpChild=tmpEntry.Children[j];if(tmpChild.Path){tmpHTML+='<a href="'+tmpRoutePrefix+tmpChild.Path+'">'+this.escapeHTML(tmpChild.Title)+'</a>';}}}else if(tmpEntry.Path){tmpHTML+='<a href="'+tmpRoutePrefix+tmpEntry.Path+'">'+this.escapeHTML(tmpEntry.Title)+'</a>';}}tmpHTML+='</div>';this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav',tmpHTML);}/**
+	 * Perform a sidebar search and render inline results.
+	 *
+	 * Shows up to 8 results as compact links.  If there are results, also
+	 * shows a "See all results" link to the dedicated search page.
+	 *
+	 * @param {string} pQuery - The search query
+	 */performSidebarSearch(pQuery){let tmpResultsEl=document.getElementById('Docuserve-Sidebar-Search-Results');if(!tmpResultsEl){return;}if(!pQuery||!pQuery.trim()){tmpResultsEl.innerHTML='';return;}let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];let tmpResults=tmpDocProvider.search(pQuery);if(tmpResults.length===0){tmpResultsEl.innerHTML='<div style="padding: 0.4em 0.5em; font-size: 0.82em; color: #8A7F72;">No results found.</div>';return;}let tmpMaxResults=8;let tmpHTML='';for(let i=0;i<tmpResults.length&&i<tmpMaxResults;i++){let tmpResult=tmpResults[i];let tmpMeta='';if(tmpResult.Group&&tmpResult.Module){tmpMeta=tmpResult.Group+' / '+tmpResult.Module;}tmpHTML+='<a href="'+tmpResult.Route+'">';tmpHTML+='<div class="docuserve-sidebar-search-result-title">'+this.escapeHTML(tmpResult.Title)+'</div>';if(tmpMeta){tmpHTML+='<div class="docuserve-sidebar-search-result-meta">'+this.escapeHTML(tmpMeta)+'</div>';}tmpHTML+='</a>';}if(tmpResults.length>tmpMaxResults){let tmpEncodedQuery=encodeURIComponent(pQuery);tmpHTML+='<a class="docuserve-sidebar-search-all" href="#/search/'+tmpEncodedQuery+'">See all '+tmpResults.length+' results</a>';}tmpResultsEl.innerHTML=tmpHTML;}/**
+	 * Toggle the sidebar visibility and update the top bar hamburger button.
+	 */toggleSidebar(){this.pict.AppData.Docuserve.SidebarVisible=!this.pict.AppData.Docuserve.SidebarVisible;let tmpContainer=document.getElementById('Docuserve-Sidebar-Container');let tmpToggle=document.getElementById('Docuserve-TopBar-Toggle');if(this.pict.AppData.Docuserve.SidebarVisible){if(tmpContainer)tmpContainer.style.display='';if(tmpToggle)tmpToggle.style.display='none';}else{if(tmpContainer)tmpContainer.style.display='none';if(tmpToggle)tmpToggle.style.display='inline-block';}}/**
+	 * Clear the module-specific sub-navigation.
+	 */clearModuleNav(){this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-ModuleNav','');}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - The text to escape
+	 * @returns {string} The escaped text
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],91:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-splash {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: calc(100vh - 56px);
+			padding: 3em 2em;
+			text-align: center;
+			background: linear-gradient(135deg, #F5F0E8 0%, #E4EFED 100%);
+		}
+		.docuserve-splash h1 {
+			font-size: 3em;
+			font-weight: 700;
+			color: #3D3229;
+			margin: 0 0 0.25em 0;
+		}
+		.docuserve-splash h1 small {
+			font-size: 0.4em;
+			font-weight: 400;
+			color: #7A7568;
+			vertical-align: middle;
+			margin-left: 0.15em;
+		}
+		.docuserve-splash-tagline {
+			font-size: 1.25em;
+			color: #7A7568;
+			margin-bottom: 1.5em;
+			font-style: italic;
+		}
+		.docuserve-splash-description {
+			font-size: 1em;
+			color: #5E5549;
+			max-width: 600px;
+			line-height: 1.7;
+			margin-bottom: 2em;
+		}
+		.docuserve-splash-highlights {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 1.25em;
+			max-width: 900px;
+			width: 100%;
+			margin-bottom: 2.5em;
+		}
+		.docuserve-splash-highlight-card {
+			background: #fff;
+			border: 1px solid #DDD6CA;
+			border-radius: 8px;
+			padding: 1.25em;
+			text-align: left;
+			transition: box-shadow 0.2s, border-color 0.2s;
+		}
+		.docuserve-splash-highlight-card:hover {
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+			border-color: #2E7D74;
+		}
+		.docuserve-splash-highlight-card h3 {
+			margin: 0 0 0.5em 0;
+			color: #3D3229;
+			font-size: 1em;
+		}
+		.docuserve-splash-highlight-card p {
+			margin: 0;
+			color: #7A7568;
+			font-size: 0.85em;
+			line-height: 1.5;
+		}
+		.docuserve-splash-actions {
+			display: flex;
+			gap: 1em;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+		.docuserve-splash-actions a {
+			display: inline-block;
+			padding: 0.7em 1.5em;
+			border-radius: 6px;
+			font-size: 0.95em;
+			font-weight: 600;
+			text-decoration: none;
+			transition: background-color 0.15s, color 0.15s;
+			cursor: pointer;
+		}
+		.docuserve-splash-actions .primary {
+			background-color: #2E7D74;
+			color: #fff;
+		}
+		.docuserve-splash-actions .primary:hover {
+			background-color: #256861;
+		}
+		.docuserve-splash-actions .secondary {
+			background-color: #fff;
+			color: #3D3229;
+			border: 2px solid #2E7D74;
+		}
+		.docuserve-splash-actions .secondary:hover {
+			border-color: #256861;
+			color: #2E7D74;
+		}
+	`,Templates:[{Hash:"Docuserve-Splash-Template",Template:/*html*/`
+<div class="docuserve-splash">
+	<h1 id="Docuserve-Splash-Title"></h1>
+	<div class="docuserve-splash-tagline" id="Docuserve-Splash-Tagline"></div>
+	<div class="docuserve-splash-description" id="Docuserve-Splash-Description"></div>
+	<div class="docuserve-splash-highlights" id="Docuserve-Splash-Highlights"></div>
+	<div class="docuserve-splash-actions" id="Docuserve-Splash-Actions"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Splash-Content",TemplateHash:"Docuserve-Splash-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocusserveSplashView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover){this.renderFromCover(tmpDocuserve.Cover);}else{this.renderFromCatalog(tmpDocuserve);}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Render the splash screen from parsed _cover.md data.
+	 *
+	 * @param {Object} pCover - The parsed cover data { Title, Tagline, Description, Highlights, Actions }
+	 */renderFromCover(pCover){this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Title',this.sanitizeTitle(pCover.Title));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Tagline',this.escapeHTML(pCover.Tagline));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Description',this.escapeHTML(pCover.Description));// Render highlight cards
+let tmpHighlightsHTML='';for(let i=0;i<pCover.Highlights.length;i++){let tmpHighlight=pCover.Highlights[i];tmpHighlightsHTML+='<div class="docuserve-splash-highlight-card">';if(tmpHighlight.Label){tmpHighlightsHTML+='<h3>'+this.escapeHTML(tmpHighlight.Label)+'</h3>';}tmpHighlightsHTML+='<p>'+this.escapeHTML(tmpHighlight.Text)+'</p>';tmpHighlightsHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Highlights',tmpHighlightsHTML);// Render action buttons
+let tmpActionsHTML='';let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];for(let i=0;i<pCover.Actions.length;i++){let tmpAction=pCover.Actions[i];let tmpClass=i===0?'primary':'secondary';let tmpHref=tmpAction.Href;// External links open in new tab
+if(tmpHref.match(/^https?:\/\//)){tmpActionsHTML+='<a class="'+tmpClass+'" href="'+this.escapeHTML(tmpHref)+'" target="_blank" rel="noopener">'+this.escapeHTML(tmpAction.Text)+'</a>';}else{// Internal links go through the app router
+let tmpRoute=tmpDocProvider.convertSidebarLink(tmpHref);tmpActionsHTML+='<a class="'+tmpClass+'" href="'+this.escapeHTML(tmpRoute)+'">'+this.escapeHTML(tmpAction.Text)+'</a>';}}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Actions',tmpActionsHTML);}/**
+	 * Render the splash screen from catalog data as a fallback when _cover.md
+	 * is not available.
+	 *
+	 * @param {Object} pDocuserve - The AppData.Docuserve state
+	 */renderFromCatalog(pDocuserve){// Derive the title from whatever data is available, falling back to the page title or 'Documentation'
+let tmpTitle='Documentation';let tmpTagline='';if(pDocuserve.CatalogLoaded&&pDocuserve.Catalog&&pDocuserve.Catalog.Name){tmpTitle=pDocuserve.Catalog.Name;}else if(pDocuserve.TopBarLoaded&&pDocuserve.TopBar&&pDocuserve.TopBar.Brand){tmpTitle=pDocuserve.TopBar.Brand;}else if(typeof document!=='undefined'&&document.title){tmpTitle=document.title;}if(pDocuserve.CatalogLoaded&&pDocuserve.Catalog&&pDocuserve.Catalog.Description){tmpTagline=pDocuserve.Catalog.Description;}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Title',this.escapeHTML(tmpTitle));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Tagline',this.escapeHTML(tmpTagline));this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Description','');// Build highlight cards from catalog groups
+let tmpHighlightsHTML='';let tmpGroups=pDocuserve.SidebarGroups||[];for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];// Skip groups with no modules (like "Home" or "Getting Started")
+if(!tmpGroup.Modules||tmpGroup.Modules.length<1){continue;}let tmpDescription=tmpGroup.Description||tmpGroup.Modules.length+' modules';tmpHighlightsHTML+='<div class="docuserve-splash-highlight-card">';tmpHighlightsHTML+='<h3>'+this.escapeHTML(tmpGroup.Name)+'</h3>';tmpHighlightsHTML+='<p>'+this.escapeHTML(tmpDescription)+'</p>';tmpHighlightsHTML+='</div>';}this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Highlights',tmpHighlightsHTML);// Default action buttons
+this.pict.ContentAssignment.assignContent('#Docuserve-Splash-Actions','');}/**
+	 * Sanitize a title string, preserving only <small> tags.
+	 * All other HTML is escaped.
+	 *
+	 * @param {string} pText - The raw title text
+	 * @returns {string} The sanitized title HTML
+	 */sanitizeTitle(pText){if(!pText){return'';}// Escape everything first, then restore <small> and </small>
+return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - The text to escape
+	 * @returns {string} The escaped text
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],92:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background-color: #3D3229;
+			color: #E8E0D4;
+			padding: 0 1.5em;
+			height: 56px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+			position: sticky;
+			top: 0;
+			z-index: 100;
+		}
+		.docuserve-topbar-brand {
+			font-size: 1.25em;
+			font-weight: 600;
+			letter-spacing: 0.02em;
+			color: #E8E0D4;
+			text-decoration: none;
+			cursor: pointer;
+		}
+		.docuserve-topbar-brand small {
+			font-size: 0.65em;
+			font-weight: 400;
+			color: #8A7F72;
+			margin-left: 0.2em;
+		}
+		.docuserve-topbar-brand:hover {
+			color: #fff;
+		}
+		.docuserve-topbar-nav {
+			display: flex;
+			align-items: center;
+			gap: 0.25em;
+		}
+		.docuserve-topbar-nav a {
+			color: #B5AA9A;
+			text-decoration: none;
+			padding: 0.5em 0.75em;
+			border-radius: 4px;
+			font-size: 0.9em;
+			transition: background-color 0.15s, color 0.15s;
+			cursor: pointer;
+		}
+		.docuserve-topbar-nav a:hover {
+			background-color: #524438;
+			color: #fff;
+		}
+		.docuserve-topbar-links {
+			display: flex;
+			align-items: center;
+			gap: 0.5em;
+		}
+		.docuserve-topbar-links a {
+			color: #8A7F72;
+			text-decoration: none;
+			font-size: 0.85em;
+			padding: 0.4em 0.6em;
+			border-radius: 4px;
+			transition: background-color 0.15s, color 0.15s;
+		}
+		.docuserve-topbar-links a:hover {
+			background-color: #524438;
+			color: #E8E0D4;
+		}
+		.docuserve-topbar-toggle {
+			display: none;
+			background: none;
+			border: none;
+			color: #B5AA9A;
+			font-size: 1.3em;
+			cursor: pointer;
+			padding: 0.3em 0.5em;
+			margin-left: 0.5em;
+			line-height: 1;
+		}
+		.docuserve-topbar-toggle:hover {
+			color: #fff;
+		}
+		.docuserve-topbar-right {
+			display: flex;
+			align-items: center;
+		}
+	`,Templates:[{Hash:"Docuserve-TopBar-Template",Template:/*html*/`
+<div class="docuserve-topbar">
+	<a id="Docuserve-TopBar-Brand" class="docuserve-topbar-brand" href="#/Home"></a>
+	<div id="Docuserve-TopBar-Nav" class="docuserve-topbar-nav"></div>
+	<div class="docuserve-topbar-right">
+		<div id="Docuserve-TopBar-Links" class="docuserve-topbar-links"></div>
+		<button id="Docuserve-TopBar-Toggle" class="docuserve-topbar-toggle" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&#9776;</button>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Populate the top bar from _topbar.md data or fall back to defaults.
+	 */renderTopBarContent(){let tmpDocuserve=this.pict.AppData.Docuserve;let tmpBrandEl=document.getElementById('Docuserve-TopBar-Brand');let tmpNavEl=document.getElementById('Docuserve-TopBar-Nav');let tmpLinksEl=document.getElementById('Docuserve-TopBar-Links');if(!tmpBrandEl||!tmpNavEl||!tmpLinksEl){return;}if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar){// Data-driven from _topbar.md
+let tmpTopBar=tmpDocuserve.TopBar;// Brand
+tmpBrandEl.innerHTML=this.sanitizeTitle(tmpTopBar.Brand||'Documentation');// Navigation links (centre)
+let tmpNavHTML='<a href="#/Home">Home</a>';for(let i=0;i<tmpTopBar.NavLinks.length;i++){let tmpLink=tmpTopBar.NavLinks[i];tmpNavHTML+='<a href="'+tmpLink.Href+'">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpNavEl.innerHTML=tmpNavHTML;// External links (right side) — search link first if keyword index is available
+let tmpLinksHTML='';if(tmpDocuserve.KeywordIndexLoaded){tmpLinksHTML+='<a href="#/search/">Search</a>';}for(let i=0;i<tmpTopBar.ExternalLinks.length;i++){let tmpLink=tmpTopBar.ExternalLinks[i];tmpLinksHTML+='<a href="'+this.escapeHTML(tmpLink.Href)+'" target="_blank" rel="noopener">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpLinksEl.innerHTML=tmpLinksHTML;}else{// Fallback: use brand from cover or a default, and just show Home
+let tmpBrand='Documentation';if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){tmpBrand=tmpDocuserve.Cover.Title;}else if(tmpDocuserve.CatalogLoaded&&tmpDocuserve.Catalog&&tmpDocuserve.Catalog.Name){tmpBrand=tmpDocuserve.Catalog.Name;}tmpBrandEl.innerHTML=this.sanitizeTitle(tmpBrand);tmpNavEl.innerHTML='<a href="#/Home">Home</a>';tmpLinksEl.innerHTML=tmpDocuserve.KeywordIndexLoaded?'<a href="#/search/">Search</a>':'';}}/**
+	 * Sanitize a title string, preserving only <small> tags.
+	 */sanitizeTitle(pText){if(!pText){return'';}return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
+	 * Escape HTML special characters.
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],93:[function(require,module,exports){arguments[4][50][0].apply(exports,arguments);},{"./providers/Pict-Provider-Content.js":94,"./views/Pict-View-Content.js":95,"dup":50}],94:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
+ * Content Provider for Pict Section Content
+ *
+ * A general-purpose markdown-to-HTML parser with support for:
+ * - Headings, paragraphs, lists, blockquotes, horizontal rules
+ * - Fenced code blocks with language tags (nested fence support)
+ * - Syntax highlighting and line numbers for code blocks (via pict-section-code)
+ * - Tables (GFM pipe syntax)
+ * - Mermaid diagram blocks
+ * - KaTeX math (inline and display)
+ * - Bold, italic, inline code, links, images
+ *
+ * Link resolution is customizable via an optional callback.
+ */class PictContentProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+	 * Highlight a code string using pict-section-code's syntax highlighter.
+	 * Uses a mock element to interface with the highlighter's DOM-based API.
+	 *
+	 * @param {string} pCode - The raw code string
+	 * @param {string} pLanguage - The language identifier (e.g. "javascript", "html")
+	 * @returns {string} The syntax-highlighted HTML
+	 */highlightCode(pCode,pLanguage){if(!pCode){return'';}let tmpHighlighter=libCreateHighlighter(pLanguage);// Create a mock element to interface with the highlighter
+let tmpMockElement={textContent:pCode,innerHTML:''};tmpHighlighter(tmpMockElement);return tmpMockElement.innerHTML;}/**
+	 * Generate line number HTML for a code block.
+	 *
+	 * @param {string} pCode - The raw code string
+	 * @returns {string} HTML string with line number spans
+	 */generateLineNumbers(pCode){if(!pCode){return'<span>1</span>';}let tmpLineCount=pCode.split('\n').length;let tmpHTML='';for(let i=1;i<=tmpLineCount;i++){tmpHTML+='<span>'+i+'</span>';}return tmpHTML;}/**
+	 * Parse a markdown string into HTML.
+	 *
+	 * @param {string} pMarkdown - The raw markdown text
+	 * @param {Function} [pLinkResolver] - Optional callback for link resolution: (pHref, pLinkText) => { href, target, rel } or null
+	 * @param {Function} [pImageResolver] - Optional callback for image URL resolution: (pSrc, pAlt) => resolvedSrc or null
+	 * @returns {string} The parsed HTML
+	 */parseMarkdown(pMarkdown,pLinkResolver,pImageResolver){if(!pMarkdown){return'';}let tmpLines=pMarkdown.split('\n');let tmpHTML=[];let tmpInCodeBlock=false;let tmpCodeFenceLength=0;let tmpCodeLang='';let tmpCodeLines=[];let tmpInList=false;let tmpListType='';let tmpInBlockquote=false;let tmpBlockquoteLines=[];let tmpInMathBlock=false;let tmpMathLines=[];let tmpParagraphLines=[];// Helper to flush accumulated paragraph lines into a single <p> tag
+let fFlushParagraph=()=>{if(tmpParagraphLines.length>0){tmpHTML.push('<p>'+tmpParagraphLines.map(pLine=>{return this.parseInline(pLine,pLinkResolver,pImageResolver);}).join(' ')+'</p>');tmpParagraphLines=[];}};for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];// Display math blocks ($$...$$) — skip if inside a code block
+if(!tmpInCodeBlock&&tmpLine.trim().match(/^\$\$/)){if(tmpInMathBlock){// End math block
+tmpHTML.push('<div class="pict-content-katex-display">'+tmpMathLines.join('\n')+'</div>');tmpInMathBlock=false;tmpMathLines=[];}else{// Flush any pending paragraph
+fFlushParagraph();// Close any open list or blockquote
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}tmpInMathBlock=true;}continue;}if(tmpInMathBlock){tmpMathLines.push(tmpLine);continue;}// Code blocks (fenced) — track fence length so ````x```` nests around ```y```
+let tmpFenceMatch=tmpLine.match(/^(`{3,})/);if(tmpFenceMatch){let tmpFenceLen=tmpFenceMatch[1].length;if(tmpInCodeBlock){// Only close if the closing fence is at least as long as the opening
+if(tmpFenceLen>=tmpCodeFenceLength&&tmpLine.trim()===tmpFenceMatch[1]){// End code block
+if(tmpCodeLang==='mermaid'){// Mermaid diagrams: output raw content for client-side rendering
+tmpHTML.push('<pre class="mermaid">'+tmpCodeLines.join('\n')+'</pre>');}else{let tmpCodeText=tmpCodeLines.join('\n');let tmpHighlightedCode=this.highlightCode(tmpCodeText,tmpCodeLang);let tmpLineNumbersHTML=this.generateLineNumbers(tmpCodeText);tmpHTML.push('<div class="pict-content-code-wrap"><div class="pict-content-code-line-numbers">'+tmpLineNumbersHTML+'</div><pre><code class="language-'+this.escapeHTML(tmpCodeLang)+'">'+tmpHighlightedCode+'</code></pre></div>');}tmpInCodeBlock=false;tmpCodeFenceLength=0;tmpCodeLang='';tmpCodeLines=[];continue;}else{// Inner fence with fewer backticks — treat as content
+tmpCodeLines.push(tmpLine);continue;}}else{// Flush any pending paragraph
+fFlushParagraph();// Close any open list or blockquote
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Start code block — record fence length
+tmpCodeFenceLength=tmpFenceLen;tmpCodeLang=tmpLine.replace(/^`{3,}/,'').trim();tmpInCodeBlock=true;continue;}}if(tmpInCodeBlock){tmpCodeLines.push(tmpLine);continue;}// Blockquotes
+if(tmpLine.match(/^>\s?/)){if(!tmpInBlockquote){// Flush any pending paragraph
+fFlushParagraph();// Close any open list
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}tmpInBlockquote=true;tmpBlockquoteLines=[];}tmpBlockquoteLines.push(tmpLine.replace(/^>\s?/,''));continue;}else if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Horizontal rule
+if(tmpLine.match(/^(-{3,}|\*{3,}|_{3,})\s*$/)){fFlushParagraph();if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}tmpHTML.push('<hr>');continue;}// Headings
+let tmpHeadingMatch=tmpLine.match(/^(#{1,6})\s+(.+)/);if(tmpHeadingMatch){fFlushParagraph();if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}let tmpLevel=tmpHeadingMatch[1].length;let tmpText=this.parseInline(tmpHeadingMatch[2],pLinkResolver,pImageResolver);let tmpID=tmpHeadingMatch[2].toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-');tmpHTML.push('<h'+tmpLevel+' id="'+tmpID+'">'+tmpText+'</h'+tmpLevel+'>');continue;}// Unordered list items
+let tmpULMatch=tmpLine.match(/^(\s*)[-*+]\s+(.*)/);if(tmpULMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ul'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ul>');tmpInList=true;tmpListType='ul';}tmpHTML.push('<li>'+this.parseInline(tmpULMatch[2],pLinkResolver,pImageResolver)+'</li>');continue;}// Ordered list items
+let tmpOLMatch=tmpLine.match(/^(\s*)\d+\.\s+(.*)/);if(tmpOLMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ol'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ol>');tmpInList=true;tmpListType='ol';}tmpHTML.push('<li>'+this.parseInline(tmpOLMatch[2],pLinkResolver,pImageResolver)+'</li>');continue;}// Close list if we've left list items
+if(tmpInList&&tmpLine.trim()!==''){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}// Empty line — flush any accumulated paragraph
+if(tmpLine.trim()===''){fFlushParagraph();continue;}// Table detection
+if(tmpLine.match(/^\|/)&&i+1<tmpLines.length&&tmpLines[i+1].match(/^\|[\s-:|]+\|/)){fFlushParagraph();// Close any open list
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}let tmpTableHTML='<table>';// Header row
+let tmpHeaders=tmpLine.split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<thead><tr>';for(let h=0;h<tmpHeaders.length;h++){tmpTableHTML+='<th>'+this.parseInline(tmpHeaders[h].trim(),pLinkResolver,pImageResolver)+'</th>';}tmpTableHTML+='</tr></thead>';// Skip separator row
+i++;// Body rows
+tmpTableHTML+='<tbody>';while(i+1<tmpLines.length&&tmpLines[i+1].match(/^\|/)){i++;let tmpCells=tmpLines[i].split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<tr>';for(let c=0;c<tmpCells.length;c++){tmpTableHTML+='<td>'+this.parseInline(tmpCells[c].trim(),pLinkResolver,pImageResolver)+'</td>';}tmpTableHTML+='</tr>';}tmpTableHTML+='</tbody></table>';tmpHTML.push(tmpTableHTML);continue;}// Accumulate paragraph lines — consecutive non-blank text lines
+// will be joined into a single <p> tag when flushed
+tmpParagraphLines.push(tmpLine);}// Flush any remaining accumulated paragraph
+fFlushParagraph();// Close any trailing open elements
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');}if(tmpInCodeBlock){let tmpCodeText=tmpCodeLines.join('\n');let tmpHighlightedCode=this.highlightCode(tmpCodeText,tmpCodeLang);let tmpLineNumbersHTML=this.generateLineNumbers(tmpCodeText);tmpHTML.push('<div class="pict-content-code-wrap"><div class="pict-content-code-line-numbers">'+tmpLineNumbersHTML+'</div><pre><code>'+tmpHighlightedCode+'</code></pre></div>');}return tmpHTML.join('\n');}/**
+	 * Parse inline markdown elements (bold, italic, code, links, images, KaTeX).
+	 *
+	 * @param {string} pText - The text to parse
+	 * @param {Function} [pLinkResolver] - Optional callback: (pHref, pLinkText) => { href, target, rel } or null
+	 * @param {Function} [pImageResolver] - Optional callback: (pSrc, pAlt) => resolvedSrc or null
+	 * @returns {string} HTML with inline elements
+	 */parseInline(pText,pLinkResolver,pImageResolver){if(!pText){return'';}let tmpResult=pText;// Extract inline code spans into placeholders so bold/italic regexes don't mangle their contents
+let tmpCodeSpans=[];tmpResult=tmpResult.replace(/`([^`]+)`/g,(pMatch,pCode)=>{let tmpIndex=tmpCodeSpans.length;tmpCodeSpans.push('<code>'+pCode+'</code>');return'\x00CODEINLINE'+tmpIndex+'\x00';});// Inline LaTeX equations ($...$) — must be processed before other inline patterns
+// Match single $ delimiters that aren't adjacent to spaces (to avoid false positives with currency)
+tmpResult=tmpResult.replace(/\$([^\$\s][^\$]*?[^\$\s])\$/g,'<span class="pict-content-katex-inline">$1</span>');// Also match single-character inline math like $x$
+tmpResult=tmpResult.replace(/\$([^\$\s])\$/g,'<span class="pict-content-katex-inline">$1</span>');// Images
+tmpResult=tmpResult.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,(pMatch,pAlt,pSrc)=>{let tmpSrc=pSrc;if(typeof pImageResolver==='function'){let tmpResolved=pImageResolver(pSrc,pAlt);if(tmpResolved){tmpSrc=tmpResolved;}}return'<img src="'+tmpSrc+'" alt="'+pAlt+'">';});// Links
+tmpResult=tmpResult.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(pMatch,pLinkText,pHref)=>{if(typeof pLinkResolver==='function'){let tmpResolved=pLinkResolver(pHref,pLinkText);if(tmpResolved){let tmpTarget=tmpResolved.target?' target="'+tmpResolved.target+'"':'';let tmpRel=tmpResolved.rel?' rel="'+tmpResolved.rel+'"':'';return'<a href="'+tmpResolved.href+'"'+tmpTarget+tmpRel+'>'+pLinkText+'</a>';}}// Default behavior: external links open in new tab
+if(pHref.match(/^https?:\/\//)){return'<a href="'+pHref+'" target="_blank" rel="noopener">'+pLinkText+'</a>';}return'<a href="'+pHref+'">'+pLinkText+'</a>';});// Bold
+tmpResult=tmpResult.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');tmpResult=tmpResult.replace(/__([^_]+)__/g,'<strong>$1</strong>');// Italic
+tmpResult=tmpResult.replace(/\*([^*]+)\*/g,'<em>$1</em>');tmpResult=tmpResult.replace(/_([^_]+)_/g,'<em>$1</em>');// Restore inline code spans from placeholders
+tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return tmpCodeSpans[parseInt(pIndex)];});return tmpResult;}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - The text to escape
+	 * @returns {string} The escaped text
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":46,"pict-section-code":49}],95:[function(require,module,exports){arguments[4][52][0].apply(exports,arguments);},{"dup":52,"pict-view":76}],96:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],97:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
 const libPictSectionFileBrowser=require('pict-section-filebrowser');// Provider
 const libContentEditorProvider=require('./providers/Pict-Provider-ContentEditor.js');// Views
 const libViewLayout=require('./views/PictView-Editor-Layout.js');const libViewTopBar=require('./views/PictView-Editor-TopBar.js');const libViewMarkdownEditor=require('./views/PictView-Editor-MarkdownEditor.js');const libViewCodeEditor=require('./views/PictView-Editor-CodeEditor.js');const libViewSettingsPanel=require('./views/PictView-Editor-SettingsPanel.js');const libViewMarkdownReference=require('./views/PictView-Editor-MarkdownReference.js');const libViewTopics=require('./views/PictView-Editor-Topics.js');/**
@@ -6007,7 +6106,7 @@ tmpStatsEl.textContent='';return;}tmpStatsEl.textContent=tmpLines+' lines \u00B7
 	 */saveSettings(){if(typeof window==='undefined'||!window.localStorage){return;}let tmpSettings=this.pict.AppData.ContentEditor;let tmpData={AutoSegmentMarkdown:tmpSettings.AutoSegmentMarkdown,AutoSegmentDepth:tmpSettings.AutoSegmentDepth,AutoContentPreview:tmpSettings.AutoContentPreview,MarkdownEditingControls:tmpSettings.MarkdownEditingControls,MarkdownWordWrap:tmpSettings.MarkdownWordWrap,CodeWordWrap:tmpSettings.CodeWordWrap,SidebarCollapsed:tmpSettings.SidebarCollapsed,SidebarWidth:tmpSettings.SidebarWidth,AutoPreviewImages:tmpSettings.AutoPreviewImages,AutoPreviewVideo:tmpSettings.AutoPreviewVideo,AutoPreviewAudio:tmpSettings.AutoPreviewAudio,ShowHiddenFiles:tmpSettings.ShowHiddenFiles,TopicsFilePath:tmpSettings.TopicsFilePath};try{window.localStorage.setItem(this._settingsKey,JSON.stringify(tmpData));}catch(pError){this.log.warn('Failed to save settings: '+pError.message);}}/**
 	 * Load editor settings from localStorage, overwriting the
 	 * current defaults for any keys that are present.
-	 */_loadSettings(){if(typeof window==='undefined'||!window.localStorage){return;}try{let tmpRaw=window.localStorage.getItem(this._settingsKey);if(!tmpRaw){return;}let tmpStored=JSON.parse(tmpRaw);let tmpSettings=this.pict.AppData.ContentEditor;if(typeof tmpStored.AutoSegmentMarkdown==='boolean'){tmpSettings.AutoSegmentMarkdown=tmpStored.AutoSegmentMarkdown;}if(typeof tmpStored.AutoSegmentDepth==='number'){tmpSettings.AutoSegmentDepth=tmpStored.AutoSegmentDepth;}if(typeof tmpStored.AutoContentPreview==='boolean'){tmpSettings.AutoContentPreview=tmpStored.AutoContentPreview;}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":93,"./providers/Pict-Provider-ContentEditor.js":98,"./views/PictView-Editor-CodeEditor.js":99,"./views/PictView-Editor-Layout.js":100,"./views/PictView-Editor-MarkdownEditor.js":101,"./views/PictView-Editor-MarkdownReference.js":102,"./views/PictView-Editor-SettingsPanel.js":103,"./views/PictView-Editor-TopBar.js":104,"./views/PictView-Editor-Topics.js":105,"pict-application":44,"pict-section-filebrowser":63}],95:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],96:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
+	 */_loadSettings(){if(typeof window==='undefined'||!window.localStorage){return;}try{let tmpRaw=window.localStorage.getItem(this._settingsKey);if(!tmpRaw){return;}let tmpStored=JSON.parse(tmpRaw);let tmpSettings=this.pict.AppData.ContentEditor;if(typeof tmpStored.AutoSegmentMarkdown==='boolean'){tmpSettings.AutoSegmentMarkdown=tmpStored.AutoSegmentMarkdown;}if(typeof tmpStored.AutoSegmentDepth==='number'){tmpSettings.AutoSegmentDepth=tmpStored.AutoSegmentDepth;}if(typeof tmpStored.AutoContentPreview==='boolean'){tmpSettings.AutoContentPreview=tmpStored.AutoContentPreview;}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":96,"./providers/Pict-Provider-ContentEditor.js":101,"./views/PictView-Editor-CodeEditor.js":102,"./views/PictView-Editor-Layout.js":103,"./views/PictView-Editor-MarkdownEditor.js":104,"./views/PictView-Editor-MarkdownReference.js":105,"./views/PictView-Editor-SettingsPanel.js":106,"./views/PictView-Editor-TopBar.js":107,"./views/PictView-Editor-Topics.js":108,"pict-application":44,"pict-section-filebrowser":54}],98:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],99:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
  * Content Reader Application
  *
  * Extends pict-docuserve to serve standalone markdown content.
@@ -6022,7 +6121,7 @@ let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDoc
 if(tmpDocuserve.TopBar){if(!Array.isArray(tmpDocuserve.TopBar.ExternalLinks)){tmpDocuserve.TopBar.ExternalLinks=[];}tmpDocuserve.TopBar.ExternalLinks.push({Text:'Edit',Href:'/'});}else{tmpDocuserve.TopBarLoaded=true;tmpDocuserve.TopBar={Brand:'Content System',NavLinks:[],ExternalLinks:[{Text:'Edit',Href:'/'}]};}// Render the layout shell
 this.pict.views['Docuserve-Layout'].render();// Call the base PictApplication callback (skip docuserve's onAfterInitializeAsync
 // since we already did the catalog loading ourselves)
-return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":95,"pict-docuserve":46}],97:[function(require,module,exports){/**
+return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":98,"pict-docuserve":85}],100:[function(require,module,exports){/**
  * Combined browser bundle for Retold Content System.
  *
  * Exports both the reader and editor applications as window globals
@@ -6031,7 +6130,7 @@ return fCallback();});}}module.exports=ContentReaderApplication;module.exports.d
  * In index.html: Pict.safeLoadPictApplication(PictContentReader, 2)
  * In edit.html:  Pict.safeLoadPictApplication(PictContentEditor, 2)
  */module.exports={PictContentReader:require('./Pict-Application-ContentReader.js'),PictContentEditor:require('./Pict-Application-ContentEditor.js')};// Also expose on window for direct access
-if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":94,"./Pict-Application-ContentReader.js":96}],98:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
+if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":97,"./Pict-Application-ContentReader.js":99}],101:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
  * Content Editor Provider
  *
  * Handles communication with the server's REST API for content
@@ -6061,7 +6160,7 @@ let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentF
 	 * List uploaded images.
 	 *
 	 * @param {Function} fCallback - Callback receiving (error, filesArray)
-	 */listUploads(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/content/uploads').then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Files||[]);}return tmpCallback(pData?pData.Error:'Unknown error',[]);}).catch(pError=>{this.log.warn(`ContentEditor: Error listing uploads: ${pError}`);return tmpCallback(pError.message,[]);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55}],99:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
+	 */listUploads(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/content/uploads').then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Files||[]);}return tmpCallback(pData?pData.Error:'Unknown error',[]);}).catch(pError=>{this.log.warn(`ContentEditor: Error listing uploads: ${pError}`);return tmpCallback(pError.message,[]);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":46}],102:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
  * Map of file extensions to highlight.js language identifiers.
  *
  * highlight.js supports 190+ languages. This map covers the most common
@@ -6101,7 +6200,7 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 	 *
 	 * @param {string} pExtension - The file extension (without dot)
 	 * @returns {string} The highlight.js language identifier
-	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":58}],100:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":49}],103:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		#ContentEditor-Application-Container
 		{
 			display: flex;
@@ -6748,7 +6847,7 @@ document.body.style.userSelect='none';document.body.style.cursor='col-resize';do
 if(tmpNewWidth<tmpSelf._minSidebarWidth){tmpNewWidth=tmpSelf._minSidebarWidth;}if(tmpNewWidth>tmpSelf._maxSidebarWidth){tmpNewWidth=tmpSelf._maxSidebarWidth;}tmpWrap.style.width=tmpNewWidth+'px';}function onMouseUp(){if(!tmpDragging){return;}tmpDragging=false;tmpHandle.classList.remove('dragging');// Restore transitions
 tmpWrap.style.transition='';// Restore body
 document.body.style.userSelect='';document.body.style.cursor='';// Persist the width to AppData and localStorage
-tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);}tmpHandle.addEventListener('mousedown',onMouseDown);}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],101:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
+tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);}tmpHandle.addEventListener('mousedown',onMouseDown);}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],104:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
  * Content Editor Markdown Editor View
  *
  * Extends pict-section-markdowneditor to integrate with the
@@ -6774,7 +6873,7 @@ tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict
 	 *
 	 * @param {number} pSegmentIndex - The segment index that changed
 	 * @param {string} pContent - The new content
-	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":83}],102:[function(require,module,exports){const libPictView=require('pict-view');/**
+	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":74}],105:[function(require,module,exports){const libPictView=require('pict-view');/**
  * Built-in Markdown reference content.
  *
  * Pre-rendered HTML covering GitHub-Flavored Markdown, KaTeX math,
@@ -7270,7 +7369,7 @@ if(tmpLastIndex<tmpText.length){tmpFragment.appendChild(document.createTextNode(
 	 * Enable/disable navigation buttons based on match count.
 	 */_updateNavButtons(){let tmpPrev=document.getElementById('ContentEditor-MdRef-SearchPrev');let tmpNext=document.getElementById('ContentEditor-MdRef-SearchNext');let tmpHasMatches=this._searchMatches.length>0;if(tmpPrev)tmpPrev.disabled=!tmpHasMatches;if(tmpNext)tmpNext.disabled=!tmpHasMatches;}/**
 	 * Clear search highlights and reset state.
-	 */_clearSearch(){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],103:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
+	 */_clearSearch(){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],106:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-settings-wrap
 		{
 			position: relative;
@@ -7568,7 +7667,7 @@ let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorVi
 let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView._editorElement&&this.pict.AppData.ContentEditor.ActiveEditor==='code'){if(pChecked){tmpCodeEditorView._editorElement.style.whiteSpace='pre-wrap';tmpCodeEditorView._editorElement.style.overflowWrap='break-word';}else{tmpCodeEditorView._editorElement.style.whiteSpace='pre';tmpCodeEditorView._editorElement.style.overflowWrap='normal';}}}onEditingControlsChanged(pChecked){this.pict.AppData.ContentEditor.MarkdownEditingControls=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to the markdown editor if it's currently active
 let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.toggleControls(pChecked);}}onAutoPreviewChanged(pChecked){this.pict.AppData.ContentEditor.AutoContentPreview=pChecked;this.pict.PictApplication.saveSettings();}onAutoSegmentChanged(pChecked){this.pict.AppData.ContentEditor.AutoSegmentMarkdown=pChecked;this.pict.PictApplication.saveSettings();// Enable/disable the depth dropdown
 let tmpSelect=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-SegmentDepth');if(tmpSelect&&tmpSelect[0]){tmpSelect[0].disabled=!pChecked;}}onSegmentDepthChanged(pValue){this.pict.AppData.ContentEditor.AutoSegmentDepth=parseInt(pValue,10)||1;this.pict.PictApplication.saveSettings();}onAutoPreviewImagesChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewImages=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewVideoChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewVideo=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewAudioChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewAudio=pChecked;this.pict.PictApplication.saveSettings();}onShowHiddenFilesChanged(pChecked){this.pict.AppData.ContentEditor.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();// Tell the server to include/exclude hidden files, then refresh
-let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],104:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],107:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-topbar
 		{
 			display: flex;
@@ -7847,7 +7946,7 @@ tmpEditor.SaveDisabledAttr=!tmpEditor.CurrentFile||tmpEditor.IsSaving?'disabled'
 tmpEditor.SaveVisibilityAttr=tmpEditor.IsDirty||tmpEditor.IsSaving||tmpEditor.SaveStatus?'':'style="display:none"';// Hide close button when no file is open
 tmpEditor.CloseVisibilityAttr=tmpEditor.CurrentFile?'':'style="display:none"';// Build viewer hash link
 if(tmpEditor.CurrentFile){let tmpViewerPath=tmpEditor.CurrentFile.replace(/\.md$/,'');tmpEditor.ViewerHash='#/page/'+tmpViewerPath;}else{tmpEditor.ViewerHash='';}return super.onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render the settings panel inside our container
-let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],105:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
+let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],108:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
 		.topics-container
 		{
 			display: flex;
@@ -8240,7 +8339,7 @@ if(confirm('File not found. Create "'+tmpPath.trim()+'"?')){tmpSelf._topicsFileP
 	 *
 	 * @param {string} pStr
 	 * @returns {string}
-	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],106:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
+	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],109:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
 * This function traverses the list returning the node corresponding to the given key.
 *
 * That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list.
@@ -8255,13 +8354,13 @@ key:key,next:objects.next,value:value};}};/** @type {import('./list.d.ts').listH
 var listDelete=function(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){var root=$o&&$o.next;var deletedNode=listDelete($o,key);if(deletedNode&&root&&root===deletedNode){$o=void undefined;}return!!deletedNode;},get:function(key){return listGet($o,key);},has:function(key){return listHas($o,key);},set:function(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
 $o={next:void undefined};}// eslint-disable-next-line no-extra-parens
 listSet(/** @type {NonNullable<typeof $o>} */$o,key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41}],107:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
+return channel;};},{"es-errors/type":16,"object-inspect":41}],110:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
 if($m){return $mapGet($m,key);}},has:function(key){if($m){return $mapHas($m,key);}return false;},set:function(key,value){if(!$m){// @ts-expect-error TS can't handle narrowing a variable inside a closure
 $m=new $Map();}$mapSet($m,key,value);}};// @ts-expect-error TODO: figure out why TS is erroring here
-return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],108:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
+return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],111:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
 /** @type {NonNullable<typeof $m>} */$m.set(key,value);}}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":107}],109:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":106,"side-channel-map":107,"side-channel-weakmap":108}],110:[function(require,module,exports){/*
+return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":110}],112:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
+return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":109,"side-channel-map":110,"side-channel-weakmap":111}],113:[function(require,module,exports){/*
  * Copyright Joyent, Inc. and other Node contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8439,7 +8538,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
      * this especially happens in cases like
      * url.resolveObject('mailto:local1@domain1', 'local2@domain2')
      */var authInHost=result.host&&result.host.indexOf('@')>0?result.host.split('@'):false;if(authInHost){result.auth=authInHost.shift();result.hostname=authInHost.shift();result.host=result.hostname;}}mustEndAbs=mustEndAbs||result.host&&srcPath.length;if(mustEndAbs&&!isAbsolute){srcPath.unshift('');}if(srcPath.length>0){result.pathname=srcPath.join('/');}else{result.pathname=null;result.path=null;}// to support request.http
-if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":87,"qs":89}],111:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],112:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
+if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":78,"qs":80}],114:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],115:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
 const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');// Application configuration
@@ -8532,11 +8631,11 @@ let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRaw
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":111,"./providers/Pict-Provider-GalleryFilterSort.js":114,"./providers/Pict-Provider-GalleryNavigation.js":115,"./providers/Pict-Provider-RetoldRemote.js":116,"./providers/Pict-Provider-RetoldRemoteIcons.js":117,"./providers/Pict-Provider-RetoldRemoteTheme.js":118,"./views/PictView-Remote-AudioExplorer.js":119,"./views/PictView-Remote-Gallery.js":120,"./views/PictView-Remote-ImageViewer.js":121,"./views/PictView-Remote-Layout.js":122,"./views/PictView-Remote-MediaViewer.js":123,"./views/PictView-Remote-SettingsPanel.js":124,"./views/PictView-Remote-TopBar.js":125,"./views/PictView-Remote-VideoExplorer.js":126,"pict-section-filebrowser":63,"retold-content-system":97}],113:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./providers/Pict-Provider-GalleryFilterSort.js":117,"./providers/Pict-Provider-GalleryNavigation.js":118,"./providers/Pict-Provider-RetoldRemote.js":119,"./providers/Pict-Provider-RetoldRemoteIcons.js":120,"./providers/Pict-Provider-RetoldRemoteTheme.js":121,"./views/PictView-Remote-AudioExplorer.js":122,"./views/PictView-Remote-Gallery.js":123,"./views/PictView-Remote-ImageViewer.js":124,"./views/PictView-Remote-Layout.js":125,"./views/PictView-Remote-MediaViewer.js":126,"./views/PictView-Remote-SettingsPanel.js":127,"./views/PictView-Remote-TopBar.js":128,"./views/PictView-Remote-VideoExplorer.js":129,"pict-section-filebrowser":54,"retold-content-system":100}],116:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
- */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":112}],114:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};const _VideoExtensions={'mp4':true,'webm':true,'mov':true,'mkv':true,'avi':true,'wmv':true,'flv':true,'m4v':true};const _AudioExtensions={'mp3':true,'wav':true,'ogg':true,'flac':true,'aac':true,'m4a':true,'wma':true};const _DocumentExtensions={'pdf':true,'epub':true,'mobi':true};const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
+ */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":115}],117:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};const _VideoExtensions={'mp4':true,'webm':true,'mov':true,'mkv':true,'avi':true,'wmv':true,'flv':true,'m4v':true};const _AudioExtensions={'mp3':true,'wav':true,'ogg':true,'flac':true,'aac':true,'m4a':true,'wma':true};const _DocumentExtensions={'pdf':true,'epub':true,'mobi':true};const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
 // Pipeline
 // ──────────────────────────────────────────────
 /**
@@ -8629,7 +8728,7 @@ if(tmpRemote.SearchQuery){let tmpSearchLabel='Search: "'+tmpRemote.SearchQuery+'
 	 * Delete a saved preset.
 	 *
 	 * @param {number} pIndex - index into FilterPresets array
-	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"pict-provider":55}],115:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
+	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"pict-provider":46}],118:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
 	 * Calculate how many columns are in the current gallery grid by
 	 * inspecting the rendered DOM.  In list mode this is always 1.
 	 */recalculateColumns(){let tmpRemote=this.pict.AppData.RetoldRemote;// List mode is always a single column
@@ -8763,7 +8862,7 @@ fetch('/api/media/open',{method:'POST',headers:{'Content-Type':'application/json
 	 * Show a brief toast notification in the viewer.
 	 *
 	 * @param {string} pMessage - Text to display
-	 */_showToast(pMessage){let tmpIndicator=document.getElementById('RetoldRemote-FitIndicator');if(!tmpIndicator){tmpIndicator=document.createElement('div');tmpIndicator.id='RetoldRemote-FitIndicator';tmpIndicator.className='retold-remote-fit-indicator';let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpContainer){tmpContainer.appendChild(tmpIndicator);}}tmpIndicator.textContent=pMessage;tmpIndicator.classList.add('visible');if(this._toastTimeout){clearTimeout(this._toastTimeout);}let tmpSelf=this;this._toastTimeout=setTimeout(function(){tmpIndicator.classList.remove('visible');},1500);}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"pict-provider":55}],116:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+	 */_showToast(pMessage){let tmpIndicator=document.getElementById('RetoldRemote-FitIndicator');if(!tmpIndicator){tmpIndicator=document.createElement('div');tmpIndicator.id='RetoldRemote-FitIndicator';tmpIndicator.className='retold-remote-fit-indicator';let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpContainer){tmpContainer.appendChild(tmpIndicator);}}tmpIndicator.textContent=pMessage;tmpIndicator.classList.add('visible');if(this._toastTimeout){clearTimeout(this._toastTimeout);}let tmpSelf=this;this._toastTimeout=setTimeout(function(){tmpIndicator.classList.remove('visible');},1500);}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"pict-provider":46}],119:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -8845,7 +8944,7 @@ if(pData&&pData.Hash&&pData.Path){this.registerHash(pData.Path,pData.Hash);}fCal
 	 *
 	 * @param {string} pExtension - Lowercase extension
 	 * @returns {boolean}
-	 */_isImageExtension(pExtension){let tmpImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};return!!tmpImageExtensions[pExtension];}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"pict-provider":55}],117:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
+	 */_isImageExtension(pExtension){let tmpImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};return!!tmpImageExtensions[pExtension];}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"pict-provider":46}],120:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
 // DEFAULT DARK-THEME COLOR PALETTE
 //
 // Designed for retold-remote's dark navy background (#16162B).
@@ -8985,7 +9084,7 @@ return this.getIcon('file',tmpSize);}/**
 	 * @returns {Object} Extension-to-icon name map
 	 */getExtensionMap(){return Object.assign({},this._extensionMap);}/**
 	 * Inject CSS classes for icon sizing into the pict CSSMap.
-	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('RetoldRemoteIcons','.retold-remote-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.retold-remote-icon svg { display: block; }\n'+'.retold-remote-icon-sm svg { width: 16px; height: 16px; }\n'+'.retold-remote-icon-md svg { width: 48px; height: 48px; }\n'+'.retold-remote-icon-lg svg { width: 64px; height: 64px; }\n'+'.retold-remote-icon-xl svg { width: 96px; height: 96px; }\n');this._cssInjected=true;}}onAfterInitialize(){this.injectCSS();return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"pict-provider":55,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":65}],118:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
+	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('RetoldRemoteIcons','.retold-remote-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.retold-remote-icon svg { display: block; }\n'+'.retold-remote-icon-sm svg { width: 16px; height: 16px; }\n'+'.retold-remote-icon-md svg { width: 48px; height: 48px; }\n'+'.retold-remote-icon-lg svg { width: 64px; height: 64px; }\n'+'.retold-remote-icon-xl svg { width: 96px; height: 96px; }\n');this._cssInjected=true;}}onAfterInitialize(){this.injectCSS();return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"pict-provider":46,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":56}],121:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
  * Theme provider for retold-remote.
  *
  * Manages 15 themes (5 grey-only + 10 fun) via CSS custom properties.
@@ -9024,7 +9123,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pThemeKey
 	 * @returns {Object|null}
-	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"pict-provider":55}],119:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"pict-provider":46}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-aex
 		{
 			display: flex;
@@ -9380,7 +9479,7 @@ if(this._resizeObserver){this._resizeObserver.disconnect();this._resizeObserver=
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}_formatTimestamp(pSeconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpMs=Math.floor(pSeconds%1*10);if(tmpHours>0){return`${tmpHours}:${String(tmpMinutes).padStart(2,'0')}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}return`${tmpMinutes}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":85}],120:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}_formatTimestamp(pSeconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpMs=Math.floor(pSeconds%1*10);if(tmpHours>0){return`${tmpHours}:${String(tmpMinutes).padStart(2,'0')}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}return`${tmpMinutes}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":76}],123:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-gallery-header
 		{
 			display: flex;
@@ -10121,7 +10220,7 @@ if(tmpFilterState.Extensions.length===0&&tmpFilterSort){let tmpAll=tmpFilterSort
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":85}],121:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":76}],124:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		#RetoldRemote-ImageViewer-Img
 		{
 			image-orientation: from-image;
@@ -10188,7 +10287,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;// Create or reuse the indicator element
 let tmpIndicator=document.getElementById('RetoldRemote-FitIndicator');if(!tmpIndicator){tmpIndicator=document.createElement('div');tmpIndicator.id='RetoldRemote-FitIndicator';tmpIndicator.className='retold-remote-fit-indicator';let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpContainer){tmpContainer.appendChild(tmpIndicator);}}tmpIndicator.textContent=tmpLabel;tmpIndicator.classList.add('visible');if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);}this._indicatorTimeout=setTimeout(function(){tmpIndicator.classList.remove('visible');},1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);this._indicatorTimeout=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":85}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);this._indicatorTimeout=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":76}],125:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		#ContentEditor-Application-Container
 		{
 			display: flex;
@@ -10417,7 +10516,7 @@ let tmpPanes=document.querySelectorAll('.content-editor-sidebar-pane');tmpPanes.
 if(pTab==='settings'){let tmpSettingsView=this.pict.views['RetoldRemote-SettingsPanel'];if(tmpSettingsView){tmpSettingsView.render();}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartWidth=0;function onMouseDown(pEvent){tmpSelf._sidebarDragging=true;tmpStartX=pEvent.clientX;tmpStartWidth=tmpWrap.offsetWidth;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onMouseMove);document.addEventListener('mouseup',onMouseUp);pEvent.preventDefault();}function onMouseMove(pEvent){if(!tmpSelf._sidebarDragging)return;let tmpNewWidth=tmpStartWidth+(pEvent.clientX-tmpStartX);tmpNewWidth=Math.max(150,Math.min(tmpNewWidth,600));tmpWrap.style.width=tmpNewWidth+'px';}function onMouseUp(){tmpSelf._sidebarDragging=false;tmpHandle.classList.remove('dragging');document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);// Persist width
 let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict.PictApplication.saveSettings();// Recalculate gallery columns
 let tmpNavProvider=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNavProvider){tmpNavProvider.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onMouseDown);// Double-click on resize handle collapses the sidebar
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleSidebar();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":85}],123:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleSidebar();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":76}],126:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-viewer
 		{
 			display: flex;
@@ -10847,7 +10946,7 @@ tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).ca
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf._formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf._formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":58,"pict-view":85}],124:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":49,"pict-view":76}],127:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-settings
 		{
 			padding: 12px;
@@ -10936,7 +11035,7 @@ tmpHTML+='</div>';// end settings
 tmpContainer.innerHTML=tmpHTML;}changeTheme(pThemeKey){let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){tmpThemeProvider.applyTheme(pThemeKey);this.pict.PictApplication.saveSettings();// Re-render settings to update dropdown selection
 this._renderSettingsContent();}}changeSetting(pKey,pValue){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pValue;this.pict.PictApplication.saveSettings();// Re-render gallery if visible
 if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}toggleHiddenFiles(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();this.pict.PictApplication.syncHiddenFilesSetting(()=>{this.pict.PictApplication.loadFileList();});}toggleAutoplay(pKey,pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pChecked;this.pict.PictApplication.saveSettings();}toggleDistractionFreeNav(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.DistractionFreeShowNav=pChecked;this.pict.PictApplication.saveSettings();// If currently in distraction-free mode, apply immediately
-if(tmpRemote._distractionFreeMode){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display=pChecked?'':'none';}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":85}],125:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+if(tmpRemote._distractionFreeMode){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display=pChecked?'':'none';}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],128:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-topbar
 		{
 			display: flex;
@@ -11080,7 +11179,7 @@ tmpBtn.classList.add('filter-active');tmpBtn.innerHTML='&#9683;<span class="reto
 tmpBtn.classList.add('filter-bar-open');tmpBtn.innerHTML='&#9698;';tmpBtn.title='Hide filter bar (/)';}else{// Default: no filters, bar hidden
 tmpBtn.innerHTML='&#9698;';tmpBtn.title='Toggle filter bar (/)';}}/**
 	 * Update the info display with folder summary.
-	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":85}],126:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],129:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-vex
 		{
 			display: flex;
@@ -11545,5 +11644,5 @@ let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimel
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"pict-view":85}]},{},[113])(113);});
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"pict-view":76}]},{},[116])(116);});
 //# sourceMappingURL=retold-remote.js.map

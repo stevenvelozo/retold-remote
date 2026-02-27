@@ -60,7 +60,18 @@ class GalleryFilterSortProvider extends libPictProvider
 
 		// Write result
 		tmpRemote.GalleryItems = tmpItems;
-		tmpRemote.GalleryCursorIndex = 0;
+
+		// Restore cursor position if we have a saved one for this folder
+		let tmpCurrentLocation = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
+		let tmpSavedIndex = tmpRemote.FolderCursorHistory && tmpRemote.FolderCursorHistory[tmpCurrentLocation];
+		if (typeof tmpSavedIndex === 'number' && tmpSavedIndex < tmpItems.length)
+		{
+			tmpRemote.GalleryCursorIndex = tmpSavedIndex;
+		}
+		else
+		{
+			tmpRemote.GalleryCursorIndex = 0;
+		}
 
 		// Re-render gallery
 		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];

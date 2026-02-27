@@ -601,6 +601,10 @@ class GalleryNavigationProvider extends libPictProvider
 
 		if (tmpItem.Type === 'folder' || tmpItem.Type === 'archive')
 		{
+			// Remember cursor position in the current folder before navigating away
+			let tmpCurrentLocation = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
+			tmpRemote.FolderCursorHistory[tmpCurrentLocation] = tmpIndex;
+
 			// Navigate into the folder or archive
 			let tmpApp = this.pict.PictApplication;
 			if (tmpApp && tmpApp.loadFileList)
@@ -630,6 +634,10 @@ class GalleryNavigationProvider extends libPictProvider
 		{
 			return;
 		}
+
+		// Remember cursor position in the current folder before navigating away
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.FolderCursorHistory[tmpCurrentLocation] = tmpRemote.GalleryCursorIndex || 0;
 
 		let tmpParent = tmpCurrentLocation.indexOf('/') >= 0
 			? tmpCurrentLocation.replace(/\/[^/]+\/?$/, '')

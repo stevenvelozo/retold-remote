@@ -475,7 +475,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		{
 			let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'mjpeg';
 			// Extract a frame at 10% into the video
-			let tmpCmd = `ffmpeg -ss 00:00:02 -i "${pFullPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f image2 -c:v ${tmpOutputFormat} pipe:1`;
+			let tmpCmd = `ffmpeg -ss 00:00:02 -i "${pFullPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpOutputFormat} pipe:1`;
 			let tmpBuffer = libChildProcess.execSync(tmpCmd, { maxBuffer: 10 * 1024 * 1024, timeout: 30000 });
 			return fCallback(null, tmpBuffer);
 		}
