@@ -1,6 +1,6 @@
 {
 	"name": "retold-remote",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
 	"main": "source/Pict-RetoldRemote-Bundle.js",
 	"bin": {
@@ -26,25 +26,25 @@
 	"license": "MIT",
 	"dependencies": {
 		"epubjs": "^0.3.93",
-		"fable": "^3.1.58",
-		"fable-serviceproviderbase": "^3.0.16",
-		"orator": "^6.0.2",
-		"orator-serviceserver-restify": "^2.0.7",
-		"pict": "^1.0.350",
-		"pict-application": "^1.0.32",
-		"pict-provider": "^1.0.10",
-		"pict-section-code": "^1.0.2",
-		"pict-section-filebrowser": "^0.0.1",
-		"pict-service-commandlineutility": "^1.0.18",
-		"pict-view": "^1.0.66",
-		"retold-content-system": "^1.0.1",
+		"fable": "^3.1.63",
+		"fable-serviceproviderbase": "^3.0.19",
+		"orator": "^6.0.3",
+		"orator-serviceserver-restify": "^2.0.9",
+		"pict": "^1.0.355",
+		"pict-application": "^1.0.33",
+		"pict-provider": "^1.0.12",
+		"pict-section-code": "^1.0.3",
+		"pict-section-filebrowser": "^0.0.2",
+		"pict-service-commandlineutility": "^1.0.19",
+		"pict-view": "^1.0.67",
+		"retold-content-system": "^1.0.2",
 		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {
 		"sharp": "^0.33.0"
 	},
 	"devDependencies": {
-		"quackage": "^1.0.58"
+		"quackage": "^1.0.59"
 	},
 	"copyFilesSettings": {
 		"whenFileExists": "overwrite"
