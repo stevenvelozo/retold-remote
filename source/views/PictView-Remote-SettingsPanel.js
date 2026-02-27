@@ -77,6 +77,26 @@ const _ViewConfiguration =
 		{
 			color: var(--retold-danger-muted);
 		}
+		.retold-remote-settings-vlc-btn
+		{
+			display: block;
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-text-secondary);
+			font-size: 0.75rem;
+			font-family: inherit;
+			cursor: pointer;
+			text-align: left;
+			transition: background 0.15s, color 0.15s;
+		}
+		.retold-remote-settings-vlc-btn:hover
+		{
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
 		.retold-remote-settings-shortcut-group
 		{
 			margin-bottom: 10px;
@@ -274,6 +294,14 @@ class RetoldRemoteSettingsPanelView extends libPictView
 
 		tmpHTML += '</div>';
 		tmpHTML += '</div>'; // end capabilities section
+
+		// VLC Setup
+		tmpHTML += '<div class="retold-remote-settings-section">';
+		tmpHTML += '<div class="retold-remote-settings-section-title">VLC Streaming</div>';
+		tmpHTML += '<button class="retold-remote-settings-vlc-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].openModal()">';
+		tmpHTML += 'VLC Protocol Setup';
+		tmpHTML += '</button>';
+		tmpHTML += '</div>';
 
 		// Keyboard shortcuts
 		tmpHTML += '<div class="retold-remote-settings-section">';

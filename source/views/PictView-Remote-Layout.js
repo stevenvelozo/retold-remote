@@ -340,6 +340,7 @@ class RetoldRemoteLayoutView extends libPictView
 				tmpSettingsView.render();
 			}
 		}
+
 	}
 
 	_setupResizeHandle()

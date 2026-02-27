@@ -8541,7 +8541,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
 if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":78,"qs":80}],114:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],115:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
-const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');// Application configuration
+const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');// Application configuration
 const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configuration.json');/**
  * Retold Remote Application
  *
@@ -8552,7 +8552,7 @@ const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configurati
  */class RetoldRemoteApplication extends libContentEditorApplication{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);// Replace parent views with media-focused versions.
 // Re-registering with the same ViewIdentifier replaces the parent's view.
 this.pict.addView('ContentEditor-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('ContentEditor-TopBar',libViewTopBar.default_configuration,libViewTopBar);// Add new views
-this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);// Add new providers
+this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);this.pict.addView('RetoldRemote-VLCSetup',libViewVLCSetup.default_configuration,libViewVLCSetup);// Add new providers
 this.pict.addProvider('RetoldRemote-Provider',libProviderRetoldRemote.default_configuration,libProviderRetoldRemote);this.pict.addProvider('RetoldRemote-GalleryNavigation',libProviderGalleryNavigation.default_configuration,libProviderGalleryNavigation);this.pict.addProvider('RetoldRemote-GalleryFilterSort',libProviderGalleryFilterSort.default_configuration,libProviderGalleryFilterSort);this.pict.addProvider('RetoldRemote-Icons',libProviderRetoldRemoteIcons.default_configuration,libProviderRetoldRemoteIcons);this.pict.addProvider('RetoldRemote-Theme',libProviderRetoldRemoteTheme.default_configuration,libProviderRetoldRemoteTheme);}onAfterInitializeAsync(fCallback){// Expose pict on window for inline onclick handlers
 if(typeof window!=='undefined'){window.pict=this.pict;}// Initialize RetoldRemote-specific state
 this.pict.AppData.RetoldRemote={ActiveMode:'gallery',// 'gallery' or 'viewer'
@@ -8632,7 +8632,7 @@ let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRaw
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./providers/Pict-Provider-GalleryFilterSort.js":117,"./providers/Pict-Provider-GalleryNavigation.js":118,"./providers/Pict-Provider-RetoldRemote.js":119,"./providers/Pict-Provider-RetoldRemoteIcons.js":120,"./providers/Pict-Provider-RetoldRemoteTheme.js":121,"./views/PictView-Remote-AudioExplorer.js":122,"./views/PictView-Remote-Gallery.js":123,"./views/PictView-Remote-ImageViewer.js":124,"./views/PictView-Remote-Layout.js":125,"./views/PictView-Remote-MediaViewer.js":126,"./views/PictView-Remote-SettingsPanel.js":127,"./views/PictView-Remote-TopBar.js":128,"./views/PictView-Remote-VideoExplorer.js":129,"pict-section-filebrowser":54,"retold-content-system":100}],116:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./providers/Pict-Provider-GalleryFilterSort.js":117,"./providers/Pict-Provider-GalleryNavigation.js":118,"./providers/Pict-Provider-RetoldRemote.js":119,"./providers/Pict-Provider-RetoldRemoteIcons.js":120,"./providers/Pict-Provider-RetoldRemoteTheme.js":121,"./views/PictView-Remote-AudioExplorer.js":122,"./views/PictView-Remote-Gallery.js":123,"./views/PictView-Remote-ImageViewer.js":124,"./views/PictView-Remote-Layout.js":125,"./views/PictView-Remote-MediaViewer.js":126,"./views/PictView-Remote-SettingsPanel.js":127,"./views/PictView-Remote-TopBar.js":128,"./views/PictView-Remote-VLCSetup.js":129,"./views/PictView-Remote-VideoExplorer.js":130,"pict-section-filebrowser":54,"retold-content-system":100}],116:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
@@ -8865,8 +8865,9 @@ let tmpCapabilities=tmpRemote.ServerCapabilities||{};if(!tmpCapabilities.vlc){re
 this._showToast('Opening in VLC...');// POST to the server to open the file
 fetch('/api/media/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:tmpFilePath})}).then(pResponse=>{return pResponse.json();}).then(pData=>{if(!pData.Success){this._showToast('Failed to open: '+(pData.Error||'Unknown error'));}}).catch(pError=>{this._showToast('Failed to open: '+pError.message);});}/**
 	 * Stream the current media file to VLC on the client device via vlc:// protocol link.
-	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;// Encode the inner URL so the browser doesn't parse its :// as URL structure
-let tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);this._showToast('Opening VLC...');// Use a temporary anchor element to trigger the protocol handler
+	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;// On Windows, VLC's native handler expects the raw URL.
+// On macOS/Linux our custom handlers URL-decode, so we encode.
+let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpVLCURL=tmpIsWindows?'vlc://'+tmpStreamURL:'vlc://'+encodeURIComponent(tmpStreamURL);this._showToast('Opening VLC...');// Use a temporary anchor element to trigger the protocol handler
 // without navigating the current page away
 let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}/**
 	 * Show a brief toast notification in the viewer.
@@ -11119,6 +11120,26 @@ let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tm
 		{
 			color: var(--retold-danger-muted);
 		}
+		.retold-remote-settings-vlc-btn
+		{
+			display: block;
+			width: 100%;
+			padding: 8px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-text-secondary);
+			font-size: 0.75rem;
+			font-family: inherit;
+			cursor: pointer;
+			text-align: left;
+			transition: background 0.15s, color 0.15s;
+		}
+		.retold-remote-settings-vlc-btn:hover
+		{
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
 		.retold-remote-settings-shortcut-group
 		{
 			margin-bottom: 10px;
@@ -11170,7 +11191,8 @@ tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retol
 // Server capabilities
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Server Capabilities</div>';tmpHTML+='<div class="retold-remote-settings-capabilities">';let tmpTools=[{key:'sharp',label:'Sharp (image thumbnails)'},{key:'imagemagick',label:'ImageMagick (image fallback)'},{key:'ffmpeg',label:'ffmpeg (video thumbnails)'},{key:'ffprobe',label:'ffprobe (media metadata)'}];for(let i=0;i<tmpTools.length;i++){let tmpTool=tmpTools[i];let tmpAvailable=tmpCapabilities[tmpTool.key];tmpHTML+='<div class="retold-remote-settings-cap-row">';tmpHTML+='<span class="retold-remote-settings-cap-label">'+tmpTool.label+'</span>';tmpHTML+='<span class="'+(tmpAvailable?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpAvailable?'Available':'Not found')+'</span>';tmpHTML+='</div>';}// Hashed filenames status
 tmpHTML+='<div class="retold-remote-settings-cap-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--retold-border);">';tmpHTML+='<span class="retold-remote-settings-cap-label">Hashed filenames</span>';tmpHTML+='<span class="'+(tmpRemote.HashedFilenames?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpRemote.HashedFilenames?'Enabled':'Disabled')+'</span>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';// end capabilities section
-// Keyboard shortcuts
+// VLC Setup
+tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">VLC Streaming</div>';tmpHTML+='<button class="retold-remote-settings-vlc-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].openModal()">';tmpHTML+='VLC Protocol Setup';tmpHTML+='</button>';tmpHTML+='</div>';// Keyboard shortcuts
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Keyboard Shortcuts</div>';tmpHTML+=this._buildShortcutGroup('Global',[{key:'F1',desc:'Help panel'},{key:'F9',desc:'Focus sidebar'},{key:'/',desc:'Search / filter bar'},{key:'Esc',desc:'Close overlay / back'}]);tmpHTML+=this._buildShortcutGroup('Gallery',[{key:'\u2190 \u2191 \u2192 \u2193',desc:'Navigate items'},{key:'Enter',desc:'Open item'},{key:'Esc',desc:'Go up one folder'},{key:'Home',desc:'Jump to first item'},{key:'End',desc:'Jump to last item'},{key:'g',desc:'Toggle grid / list'},{key:'f',desc:'Advanced filter panel'},{key:'s',desc:'Focus sort dropdown'},{key:'x',desc:'Clear all filters'},{key:'c',desc:'Settings panel'},{key:'d',desc:'Distraction-free mode'}]);tmpHTML+=this._buildShortcutGroup('Sidebar (F9)',[{key:'\u2191 \u2193',desc:'Navigate file list'},{key:'Home',desc:'Jump to first'},{key:'End',desc:'Jump to last'},{key:'Enter',desc:'Open item'},{key:'Esc',desc:'Return to gallery'}]);tmpHTML+=this._buildShortcutGroup('Media Viewer',[{key:'Esc',desc:'Back to gallery'},{key:'\u2192  j',desc:'Next file'},{key:'\u2190  k',desc:'Previous file'},{key:'Space',desc:'Play / pause'},{key:'f',desc:'Fullscreen'},{key:'i',desc:'File info overlay'},{key:'v',desc:'Stream with VLC'},{key:'+  -',desc:'Zoom in / out'},{key:'0',desc:'Reset zoom'},{key:'z',desc:'Cycle fit mode'},{key:'d',desc:'Distraction-free mode'}]);tmpHTML+=this._buildShortcutGroup('Video Menu',[{key:'Space',desc:'Play in browser'},{key:'Enter',desc:'Play in browser'},{key:'e',desc:'Explore video frames'},{key:'t',desc:'Extract thumbnail'},{key:'v',desc:'Stream with VLC'},{key:'\u2192  j',desc:'Next file'},{key:'\u2190  k',desc:'Previous file'},{key:'Esc',desc:'Back to gallery'}]);tmpHTML+=this._buildShortcutGroup('Video Explorer',[{key:'Esc',desc:'Back'}]);tmpHTML+=this._buildShortcutGroup('Audio Explorer',[{key:'Space',desc:'Play selection'},{key:'+  -',desc:'Zoom in / out'},{key:'0',desc:'Zoom to fit'},{key:'z',desc:'Zoom to selection'},{key:'Esc',desc:'Clear selection / back'}]);tmpHTML+='</div>';// end shortcuts section
 tmpHTML+='</div>';// end settings
 tmpContainer.innerHTML=tmpHTML;}_buildShortcutGroup(pTitle,pShortcuts){let tmpHTML='<div class="retold-remote-settings-shortcut-group">';tmpHTML+='<div class="retold-remote-settings-shortcut-group-title">'+pTitle+'</div>';for(let i=0;i<pShortcuts.length;i++){tmpHTML+='<div class="retold-remote-settings-shortcut-row">';tmpHTML+='<span class="retold-remote-settings-shortcut-desc">'+pShortcuts[i].desc+'</span>';tmpHTML+='<span class="retold-remote-settings-shortcut-key">'+pShortcuts[i].key+'</span>';tmpHTML+='</div>';}tmpHTML+='</div>';return tmpHTML;}changeTheme(pThemeKey){let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){tmpThemeProvider.applyTheme(pThemeKey);this.pict.PictApplication.saveSettings();// Re-render settings to update dropdown selection
@@ -11320,7 +11342,259 @@ tmpBtn.classList.add('filter-active');tmpBtn.innerHTML='&#9683;<span class="reto
 tmpBtn.classList.add('filter-bar-open');tmpBtn.innerHTML='&#9698;';tmpBtn.title='Hide filter bar (/)';}else{// Default: no filters, bar hidden
 tmpBtn.innerHTML='&#9698;';tmpBtn.title='Toggle filter bar (/)';}}/**
 	 * Update the info display with folder summary.
-	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],129:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],129:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-vlc-modal-backdrop
+		{
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 9000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.retold-remote-vlc-modal
+		{
+			background: var(--retold-bg-tertiary);
+			border: 1px solid var(--retold-border);
+			border-radius: 8px;
+			width: 600px;
+			max-width: 90vw;
+			max-height: 85vh;
+			display: flex;
+			flex-direction: column;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+		}
+		.retold-remote-vlc-modal-header
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 18px;
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-vlc-modal-title
+		{
+			font-size: 0.85rem;
+			font-weight: 700;
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-vlc-modal-close
+		{
+			border: none;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 1.1rem;
+			cursor: pointer;
+			padding: 2px 6px;
+			border-radius: 3px;
+			font-family: inherit;
+			line-height: 1;
+		}
+		.retold-remote-vlc-modal-close:hover
+		{
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-vlc-modal-body
+		{
+			flex: 1;
+			overflow-y: auto;
+			padding: 18px;
+		}
+		.retold-remote-vlc-setup-section
+		{
+			margin-bottom: 18px;
+		}
+		.retold-remote-vlc-setup-section-title
+		{
+			font-size: 0.7rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			color: var(--retold-text-dim);
+			margin-bottom: 8px;
+		}
+		.retold-remote-vlc-setup-desc
+		{
+			font-size: 0.75rem;
+			color: var(--retold-text-secondary);
+			line-height: 1.5;
+			margin-bottom: 8px;
+		}
+		.retold-remote-vlc-setup-status
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px;
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			margin-bottom: 12px;
+			font-size: 0.75rem;
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-vlc-setup-status-dot
+		{
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			flex-shrink: 0;
+		}
+		.retold-remote-vlc-setup-status-dot.detected
+		{
+			background: var(--retold-accent);
+		}
+		.retold-remote-vlc-setup-status-dot.unknown
+		{
+			background: var(--retold-text-dim);
+		}
+		.retold-remote-vlc-setup-platform
+		{
+			display: none;
+		}
+		.retold-remote-vlc-setup-platform.active
+		{
+			display: block;
+		}
+		.retold-remote-vlc-setup-platform-tabs
+		{
+			display: flex;
+			gap: 0;
+			margin-bottom: 12px;
+			border-bottom: 1px solid var(--retold-border);
+		}
+		.retold-remote-vlc-setup-platform-tab
+		{
+			padding: 6px 12px;
+			border: none;
+			background: transparent;
+			font-size: 0.72rem;
+			font-weight: 600;
+			color: var(--retold-text-muted);
+			cursor: pointer;
+			border-bottom: 2px solid transparent;
+			font-family: inherit;
+		}
+		.retold-remote-vlc-setup-platform-tab:hover
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-vlc-setup-platform-tab.active
+		{
+			color: var(--retold-accent);
+			border-bottom-color: var(--retold-accent);
+		}
+		.retold-remote-vlc-setup-code
+		{
+			background: var(--retold-bg-primary);
+			border: 1px solid var(--retold-border);
+			border-radius: 4px;
+			padding: 10px;
+			font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+			font-size: 0.68rem;
+			color: var(--retold-text-secondary);
+			line-height: 1.6;
+			overflow-x: auto;
+			white-space: pre;
+			margin-bottom: 8px;
+			tab-size: 4;
+		}
+		.retold-remote-vlc-setup-btn
+		{
+			display: inline-block;
+			padding: 6px 14px;
+			border: 1px solid var(--retold-border);
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-text-secondary);
+			font-size: 0.72rem;
+			font-family: inherit;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			margin-right: 6px;
+			margin-bottom: 6px;
+		}
+		.retold-remote-vlc-setup-btn:hover
+		{
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-vlc-setup-btn.primary
+		{
+			background: var(--retold-accent);
+			border-color: var(--retold-accent);
+			color: #fff;
+		}
+		.retold-remote-vlc-setup-btn.primary:hover
+		{
+			opacity: 0.85;
+		}
+		.retold-remote-vlc-setup-step
+		{
+			display: flex;
+			gap: 10px;
+			margin-bottom: 10px;
+		}
+		.retold-remote-vlc-setup-step-num
+		{
+			flex-shrink: 0;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: var(--retold-accent);
+			color: #fff;
+			font-size: 0.65rem;
+			font-weight: 700;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.retold-remote-vlc-setup-step-content
+		{
+			flex: 1;
+			font-size: 0.75rem;
+			color: var(--retold-text-secondary);
+			line-height: 1.5;
+		}
+		.retold-remote-vlc-setup-note
+		{
+			font-size: 0.7rem;
+			color: var(--retold-text-dim);
+			font-style: italic;
+			margin-top: 4px;
+		}
+		.retold-remote-vlc-setup-toast
+		{
+			position: fixed;
+			bottom: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: var(--retold-bg-secondary);
+			color: var(--retold-accent);
+			padding: 8px 16px;
+			border-radius: 4px;
+			font-size: 0.75rem;
+			z-index: 10000;
+			pointer-events: none;
+			border: 1px solid var(--retold-border);
+		}
+	`};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
+let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
+let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
+let tmpHeader=document.createElement('div');tmpHeader.className='retold-remote-vlc-modal-header';tmpHeader.innerHTML='<span class="retold-remote-vlc-modal-title">VLC Protocol Setup</span>'+'<button class="retold-remote-vlc-modal-close" onclick="pict.views[\'RetoldRemote-VLCSetup\'].closeModal()">X</button>';// Body
+let tmpBody=document.createElement('div');tmpBody.className='retold-remote-vlc-modal-body';tmpBody.id='RetoldRemote-VLCSetup-Container';tmpModal.appendChild(tmpHeader);tmpModal.appendChild(tmpBody);tmpBackdrop.appendChild(tmpModal);document.body.appendChild(tmpBackdrop);// Render content into the body
+this._renderVLCSetupContent();// Escape key handler
+this._boundKeyHandler=pEvent=>{if(pEvent.key==='Escape'){pEvent.preventDefault();pEvent.stopPropagation();this.closeModal();}};document.addEventListener('keydown',this._boundKeyHandler,true);}closeModal(){if(!this._modalVisible){return;}this._modalVisible=false;let tmpBackdrop=document.getElementById('RetoldRemote-VLCSetup-Backdrop');if(tmpBackdrop){tmpBackdrop.remove();}if(this._boundKeyHandler){document.removeEventListener('keydown',this._boundKeyHandler,true);this._boundKeyHandler=null;}}switchPlatformTab(pTab){this._activePlatformTab=pTab;this._renderVLCSetupContent();}_renderVLCSetupContent(){let tmpContainer=document.getElementById('RetoldRemote-VLCSetup-Container');if(!tmpContainer){return;}let tmpPlatform=this._activePlatformTab;let tmpHTML='';// Description
+tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Stream media directly in VLC from the browser. Press <b>v</b> in the media viewer to launch VLC with the current file.';tmpHTML+='</div>';tmpHTML+='</div>';// Platform status
+tmpHTML+='<div class="retold-remote-vlc-setup-status">';tmpHTML+='<div class="retold-remote-vlc-setup-status-dot '+(this._detectPlatform()===tmpPlatform?'detected':'unknown')+'"></div>';tmpHTML+='<span>Detected platform: <b>'+this._getPlatformLabel(this._detectPlatform())+'</b></span>';tmpHTML+='</div>';// Platform tabs
+tmpHTML+='<div class="retold-remote-vlc-setup-platform-tabs">';tmpHTML+=this._buildPlatformTab('macos','macOS',tmpPlatform);tmpHTML+=this._buildPlatformTab('windows','Windows',tmpPlatform);tmpHTML+=this._buildPlatformTab('linux','Linux',tmpPlatform);tmpHTML+='</div>';// Platform-specific content
+tmpHTML+=this._buildMacOSContent(tmpPlatform);tmpHTML+=this._buildWindowsContent(tmpPlatform);tmpHTML+=this._buildLinuxContent(tmpPlatform);// Test section
+tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Test</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Click below to test whether the vlc:// protocol handler is registered. VLC should open.';tmpHTML+='</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].testProtocol()">Test VLC Protocol</button>';tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;}_buildPlatformTab(pKey,pLabel,pActive){let tmpClass='retold-remote-vlc-setup-platform-tab';if(pKey===pActive){tmpClass+=' active';}return'<button class="'+tmpClass+'" onclick="pict.views[\'RetoldRemote-VLCSetup\'].switchPlatformTab(\''+pKey+'\')">'+pLabel+'</button>';}_getPlatformLabel(pKey){if(pKey==='macos')return'macOS';if(pKey==='windows')return'Windows';return'Linux';}_buildMacOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='macos'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="macos">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (macOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on macOS does not register a vlc:// protocol handler by default. ';tmpHTML+='An AppleScript app bundle is needed to bridge vlc:// links to VLC. ';tmpHTML+='Run the command below in Terminal to create and register the handler automatically.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Automatic Setup</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Copy and paste this into Terminal:';tmpHTML+='</div>';let tmpScript=this._getMacSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this._escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates an AppleScript at <code>/tmp/VLCProtocol.applescript</code> that handles vlc:// URLs</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Compiles it into an app bundle at <code>/Applications/VLCProtocol.app</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Adds the vlc:// URL scheme to the app\'s Info.plist</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">4</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers the protocol handler with macOS Launch Services</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC installed at /Applications/VLC.app and Python 3 (included with macOS).</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildWindowsContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='windows'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="windows">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on Windows registers the vlc:// protocol handler during installation. ';tmpHTML+='If it is not working, you can re-register it by saving and running the registry file below.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option A: Reinstall VLC</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Reinstall VLC and ensure "Register VLC as handler for vlc:// protocol" is checked during installation.</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option B: Registry File</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Save this as <code>vlc-protocol.reg</code> and double-click to import. ';tmpHTML+='Adjust the VLC path if yours differs.';tmpHTML+='</div>';let tmpRegFile=this._getWindowsRegFile();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this._escapeHTML(tmpRegFile)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';tmpHTML+='This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';tmpHTML+='</div>';let tmpBatchScript=this._getWindowsBatchScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this._escapeHTML(tmpBatchScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildLinuxContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='linux'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="linux">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Linux)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Register a vlc:// protocol handler using a .desktop file and xdg-mime. ';tmpHTML+='Run the command below in a terminal.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';let tmpScript=this._getLinuxSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this._escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a handler script at <code>~/.local/bin/vlc-protocol</code> that URL-decodes and opens VLC</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a .desktop file at <code>~/.local/share/applications/vlc-protocol.desktop</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers vlc:// as a URL scheme via <code>xdg-mime</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC and Python 3 installed.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_getMacSetupScript(){return["# Create the AppleScript handler","cat > /tmp/VLCProtocol.applescript << 'EOF'","on open location theURL","\tset theURL to text 7 thru -1 of theURL","\tset theURL to do shell script \"python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' \" & quoted form of theURL","\tdo shell script \"open -a VLC \" & quoted form of theURL","end open location","EOF","","# Compile into app bundle","osacompile -o /Applications/VLCProtocol.app /tmp/VLCProtocol.applescript","","# Add vlc:// URL scheme to Info.plist","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0 dict\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLName string 'VLC Protocol'\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string vlc\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","","# Register with Launch Services","/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \\","  -f /Applications/VLCProtocol.app","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_getWindowsRegFile(){return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\"URL:VLC Protocol\"","\"URL Protocol\"=\"\"","","[HKEY_CLASSES_ROOT\\vlc\\shell]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]","@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""].join('\n');}_getWindowsBatchScript(){return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler script","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","(","echo import sys, urllib.parse, subprocess","echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''","echo if url.startswith('vlc://'^): url = url[6:]","echo url = urllib.parse.unquote(url^)","echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",") > \"%APPDATA%\\VLCProtocol\\handler.py\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_escapeHTML(pStr){return pStr.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this._showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this._showToast(pLabel+' copied to clipboard');}catch(pErr){this._showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}_showToast(pMessage){let tmpExisting=document.querySelector('.retold-remote-vlc-setup-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-vlc-setup-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(()=>{if(tmpToast.parentNode){tmpToast.remove();}},2000);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":76}],130:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-vex
 		{
 			display: flex;
