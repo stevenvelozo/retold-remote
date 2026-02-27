@@ -603,16 +603,13 @@ class RetoldRemoteMediaViewerView extends libPictView
 				+ '</button>';
 		}
 
-		// VLC option (v)
-		if (tmpCapabilities.vlc)
-		{
-			tmpHTML += '<button class="retold-remote-video-action-btn" '
-				+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '
-				+ 'title="Open with VLC media player">'
-				+ '<span class="retold-remote-video-action-key">v</span>'
-				+ 'Open with VLC'
-				+ '</button>';
-		}
+		// VLC streaming option (v) — always available, streams from server to client VLC
+		tmpHTML += '<button class="retold-remote-video-action-btn" '
+			+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" '
+			+ 'title="Stream to VLC on this device">'
+			+ '<span class="retold-remote-video-action-key">v</span>'
+			+ 'Stream with VLC'
+			+ '</button>';
 
 		tmpHTML += '</div>';
 
@@ -655,14 +652,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 				+ '</button>';
 		}
 
-		if (tmpCapabilities.vlc)
-		{
-			tmpHTML += '<button class="retold-remote-vlc-btn" '
-				+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '
-				+ 'title="Open with VLC">'
-				+ 'Open with VLC'
-				+ '</button>';
-		}
+		tmpHTML += '<button class="retold-remote-vlc-btn" '
+			+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" '
+			+ 'title="Stream to VLC on this device">'
+			+ 'Stream with VLC'
+			+ '</button>';
 
 		tmpHTML += '</div>'; // end stats
 		tmpHTML += '</div>'; // end wrap
@@ -737,18 +731,28 @@ class RetoldRemoteMediaViewerView extends libPictView
 			+ 'Your browser does not support the audio tag.'
 			+ '</audio>';
 
+		// Action buttons below the player
+		tmpHTML += '<div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">';
+
 		// Explore Audio button (available when ffprobe is present)
 		let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
 		if (tmpCapabilities.ffprobe || tmpCapabilities.ffmpeg)
 		{
-			tmpHTML += '<div style="margin-top: 20px;">'
-				+ '<button class="retold-remote-explore-btn" '
+			tmpHTML += '<button class="retold-remote-explore-btn" '
 				+ 'onclick="pict.views[\'RetoldRemote-AudioExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
 				+ 'title="Explore waveform and extract segments from this audio">'
-				+ '&#128202; Explore Audio'
-				+ '</button>'
-				+ '</div>';
+				+ 'Explore Audio'
+				+ '</button>';
 		}
+
+		// Stream with VLC
+		tmpHTML += '<button class="retold-remote-vlc-btn" '
+			+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" '
+			+ 'title="Stream to VLC on this device (v)">'
+			+ 'Stream with VLC'
+			+ '</button>';
+
+		tmpHTML += '</div>';
 
 		tmpHTML += '</div>';
 		return tmpHTML;

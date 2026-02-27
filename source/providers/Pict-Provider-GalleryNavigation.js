@@ -469,7 +469,7 @@ class GalleryNavigationProvider extends libPictProvider
 
 				case 'v':
 					pEvent.preventDefault();
-					this._openWithVLC();
+					this._streamWithVLC();
 					return;
 			}
 			return;
@@ -532,7 +532,12 @@ class GalleryNavigationProvider extends libPictProvider
 
 			case 'Enter':
 				pEvent.preventDefault();
-				this._openWithVLC();
+				this._streamWithVLC();
+				break;
+
+			case 'v':
+				pEvent.preventDefault();
+				this._streamWithVLC();
 				break;
 
 			case 'd':
@@ -1342,6 +1347,33 @@ class GalleryNavigationProvider extends libPictProvider
 		{
 			this._showToast('Failed to open: ' + pError.message);
 		});
+	}
+
+	/**
+	 * Stream the current media file to VLC on the client device via vlc:// protocol link.
+	 */
+	_streamWithVLC()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpMediaType = tmpRemote.CurrentViewerMediaType;
+
+		if (tmpMediaType !== 'video' && tmpMediaType !== 'audio')
+		{
+			return;
+		}
+
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath)
+		{
+			return;
+		}
+
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpContentPath = tmpProvider ? tmpProvider.getContentURL(tmpFilePath) : ('/content/' + encodeURIComponent(tmpFilePath));
+		let tmpStreamURL = window.location.origin + tmpContentPath;
+
+		this._showToast('Opening VLC...');
+		window.location.href = 'vlc://' + tmpStreamURL;
 	}
 
 	/**

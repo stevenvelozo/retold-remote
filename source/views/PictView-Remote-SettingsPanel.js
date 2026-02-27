@@ -319,6 +319,7 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			{ key: 'Space', desc: 'Play / pause' },
 			{ key: 'f', desc: 'Fullscreen' },
 			{ key: 'i', desc: 'File info overlay' },
+			{ key: 'v', desc: 'Stream with VLC' },
 			{ key: '+  -', desc: 'Zoom in / out' },
 			{ key: '0', desc: 'Reset zoom' },
 			{ key: 'z', desc: 'Cycle fit mode' },
@@ -331,7 +332,7 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			{ key: 'Enter', desc: 'Play in browser' },
 			{ key: 'e', desc: 'Explore video frames' },
 			{ key: 't', desc: 'Extract thumbnail' },
-			{ key: 'v', desc: 'Open with VLC' },
+			{ key: 'v', desc: 'Stream with VLC' },
 			{ key: '\u2192  j', desc: 'Next file' },
 			{ key: '\u2190  k', desc: 'Previous file' },
 			{ key: 'Esc', desc: 'Back to gallery' }
