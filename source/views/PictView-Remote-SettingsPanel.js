@@ -77,6 +77,44 @@ const _ViewConfiguration =
 		{
 			color: var(--retold-danger-muted);
 		}
+		.retold-remote-settings-shortcut-group
+		{
+			margin-bottom: 10px;
+		}
+		.retold-remote-settings-shortcut-group-title
+		{
+			font-size: 0.68rem;
+			font-weight: 600;
+			color: var(--retold-text-muted);
+			margin-bottom: 4px;
+			padding-bottom: 2px;
+			border-bottom: 1px solid var(--retold-border);
+		}
+		.retold-remote-settings-shortcut-row
+		{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 2px 0;
+		}
+		.retold-remote-settings-shortcut-desc
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.72rem;
+		}
+		.retold-remote-settings-shortcut-key
+		{
+			display: inline-block;
+			padding: 1px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-primary);
+			color: var(--retold-accent);
+			font-size: 0.68rem;
+			font-family: var(--retold-font-mono, monospace);
+			min-width: 18px;
+			text-align: center;
+		}
 	`
 };
 
@@ -241,33 +279,100 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '<div class="retold-remote-settings-section">';
 		tmpHTML += '<div class="retold-remote-settings-section-title">Keyboard Shortcuts</div>';
 
-		let tmpShortcuts = [
-			{ key: 'Arrow keys', desc: 'Navigate gallery' },
-			{ key: 'Enter', desc: 'Open item' },
-			{ key: 'Escape', desc: 'Back / close' },
-			{ key: 'j / k', desc: 'Next / prev in viewer' },
-			{ key: 'f', desc: 'Fullscreen' },
-			{ key: 'i', desc: 'File info' },
-			{ key: 'Space', desc: 'Play / pause' },
-			{ key: '+ / -', desc: 'Zoom in / out' },
-			{ key: '0', desc: 'Reset zoom' },
-			{ key: 'g', desc: 'Toggle grid / list' },
-			{ key: '/', desc: 'Focus search' }
-		];
+		tmpHTML += this._buildShortcutGroup('Global',
+		[
+			{ key: 'F1', desc: 'Help panel' },
+			{ key: 'F9', desc: 'Focus sidebar' },
+			{ key: '/', desc: 'Search / filter bar' },
+			{ key: 'Esc', desc: 'Close overlay / back' }
+		]);
 
-		for (let i = 0; i < tmpShortcuts.length; i++)
-		{
-			tmpHTML += '<div class="retold-remote-settings-cap-row">';
-			tmpHTML += '<span class="retold-remote-settings-cap-label">' + tmpShortcuts[i].desc + '</span>';
-			tmpHTML += '<span style="color: var(--retold-accent); font-family: var(--retold-font-mono, monospace);">' + tmpShortcuts[i].key + '</span>';
-			tmpHTML += '</div>';
-		}
+		tmpHTML += this._buildShortcutGroup('Gallery',
+		[
+			{ key: '\u2190 \u2191 \u2192 \u2193', desc: 'Navigate items' },
+			{ key: 'Enter', desc: 'Open item' },
+			{ key: 'Esc', desc: 'Go up one folder' },
+			{ key: 'Home', desc: 'Jump to first item' },
+			{ key: 'End', desc: 'Jump to last item' },
+			{ key: 'g', desc: 'Toggle grid / list' },
+			{ key: 'f', desc: 'Advanced filter panel' },
+			{ key: 's', desc: 'Focus sort dropdown' },
+			{ key: 'x', desc: 'Clear all filters' },
+			{ key: 'c', desc: 'Settings panel' },
+			{ key: 'd', desc: 'Distraction-free mode' }
+		]);
+
+		tmpHTML += this._buildShortcutGroup('Sidebar (F9)',
+		[
+			{ key: '\u2191 \u2193', desc: 'Navigate file list' },
+			{ key: 'Home', desc: 'Jump to first' },
+			{ key: 'End', desc: 'Jump to last' },
+			{ key: 'Enter', desc: 'Open item' },
+			{ key: 'Esc', desc: 'Return to gallery' }
+		]);
+
+		tmpHTML += this._buildShortcutGroup('Media Viewer',
+		[
+			{ key: 'Esc', desc: 'Back to gallery' },
+			{ key: '\u2192  j', desc: 'Next file' },
+			{ key: '\u2190  k', desc: 'Previous file' },
+			{ key: 'Space', desc: 'Play / pause' },
+			{ key: 'f', desc: 'Fullscreen' },
+			{ key: 'i', desc: 'File info overlay' },
+			{ key: '+  -', desc: 'Zoom in / out' },
+			{ key: '0', desc: 'Reset zoom' },
+			{ key: 'z', desc: 'Cycle fit mode' },
+			{ key: 'd', desc: 'Distraction-free mode' }
+		]);
+
+		tmpHTML += this._buildShortcutGroup('Video Menu',
+		[
+			{ key: 'Space', desc: 'Play in browser' },
+			{ key: 'Enter', desc: 'Play in browser' },
+			{ key: 'e', desc: 'Explore video frames' },
+			{ key: 't', desc: 'Extract thumbnail' },
+			{ key: 'v', desc: 'Open with VLC' },
+			{ key: '\u2192  j', desc: 'Next file' },
+			{ key: '\u2190  k', desc: 'Previous file' },
+			{ key: 'Esc', desc: 'Back to gallery' }
+		]);
+
+		tmpHTML += this._buildShortcutGroup('Video Explorer',
+		[
+			{ key: 'Esc', desc: 'Back' }
+		]);
+
+		tmpHTML += this._buildShortcutGroup('Audio Explorer',
+		[
+			{ key: 'Space', desc: 'Play selection' },
+			{ key: '+  -', desc: 'Zoom in / out' },
+			{ key: '0', desc: 'Zoom to fit' },
+			{ key: 'z', desc: 'Zoom to selection' },
+			{ key: 'Esc', desc: 'Clear selection / back' }
+		]);
 
 		tmpHTML += '</div>'; // end shortcuts section
 
 		tmpHTML += '</div>'; // end settings
 
 		tmpContainer.innerHTML = tmpHTML;
+	}
+
+	_buildShortcutGroup(pTitle, pShortcuts)
+	{
+		let tmpHTML = '<div class="retold-remote-settings-shortcut-group">';
+		tmpHTML += '<div class="retold-remote-settings-shortcut-group-title">' + pTitle + '</div>';
+
+		for (let i = 0; i < pShortcuts.length; i++)
+		{
+			tmpHTML += '<div class="retold-remote-settings-shortcut-row">';
+			tmpHTML += '<span class="retold-remote-settings-shortcut-desc">' + pShortcuts[i].desc + '</span>';
+			tmpHTML += '<span class="retold-remote-settings-shortcut-key">' + pShortcuts[i].key + '</span>';
+			tmpHTML += '</div>';
+		}
+
+		tmpHTML += '</div>';
+		return tmpHTML;
 	}
 
 	changeTheme(pThemeKey)

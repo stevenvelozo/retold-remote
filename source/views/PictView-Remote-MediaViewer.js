@@ -232,6 +232,85 @@ const _ViewConfiguration =
 			background: var(--retold-accent);
 			color: var(--retold-bg-primary);
 		}
+		/* Video action menu */
+		.retold-remote-video-action-menu
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			width: 100%;
+			height: 100%;
+		}
+		.retold-remote-video-action-menu-title
+		{
+			font-size: 0.85rem;
+			color: var(--retold-text-secondary);
+			margin-bottom: 4px;
+			text-align: center;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 80%;
+		}
+		.retold-remote-video-action-thumb-wrap
+		{
+			margin-bottom: 4px;
+			text-align: center;
+		}
+		.retold-remote-video-action-thumb-wrap img
+		{
+			max-width: 640px;
+			max-height: 360px;
+			border-radius: 6px;
+			border: 1px solid var(--retold-border);
+			object-fit: contain;
+			background: var(--retold-bg-primary);
+		}
+		.retold-remote-video-action-thumb-wrap .retold-remote-video-action-thumb-loading
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.78rem;
+			font-style: italic;
+			padding: 8px;
+		}
+		.retold-remote-video-action-btn
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 12px 24px;
+			min-width: 280px;
+			border: 1px solid var(--retold-border);
+			border-radius: 6px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-text-secondary);
+			font-size: 0.85rem;
+			cursor: pointer;
+			transition: border-color 0.15s, color 0.15s, background 0.15s;
+			font-family: inherit;
+			text-align: left;
+		}
+		.retold-remote-video-action-btn:hover,
+		.retold-remote-video-action-btn.selected
+		{
+			border-color: var(--retold-accent);
+			color: var(--retold-text-primary);
+			background: var(--retold-bg-tertiary);
+		}
+		.retold-remote-video-action-key
+		{
+			display: inline-block;
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-primary);
+			color: var(--retold-text-dim);
+			font-size: 0.72rem;
+			font-family: var(--retold-font-mono, monospace);
+			min-width: 24px;
+			text-align: center;
+		}
 		/* Ebook reader */
 		.retold-remote-ebook-wrap
 		{
@@ -376,6 +455,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpRemote.ActiveMode = 'viewer';
 		tmpRemote.CurrentViewerFile = pFilePath;
 		tmpRemote.CurrentViewerMediaType = pMediaType;
+		tmpRemote.VideoMenuActive = (pMediaType === 'video');
 
 		// Show viewer, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
@@ -477,12 +557,88 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 	_buildVideoHTML(pURL, pFileName)
 	{
+		let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+
+		// Build the action menu (shown by default instead of the player)
+		let tmpHTML = '<div class="retold-remote-video-action-menu" id="RetoldRemote-VideoActionMenu">';
+		tmpHTML += '<div class="retold-remote-video-action-menu-title">' + this._escapeHTML(pFileName) + '</div>';
+
+		// Frame preview container (loaded on demand via t key or automatically)
+		if (tmpCapabilities.ffmpeg)
+		{
+			tmpHTML += '<div id="RetoldRemote-VideoActionThumb" class="retold-remote-video-action-thumb-wrap"></div>';
+			// Kick off frame extraction automatically
+			setTimeout(() => { this.loadVideoMenuFrame(); }, 0);
+		}
+
+		// Explore option (e)
+		if (tmpCapabilities.ffmpeg)
+		{
+			tmpHTML += '<button class="retold-remote-video-action-btn" '
+				+ 'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
+				+ 'title="Explore frames from this video">'
+				+ '<span class="retold-remote-video-action-key">e</span>'
+				+ 'Explore Video Frames'
+				+ '</button>';
+		}
+
+		// Play option (space/enter)
+		tmpHTML += '<button class="retold-remote-video-action-btn selected" '
+			+ 'onclick="pict.views[\'RetoldRemote-MediaViewer\'].playVideo()" '
+			+ 'title="Play video in browser">'
+			+ '<span class="retold-remote-video-action-key">Space</span>'
+			+ 'Play in Browser'
+			+ '</button>';
+
+		// Thumbnail option (t)
+		if (tmpCapabilities.ffmpeg)
+		{
+			tmpHTML += '<button class="retold-remote-video-action-btn" '
+				+ 'onclick="pict.views[\'RetoldRemote-MediaViewer\'].loadVideoMenuFrame()" '
+				+ 'title="Extract a frame from the midpoint of this video">'
+				+ '<span class="retold-remote-video-action-key">t</span>'
+				+ 'Thumbnail'
+				+ '</button>';
+		}
+
+		// VLC option (v)
+		if (tmpCapabilities.vlc)
+		{
+			tmpHTML += '<button class="retold-remote-video-action-btn" '
+				+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '
+				+ 'title="Open with VLC media player">'
+				+ '<span class="retold-remote-video-action-key">v</span>'
+				+ 'Open with VLC'
+				+ '</button>';
+		}
+
+		tmpHTML += '</div>';
+
+		return tmpHTML;
+	}
+
+	/**
+	 * Launch the in-browser video player (from the video action menu).
+	 */
+	playVideo()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath) return;
+
+		let tmpFileName = tmpFilePath.replace(/^.*\//, '');
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpContentURL = tmpProvider ? tmpProvider.getContentURL(tmpFilePath) : ('/content/' + encodeURIComponent(tmpFilePath));
+		let tmpCapabilities = tmpRemote.ServerCapabilities || {};
+
 		let tmpHTML = '<div class="retold-remote-video-wrap">';
 
-		let tmpAutoplayVideo = this.pict.AppData.RetoldRemote.AutoplayVideo ? ' autoplay' : '';
+		let tmpAutoplayVideo = tmpRemote.AutoplayVideo ? ' autoplay' : '';
 		tmpHTML += '<video controls' + tmpAutoplayVideo + ' preload="metadata" '
 			+ 'id="RetoldRemote-VideoPlayer">'
-			+ '<source src="' + pURL + '">'
+			+ '<source src="' + tmpContentURL + '">'
 			+ 'Your browser does not support the video tag.'
 			+ '</video>';
 
@@ -490,31 +646,82 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpHTML += '<div class="retold-remote-video-stats" id="RetoldRemote-VideoStats">';
 		tmpHTML += '<span class="retold-remote-video-stat-label">Loading info...</span>';
 
-		// Explore Video button (only when ffmpeg is available)
-		let tmpCapabilities = this.pict.AppData.RetoldRemote.ServerCapabilities || {};
 		if (tmpCapabilities.ffmpeg)
 		{
 			tmpHTML += '<button class="retold-remote-explore-btn" '
 				+ 'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
 				+ 'title="Explore frames from this video">'
-				+ '&#128270; Explore Video'
+				+ 'Explore Video'
 				+ '</button>';
 		}
 
-		// VLC button (only shown when VLC capability is available)
 		if (tmpCapabilities.vlc)
 		{
 			tmpHTML += '<button class="retold-remote-vlc-btn" '
 				+ 'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '
-				+ 'title="Open with VLC (Enter)">'
-				+ '&#9654; Open ' + this._escapeHTML(pFileName) + ' with VLC'
+				+ 'title="Open with VLC">'
+				+ 'Open with VLC'
 				+ '</button>';
 		}
 
 		tmpHTML += '</div>'; // end stats
 		tmpHTML += '</div>'; // end wrap
 
-		return tmpHTML;
+		// Replace the action menu with the player
+		let tmpMenu = document.getElementById('RetoldRemote-VideoActionMenu');
+		if (tmpMenu)
+		{
+			tmpMenu.outerHTML = tmpHTML;
+		}
+
+		// Mark that we are now in player mode (not menu mode)
+		tmpRemote.VideoMenuActive = false;
+	}
+
+	/**
+	 * Extract and display a single full-resolution frame from the midpoint of the current video.
+	 */
+	loadVideoMenuFrame()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath) return;
+
+		let tmpThumbWrap = document.getElementById('RetoldRemote-VideoActionThumb');
+		if (!tmpThumbWrap) return;
+
+		tmpThumbWrap.innerHTML = '<div class="retold-remote-video-action-thumb-loading">Extracting frame...</div>';
+
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(tmpFilePath) : encodeURIComponent(tmpFilePath);
+
+		fetch('/api/media/video-frames?path=' + tmpPathParam + '&count=1')
+			.then((pResponse) => pResponse.json())
+			.then((pData) =>
+			{
+				// Verify we are still on the same file and still in the menu
+				if (tmpRemote.CurrentViewerFile !== tmpFilePath) return;
+				let tmpWrap = document.getElementById('RetoldRemote-VideoActionThumb');
+				if (!tmpWrap) return;
+
+				if (pData && pData.Frames && pData.Frames.length > 0)
+				{
+					let tmpFrame = pData.Frames[0];
+					let tmpFrameURL = '/api/media/video-frame/' + pData.CacheKey + '/' + tmpFrame.Filename;
+					tmpWrap.innerHTML = '<img src="' + tmpFrameURL + '" '
+						+ 'alt="' + this._escapeHTML(tmpFilePath.replace(/^.*\//, '')) + '" '
+						+ 'onerror="this.parentNode.innerHTML=\'\'">';
+				}
+				else
+				{
+					tmpWrap.innerHTML = '';
+				}
+			})
+			.catch(() =>
+			{
+				let tmpWrap = document.getElementById('RetoldRemote-VideoActionThumb');
+				if (tmpWrap) tmpWrap.innerHTML = '';
+			});
 	}
 
 	_buildAudioHTML(pURL, pFileName)

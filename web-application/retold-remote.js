@@ -8562,6 +8562,7 @@ ThumbnailSize:'medium',// 'small', 'medium', 'large'
 RawFileList:[],// Unfiltered server response
 GalleryItems:[],// Filtered+sorted file list (single source of truth)
 GalleryCursorIndex:0,// Currently highlighted item
+FolderCursorHistory:{},// Map of folder path -> last cursor index
 GalleryFilter:'all',// 'all', 'images', 'video', 'audio', 'documents'
 SearchQuery:'',SearchCaseSensitive:false,SearchRegex:false,ServerCapabilities:{},// From /api/media/capabilities
 FolderSummary:null,// From /api/media/folder-summary
@@ -8619,7 +8620,7 @@ let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.RawFileList=pFileList|
 tmpRemote.FilterState={MediaType:tmpRemote.FilterState.MediaType,Extensions:[],SizeMin:null,SizeMax:null,DateModifiedAfter:null,DateModifiedBefore:null,DateCreatedAfter:null,DateCreatedBefore:null};// Show the gallery, hide the viewer
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Run the filter+sort pipeline (sets GalleryItems, resets cursor, renders gallery)
 let tmpFilterSort=tmpSelf.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.applyFilterSort();}else{// Fallback if provider not ready
-tmpRemote.GalleryItems=pFileList||[];tmpRemote.GalleryCursorIndex=0;let tmpGalleryView=tmpSelf.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}// Update the hash (use hashed identifier when available)
+tmpRemote.GalleryItems=pFileList||[];let tmpSavedIndex=tmpRemote.FolderCursorHistory&&tmpRemote.FolderCursorHistory[tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation||''];tmpRemote.GalleryCursorIndex=typeof tmpSavedIndex==='number'&&tmpSavedIndex<(pFileList||[]).length?tmpSavedIndex:0;let tmpGalleryView=tmpSelf.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}// Update the hash (use hashed identifier when available)
 let tmpCurrentPath=tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpBrowseFragProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpBrowseFragId=tmpBrowseFragProvider&&tmpCurrentPath?tmpBrowseFragProvider.getFragmentIdentifier(tmpCurrentPath):tmpCurrentPath;window.location.hash=tmpBrowseFragId?'#/browse/'+tmpBrowseFragId:'#/browse/';// Fetch folder summary for topbar info (skip for archive paths — they are not filesystem directories)
 let tmpMediaProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpIsArchivePath=/\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz)(\/|$)/i.test(tmpCurrentPath);if(tmpMediaProvider&&!tmpIsArchivePath){tmpMediaProvider.fetchFolderSummary(tmpCurrentPath,(pError,pSummary)=>{if(!pError&&pSummary){tmpRemote.FolderSummary=pSummary;let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}});}else{let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}return tmpCallback();}).catch(pError=>{tmpSelf.log.error(`Failed to load file list: ${pError.message}`);return tmpCallback();});}/**
 	 * Override resolveHash to handle gallery and viewer routes.
@@ -8649,7 +8650,8 @@ tmpItems=this._applyExtensionFilter(tmpItems,tmpFilterState.Extensions||[]);// 4
 tmpItems=this._applySizeFilter(tmpItems,tmpFilterState.SizeMin,tmpFilterState.SizeMax);// 5. Date range filter
 tmpItems=this._applyDateFilter(tmpItems,tmpFilterState);// 6. Sort
 tmpItems=this._sortItems(tmpItems,tmpRemote.SortField||'folder-first',tmpRemote.SortDirection||'asc');// Write result
-tmpRemote.GalleryItems=tmpItems;tmpRemote.GalleryCursorIndex=0;// Re-render gallery
+tmpRemote.GalleryItems=tmpItems;// Restore cursor position if we have a saved one for this folder
+let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpSavedIndex=tmpRemote.FolderCursorHistory&&tmpRemote.FolderCursorHistory[tmpCurrentLocation];if(typeof tmpSavedIndex==='number'&&tmpSavedIndex<tmpItems.length){tmpRemote.GalleryCursorIndex=tmpSavedIndex;}else{tmpRemote.GalleryCursorIndex=0;}// Re-render gallery
 let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}// ──────────────────────────────────────────────
 // Filter stages
 // ──────────────────────────────────────────────
@@ -8766,7 +8768,8 @@ let tmpRows=document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-det
 if(this._sidebarCursorIndex<tmpRows.length){tmpRows[this._sidebarCursorIndex].classList.remove('sidebar-focused');}this._sidebarCursorIndex=pIndex;// Apply new highlight and scroll into view
 if(pIndex<tmpRows.length){tmpRows[pIndex].classList.add('sidebar-focused');tmpRows[pIndex].scrollIntoView({block:'nearest',behavior:'smooth'});}}/**
 	 * Handle keyboard events in viewer mode.
-	 */_handleViewerKey(pEvent){switch(pEvent.key){case'Escape':pEvent.preventDefault();this.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();this.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();this.prevFile();break;case'f':pEvent.preventDefault();this._toggleFullscreen();break;case'i':pEvent.preventDefault();this._toggleFileInfo();break;case' ':pEvent.preventDefault();this._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();this._zoomIn();break;case'-':pEvent.preventDefault();this._zoomOut();break;case'0':pEvent.preventDefault();this._zoomReset();break;case'z':pEvent.preventDefault();this._cycleFitMode();break;case'Enter':pEvent.preventDefault();this._openWithVLC();break;case'd':pEvent.preventDefault();this._toggleDistractionFree();break;}}/**
+	 */_handleViewerKey(pEvent){let tmpRemote=this.pict.AppData.RetoldRemote;// Video action menu mode — intercept keys for menu options
+if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();this.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();this.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();this.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();this._openWithVLC();return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();this.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();this.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();this.prevFile();break;case'f':pEvent.preventDefault();this._toggleFullscreen();break;case'i':pEvent.preventDefault();this._toggleFileInfo();break;case' ':pEvent.preventDefault();this._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();this._zoomIn();break;case'-':pEvent.preventDefault();this._zoomOut();break;case'0':pEvent.preventDefault();this._zoomReset();break;case'z':pEvent.preventDefault();this._cycleFitMode();break;case'Enter':pEvent.preventDefault();this._openWithVLC();break;case'd':pEvent.preventDefault();this._toggleDistractionFree();break;}}/**
 	 * Handle keyboard events in video explorer mode.
 	 */_handleVideoExplorerKey(pEvent){switch(pEvent.key){case'Escape':pEvent.preventDefault();let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.goBack();}break;}}/**
 	 * Handle keyboard events in audio explorer mode.
@@ -8778,11 +8781,13 @@ if(pIndex<tmpRows.length){tmpRows[pIndex].classList.add('sidebar-focused');tmpRo
 let tmpOldTile=document.querySelector(`.retold-remote-tile[data-index="${tmpOldIndex}"], .retold-remote-list-row[data-index="${tmpOldIndex}"]`);let tmpNewTile=document.querySelector(`.retold-remote-tile[data-index="${pNewIndex}"], .retold-remote-list-row[data-index="${pNewIndex}"]`);if(tmpOldTile){tmpOldTile.classList.remove('selected');}if(tmpNewTile){tmpNewTile.classList.add('selected');// Scroll the tile into view if needed
 tmpNewTile.scrollIntoView({block:'nearest',behavior:'smooth'});}}/**
 	 * Open the currently selected gallery item.
-	 */openCurrent(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpIndex>=tmpItems.length){return;}let tmpItem=tmpItems[tmpIndex];if(tmpItem.Type==='folder'||tmpItem.Type==='archive'){// Navigate into the folder or archive
+	 */openCurrent(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpIndex>=tmpItems.length){return;}let tmpItem=tmpItems[tmpIndex];if(tmpItem.Type==='folder'||tmpItem.Type==='archive'){// Remember cursor position in the current folder before navigating away
+let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';tmpRemote.FolderCursorHistory[tmpCurrentLocation]=tmpIndex;// Navigate into the folder or archive
 let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.loadFileList){tmpApp.loadFileList(tmpItem.Path);}}else{// Open the file in the viewer
 let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(tmpItem.Path);}}}/**
 	 * Navigate up one directory level.
-	 */navigateUp(){let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentLocation){return;}let tmpParent=tmpCurrentLocation.indexOf('/')>=0?tmpCurrentLocation.replace(/\/[^/]+\/?$/,''):'';let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.loadFileList){tmpApp.loadFileList(tmpParent);}}/**
+	 */navigateUp(){let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentLocation){return;}// Remember cursor position in the current folder before navigating away
+let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.FolderCursorHistory[tmpCurrentLocation]=tmpRemote.GalleryCursorIndex||0;let tmpParent=tmpCurrentLocation.indexOf('/')>=0?tmpCurrentLocation.replace(/\/[^/]+\/?$/,''):'';let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.loadFileList){tmpApp.loadFileList(tmpParent);}}/**
 	 * Close the viewer and return to gallery mode.
 	 */closeViewer(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='gallery';let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Restore the hash to the browse route (use hashed identifier when available)
 let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider&&tmpCurrentLocation?tmpFragProvider.getFragmentIdentifier(tmpCurrentLocation):tmpCurrentLocation;window.location.hash=tmpFragId?'#/browse/'+tmpFragId:'#/browse/';// Re-render gallery to ensure cursor is visible
@@ -10740,6 +10745,85 @@ tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();t
 			background: var(--retold-accent);
 			color: var(--retold-bg-primary);
 		}
+		/* Video action menu */
+		.retold-remote-video-action-menu
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			width: 100%;
+			height: 100%;
+		}
+		.retold-remote-video-action-menu-title
+		{
+			font-size: 0.85rem;
+			color: var(--retold-text-secondary);
+			margin-bottom: 4px;
+			text-align: center;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 80%;
+		}
+		.retold-remote-video-action-thumb-wrap
+		{
+			margin-bottom: 4px;
+			text-align: center;
+		}
+		.retold-remote-video-action-thumb-wrap img
+		{
+			max-width: 640px;
+			max-height: 360px;
+			border-radius: 6px;
+			border: 1px solid var(--retold-border);
+			object-fit: contain;
+			background: var(--retold-bg-primary);
+		}
+		.retold-remote-video-action-thumb-wrap .retold-remote-video-action-thumb-loading
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.78rem;
+			font-style: italic;
+			padding: 8px;
+		}
+		.retold-remote-video-action-btn
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 12px 24px;
+			min-width: 280px;
+			border: 1px solid var(--retold-border);
+			border-radius: 6px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-text-secondary);
+			font-size: 0.85rem;
+			cursor: pointer;
+			transition: border-color 0.15s, color 0.15s, background 0.15s;
+			font-family: inherit;
+			text-align: left;
+		}
+		.retold-remote-video-action-btn:hover,
+		.retold-remote-video-action-btn.selected
+		{
+			border-color: var(--retold-accent);
+			color: var(--retold-text-primary);
+			background: var(--retold-bg-tertiary);
+		}
+		.retold-remote-video-action-key
+		{
+			display: inline-block;
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-primary);
+			color: var(--retold-text-dim);
+			font-size: 0.72rem;
+			font-family: var(--retold-font-mono, monospace);
+			min-width: 24px;
+			text-align: center;
+		}
 		/* Ebook reader */
 		.retold-remote-ebook-wrap
 		{
@@ -10867,7 +10951,7 @@ tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();t
 	 *
 	 * @param {string} pFilePath  - Relative file path
 	 * @param {string} pMediaType - 'image', 'video', 'audio', 'document', or 'other'
-	 */showMedia(pFilePath,pMediaType){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType=pMediaType;// Show viewer, hide gallery
+	 */showMedia(pFilePath,pMediaType){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType=pMediaType;tmpRemote.VideoMenuActive=pMediaType==='video';// Show viewer, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);// Build the viewer HTML
 let tmpHTML='<div class="retold-remote-viewer">';// Header with nav
 tmpHTML+='<div class="retold-remote-viewer-header">';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-viewer-title">'+this._escapeHTML(tmpFileName)+'</div>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';tmpHTML+='</div>';// Body with media content
@@ -10878,12 +10962,24 @@ if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Fetch and popula
 this._loadFileInfo(pFilePath);// Fetch text content and initialize code viewer
 if(pMediaType==='text'){this._loadCodeViewer(tmpContentURL,pFilePath);}// Load ebook viewer for epub/mobi
 if(pMediaType==='document'){let tmpExt=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExt==='epub'||tmpExt==='mobi'){this._loadEbookViewer(tmpContentURL,pFilePath);}}// Update topbar
-let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}}_buildImageHTML(pURL,pFileName){return'<img src="'+pURL+'" alt="'+this._escapeHTML(pFileName)+'" '+'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '+'id="RetoldRemote-ImageViewer-Img" '+'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '+'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';}_buildVideoHTML(pURL,pFileName){let tmpHTML='<div class="retold-remote-video-wrap">';let tmpAutoplayVideo=this.pict.AppData.RetoldRemote.AutoplayVideo?' autoplay':'';tmpHTML+='<video controls'+tmpAutoplayVideo+' preload="metadata" '+'id="RetoldRemote-VideoPlayer">'+'<source src="'+pURL+'">'+'Your browser does not support the video tag.'+'</video>';// Stats bar below the video
-tmpHTML+='<div class="retold-remote-video-stats" id="RetoldRemote-VideoStats">';tmpHTML+='<span class="retold-remote-video-stat-label">Loading info...</span>';// Explore Video button (only when ffmpeg is available)
-let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};if(tmpCapabilities.ffmpeg){tmpHTML+='<button class="retold-remote-explore-btn" '+'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Explore frames from this video">'+'&#128270; Explore Video'+'</button>';}// VLC button (only shown when VLC capability is available)
-if(tmpCapabilities.vlc){tmpHTML+='<button class="retold-remote-vlc-btn" '+'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '+'title="Open with VLC (Enter)">'+'&#9654; Open '+this._escapeHTML(pFileName)+' with VLC'+'</button>';}tmpHTML+='</div>';// end stats
+let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}}_buildImageHTML(pURL,pFileName){return'<img src="'+pURL+'" alt="'+this._escapeHTML(pFileName)+'" '+'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '+'id="RetoldRemote-ImageViewer-Img" '+'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '+'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';}_buildVideoHTML(pURL,pFileName){let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilePath=tmpRemote.CurrentViewerFile;// Build the action menu (shown by default instead of the player)
+let tmpHTML='<div class="retold-remote-video-action-menu" id="RetoldRemote-VideoActionMenu">';tmpHTML+='<div class="retold-remote-video-action-menu-title">'+this._escapeHTML(pFileName)+'</div>';// Frame preview container (loaded on demand via t key or automatically)
+if(tmpCapabilities.ffmpeg){tmpHTML+='<div id="RetoldRemote-VideoActionThumb" class="retold-remote-video-action-thumb-wrap"></div>';// Kick off frame extraction automatically
+setTimeout(()=>{this.loadVideoMenuFrame();},0);}// Explore option (e)
+if(tmpCapabilities.ffmpeg){tmpHTML+='<button class="retold-remote-video-action-btn" '+'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Explore frames from this video">'+'<span class="retold-remote-video-action-key">e</span>'+'Explore Video Frames'+'</button>';}// Play option (space/enter)
+tmpHTML+='<button class="retold-remote-video-action-btn selected" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].playVideo()" '+'title="Play video in browser">'+'<span class="retold-remote-video-action-key">Space</span>'+'Play in Browser'+'</button>';// Thumbnail option (t)
+if(tmpCapabilities.ffmpeg){tmpHTML+='<button class="retold-remote-video-action-btn" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].loadVideoMenuFrame()" '+'title="Extract a frame from the midpoint of this video">'+'<span class="retold-remote-video-action-key">t</span>'+'Thumbnail'+'</button>';}// VLC option (v)
+if(tmpCapabilities.vlc){tmpHTML+='<button class="retold-remote-video-action-btn" '+'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '+'title="Open with VLC media player">'+'<span class="retold-remote-video-action-key">v</span>'+'Open with VLC'+'</button>';}tmpHTML+='</div>';return tmpHTML;}/**
+	 * Launch the in-browser video player (from the video action menu).
+	 */playVideo(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath)return;let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentURL=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-video-wrap">';let tmpAutoplayVideo=tmpRemote.AutoplayVideo?' autoplay':'';tmpHTML+='<video controls'+tmpAutoplayVideo+' preload="metadata" '+'id="RetoldRemote-VideoPlayer">'+'<source src="'+tmpContentURL+'">'+'Your browser does not support the video tag.'+'</video>';// Stats bar below the video
+tmpHTML+='<div class="retold-remote-video-stats" id="RetoldRemote-VideoStats">';tmpHTML+='<span class="retold-remote-video-stat-label">Loading info...</span>';if(tmpCapabilities.ffmpeg){tmpHTML+='<button class="retold-remote-explore-btn" '+'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Explore frames from this video">'+'Explore Video'+'</button>';}if(tmpCapabilities.vlc){tmpHTML+='<button class="retold-remote-vlc-btn" '+'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._openWithVLC()" '+'title="Open with VLC">'+'Open with VLC'+'</button>';}tmpHTML+='</div>';// end stats
 tmpHTML+='</div>';// end wrap
-return tmpHTML;}_buildAudioHTML(pURL,pFileName){let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('music-note',64)+'</span>':'&#127925;';let tmpHTML='<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this._escapeHTML(pFileName)+'</div>'+'<audio controls'+(this.pict.AppData.RetoldRemote.AutoplayAudio?' autoplay':'')+' preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'+'<source src="'+pURL+'">'+'Your browser does not support the audio tag.'+'</audio>';// Explore Audio button (available when ffprobe is present)
+// Replace the action menu with the player
+let tmpMenu=document.getElementById('RetoldRemote-VideoActionMenu');if(tmpMenu){tmpMenu.outerHTML=tmpHTML;}// Mark that we are now in player mode (not menu mode)
+tmpRemote.VideoMenuActive=false;}/**
+	 * Extract and display a single full-resolution frame from the midpoint of the current video.
+	 */loadVideoMenuFrame(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath)return;let tmpThumbWrap=document.getElementById('RetoldRemote-VideoActionThumb');if(!tmpThumbWrap)return;tmpThumbWrap.innerHTML='<div class="retold-remote-video-action-thumb-loading">Extracting frame...</div>';let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(tmpFilePath):encodeURIComponent(tmpFilePath);fetch('/api/media/video-frames?path='+tmpPathParam+'&count=1').then(pResponse=>pResponse.json()).then(pData=>{// Verify we are still on the same file and still in the menu
+if(tmpRemote.CurrentViewerFile!==tmpFilePath)return;let tmpWrap=document.getElementById('RetoldRemote-VideoActionThumb');if(!tmpWrap)return;if(pData&&pData.Frames&&pData.Frames.length>0){let tmpFrame=pData.Frames[0];let tmpFrameURL='/api/media/video-frame/'+pData.CacheKey+'/'+tmpFrame.Filename;tmpWrap.innerHTML='<img src="'+tmpFrameURL+'" '+'alt="'+this._escapeHTML(tmpFilePath.replace(/^.*\//,''))+'" '+'onerror="this.parentNode.innerHTML=\'\'">';}else{tmpWrap.innerHTML='';}}).catch(()=>{let tmpWrap=document.getElementById('RetoldRemote-VideoActionThumb');if(tmpWrap)tmpWrap.innerHTML='';});}_buildAudioHTML(pURL,pFileName){let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('music-note',64)+'</span>':'&#127925;';let tmpHTML='<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this._escapeHTML(pFileName)+'</div>'+'<audio controls'+(this.pict.AppData.RetoldRemote.AutoplayAudio?' autoplay':'')+' preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'+'<source src="'+pURL+'">'+'Your browser does not support the audio tag.'+'</audio>';// Explore Audio button (available when ffprobe is present)
 let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};if(tmpCapabilities.ffprobe||tmpCapabilities.ffmpeg){tmpHTML+='<div style="margin-top: 20px;">'+'<button class="retold-remote-explore-btn" '+'onclick="pict.views[\'RetoldRemote-AudioExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Explore waveform and extract segments from this audio">'+'&#128202; Explore Audio'+'</button>'+'</div>';}tmpHTML+='</div>';return tmpHTML;}_buildDocumentHTML(pURL,pFileName,pFilePath){let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExtension==='pdf'){return'<iframe src="'+pURL+'" '+'style="width: 100%; height: 100%; border: none;">'+'</iframe>';}if(tmpExtension==='epub'||tmpExtension==='mobi'){return this._buildEbookHTML(pURL,pFileName,pFilePath);}// For other document types, show a download link
 let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpDocIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('document-large',64)+'</span>':'&#128196;';return'<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpDocIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this._escapeHTML(pFileName)+'</div>'+'<a href="'+pURL+'" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Open in new tab</a>'+'</div>';}_buildTextHTML(pURL,pFileName,pFilePath){return'<div class="retold-remote-code-viewer-container" id="RetoldRemote-CodeViewer-Container">'+'<div class="retold-remote-code-viewer-loading">Loading...</div>'+'</div>';}/**
 	 * Map a file extension to a pict-section-code highlight language.
@@ -11016,6 +11112,44 @@ let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tm
 		{
 			color: var(--retold-danger-muted);
 		}
+		.retold-remote-settings-shortcut-group
+		{
+			margin-bottom: 10px;
+		}
+		.retold-remote-settings-shortcut-group-title
+		{
+			font-size: 0.68rem;
+			font-weight: 600;
+			color: var(--retold-text-muted);
+			margin-bottom: 4px;
+			padding-bottom: 2px;
+			border-bottom: 1px solid var(--retold-border);
+		}
+		.retold-remote-settings-shortcut-row
+		{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 2px 0;
+		}
+		.retold-remote-settings-shortcut-desc
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.72rem;
+		}
+		.retold-remote-settings-shortcut-key
+		{
+			display: inline-block;
+			padding: 1px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-primary);
+			color: var(--retold-accent);
+			font-size: 0.68rem;
+			font-family: var(--retold-font-mono, monospace);
+			min-width: 18px;
+			text-align: center;
+		}
 	`};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
@@ -11030,9 +11164,9 @@ tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retol
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Server Capabilities</div>';tmpHTML+='<div class="retold-remote-settings-capabilities">';let tmpTools=[{key:'sharp',label:'Sharp (image thumbnails)'},{key:'imagemagick',label:'ImageMagick (image fallback)'},{key:'ffmpeg',label:'ffmpeg (video thumbnails)'},{key:'ffprobe',label:'ffprobe (media metadata)'}];for(let i=0;i<tmpTools.length;i++){let tmpTool=tmpTools[i];let tmpAvailable=tmpCapabilities[tmpTool.key];tmpHTML+='<div class="retold-remote-settings-cap-row">';tmpHTML+='<span class="retold-remote-settings-cap-label">'+tmpTool.label+'</span>';tmpHTML+='<span class="'+(tmpAvailable?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpAvailable?'Available':'Not found')+'</span>';tmpHTML+='</div>';}// Hashed filenames status
 tmpHTML+='<div class="retold-remote-settings-cap-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--retold-border);">';tmpHTML+='<span class="retold-remote-settings-cap-label">Hashed filenames</span>';tmpHTML+='<span class="'+(tmpRemote.HashedFilenames?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpRemote.HashedFilenames?'Enabled':'Disabled')+'</span>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';// end capabilities section
 // Keyboard shortcuts
-tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Keyboard Shortcuts</div>';let tmpShortcuts=[{key:'Arrow keys',desc:'Navigate gallery'},{key:'Enter',desc:'Open item'},{key:'Escape',desc:'Back / close'},{key:'j / k',desc:'Next / prev in viewer'},{key:'f',desc:'Fullscreen'},{key:'i',desc:'File info'},{key:'Space',desc:'Play / pause'},{key:'+ / -',desc:'Zoom in / out'},{key:'0',desc:'Reset zoom'},{key:'g',desc:'Toggle grid / list'},{key:'/',desc:'Focus search'}];for(let i=0;i<tmpShortcuts.length;i++){tmpHTML+='<div class="retold-remote-settings-cap-row">';tmpHTML+='<span class="retold-remote-settings-cap-label">'+tmpShortcuts[i].desc+'</span>';tmpHTML+='<span style="color: var(--retold-accent); font-family: var(--retold-font-mono, monospace);">'+tmpShortcuts[i].key+'</span>';tmpHTML+='</div>';}tmpHTML+='</div>';// end shortcuts section
+tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Keyboard Shortcuts</div>';tmpHTML+=this._buildShortcutGroup('Global',[{key:'F1',desc:'Help panel'},{key:'F9',desc:'Focus sidebar'},{key:'/',desc:'Search / filter bar'},{key:'Esc',desc:'Close overlay / back'}]);tmpHTML+=this._buildShortcutGroup('Gallery',[{key:'\u2190 \u2191 \u2192 \u2193',desc:'Navigate items'},{key:'Enter',desc:'Open item'},{key:'Esc',desc:'Go up one folder'},{key:'Home',desc:'Jump to first item'},{key:'End',desc:'Jump to last item'},{key:'g',desc:'Toggle grid / list'},{key:'f',desc:'Advanced filter panel'},{key:'s',desc:'Focus sort dropdown'},{key:'x',desc:'Clear all filters'},{key:'c',desc:'Settings panel'},{key:'d',desc:'Distraction-free mode'}]);tmpHTML+=this._buildShortcutGroup('Sidebar (F9)',[{key:'\u2191 \u2193',desc:'Navigate file list'},{key:'Home',desc:'Jump to first'},{key:'End',desc:'Jump to last'},{key:'Enter',desc:'Open item'},{key:'Esc',desc:'Return to gallery'}]);tmpHTML+=this._buildShortcutGroup('Media Viewer',[{key:'Esc',desc:'Back to gallery'},{key:'\u2192  j',desc:'Next file'},{key:'\u2190  k',desc:'Previous file'},{key:'Space',desc:'Play / pause'},{key:'f',desc:'Fullscreen'},{key:'i',desc:'File info overlay'},{key:'+  -',desc:'Zoom in / out'},{key:'0',desc:'Reset zoom'},{key:'z',desc:'Cycle fit mode'},{key:'d',desc:'Distraction-free mode'}]);tmpHTML+=this._buildShortcutGroup('Video Menu',[{key:'Space',desc:'Play in browser'},{key:'Enter',desc:'Play in browser'},{key:'e',desc:'Explore video frames'},{key:'t',desc:'Extract thumbnail'},{key:'v',desc:'Open with VLC'},{key:'\u2192  j',desc:'Next file'},{key:'\u2190  k',desc:'Previous file'},{key:'Esc',desc:'Back to gallery'}]);tmpHTML+=this._buildShortcutGroup('Video Explorer',[{key:'Esc',desc:'Back'}]);tmpHTML+=this._buildShortcutGroup('Audio Explorer',[{key:'Space',desc:'Play selection'},{key:'+  -',desc:'Zoom in / out'},{key:'0',desc:'Zoom to fit'},{key:'z',desc:'Zoom to selection'},{key:'Esc',desc:'Clear selection / back'}]);tmpHTML+='</div>';// end shortcuts section
 tmpHTML+='</div>';// end settings
-tmpContainer.innerHTML=tmpHTML;}changeTheme(pThemeKey){let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){tmpThemeProvider.applyTheme(pThemeKey);this.pict.PictApplication.saveSettings();// Re-render settings to update dropdown selection
+tmpContainer.innerHTML=tmpHTML;}_buildShortcutGroup(pTitle,pShortcuts){let tmpHTML='<div class="retold-remote-settings-shortcut-group">';tmpHTML+='<div class="retold-remote-settings-shortcut-group-title">'+pTitle+'</div>';for(let i=0;i<pShortcuts.length;i++){tmpHTML+='<div class="retold-remote-settings-shortcut-row">';tmpHTML+='<span class="retold-remote-settings-shortcut-desc">'+pShortcuts[i].desc+'</span>';tmpHTML+='<span class="retold-remote-settings-shortcut-key">'+pShortcuts[i].key+'</span>';tmpHTML+='</div>';}tmpHTML+='</div>';return tmpHTML;}changeTheme(pThemeKey){let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){tmpThemeProvider.applyTheme(pThemeKey);this.pict.PictApplication.saveSettings();// Re-render settings to update dropdown selection
 this._renderSettingsContent();}}changeSetting(pKey,pValue){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pValue;this.pict.PictApplication.saveSettings();// Re-render gallery if visible
 if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}toggleHiddenFiles(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();this.pict.PictApplication.syncHiddenFilesSetting(()=>{this.pict.PictApplication.loadFileList();});}toggleAutoplay(pKey,pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pChecked;this.pict.PictApplication.saveSettings();}toggleDistractionFreeNav(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.DistractionFreeShowNav=pChecked;this.pict.PictApplication.saveSettings();// If currently in distraction-free mode, apply immediately
 if(tmpRemote._distractionFreeMode){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display=pChecked?'':'none';}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],128:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`

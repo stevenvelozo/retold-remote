@@ -415,6 +415,66 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleViewerKey(pEvent)
 	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// Video action menu mode — intercept keys for menu options
+		if (tmpRemote.VideoMenuActive && tmpRemote.CurrentViewerMediaType === 'video')
+		{
+			switch (pEvent.key)
+			{
+				case 'Escape':
+					pEvent.preventDefault();
+					this.closeViewer();
+					return;
+
+				case 'ArrowRight':
+				case 'j':
+					pEvent.preventDefault();
+					this.nextFile();
+					return;
+
+				case 'ArrowLeft':
+				case 'k':
+					pEvent.preventDefault();
+					this.prevFile();
+					return;
+
+				case 'e':
+					pEvent.preventDefault();
+					let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+					if (tmpVEX)
+					{
+						tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);
+					}
+					return;
+
+				case ' ':
+				case 'Enter':
+					pEvent.preventDefault();
+					let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+					if (tmpViewer)
+					{
+						tmpViewer.playVideo();
+					}
+					return;
+
+				case 't':
+					pEvent.preventDefault();
+					let tmpMediaViewer = this.pict.views['RetoldRemote-MediaViewer'];
+					if (tmpMediaViewer)
+					{
+						tmpMediaViewer.loadVideoMenuFrame();
+					}
+					return;
+
+				case 'v':
+					pEvent.preventDefault();
+					this._openWithVLC();
+					return;
+			}
+			return;
+		}
+
 		switch (pEvent.key)
 		{
 			case 'Escape':
