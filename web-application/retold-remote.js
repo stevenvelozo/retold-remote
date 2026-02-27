@@ -1,4 +1,4 @@
-"use strict";function _defineProperty(e,r,t){return(r=_toPropertyKey(r))in e?Object.defineProperty(e,r,{value:t,enumerable:!0,configurable:!0,writable:!0}):e[r]=t,e;}function _toPropertyKey(t){var i=_toPrimitive(t,"string");return"symbol"==typeof i?i:i+"";}function _toPrimitive(t,r){if("object"!=typeof t||!t)return t;var e=t[Symbol.toPrimitive];if(void 0!==e){var i=e.call(t,r||"default");if("object"!=typeof i)return i;throw new TypeError("@@toPrimitive must return a primitive value.");}return("string"===r?String:Number)(t);}(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f();}else if(typeof define==="function"&&define.amd){define([],f);}else{var g;if(typeof window!=="undefined"){g=window;}else if(typeof global!=="undefined"){g=global;}else if(typeof self!=="undefined"){g=self;}else{g=this;}g.retoldRemote=f();}})(function(){var define,module,exports;return function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({1:[function(require,module,exports){},{}],2:[function(require,module,exports){arguments[4][1][0].apply(exports,arguments);},{"dup":1}],3:[function(require,module,exports){'use strict';var bind=require('function-bind');var $apply=require('./functionApply');var $call=require('./functionCall');var $reflectApply=require('./reflectApply');/** @type {import('./actualApply')} */module.exports=$reflectApply||bind.call($call,$apply);},{"./functionApply":4,"./functionCall":5,"./reflectApply":7,"function-bind":22}],4:[function(require,module,exports){'use strict';/** @type {import('./functionApply')} */module.exports=Function.prototype.apply;},{}],5:[function(require,module,exports){'use strict';/** @type {import('./functionCall')} */module.exports=Function.prototype.call;},{}],6:[function(require,module,exports){'use strict';var bind=require('function-bind');var $TypeError=require('es-errors/type');var $call=require('./functionCall');var $actualApply=require('./actualApply');/** @type {(args: [Function, thisArg?: unknown, ...args: unknown[]]) => Function} TODO FIXME, find a way to use import('.') */module.exports=function callBindBasic(args){if(args.length<1||typeof args[0]!=='function'){throw new $TypeError('a function is required');}return $actualApply(bind,$call,args);};},{"./actualApply":3,"./functionCall":5,"es-errors/type":16,"function-bind":22}],7:[function(require,module,exports){'use strict';/** @type {import('./reflectApply')} */module.exports=typeof Reflect!=='undefined'&&Reflect&&Reflect.apply;},{}],8:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBindBasic=require('call-bind-apply-helpers');/** @type {(thisArg: string, searchString: string, position?: number) => number} */var $indexOf=callBindBasic([GetIntrinsic('%String.prototype.indexOf%')]);/** @type {import('.')} */module.exports=function callBoundIntrinsic(name,allowMissing){/* eslint no-extra-parens: 0 */var intrinsic=/** @type {(this: unknown, ...args: unknown[]) => unknown} */GetIntrinsic(name,!!allowMissing);if(typeof intrinsic==='function'&&$indexOf(name,'.prototype.')>-1){return callBindBasic(/** @type {const} */[intrinsic]);}return intrinsic;};},{"call-bind-apply-helpers":6,"get-intrinsic":23}],9:[function(require,module,exports){'use strict';var callBind=require('call-bind-apply-helpers');var gOPD=require('gopd');var hasProtoAccessor;try{// eslint-disable-next-line no-extra-parens, no-proto
+"use strict";(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f();}else if(typeof define==="function"&&define.amd){define([],f);}else{var g;if(typeof window!=="undefined"){g=window;}else if(typeof global!=="undefined"){g=global;}else if(typeof self!=="undefined"){g=self;}else{g=this;}g.retoldRemote=f();}})(function(){var define,module,exports;return function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({1:[function(require,module,exports){},{}],2:[function(require,module,exports){arguments[4][1][0].apply(exports,arguments);},{"dup":1}],3:[function(require,module,exports){'use strict';var bind=require('function-bind');var $apply=require('./functionApply');var $call=require('./functionCall');var $reflectApply=require('./reflectApply');/** @type {import('./actualApply')} */module.exports=$reflectApply||bind.call($call,$apply);},{"./functionApply":4,"./functionCall":5,"./reflectApply":7,"function-bind":22}],4:[function(require,module,exports){'use strict';/** @type {import('./functionApply')} */module.exports=Function.prototype.apply;},{}],5:[function(require,module,exports){'use strict';/** @type {import('./functionCall')} */module.exports=Function.prototype.call;},{}],6:[function(require,module,exports){'use strict';var bind=require('function-bind');var $TypeError=require('es-errors/type');var $call=require('./functionCall');var $actualApply=require('./actualApply');/** @type {(args: [Function, thisArg?: unknown, ...args: unknown[]]) => Function} TODO FIXME, find a way to use import('.') */module.exports=function callBindBasic(args){if(args.length<1||typeof args[0]!=='function'){throw new $TypeError('a function is required');}return $actualApply(bind,$call,args);};},{"./actualApply":3,"./functionCall":5,"es-errors/type":16,"function-bind":22}],7:[function(require,module,exports){'use strict';/** @type {import('./reflectApply')} */module.exports=typeof Reflect!=='undefined'&&Reflect&&Reflect.apply;},{}],8:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBindBasic=require('call-bind-apply-helpers');/** @type {(thisArg: string, searchString: string, position?: number) => number} */var $indexOf=callBindBasic([GetIntrinsic('%String.prototype.indexOf%')]);/** @type {import('.')} */module.exports=function callBoundIntrinsic(name,allowMissing){/* eslint no-extra-parens: 0 */var intrinsic=/** @type {(this: unknown, ...args: unknown[]) => unknown} */GetIntrinsic(name,!!allowMissing);if(typeof intrinsic==='function'&&$indexOf(name,'.prototype.')>-1){return callBindBasic(/** @type {const} */[intrinsic]);}return intrinsic;};},{"call-bind-apply-helpers":6,"get-intrinsic":23}],9:[function(require,module,exports){'use strict';var callBind=require('call-bind-apply-helpers');var gOPD=require('gopd');var hasProtoAccessor;try{// eslint-disable-next-line no-extra-parens, no-proto
 hasProtoAccessor=/** @type {{ __proto__?: typeof Array.prototype }} */[].__proto__===Array.prototype;}catch(e){if(!e||typeof e!=='object'||!('code'in e)||e.code!=='ERR_PROTO_ACCESS'){throw e;}}// eslint-disable-next-line no-extra-parens
 var desc=!!hasProtoAccessor&&gOPD&&gOPD(Object.prototype,/** @type {keyof typeof Object.prototype} */'__proto__');var $Object=Object;var $getPrototypeOf=$Object.getPrototypeOf;/** @type {import('./get')} */module.exports=desc&&typeof desc.get==='function'?callBind([desc.get]):typeof $getPrototypeOf==='function'?/** @type {import('./get')} */function getDunder(value){// eslint-disable-next-line eqeqeq
 return $getPrototypeOf(value==null?value:$Object(value));}:false;},{"call-bind-apply-helpers":6,"gopd":28}],10:[function(require,module,exports){'use strict';/** @type {import('.')} */var $defineProperty=Object.defineProperty||false;if($defineProperty){try{$defineProperty({},'a',{value:1});}catch(e){// IE 8 has a broken defineProperty
@@ -18,13 +18,13 @@ if(typeof pFable==='object'&&pFable.isFable){this.connectFable(pFable);}else{thi
 /** @type {Record<string, any>} */this._PackageFableServiceProvider=libPackage;// initialize options and UUID based on whether the fable was passed in or not.
 if(this.fable){this.UUID=pFable.getUUID();this.options=typeof pOptions==='object'?pOptions:{};}else{// With no fable, check to see if there was an object passed into either of the first two
 // Parameters, and if so, treat it as the options object
-this.options=typeof pFable==='object'&&!pFable.isFable?pFable:typeof pOptions==='object'?pOptions:{};this.UUID="CORE-SVC-".concat(Math.floor(Math.random()*(99999-10000)+10000));}// It's expected that the deriving class will set this
-this.serviceType="Unknown-".concat(this.UUID);// The service hash is used to identify the specific instantiation of the service in the services map
-this.Hash=typeof pServiceHash==='string'?pServiceHash:!this.fable&&typeof pOptions==='string'?pOptions:"".concat(this.UUID);}/**
+this.options=typeof pFable==='object'&&!pFable.isFable?pFable:typeof pOptions==='object'?pOptions:{};this.UUID=`CORE-SVC-${Math.floor(Math.random()*(99999-10000)+10000)}`;}// It's expected that the deriving class will set this
+this.serviceType=`Unknown-${this.UUID}`;// The service hash is used to identify the specific instantiation of the service in the services map
+this.Hash=typeof pServiceHash==='string'?pServiceHash:!this.fable&&typeof pOptions==='string'?pOptions:`${this.UUID}`;}/**
 	 * @param {import('fable')} pFable
-	 */connectFable(pFable){if(typeof pFable!=='object'||!pFable.isFable){let tmpErrorMessage="Fable Service Provider Base: Cannot connect to Fable, invalid Fable object passed in.  The pFable parameter was a [".concat(typeof pFable,"].}");console.log(tmpErrorMessage);return new Error(tmpErrorMessage);}if(!this.fable){this.fable=pFable;}if(!this.log){this.log=this.fable.Logging;}if(!this.services){this.services=this.fable.services;}if(!this.servicesMap){this.servicesMap=this.fable.servicesMap;}return true;}}_defineProperty(FableServiceProviderBase,"isFableService",true);module.exports=FableServiceProviderBase;// This is left here in case we want to go back to having different code/base class for "core" services
-module.exports.CoreServiceProviderBase=FableServiceProviderBase;},{"../package.json":19}],21:[function(require,module,exports){'use strict';/* eslint no-invalid-this: 1 */var ERROR_MESSAGE='Function.prototype.bind called on incompatible ';var toStr=Object.prototype.toString;var max=Math.max;var funcType='[object Function]';var concatty=function concatty(a,b){var arr=[];for(var i=0;i<a.length;i+=1){arr[i]=a[i];}for(var j=0;j<b.length;j+=1){arr[j+a.length]=b[j];}return arr;};var slicy=function slicy(arrLike,offset){var arr=[];for(var i=offset||0,j=0;i<arrLike.length;i+=1,j+=1){arr[j]=arrLike[i];}return arr;};var joiny=function joiny(arr,joiner){var str='';for(var i=0;i<arr.length;i+=1){str+=arr[i];if(i+1<arr.length){str+=joiner;}}return str;};module.exports=function bind(that){var target=this;if(typeof target!=='function'||toStr.apply(target)!==funcType){throw new TypeError(ERROR_MESSAGE+target);}var args=slicy(arguments,1);var bound;var binder=function binder(){if(this instanceof bound){var result=target.apply(this,concatty(args,arguments));if(Object(result)===result){return result;}return this;}return target.apply(that,concatty(args,arguments));};var boundLength=max(0,target.length-args.length);var boundArgs=[];for(var i=0;i<boundLength;i++){boundArgs[i]='$'+i;}bound=Function('binder','return function ('+joiny(boundArgs,',')+'){ return binder.apply(this,arguments); }')(binder);if(target.prototype){var Empty=function Empty(){};Empty.prototype=target.prototype;bound.prototype=new Empty();Empty.prototype=null;}return bound;};},{}],22:[function(require,module,exports){'use strict';var implementation=require('./implementation');module.exports=Function.prototype.bind||implementation;},{"./implementation":21}],23:[function(require,module,exports){'use strict';var undefined;var $Object=require('es-object-atoms');var $Error=require('es-errors');var $EvalError=require('es-errors/eval');var $RangeError=require('es-errors/range');var $ReferenceError=require('es-errors/ref');var $SyntaxError=require('es-errors/syntax');var $TypeError=require('es-errors/type');var $URIError=require('es-errors/uri');var abs=require('math-intrinsics/abs');var floor=require('math-intrinsics/floor');var max=require('math-intrinsics/max');var min=require('math-intrinsics/min');var pow=require('math-intrinsics/pow');var round=require('math-intrinsics/round');var sign=require('math-intrinsics/sign');var $Function=Function;// eslint-disable-next-line consistent-return
-var getEvalledConstructor=function getEvalledConstructor(expressionSyntax){try{return $Function('"use strict"; return ('+expressionSyntax+').constructor;')();}catch(e){}};var $gOPD=require('gopd');var $defineProperty=require('es-define-property');var throwTypeError=function throwTypeError(){throw new $TypeError();};var ThrowTypeError=$gOPD?function(){try{// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+	 */connectFable(pFable){if(typeof pFable!=='object'||!pFable.isFable){let tmpErrorMessage=`Fable Service Provider Base: Cannot connect to Fable, invalid Fable object passed in.  The pFable parameter was a [${typeof pFable}].}`;console.log(tmpErrorMessage);return new Error(tmpErrorMessage);}if(!this.fable){this.fable=pFable;}if(!this.log){this.log=this.fable.Logging;}if(!this.services){this.services=this.fable.services;}if(!this.servicesMap){this.servicesMap=this.fable.servicesMap;}return true;}static isFableService=true;}module.exports=FableServiceProviderBase;// This is left here in case we want to go back to having different code/base class for "core" services
+module.exports.CoreServiceProviderBase=FableServiceProviderBase;},{"../package.json":19}],21:[function(require,module,exports){'use strict';/* eslint no-invalid-this: 1 */var ERROR_MESSAGE='Function.prototype.bind called on incompatible ';var toStr=Object.prototype.toString;var max=Math.max;var funcType='[object Function]';var concatty=function concatty(a,b){var arr=[];for(var i=0;i<a.length;i+=1){arr[i]=a[i];}for(var j=0;j<b.length;j+=1){arr[j+a.length]=b[j];}return arr;};var slicy=function slicy(arrLike,offset){var arr=[];for(var i=offset||0,j=0;i<arrLike.length;i+=1,j+=1){arr[j]=arrLike[i];}return arr;};var joiny=function(arr,joiner){var str='';for(var i=0;i<arr.length;i+=1){str+=arr[i];if(i+1<arr.length){str+=joiner;}}return str;};module.exports=function bind(that){var target=this;if(typeof target!=='function'||toStr.apply(target)!==funcType){throw new TypeError(ERROR_MESSAGE+target);}var args=slicy(arguments,1);var bound;var binder=function(){if(this instanceof bound){var result=target.apply(this,concatty(args,arguments));if(Object(result)===result){return result;}return this;}return target.apply(that,concatty(args,arguments));};var boundLength=max(0,target.length-args.length);var boundArgs=[];for(var i=0;i<boundLength;i++){boundArgs[i]='$'+i;}bound=Function('binder','return function ('+joiny(boundArgs,',')+'){ return binder.apply(this,arguments); }')(binder);if(target.prototype){var Empty=function Empty(){};Empty.prototype=target.prototype;bound.prototype=new Empty();Empty.prototype=null;}return bound;};},{}],22:[function(require,module,exports){'use strict';var implementation=require('./implementation');module.exports=Function.prototype.bind||implementation;},{"./implementation":21}],23:[function(require,module,exports){'use strict';var undefined;var $Object=require('es-object-atoms');var $Error=require('es-errors');var $EvalError=require('es-errors/eval');var $RangeError=require('es-errors/range');var $ReferenceError=require('es-errors/ref');var $SyntaxError=require('es-errors/syntax');var $TypeError=require('es-errors/type');var $URIError=require('es-errors/uri');var abs=require('math-intrinsics/abs');var floor=require('math-intrinsics/floor');var max=require('math-intrinsics/max');var min=require('math-intrinsics/min');var pow=require('math-intrinsics/pow');var round=require('math-intrinsics/round');var sign=require('math-intrinsics/sign');var $Function=Function;// eslint-disable-next-line consistent-return
+var getEvalledConstructor=function(expressionSyntax){try{return $Function('"use strict"; return ('+expressionSyntax+').constructor;')();}catch(e){}};var $gOPD=require('gopd');var $defineProperty=require('es-define-property');var throwTypeError=function(){throw new $TypeError();};var ThrowTypeError=$gOPD?function(){try{// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
 arguments.callee;// IE 8 does not throw here
 return throwTypeError;}catch(calleeThrows){try{// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
 return $gOPD(arguments,'callee').get;}catch(gOPDthrows){return throwTypeError;}}}():throwTypeError;var hasSymbols=require('has-symbols')();var getProto=require('get-proto');var $ObjectGPO=require('get-proto/Object.getPrototypeOf');var $ReflectGPO=require('get-proto/Reflect.getPrototypeOf');var $apply=require('call-bind-apply-helpers/functionApply');var $call=require('call-bind-apply-helpers/functionCall');var needsEval={};var TypedArray=typeof Uint8Array==='undefined'||!getProto?undefined:getProto(Uint8Array);var INTRINSICS={__proto__:null,'%AggregateError%':typeof AggregateError==='undefined'?undefined:AggregateError,'%Array%':Array,'%ArrayBuffer%':typeof ArrayBuffer==='undefined'?undefined:ArrayBuffer,'%ArrayIteratorPrototype%':hasSymbols&&getProto?getProto([][Symbol.iterator]()):undefined,'%AsyncFromSyncIteratorPrototype%':undefined,'%AsyncFunction%':needsEval,'%AsyncGenerator%':needsEval,'%AsyncGeneratorFunction%':needsEval,'%AsyncIteratorPrototype%':needsEval,'%Atomics%':typeof Atomics==='undefined'?undefined:Atomics,'%BigInt%':typeof BigInt==='undefined'?undefined:BigInt,'%BigInt64Array%':typeof BigInt64Array==='undefined'?undefined:BigInt64Array,'%BigUint64Array%':typeof BigUint64Array==='undefined'?undefined:BigUint64Array,'%Boolean%':Boolean,'%DataView%':typeof DataView==='undefined'?undefined:DataView,'%Date%':Date,'%decodeURI%':decodeURI,'%decodeURIComponent%':decodeURIComponent,'%encodeURI%':encodeURI,'%encodeURIComponent%':encodeURIComponent,'%Error%':$Error,'%eval%':eval,// eslint-disable-line no-eval
@@ -83,19 +83,19 @@ var descriptor=/** @type {PropertyDescriptor} */Object.getOwnPropertyDescriptor(
  * @see {@link lunr.stopWordFilter}
  * @see {@link lunr.stemmer}
  * @namespace {function} lunr
- */var _lunr=function lunr(config){var builder=new _lunr.Builder();builder.pipeline.add(_lunr.trimmer,_lunr.stopWordFilter,_lunr.stemmer);builder.searchPipeline.add(_lunr.stemmer);config.call(builder,builder);return builder.build();};_lunr.version="2.3.9";/*!
+ */var lunr=function(config){var builder=new lunr.Builder();builder.pipeline.add(lunr.trimmer,lunr.stopWordFilter,lunr.stemmer);builder.searchPipeline.add(lunr.stemmer);config.call(builder,builder);return builder.build();};lunr.version="2.3.9";/*!
  * lunr.utils
  * Copyright (C) 2020 Oliver Nightingale
  *//**
  * A namespace containing utils for the rest of the lunr library
  * @namespace lunr.utils
- */_lunr.utils={};/**
+ */lunr.utils={};/**
  * Print a warning message to the console.
  *
  * @param {String} message The message to be printed.
  * @memberOf lunr.utils
  * @function
- */_lunr.utils.warn=function(global){/* eslint-disable no-console */return function(message){if(global.console&&console.warn){console.warn(message);}};/* eslint-enable no-console */}(this);/**
+ */lunr.utils.warn=function(global){/* eslint-disable no-console */return function(message){if(global.console&&console.warn){console.warn(message);}};/* eslint-enable no-console */}(this);/**
  * Convert an object to a string.
  *
  * In the case of `null` and `undefined` the function returns
@@ -105,7 +105,7 @@ var descriptor=/** @type {PropertyDescriptor} */Object.getOwnPropertyDescriptor(
  * @param {Any} obj The object to convert to a string.
  * @return {String} string representation of the passed object.
  * @memberOf lunr.utils
- */_lunr.utils.asString=function(obj){if(obj===void 0||obj===null){return"";}else{return obj.toString();}};/**
+ */lunr.utils.asString=function(obj){if(obj===void 0||obj===null){return"";}else{return obj.toString();}};/**
  * Clones an object.
  *
  * Will create a copy of an existing object such that any mutations
@@ -120,49 +120,49 @@ var descriptor=/** @type {PropertyDescriptor} */Object.getOwnPropertyDescriptor(
  * @return {Object} a clone of the passed object.
  * @throws {TypeError} when a nested object is passed.
  * @memberOf Utils
- */_lunr.utils.clone=function(obj){if(obj===null||obj===undefined){return obj;}var clone=Object.create(null),keys=Object.keys(obj);for(var i=0;i<keys.length;i++){var key=keys[i],val=obj[key];if(Array.isArray(val)){clone[key]=val.slice();continue;}if(typeof val==='string'||typeof val==='number'||typeof val==='boolean'){clone[key]=val;continue;}throw new TypeError("clone is not deep and does not support nested objects");}return clone;};_lunr.FieldRef=function(docRef,fieldName,stringValue){this.docRef=docRef;this.fieldName=fieldName;this._stringValue=stringValue;};_lunr.FieldRef.joiner="/";_lunr.FieldRef.fromString=function(s){var n=s.indexOf(_lunr.FieldRef.joiner);if(n===-1){throw"malformed field ref string";}var fieldRef=s.slice(0,n),docRef=s.slice(n+1);return new _lunr.FieldRef(docRef,fieldRef,s);};_lunr.FieldRef.prototype.toString=function(){if(this._stringValue==undefined){this._stringValue=this.fieldName+_lunr.FieldRef.joiner+this.docRef;}return this._stringValue;};/*!
+ */lunr.utils.clone=function(obj){if(obj===null||obj===undefined){return obj;}var clone=Object.create(null),keys=Object.keys(obj);for(var i=0;i<keys.length;i++){var key=keys[i],val=obj[key];if(Array.isArray(val)){clone[key]=val.slice();continue;}if(typeof val==='string'||typeof val==='number'||typeof val==='boolean'){clone[key]=val;continue;}throw new TypeError("clone is not deep and does not support nested objects");}return clone;};lunr.FieldRef=function(docRef,fieldName,stringValue){this.docRef=docRef;this.fieldName=fieldName;this._stringValue=stringValue;};lunr.FieldRef.joiner="/";lunr.FieldRef.fromString=function(s){var n=s.indexOf(lunr.FieldRef.joiner);if(n===-1){throw"malformed field ref string";}var fieldRef=s.slice(0,n),docRef=s.slice(n+1);return new lunr.FieldRef(docRef,fieldRef,s);};lunr.FieldRef.prototype.toString=function(){if(this._stringValue==undefined){this._stringValue=this.fieldName+lunr.FieldRef.joiner+this.docRef;}return this._stringValue;};/*!
  * lunr.Set
  * Copyright (C) 2020 Oliver Nightingale
  *//**
  * A lunr set.
  *
  * @constructor
- */_lunr.Set=function(elements){this.elements=Object.create(null);if(elements){this.length=elements.length;for(var i=0;i<this.length;i++){this.elements[elements[i]]=true;}}else{this.length=0;}};/**
+ */lunr.Set=function(elements){this.elements=Object.create(null);if(elements){this.length=elements.length;for(var i=0;i<this.length;i++){this.elements[elements[i]]=true;}}else{this.length=0;}};/**
  * A complete set that contains all elements.
  *
  * @static
  * @readonly
  * @type {lunr.Set}
- */_lunr.Set.complete={intersect:function intersect(other){return other;},union:function union(){return this;},contains:function contains(){return true;}};/**
+ */lunr.Set.complete={intersect:function(other){return other;},union:function(){return this;},contains:function(){return true;}};/**
  * An empty set that contains no elements.
  *
  * @static
  * @readonly
  * @type {lunr.Set}
- */_lunr.Set.empty={intersect:function intersect(){return this;},union:function union(other){return other;},contains:function contains(){return false;}};/**
+ */lunr.Set.empty={intersect:function(){return this;},union:function(other){return other;},contains:function(){return false;}};/**
  * Returns true if this set contains the specified object.
  *
  * @param {object} object - Object whose presence in this set is to be tested.
  * @returns {boolean} - True if this set contains the specified object.
- */_lunr.Set.prototype.contains=function(object){return!!this.elements[object];};/**
+ */lunr.Set.prototype.contains=function(object){return!!this.elements[object];};/**
  * Returns a new set containing only the elements that are present in both
  * this set and the specified set.
  *
  * @param {lunr.Set} other - set to intersect with this set.
  * @returns {lunr.Set} a new set that is the intersection of this and the specified set.
- */_lunr.Set.prototype.intersect=function(other){var a,b,elements,intersection=[];if(other===_lunr.Set.complete){return this;}if(other===_lunr.Set.empty){return other;}if(this.length<other.length){a=this;b=other;}else{a=other;b=this;}elements=Object.keys(a.elements);for(var i=0;i<elements.length;i++){var element=elements[i];if(element in b.elements){intersection.push(element);}}return new _lunr.Set(intersection);};/**
+ */lunr.Set.prototype.intersect=function(other){var a,b,elements,intersection=[];if(other===lunr.Set.complete){return this;}if(other===lunr.Set.empty){return other;}if(this.length<other.length){a=this;b=other;}else{a=other;b=this;}elements=Object.keys(a.elements);for(var i=0;i<elements.length;i++){var element=elements[i];if(element in b.elements){intersection.push(element);}}return new lunr.Set(intersection);};/**
  * Returns a new set combining the elements of this and the specified set.
  *
  * @param {lunr.Set} other - set to union with this set.
  * @return {lunr.Set} a new set that is the union of this and the specified set.
- */_lunr.Set.prototype.union=function(other){if(other===_lunr.Set.complete){return _lunr.Set.complete;}if(other===_lunr.Set.empty){return this;}return new _lunr.Set(Object.keys(this.elements).concat(Object.keys(other.elements)));};/**
+ */lunr.Set.prototype.union=function(other){if(other===lunr.Set.complete){return lunr.Set.complete;}if(other===lunr.Set.empty){return this;}return new lunr.Set(Object.keys(this.elements).concat(Object.keys(other.elements)));};/**
  * A function to calculate the inverse document frequency for
  * a posting. This is shared between the builder and the index
  *
  * @private
  * @param {object} posting - The posting for a given term
  * @param {number} documentCount - The total number of documents.
- */_lunr.idf=function(posting,documentCount){var documentsWithTerm=0;for(var fieldName in posting){if(fieldName=='_index')continue;// Ignore the term index, its not a field
+ */lunr.idf=function(posting,documentCount){var documentsWithTerm=0;for(var fieldName in posting){if(fieldName=='_index')continue;// Ignore the term index, its not a field
 documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-documentsWithTerm+0.5)/(documentsWithTerm+0.5);return Math.log(1+Math.abs(x));};/**
  * A token wraps a string representation of a token
  * as it is passed through the text processing pipeline.
@@ -170,11 +170,11 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  * @constructor
  * @param {string} [str=''] - The string token being wrapped.
  * @param {object} [metadata={}] - Metadata associated with this token.
- */_lunr.Token=function(str,metadata){this.str=str||"";this.metadata=metadata||{};};/**
+ */lunr.Token=function(str,metadata){this.str=str||"";this.metadata=metadata||{};};/**
  * Returns the token string that is being wrapped by this object.
  *
  * @returns {string}
- */_lunr.Token.prototype.toString=function(){return this.str;};/**
+ */lunr.Token.prototype.toString=function(){return this.str;};/**
  * A token update function is used when updating or optionally
  * when cloning a token.
  *
@@ -191,13 +191,13 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {lunr.Token~updateFunction} fn - A function to apply to the token string.
  * @returns {lunr.Token}
- */_lunr.Token.prototype.update=function(fn){this.str=fn(this.str,this.metadata);return this;};/**
+ */lunr.Token.prototype.update=function(fn){this.str=fn(this.str,this.metadata);return this;};/**
  * Creates a clone of this token. Optionally a function can be
  * applied to the cloned token.
  *
  * @param {lunr.Token~updateFunction} [fn] - An optional function to apply to the cloned token.
  * @returns {lunr.Token}
- */_lunr.Token.prototype.clone=function(fn){fn=fn||function(s){return s;};return new _lunr.Token(fn(this.str,this.metadata),this.metadata);};/*!
+ */lunr.Token.prototype.clone=function(fn){fn=fn||function(s){return s;};return new lunr.Token(fn(this.str,this.metadata),this.metadata);};/*!
  * lunr.tokenizer
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -217,13 +217,13 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  * @param {?object} metadata - Optional metadata to associate with every token
  * @returns {lunr.Token[]}
  * @see {@link lunr.Pipeline}
- */_lunr.tokenizer=function(obj,metadata){if(obj==null||obj==undefined){return[];}if(Array.isArray(obj)){return obj.map(function(t){return new _lunr.Token(_lunr.utils.asString(t).toLowerCase(),_lunr.utils.clone(metadata));});}var str=obj.toString().toLowerCase(),len=str.length,tokens=[];for(var sliceEnd=0,sliceStart=0;sliceEnd<=len;sliceEnd++){var char=str.charAt(sliceEnd),sliceLength=sliceEnd-sliceStart;if(char.match(_lunr.tokenizer.separator)||sliceEnd==len){if(sliceLength>0){var tokenMetadata=_lunr.utils.clone(metadata)||{};tokenMetadata["position"]=[sliceStart,sliceLength];tokenMetadata["index"]=tokens.length;tokens.push(new _lunr.Token(str.slice(sliceStart,sliceEnd),tokenMetadata));}sliceStart=sliceEnd+1;}}return tokens;};/**
+ */lunr.tokenizer=function(obj,metadata){if(obj==null||obj==undefined){return[];}if(Array.isArray(obj)){return obj.map(function(t){return new lunr.Token(lunr.utils.asString(t).toLowerCase(),lunr.utils.clone(metadata));});}var str=obj.toString().toLowerCase(),len=str.length,tokens=[];for(var sliceEnd=0,sliceStart=0;sliceEnd<=len;sliceEnd++){var char=str.charAt(sliceEnd),sliceLength=sliceEnd-sliceStart;if(char.match(lunr.tokenizer.separator)||sliceEnd==len){if(sliceLength>0){var tokenMetadata=lunr.utils.clone(metadata)||{};tokenMetadata["position"]=[sliceStart,sliceLength];tokenMetadata["index"]=tokens.length;tokens.push(new lunr.Token(str.slice(sliceStart,sliceEnd),tokenMetadata));}sliceStart=sliceEnd+1;}}return tokens;};/**
  * The separator used to split a string into tokens. Override this property to change the behaviour of
  * `lunr.tokenizer` behaviour when tokenizing strings. By default this splits on whitespace and hyphens.
  *
  * @static
  * @see lunr.tokenizer
- */_lunr.tokenizer.separator=/[\s\-]+/;/*!
+ */lunr.tokenizer.separator=/[\s\-]+/;/*!
  * lunr.Pipeline
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -254,7 +254,7 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  * is not necessary.
  *
  * @constructor
- */_lunr.Pipeline=function(){this._stack=[];};_lunr.Pipeline.registeredFunctions=Object.create(null);/**
+ */lunr.Pipeline=function(){this._stack=[];};lunr.Pipeline.registeredFunctions=Object.create(null);/**
  * A pipeline function maps lunr.Token to lunr.Token. A lunr.Token contains the token
  * string as well as all known metadata. A pipeline function can mutate the token string
  * or mutate (or add) metadata for a given token.
@@ -284,12 +284,12 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {lunr.PipelineFunction} fn - The function to check for.
  * @param {String} label - The label to register this function with
- */_lunr.Pipeline.registerFunction=function(fn,label){if(label in this.registeredFunctions){_lunr.utils.warn('Overwriting existing registered function: '+label);}fn.label=label;_lunr.Pipeline.registeredFunctions[fn.label]=fn;};/**
+ */lunr.Pipeline.registerFunction=function(fn,label){if(label in this.registeredFunctions){lunr.utils.warn('Overwriting existing registered function: '+label);}fn.label=label;lunr.Pipeline.registeredFunctions[fn.label]=fn;};/**
  * Warns if the function is not registered as a Pipeline function.
  *
  * @param {lunr.PipelineFunction} fn - The function to check for.
  * @private
- */_lunr.Pipeline.warnIfFunctionNotRegistered=function(fn){var isRegistered=fn.label&&fn.label in this.registeredFunctions;if(!isRegistered){_lunr.utils.warn('Function is not registered with pipeline. This may cause problems when serialising the index.\n',fn);}};/**
+ */lunr.Pipeline.warnIfFunctionNotRegistered=function(fn){var isRegistered=fn.label&&fn.label in this.registeredFunctions;if(!isRegistered){lunr.utils.warn('Function is not registered with pipeline. This may cause problems when serialising the index.\n',fn);}};/**
  * Loads a previously serialised pipeline.
  *
  * All functions to be loaded must already be registered with lunr.Pipeline.
@@ -298,13 +298,13 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {Object} serialised - The serialised pipeline to load.
  * @returns {lunr.Pipeline}
- */_lunr.Pipeline.load=function(serialised){var pipeline=new _lunr.Pipeline();serialised.forEach(function(fnName){var fn=_lunr.Pipeline.registeredFunctions[fnName];if(fn){pipeline.add(fn);}else{throw new Error('Cannot load unregistered function: '+fnName);}});return pipeline;};/**
+ */lunr.Pipeline.load=function(serialised){var pipeline=new lunr.Pipeline();serialised.forEach(function(fnName){var fn=lunr.Pipeline.registeredFunctions[fnName];if(fn){pipeline.add(fn);}else{throw new Error('Cannot load unregistered function: '+fnName);}});return pipeline;};/**
  * Adds new functions to the end of the pipeline.
  *
  * Logs a warning if the function has not been registered.
  *
  * @param {lunr.PipelineFunction[]} functions - Any number of functions to add to the pipeline.
- */_lunr.Pipeline.prototype.add=function(){var fns=Array.prototype.slice.call(arguments);fns.forEach(function(fn){_lunr.Pipeline.warnIfFunctionNotRegistered(fn);this._stack.push(fn);},this);};/**
+ */lunr.Pipeline.prototype.add=function(){var fns=Array.prototype.slice.call(arguments);fns.forEach(function(fn){lunr.Pipeline.warnIfFunctionNotRegistered(fn);this._stack.push(fn);},this);};/**
  * Adds a single function after a function that already exists in the
  * pipeline.
  *
@@ -312,7 +312,7 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {lunr.PipelineFunction} existingFn - A function that already exists in the pipeline.
  * @param {lunr.PipelineFunction} newFn - The new function to add to the pipeline.
- */_lunr.Pipeline.prototype.after=function(existingFn,newFn){_lunr.Pipeline.warnIfFunctionNotRegistered(newFn);var pos=this._stack.indexOf(existingFn);if(pos==-1){throw new Error('Cannot find existingFn');}pos=pos+1;this._stack.splice(pos,0,newFn);};/**
+ */lunr.Pipeline.prototype.after=function(existingFn,newFn){lunr.Pipeline.warnIfFunctionNotRegistered(newFn);var pos=this._stack.indexOf(existingFn);if(pos==-1){throw new Error('Cannot find existingFn');}pos=pos+1;this._stack.splice(pos,0,newFn);};/**
  * Adds a single function before a function that already exists in the
  * pipeline.
  *
@@ -320,17 +320,17 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {lunr.PipelineFunction} existingFn - A function that already exists in the pipeline.
  * @param {lunr.PipelineFunction} newFn - The new function to add to the pipeline.
- */_lunr.Pipeline.prototype.before=function(existingFn,newFn){_lunr.Pipeline.warnIfFunctionNotRegistered(newFn);var pos=this._stack.indexOf(existingFn);if(pos==-1){throw new Error('Cannot find existingFn');}this._stack.splice(pos,0,newFn);};/**
+ */lunr.Pipeline.prototype.before=function(existingFn,newFn){lunr.Pipeline.warnIfFunctionNotRegistered(newFn);var pos=this._stack.indexOf(existingFn);if(pos==-1){throw new Error('Cannot find existingFn');}this._stack.splice(pos,0,newFn);};/**
  * Removes a function from the pipeline.
  *
  * @param {lunr.PipelineFunction} fn The function to remove from the pipeline.
- */_lunr.Pipeline.prototype.remove=function(fn){var pos=this._stack.indexOf(fn);if(pos==-1){return;}this._stack.splice(pos,1);};/**
+ */lunr.Pipeline.prototype.remove=function(fn){var pos=this._stack.indexOf(fn);if(pos==-1){return;}this._stack.splice(pos,1);};/**
  * Runs the current list of functions that make up the pipeline against the
  * passed tokens.
  *
  * @param {Array} tokens The tokens to run through the pipeline.
  * @returns {Array}
- */_lunr.Pipeline.prototype.run=function(tokens){var stackLength=this._stack.length;for(var i=0;i<stackLength;i++){var fn=this._stack[i];var memo=[];for(var j=0;j<tokens.length;j++){var result=fn(tokens[j],j,tokens);if(result===null||result===void 0||result==='')continue;if(Array.isArray(result)){for(var k=0;k<result.length;k++){memo.push(result[k]);}}else{memo.push(result);}}tokens=memo;}return tokens;};/**
+ */lunr.Pipeline.prototype.run=function(tokens){var stackLength=this._stack.length;for(var i=0;i<stackLength;i++){var fn=this._stack[i];var memo=[];for(var j=0;j<tokens.length;j++){var result=fn(tokens[j],j,tokens);if(result===null||result===void 0||result==='')continue;if(Array.isArray(result)){for(var k=0;k<result.length;k++){memo.push(result[k]);}}else{memo.push(result);}}tokens=memo;}return tokens;};/**
  * Convenience method for passing a string through a pipeline and getting
  * strings out. This method takes care of wrapping the passed string in a
  * token and mapping the resulting tokens back to strings.
@@ -339,16 +339,16 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  * @param {?object} metadata - Optional metadata to associate with the token
  * passed to the pipeline.
  * @returns {string[]}
- */_lunr.Pipeline.prototype.runString=function(str,metadata){var token=new _lunr.Token(str,metadata);return this.run([token]).map(function(t){return t.toString();});};/**
+ */lunr.Pipeline.prototype.runString=function(str,metadata){var token=new lunr.Token(str,metadata);return this.run([token]).map(function(t){return t.toString();});};/**
  * Resets the pipeline by removing any existing processors.
  *
- */_lunr.Pipeline.prototype.reset=function(){this._stack=[];};/**
+ */lunr.Pipeline.prototype.reset=function(){this._stack=[];};/**
  * Returns a representation of the pipeline ready for serialisation.
  *
  * Logs a warning if the function has not been registered.
  *
  * @returns {Array}
- */_lunr.Pipeline.prototype.toJSON=function(){return this._stack.map(function(fn){_lunr.Pipeline.warnIfFunctionNotRegistered(fn);return fn.label;});};/*!
+ */lunr.Pipeline.prototype.toJSON=function(){return this._stack.map(function(fn){lunr.Pipeline.warnIfFunctionNotRegistered(fn);return fn.label;});};/*!
  * lunr.Vector
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -366,7 +366,7 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @constructor
  * @param {Number[]} [elements] - The flat list of element index and element value pairs.
- */_lunr.Vector=function(elements){this._magnitude=0;this.elements=elements||[];};/**
+ */lunr.Vector=function(elements){this._magnitude=0;this.elements=elements||[];};/**
  * Calculates the position within the vector to insert a given index.
  *
  * This is used internally by insert and upsert. If there are duplicate indexes then
@@ -375,7 +375,7 @@ documentsWithTerm+=Object.keys(posting[fieldName]).length;}var x=(documentCount-
  *
  * @param {Number} insertIdx - The index at which the element should be inserted.
  * @returns {Number}
- */_lunr.Vector.prototype.positionForIndex=function(index){// For an empty vector the tuple can be inserted at the beginning
+ */lunr.Vector.prototype.positionForIndex=function(index){// For an empty vector the tuple can be inserted at the beginning
 if(this.elements.length==0){return 0;}var start=0,end=this.elements.length/2,sliceLength=end-start,pivotPoint=Math.floor(sliceLength/2),pivotIndex=this.elements[pivotPoint*2];while(sliceLength>1){if(pivotIndex<index){start=pivotPoint;}if(pivotIndex>index){end=pivotPoint;}if(pivotIndex==index){break;}sliceLength=end-start;pivotPoint=start+Math.floor(sliceLength/2);pivotIndex=this.elements[pivotPoint*2];}if(pivotIndex==index){return pivotPoint*2;}if(pivotIndex>index){return pivotPoint*2;}if(pivotIndex<index){return(pivotPoint+1)*2;}};/**
  * Inserts an element at an index within the vector.
  *
@@ -384,37 +384,37 @@ if(this.elements.length==0){return 0;}var start=0,end=this.elements.length/2,sli
  *
  * @param {Number} insertIdx - The index at which the element should be inserted.
  * @param {Number} val - The value to be inserted into the vector.
- */_lunr.Vector.prototype.insert=function(insertIdx,val){this.upsert(insertIdx,val,function(){throw"duplicate index";});};/**
+ */lunr.Vector.prototype.insert=function(insertIdx,val){this.upsert(insertIdx,val,function(){throw"duplicate index";});};/**
  * Inserts or updates an existing index within the vector.
  *
  * @param {Number} insertIdx - The index at which the element should be inserted.
  * @param {Number} val - The value to be inserted into the vector.
  * @param {function} fn - A function that is called for updates, the existing value and the
  * requested value are passed as arguments
- */_lunr.Vector.prototype.upsert=function(insertIdx,val,fn){this._magnitude=0;var position=this.positionForIndex(insertIdx);if(this.elements[position]==insertIdx){this.elements[position+1]=fn(this.elements[position+1],val);}else{this.elements.splice(position,0,insertIdx,val);}};/**
+ */lunr.Vector.prototype.upsert=function(insertIdx,val,fn){this._magnitude=0;var position=this.positionForIndex(insertIdx);if(this.elements[position]==insertIdx){this.elements[position+1]=fn(this.elements[position+1],val);}else{this.elements.splice(position,0,insertIdx,val);}};/**
  * Calculates the magnitude of this vector.
  *
  * @returns {Number}
- */_lunr.Vector.prototype.magnitude=function(){if(this._magnitude)return this._magnitude;var sumOfSquares=0,elementsLength=this.elements.length;for(var i=1;i<elementsLength;i+=2){var val=this.elements[i];sumOfSquares+=val*val;}return this._magnitude=Math.sqrt(sumOfSquares);};/**
+ */lunr.Vector.prototype.magnitude=function(){if(this._magnitude)return this._magnitude;var sumOfSquares=0,elementsLength=this.elements.length;for(var i=1;i<elementsLength;i+=2){var val=this.elements[i];sumOfSquares+=val*val;}return this._magnitude=Math.sqrt(sumOfSquares);};/**
  * Calculates the dot product of this vector and another vector.
  *
  * @param {lunr.Vector} otherVector - The vector to compute the dot product with.
  * @returns {Number}
- */_lunr.Vector.prototype.dot=function(otherVector){var dotProduct=0,a=this.elements,b=otherVector.elements,aLen=a.length,bLen=b.length,aVal=0,bVal=0,i=0,j=0;while(i<aLen&&j<bLen){aVal=a[i],bVal=b[j];if(aVal<bVal){i+=2;}else if(aVal>bVal){j+=2;}else if(aVal==bVal){dotProduct+=a[i+1]*b[j+1];i+=2;j+=2;}}return dotProduct;};/**
+ */lunr.Vector.prototype.dot=function(otherVector){var dotProduct=0,a=this.elements,b=otherVector.elements,aLen=a.length,bLen=b.length,aVal=0,bVal=0,i=0,j=0;while(i<aLen&&j<bLen){aVal=a[i],bVal=b[j];if(aVal<bVal){i+=2;}else if(aVal>bVal){j+=2;}else if(aVal==bVal){dotProduct+=a[i+1]*b[j+1];i+=2;j+=2;}}return dotProduct;};/**
  * Calculates the similarity between this vector and another vector.
  *
  * @param {lunr.Vector} otherVector - The other vector to calculate the
  * similarity with.
  * @returns {Number}
- */_lunr.Vector.prototype.similarity=function(otherVector){return this.dot(otherVector)/this.magnitude()||0;};/**
+ */lunr.Vector.prototype.similarity=function(otherVector){return this.dot(otherVector)/this.magnitude()||0;};/**
  * Converts the vector to an array of the elements within the vector.
  *
  * @returns {Number[]}
- */_lunr.Vector.prototype.toArray=function(){var output=new Array(this.elements.length/2);for(var i=1,j=0;i<this.elements.length;i+=2,j++){output[j]=this.elements[i];}return output;};/**
+ */lunr.Vector.prototype.toArray=function(){var output=new Array(this.elements.length/2);for(var i=1,j=0;i<this.elements.length;i+=2,j++){output[j]=this.elements[i];}return output;};/**
  * A JSON serializable representation of the vector.
  *
  * @returns {Number[]}
- */_lunr.Vector.prototype.toJSON=function(){return this.elements;};/* eslint-disable *//*!
+ */lunr.Vector.prototype.toJSON=function(){return this.elements;};/* eslint-disable *//*!
  * lunr.stemmer
  * Copyright (C) 2020 Oliver Nightingale
  * Includes code from - http://tartarus.org/~martin/PorterStemmer/js.txt
@@ -428,7 +428,7 @@ if(this.elements.length==0){return 0;}var start=0,end=this.elements.length/2,sli
  * @returns {lunr.Token}
  * @see {@link lunr.Pipeline}
  * @function
- */_lunr.stemmer=function(){var step2list={"ational":"ate","tional":"tion","enci":"ence","anci":"ance","izer":"ize","bli":"ble","alli":"al","entli":"ent","eli":"e","ousli":"ous","ization":"ize","ation":"ate","ator":"ate","alism":"al","iveness":"ive","fulness":"ful","ousness":"ous","aliti":"al","iviti":"ive","biliti":"ble","logi":"log"},step3list={"icate":"ic","ative":"","alize":"al","iciti":"ic","ical":"ic","ful":"","ness":""},c="[^aeiou]",// consonant
+ */lunr.stemmer=function(){var step2list={"ational":"ate","tional":"tion","enci":"ence","anci":"ance","izer":"ize","bli":"ble","alli":"al","entli":"ent","eli":"e","ousli":"ous","ization":"ize","ation":"ate","ator":"ate","alism":"al","iveness":"ive","fulness":"ful","ousness":"ous","aliti":"al","iviti":"ive","biliti":"ble","logi":"log"},step3list={"icate":"ic","ative":"","alize":"al","iciti":"ic","ical":"ic","ful":"","ness":""},c="[^aeiou]",// consonant
 v="[aeiouy]",// vowel
 C=c+"[^aeiouy]*",// consonant sequence
 V=v+"[aeiou]*",// vowel sequence
@@ -444,7 +444,7 @@ re=re_2;if(re.test(w)){var fp=re.exec(w);stem=fp[1];suffix=fp[2];re=re_mgr0;if(r
 re=re_3;if(re.test(w)){var fp=re.exec(w);stem=fp[1];suffix=fp[2];re=re_mgr0;if(re.test(stem)){w=stem+step3list[suffix];}}// Step 4
 re=re_4;re2=re2_4;if(re.test(w)){var fp=re.exec(w);stem=fp[1];re=re_mgr1;if(re.test(stem)){w=stem;}}else if(re2.test(w)){var fp=re2.exec(w);stem=fp[1]+fp[2];re2=re_mgr1;if(re2.test(stem)){w=stem;}}// Step 5
 re=re_5;if(re.test(w)){var fp=re.exec(w);stem=fp[1];re=re_mgr1;re2=re_meq1;re3=re3_5;if(re.test(stem)||re2.test(stem)&&!re3.test(stem)){w=stem;}}re=re_5_1;re2=re_mgr1;if(re.test(w)&&re2.test(w)){re=re_1b_2;w=w.replace(re,"");}// and turn initial Y back to y
-if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function(token){return token.update(porterStemmer);};}();_lunr.Pipeline.registerFunction(_lunr.stemmer,'stemmer');/*!
+if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function(token){return token.update(porterStemmer);};}();lunr.Pipeline.registerFunction(lunr.stemmer,'stemmer');/*!
  * lunr.stopWordFilter
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -459,7 +459,7 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * @returns {lunr.PipelineFunction}
  * @see lunr.Pipeline
  * @see lunr.stopWordFilter
- */_lunr.generateStopWordFilter=function(stopWords){var words=stopWords.reduce(function(memo,stopWord){memo[stopWord]=stopWord;return memo;},{});return function(token){if(token&&words[token.toString()]!==token.toString())return token;};};/**
+ */lunr.generateStopWordFilter=function(stopWords){var words=stopWords.reduce(function(memo,stopWord){memo[stopWord]=stopWord;return memo;},{});return function(token){if(token&&words[token.toString()]!==token.toString())return token;};};/**
  * lunr.stopWordFilter is an English language stop word list filter, any words
  * contained in the list will not be passed through the filter.
  *
@@ -471,7 +471,7 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * @params {lunr.Token} token - A token to check for being a stop word.
  * @returns {lunr.Token}
  * @see {@link lunr.Pipeline}
- */_lunr.stopWordFilter=_lunr.generateStopWordFilter(['a','able','about','across','after','all','almost','also','am','among','an','and','any','are','as','at','be','because','been','but','by','can','cannot','could','dear','did','do','does','either','else','ever','every','for','from','get','got','had','has','have','he','her','hers','him','his','how','however','i','if','in','into','is','it','its','just','least','let','like','likely','may','me','might','most','must','my','neither','no','nor','not','of','off','often','on','only','or','other','our','own','rather','said','say','says','she','should','since','so','some','than','that','the','their','them','then','there','these','they','this','tis','to','too','twas','us','wants','was','we','were','what','when','where','which','while','who','whom','why','will','with','would','yet','you','your']);_lunr.Pipeline.registerFunction(_lunr.stopWordFilter,'stopWordFilter');/*!
+ */lunr.stopWordFilter=lunr.generateStopWordFilter(['a','able','about','across','after','all','almost','also','am','among','an','and','any','are','as','at','be','because','been','but','by','can','cannot','could','dear','did','do','does','either','else','ever','every','for','from','get','got','had','has','have','he','her','hers','him','his','how','however','i','if','in','into','is','it','its','just','least','let','like','likely','may','me','might','most','must','my','neither','no','nor','not','of','off','often','on','only','or','other','our','own','rather','said','say','says','she','should','since','so','some','than','that','the','their','them','then','there','these','they','this','tis','to','too','twas','us','wants','was','we','were','what','when','where','which','while','who','whom','why','will','with','would','yet','you','your']);lunr.Pipeline.registerFunction(lunr.stopWordFilter,'stopWordFilter');/*!
  * lunr.trimmer
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -488,7 +488,7 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * @param {lunr.Token} token The token to pass through the filter
  * @returns {lunr.Token}
  * @see lunr.Pipeline
- */_lunr.trimmer=function(token){return token.update(function(s){return s.replace(/^\W+/,'').replace(/\W+$/,'');});};_lunr.Pipeline.registerFunction(_lunr.trimmer,'trimmer');/*!
+ */lunr.trimmer=function(token){return token.update(function(s){return s.replace(/^\W+/,'').replace(/\W+$/,'');});};lunr.Pipeline.registerFunction(lunr.trimmer,'trimmer');/*!
  * lunr.TokenSet
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -511,20 +511,20 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * This helps to reduce the space used for storing the token set.
  *
  * @constructor
- */_lunr.TokenSet=function(){this.final=false;this.edges={};this.id=_lunr.TokenSet._nextId;_lunr.TokenSet._nextId+=1;};/**
+ */lunr.TokenSet=function(){this.final=false;this.edges={};this.id=lunr.TokenSet._nextId;lunr.TokenSet._nextId+=1;};/**
  * Keeps track of the next, auto increment, identifier to assign
  * to a new tokenSet.
  *
  * TokenSets require a unique identifier to be correctly minimised.
  *
  * @private
- */_lunr.TokenSet._nextId=1;/**
+ */lunr.TokenSet._nextId=1;/**
  * Creates a TokenSet instance from the given sorted array of words.
  *
  * @param {String[]} arr - A sorted array of strings to create the set from.
  * @returns {lunr.TokenSet}
  * @throws Will throw an error if the input array is not sorted.
- */_lunr.TokenSet.fromArray=function(arr){var builder=new _lunr.TokenSet.Builder();for(var i=0,len=arr.length;i<len;i++){builder.insert(arr[i]);}builder.finish();return builder.root;};/**
+ */lunr.TokenSet.fromArray=function(arr){var builder=new lunr.TokenSet.Builder();for(var i=0,len=arr.length;i<len;i++){builder.insert(arr[i]);}builder.finish();return builder.root;};/**
  * Creates a token set from a query clause.
  *
  * @private
@@ -532,7 +532,7 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * @param {string} clause.term - The query clause term.
  * @param {number} [clause.editDistance] - The optional edit distance for the term.
  * @returns {lunr.TokenSet}
- */_lunr.TokenSet.fromClause=function(clause){if('editDistance'in clause){return _lunr.TokenSet.fromFuzzyString(clause.term,clause.editDistance);}else{return _lunr.TokenSet.fromString(clause.term);}};/**
+ */lunr.TokenSet.fromClause=function(clause){if('editDistance'in clause){return lunr.TokenSet.fromFuzzyString(clause.term,clause.editDistance);}else{return lunr.TokenSet.fromString(clause.term);}};/**
  * Creates a token set representing a single string with a specified
  * edit distance.
  *
@@ -546,9 +546,9 @@ if(firstch=="y"){w=firstch.toLowerCase()+w.substr(1);}return w;};return function
  * @param {string} str - The string to create the token set from.
  * @param {number} editDistance - The allowed edit distance to match.
  * @returns {lunr.Vector}
- */_lunr.TokenSet.fromFuzzyString=function(str,editDistance){var root=new _lunr.TokenSet();var stack=[{node:root,editsRemaining:editDistance,str:str}];while(stack.length){var frame=stack.pop();// no edit
-if(frame.str.length>0){var char=frame.str.charAt(0),noEditNode;if(char in frame.node.edges){noEditNode=frame.node.edges[char];}else{noEditNode=new _lunr.TokenSet();frame.node.edges[char]=noEditNode;}if(frame.str.length==1){noEditNode.final=true;}stack.push({node:noEditNode,editsRemaining:frame.editsRemaining,str:frame.str.slice(1)});}if(frame.editsRemaining==0){continue;}// insertion
-if("*"in frame.node.edges){var insertionNode=frame.node.edges["*"];}else{var insertionNode=new _lunr.TokenSet();frame.node.edges["*"]=insertionNode;}if(frame.str.length==0){insertionNode.final=true;}stack.push({node:insertionNode,editsRemaining:frame.editsRemaining-1,str:frame.str});// deletion
+ */lunr.TokenSet.fromFuzzyString=function(str,editDistance){var root=new lunr.TokenSet();var stack=[{node:root,editsRemaining:editDistance,str:str}];while(stack.length){var frame=stack.pop();// no edit
+if(frame.str.length>0){var char=frame.str.charAt(0),noEditNode;if(char in frame.node.edges){noEditNode=frame.node.edges[char];}else{noEditNode=new lunr.TokenSet();frame.node.edges[char]=noEditNode;}if(frame.str.length==1){noEditNode.final=true;}stack.push({node:noEditNode,editsRemaining:frame.editsRemaining,str:frame.str.slice(1)});}if(frame.editsRemaining==0){continue;}// insertion
+if("*"in frame.node.edges){var insertionNode=frame.node.edges["*"];}else{var insertionNode=new lunr.TokenSet();frame.node.edges["*"]=insertionNode;}if(frame.str.length==0){insertionNode.final=true;}stack.push({node:insertionNode,editsRemaining:frame.editsRemaining-1,str:frame.str});// deletion
 // can only do a deletion if we have enough edits remaining
 // and if there are characters left to delete in the string
 if(frame.str.length>1){stack.push({node:frame.node,editsRemaining:frame.editsRemaining-1,str:frame.str.slice(1)});}// deletion
@@ -556,10 +556,10 @@ if(frame.str.length>1){stack.push({node:frame.node,editsRemaining:frame.editsRem
 if(frame.str.length==1){frame.node.final=true;}// substitution
 // can only do a substitution if we have enough edits remaining
 // and if there are characters left to substitute
-if(frame.str.length>=1){if("*"in frame.node.edges){var substitutionNode=frame.node.edges["*"];}else{var substitutionNode=new _lunr.TokenSet();frame.node.edges["*"]=substitutionNode;}if(frame.str.length==1){substitutionNode.final=true;}stack.push({node:substitutionNode,editsRemaining:frame.editsRemaining-1,str:frame.str.slice(1)});}// transposition
+if(frame.str.length>=1){if("*"in frame.node.edges){var substitutionNode=frame.node.edges["*"];}else{var substitutionNode=new lunr.TokenSet();frame.node.edges["*"]=substitutionNode;}if(frame.str.length==1){substitutionNode.final=true;}stack.push({node:substitutionNode,editsRemaining:frame.editsRemaining-1,str:frame.str.slice(1)});}// transposition
 // can only do a transposition if there are edits remaining
 // and there are enough characters to transpose
-if(frame.str.length>1){var charA=frame.str.charAt(0),charB=frame.str.charAt(1),transposeNode;if(charB in frame.node.edges){transposeNode=frame.node.edges[charB];}else{transposeNode=new _lunr.TokenSet();frame.node.edges[charB]=transposeNode;}if(frame.str.length==1){transposeNode.final=true;}stack.push({node:transposeNode,editsRemaining:frame.editsRemaining-1,str:charA+frame.str.slice(2)});}}return root;};/**
+if(frame.str.length>1){var charA=frame.str.charAt(0),charB=frame.str.charAt(1),transposeNode;if(charB in frame.node.edges){transposeNode=frame.node.edges[charB];}else{transposeNode=new lunr.TokenSet();frame.node.edges[charB]=transposeNode;}if(frame.str.length==1){transposeNode.final=true;}stack.push({node:transposeNode,editsRemaining:frame.editsRemaining-1,str:charA+frame.str.slice(2)});}}return root;};/**
  * Creates a TokenSet from a string.
  *
  * The string may contain one or more wildcard characters (*)
@@ -568,14 +568,14 @@ if(frame.str.length>1){var charA=frame.str.charAt(0),charB=frame.str.charAt(1),t
  *
  * @param {string} str - The string to create a TokenSet from.
  * @returns {lunr.TokenSet}
- */_lunr.TokenSet.fromString=function(str){var node=new _lunr.TokenSet(),root=node;/*
+ */lunr.TokenSet.fromString=function(str){var node=new lunr.TokenSet(),root=node;/*
    * Iterates through all characters within the passed string
    * appending a node for each character.
    *
    * When a wildcard character is found then a self
    * referencing edge is introduced to continually match
    * any number of any characters.
-   */for(var i=0,len=str.length;i<len;i++){var char=str[i],final=i==len-1;if(char=="*"){node.edges[char]=node;node.final=final;}else{var next=new _lunr.TokenSet();next.final=final;node.edges[char]=next;node=next;}}return root;};/**
+   */for(var i=0,len=str.length;i<len;i++){var char=str[i],final=i==len-1;if(char=="*"){node.edges[char]=node;node.final=final;}else{var next=new lunr.TokenSet();next.final=final;node.edges[char]=next;node=next;}}return root;};/**
  * Converts this TokenSet into an array of strings
  * contained within the TokenSet.
  *
@@ -584,7 +584,7 @@ if(frame.str.length>1){var charA=frame.str.charAt(0),charB=frame.str.charAt(1),t
  * undefined and are likely to cause an infinite loop.
  *
  * @returns {string[]}
- */_lunr.TokenSet.prototype.toArray=function(){var words=[];var stack=[{prefix:"",node:this}];while(stack.length){var frame=stack.pop(),edges=Object.keys(frame.node.edges),len=edges.length;if(frame.node.final){/* In Safari, at this point the prefix is sometimes corrupted, see:
+ */lunr.TokenSet.prototype.toArray=function(){var words=[];var stack=[{prefix:"",node:this}];while(stack.length){var frame=stack.pop(),edges=Object.keys(frame.node.edges),len=edges.length;if(frame.node.final){/* In Safari, at this point the prefix is sometimes corrupted, see:
        * https://github.com/olivernn/lunr.js/issues/279 Calling any
        * String.prototype method forces Safari to "cast" this string to what
        * it's supposed to be, fixing the bug. */frame.prefix.charAt(0);words.push(frame.prefix);}for(var i=0;i<len;i++){var edge=edges[i];stack.push({prefix:frame.prefix.concat(edge),node:frame.node.edges[edge]});}}return words;};/**
@@ -596,7 +596,7 @@ if(frame.str.length>1){var charA=frame.str.charAt(0),charB=frame.str.charAt(1),t
  * friendly representation of the TokenSet.
  *
  * @returns {string}
- */_lunr.TokenSet.prototype.toString=function(){// NOTE: Using Object.keys here as this.edges is very likely
+ */lunr.TokenSet.prototype.toString=function(){// NOTE: Using Object.keys here as this.edges is very likely
 // to enter 'hash-mode' with many keys being added
 //
 // avoiding a for-in loop here as it leads to the function
@@ -612,7 +612,7 @@ if(this._str){return this._str;}var str=this.final?'1':'0',labels=Object.keys(th
  *
  * @param {lunr.TokenSet} b - An other TokenSet to intersect with.
  * @returns {lunr.TokenSet}
- */_lunr.TokenSet.prototype.intersect=function(b){var output=new _lunr.TokenSet(),frame=undefined;var stack=[{qNode:b,output:output,node:this}];while(stack.length){frame=stack.pop();// NOTE: As with the #toString method, we are using
+ */lunr.TokenSet.prototype.intersect=function(b){var output=new lunr.TokenSet(),frame=undefined;var stack=[{qNode:b,output:output,node:this}];while(stack.length){frame=stack.pop();// NOTE: As with the #toString method, we are using
 // Object.keys and a for loop instead of a for-in loop
 // as both of these objects enter 'hash' mode, causing
 // the function to be de-optimised in V8
@@ -622,7 +622,7 @@ var qEdges=Object.keys(frame.qNode.edges),qLen=qEdges.length,nEdges=Object.keys(
 next=frame.output.edges[nEdge];next.final=next.final||final;}else{// no edge exists yet, must create one
 // set the finality bit and insert it
 // into the output
-next=new _lunr.TokenSet();next.final=final;frame.output.edges[nEdge]=next;}stack.push({qNode:qNode,output:next,node:node});}}}}return output;};_lunr.TokenSet.Builder=function(){this.previousWord="";this.root=new _lunr.TokenSet();this.uncheckedNodes=[];this.minimizedNodes={};};_lunr.TokenSet.Builder.prototype.insert=function(word){var node,commonPrefix=0;if(word<this.previousWord){throw new Error("Out of order word insertion");}for(var i=0;i<word.length&&i<this.previousWord.length;i++){if(word[i]!=this.previousWord[i])break;commonPrefix++;}this.minimize(commonPrefix);if(this.uncheckedNodes.length==0){node=this.root;}else{node=this.uncheckedNodes[this.uncheckedNodes.length-1].child;}for(var i=commonPrefix;i<word.length;i++){var nextNode=new _lunr.TokenSet(),char=word[i];node.edges[char]=nextNode;this.uncheckedNodes.push({parent:node,char:char,child:nextNode});node=nextNode;}node.final=true;this.previousWord=word;};_lunr.TokenSet.Builder.prototype.finish=function(){this.minimize(0);};_lunr.TokenSet.Builder.prototype.minimize=function(downTo){for(var i=this.uncheckedNodes.length-1;i>=downTo;i--){var node=this.uncheckedNodes[i],childKey=node.child.toString();if(childKey in this.minimizedNodes){node.parent.edges[node.char]=this.minimizedNodes[childKey];}else{// Cache the key for this node since
+next=new lunr.TokenSet();next.final=final;frame.output.edges[nEdge]=next;}stack.push({qNode:qNode,output:next,node:node});}}}}return output;};lunr.TokenSet.Builder=function(){this.previousWord="";this.root=new lunr.TokenSet();this.uncheckedNodes=[];this.minimizedNodes={};};lunr.TokenSet.Builder.prototype.insert=function(word){var node,commonPrefix=0;if(word<this.previousWord){throw new Error("Out of order word insertion");}for(var i=0;i<word.length&&i<this.previousWord.length;i++){if(word[i]!=this.previousWord[i])break;commonPrefix++;}this.minimize(commonPrefix);if(this.uncheckedNodes.length==0){node=this.root;}else{node=this.uncheckedNodes[this.uncheckedNodes.length-1].child;}for(var i=commonPrefix;i<word.length;i++){var nextNode=new lunr.TokenSet(),char=word[i];node.edges[char]=nextNode;this.uncheckedNodes.push({parent:node,char:char,child:nextNode});node=nextNode;}node.final=true;this.previousWord=word;};lunr.TokenSet.Builder.prototype.finish=function(){this.minimize(0);};lunr.TokenSet.Builder.prototype.minimize=function(downTo){for(var i=this.uncheckedNodes.length-1;i>=downTo;i--){var node=this.uncheckedNodes[i],childKey=node.child.toString();if(childKey in this.minimizedNodes){node.parent.edges[node.char]=this.minimizedNodes[childKey];}else{// Cache the key for this node since
 // we know it can't change anymore
 node.child._str=childKey;this.minimizedNodes[childKey]=node.child;}this.uncheckedNodes.pop();}};/*!
  * lunr.Index
@@ -642,7 +642,7 @@ node.child._str=childKey;this.minimizedNodes[childKey]=node.child;}this.unchecke
  * @param {lunr.TokenSet} attrs.tokenSet - An set of all corpus tokens.
  * @param {string[]} attrs.fields - The names of indexed document fields.
  * @param {lunr.Pipeline} attrs.pipeline - The pipeline to use for search terms.
- */_lunr.Index=function(attrs){this.invertedIndex=attrs.invertedIndex;this.fieldVectors=attrs.fieldVectors;this.tokenSet=attrs.tokenSet;this.fields=attrs.fields;this.pipeline=attrs.pipeline;};/**
+ */lunr.Index=function(attrs){this.invertedIndex=attrs.invertedIndex;this.fieldVectors=attrs.fieldVectors;this.tokenSet=attrs.tokenSet;this.fields=attrs.fields;this.pipeline=attrs.pipeline;};/**
  * A result contains details of a document matching a search query.
  * @typedef {Object} lunr.Index~Result
  * @property {string} ref - The reference of the document this result represents.
@@ -708,7 +708,7 @@ node.child._str=childKey;this.minimizedNodes[childKey]=node.child;}this.unchecke
  * @param {lunr.Index~QueryString} queryString - A string containing a lunr query.
  * @throws {lunr.QueryParseError} If the passed query string cannot be parsed.
  * @returns {lunr.Index~Result[]}
- */_lunr.Index.prototype.search=function(queryString){return this.query(function(query){var parser=new _lunr.QueryParser(queryString,query);parser.parse();});};/**
+ */lunr.Index.prototype.search=function(queryString){return this.query(function(query){var parser=new lunr.QueryParser(queryString,query);parser.parse();});};/**
  * A query builder callback provides a query object to be used to express
  * the query to perform on the index.
  *
@@ -730,24 +730,24 @@ node.child._str=childKey;this.minimizedNodes[childKey]=node.child;}this.unchecke
  *
  * @param {lunr.Index~queryBuilder} fn - A function that is used to build the query.
  * @returns {lunr.Index~Result[]}
- */_lunr.Index.prototype.query=function(fn){// for each query clause
+ */lunr.Index.prototype.query=function(fn){// for each query clause
 // * process terms
 // * expand terms from token set
 // * find matching documents and metadata
 // * get document vectors
 // * score documents
-var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryVectors=Object.create(null),termFieldCache=Object.create(null),requiredMatches=Object.create(null),prohibitedMatches=Object.create(null);/*
+var query=new lunr.Query(this.fields),matchingFields=Object.create(null),queryVectors=Object.create(null),termFieldCache=Object.create(null),requiredMatches=Object.create(null),prohibitedMatches=Object.create(null);/*
    * To support field level boosts a query vector is created per
    * field. An empty vector is eagerly created to support negated
    * queries.
-   */for(var i=0;i<this.fields.length;i++){queryVectors[this.fields[i]]=new _lunr.Vector();}fn.call(query,query);for(var i=0;i<query.clauses.length;i++){/*
+   */for(var i=0;i<this.fields.length;i++){queryVectors[this.fields[i]]=new lunr.Vector();}fn.call(query,query);for(var i=0;i<query.clauses.length;i++){/*
      * Unless the pipeline has been disabled for this term, which is
      * the case for terms with wildcards, we need to pass the clause
      * term through the search pipeline. A pipeline returns an array
      * of processed terms. Pipeline functions may expand the passed
      * term, which means we may end up performing multiple index lookups
      * for a single query term.
-     */var clause=query.clauses[i],terms=null,clauseMatches=_lunr.Set.empty;if(clause.usePipeline){terms=this.pipeline.runString(clause.term,{fields:clause.fields});}else{terms=[clause.term];}for(var m=0;m<terms.length;m++){var term=terms[m];/*
+     */var clause=query.clauses[i],terms=null,clauseMatches=lunr.Set.empty;if(clause.usePipeline){terms=this.pipeline.runString(clause.term,{fields:clause.fields});}else{terms=[clause.term];}for(var m=0;m<terms.length;m++){var term=terms[m];/*
        * Each term returned from the pipeline needs to use the same query
        * clause object, e.g. the same boost and or edit distance. The
        * simplest way to do this is to re-use the clause object but mutate
@@ -756,12 +756,12 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
        * From the term in the clause we create a token set which will then
        * be used to intersect the indexes token set to get a list of terms
        * to lookup in the inverted index
-       */var termTokenSet=_lunr.TokenSet.fromClause(clause),expandedTerms=this.tokenSet.intersect(termTokenSet).toArray();/*
+       */var termTokenSet=lunr.TokenSet.fromClause(clause),expandedTerms=this.tokenSet.intersect(termTokenSet).toArray();/*
        * If a term marked as required does not exist in the tokenSet it is
        * impossible for the search to return any matches. We set all the field
        * scoped required matches set to empty and stop examining any further
        * clauses.
-       */if(expandedTerms.length===0&&clause.presence===_lunr.Query.presence.REQUIRED){for(var k=0;k<clause.fields.length;k++){var field=clause.fields[k];requiredMatches[field]=_lunr.Set.empty;}break;}for(var j=0;j<expandedTerms.length;j++){/*
+       */if(expandedTerms.length===0&&clause.presence===lunr.Query.presence.REQUIRED){for(var k=0;k<clause.fields.length;k++){var field=clause.fields[k];requiredMatches[field]=lunr.Set.empty;}break;}for(var j=0;j<expandedTerms.length;j++){/*
          * For each term get the posting and termIndex, this is required for
          * building the query vector.
          */var expandedTerm=expandedTerms[j],posting=this.invertedIndex[expandedTerm],termIndex=posting._index;for(var k=0;k<clause.fields.length;k++){/*
@@ -771,15 +771,15 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
            *
            * The posting is the entry in the invertedIndex for the matching
            * term from above.
-           */var field=clause.fields[k],fieldPosting=posting[field],matchingDocumentRefs=Object.keys(fieldPosting),termField=expandedTerm+"/"+field,matchingDocumentsSet=new _lunr.Set(matchingDocumentRefs);/*
+           */var field=clause.fields[k],fieldPosting=posting[field],matchingDocumentRefs=Object.keys(fieldPosting),termField=expandedTerm+"/"+field,matchingDocumentsSet=new lunr.Set(matchingDocumentRefs);/*
            * if the presence of this term is required ensure that the matching
            * documents are added to the set of required matches for this clause.
            *
-           */if(clause.presence==_lunr.Query.presence.REQUIRED){clauseMatches=clauseMatches.union(matchingDocumentsSet);if(requiredMatches[field]===undefined){requiredMatches[field]=_lunr.Set.complete;}}/*
+           */if(clause.presence==lunr.Query.presence.REQUIRED){clauseMatches=clauseMatches.union(matchingDocumentsSet);if(requiredMatches[field]===undefined){requiredMatches[field]=lunr.Set.complete;}}/*
            * if the presence of this term is prohibited ensure that the matching
            * documents are added to the set of prohibited matches for this field,
            * creating that set if it does not yet exist.
-           */if(clause.presence==_lunr.Query.presence.PROHIBITED){if(prohibitedMatches[field]===undefined){prohibitedMatches[field]=_lunr.Set.empty;}prohibitedMatches[field]=prohibitedMatches[field].union(matchingDocumentsSet);/*
+           */if(clause.presence==lunr.Query.presence.PROHIBITED){if(prohibitedMatches[field]===undefined){prohibitedMatches[field]=lunr.Set.empty;}prohibitedMatches[field]=prohibitedMatches[field].union(matchingDocumentsSet);/*
              * Prohibited matches should not be part of the query vector used for
              * similarity scoring and no metadata should be extracted so we continue
              * to the next field
@@ -797,16 +797,16 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
              * are then extracted and collected into an instance
              * of lunr.MatchData ready to be returned in the query
              * results
-             */var matchingDocumentRef=matchingDocumentRefs[l],matchingFieldRef=new _lunr.FieldRef(matchingDocumentRef,field),metadata=fieldPosting[matchingDocumentRef],fieldMatch;if((fieldMatch=matchingFields[matchingFieldRef])===undefined){matchingFields[matchingFieldRef]=new _lunr.MatchData(expandedTerm,field,metadata);}else{fieldMatch.add(expandedTerm,field,metadata);}}termFieldCache[termField]=true;}}}/**
+             */var matchingDocumentRef=matchingDocumentRefs[l],matchingFieldRef=new lunr.FieldRef(matchingDocumentRef,field),metadata=fieldPosting[matchingDocumentRef],fieldMatch;if((fieldMatch=matchingFields[matchingFieldRef])===undefined){matchingFields[matchingFieldRef]=new lunr.MatchData(expandedTerm,field,metadata);}else{fieldMatch.add(expandedTerm,field,metadata);}}termFieldCache[termField]=true;}}}/**
      * If the presence was required we need to update the requiredMatches field sets.
      * We do this after all fields for the term have collected their matches because
      * the clause terms presence is required in _any_ of the fields not _all_ of the
      * fields.
-     */if(clause.presence===_lunr.Query.presence.REQUIRED){for(var k=0;k<clause.fields.length;k++){var field=clause.fields[k];requiredMatches[field]=requiredMatches[field].intersect(clauseMatches);}}}/**
+     */if(clause.presence===lunr.Query.presence.REQUIRED){for(var k=0;k<clause.fields.length;k++){var field=clause.fields[k];requiredMatches[field]=requiredMatches[field].intersect(clauseMatches);}}}/**
    * Need to combine the field scoped required and prohibited
    * matching documents into a global set of required and prohibited
    * matches
-   */var allRequiredMatches=_lunr.Set.complete,allProhibitedMatches=_lunr.Set.empty;for(var i=0;i<this.fields.length;i++){var field=this.fields[i];if(requiredMatches[field]){allRequiredMatches=allRequiredMatches.intersect(requiredMatches[field]);}if(prohibitedMatches[field]){allProhibitedMatches=allProhibitedMatches.union(prohibitedMatches[field]);}}var matchingFieldRefs=Object.keys(matchingFields),results=[],matches=Object.create(null);/*
+   */var allRequiredMatches=lunr.Set.complete,allProhibitedMatches=lunr.Set.empty;for(var i=0;i<this.fields.length;i++){var field=this.fields[i];if(requiredMatches[field]){allRequiredMatches=allRequiredMatches.intersect(requiredMatches[field]);}if(prohibitedMatches[field]){allProhibitedMatches=allProhibitedMatches.union(prohibitedMatches[field]);}}var matchingFieldRefs=Object.keys(matchingFields),results=[],matches=Object.create(null);/*
    * If the query is negated (contains only prohibited terms)
    * we need to get _all_ fieldRefs currently existing in the
    * index. This is only done when we know that the query is
@@ -815,14 +815,14 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
    *
    * Additionally, blank MatchData must be created to correctly
    * populate the results.
-   */if(query.isNegated()){matchingFieldRefs=Object.keys(this.fieldVectors);for(var i=0;i<matchingFieldRefs.length;i++){var matchingFieldRef=matchingFieldRefs[i];var fieldRef=_lunr.FieldRef.fromString(matchingFieldRef);matchingFields[matchingFieldRef]=new _lunr.MatchData();}}for(var i=0;i<matchingFieldRefs.length;i++){/*
+   */if(query.isNegated()){matchingFieldRefs=Object.keys(this.fieldVectors);for(var i=0;i<matchingFieldRefs.length;i++){var matchingFieldRef=matchingFieldRefs[i];var fieldRef=lunr.FieldRef.fromString(matchingFieldRef);matchingFields[matchingFieldRef]=new lunr.MatchData();}}for(var i=0;i<matchingFieldRefs.length;i++){/*
      * Currently we have document fields that match the query, but we
      * need to return documents. The matchData and scores are combined
      * from multiple fields belonging to the same document.
      *
      * Scores are calculated by field, using the query vectors created
      * above, and combined into a final document score using addition.
-     */var fieldRef=_lunr.FieldRef.fromString(matchingFieldRefs[i]),docRef=fieldRef.docRef;if(!allRequiredMatches.contains(docRef)){continue;}if(allProhibitedMatches.contains(docRef)){continue;}var fieldVector=this.fieldVectors[fieldRef],score=queryVectors[fieldRef.fieldName].similarity(fieldVector),docMatch;if((docMatch=matches[docRef])!==undefined){docMatch.score+=score;docMatch.matchData.combine(matchingFields[fieldRef]);}else{var match={ref:docRef,score:score,matchData:matchingFields[fieldRef]};matches[docRef]=match;results.push(match);}}/*
+     */var fieldRef=lunr.FieldRef.fromString(matchingFieldRefs[i]),docRef=fieldRef.docRef;if(!allRequiredMatches.contains(docRef)){continue;}if(allProhibitedMatches.contains(docRef)){continue;}var fieldVector=this.fieldVectors[fieldRef],score=queryVectors[fieldRef.fieldName].similarity(fieldVector),docMatch;if((docMatch=matches[docRef])!==undefined){docMatch.score+=score;docMatch.matchData.combine(matchingFields[fieldRef]);}else{var match={ref:docRef,score:score,matchData:matchingFields[fieldRef]};matches[docRef]=match;results.push(match);}}/*
    * Sort the results objects by score, highest first.
    */return results.sort(function(a,b){return b.score-a.score;});};/**
  * Prepares the index for JSON serialization.
@@ -831,12 +831,12 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
  * separate JSON schema file.
  *
  * @returns {Object}
- */_lunr.Index.prototype.toJSON=function(){var invertedIndex=Object.keys(this.invertedIndex).sort().map(function(term){return[term,this.invertedIndex[term]];},this);var fieldVectors=Object.keys(this.fieldVectors).map(function(ref){return[ref,this.fieldVectors[ref].toJSON()];},this);return{version:_lunr.version,fields:this.fields,fieldVectors:fieldVectors,invertedIndex:invertedIndex,pipeline:this.pipeline.toJSON()};};/**
+ */lunr.Index.prototype.toJSON=function(){var invertedIndex=Object.keys(this.invertedIndex).sort().map(function(term){return[term,this.invertedIndex[term]];},this);var fieldVectors=Object.keys(this.fieldVectors).map(function(ref){return[ref,this.fieldVectors[ref].toJSON()];},this);return{version:lunr.version,fields:this.fields,fieldVectors:fieldVectors,invertedIndex:invertedIndex,pipeline:this.pipeline.toJSON()};};/**
  * Loads a previously serialized lunr.Index
  *
  * @param {Object} serializedIndex - A previously serialized lunr.Index
  * @returns {lunr.Index}
- */_lunr.Index.load=function(serializedIndex){var attrs={},fieldVectors={},serializedVectors=serializedIndex.fieldVectors,invertedIndex=Object.create(null),serializedInvertedIndex=serializedIndex.invertedIndex,tokenSetBuilder=new _lunr.TokenSet.Builder(),pipeline=_lunr.Pipeline.load(serializedIndex.pipeline);if(serializedIndex.version!=_lunr.version){_lunr.utils.warn("Version mismatch when loading serialised index. Current version of lunr '"+_lunr.version+"' does not match serialized index '"+serializedIndex.version+"'");}for(var i=0;i<serializedVectors.length;i++){var tuple=serializedVectors[i],ref=tuple[0],elements=tuple[1];fieldVectors[ref]=new _lunr.Vector(elements);}for(var i=0;i<serializedInvertedIndex.length;i++){var tuple=serializedInvertedIndex[i],term=tuple[0],posting=tuple[1];tokenSetBuilder.insert(term);invertedIndex[term]=posting;}tokenSetBuilder.finish();attrs.fields=serializedIndex.fields;attrs.fieldVectors=fieldVectors;attrs.invertedIndex=invertedIndex;attrs.tokenSet=tokenSetBuilder.root;attrs.pipeline=pipeline;return new _lunr.Index(attrs);};/*!
+ */lunr.Index.load=function(serializedIndex){var attrs={},fieldVectors={},serializedVectors=serializedIndex.fieldVectors,invertedIndex=Object.create(null),serializedInvertedIndex=serializedIndex.invertedIndex,tokenSetBuilder=new lunr.TokenSet.Builder(),pipeline=lunr.Pipeline.load(serializedIndex.pipeline);if(serializedIndex.version!=lunr.version){lunr.utils.warn("Version mismatch when loading serialised index. Current version of lunr '"+lunr.version+"' does not match serialized index '"+serializedIndex.version+"'");}for(var i=0;i<serializedVectors.length;i++){var tuple=serializedVectors[i],ref=tuple[0],elements=tuple[1];fieldVectors[ref]=new lunr.Vector(elements);}for(var i=0;i<serializedInvertedIndex.length;i++){var tuple=serializedInvertedIndex[i],term=tuple[0],posting=tuple[1];tokenSetBuilder.insert(term);invertedIndex[term]=posting;}tokenSetBuilder.finish();attrs.fields=serializedIndex.fields;attrs.fieldVectors=fieldVectors;attrs.invertedIndex=invertedIndex;attrs.tokenSet=tokenSetBuilder.root;attrs.pipeline=pipeline;return new lunr.Index(attrs);};/*!
  * lunr.Builder
  * Copyright (C) 2020 Oliver Nightingale
  *//**
@@ -862,7 +862,7 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
  * @property {number} _k1 - A parameter to control how quickly an increase in term frequency results in term frequency saturation, the default value is 1.2.
  * @property {number} termIndex - A counter incremented for each unique term, used to identify a terms position in the vector space.
  * @property {array} metadataWhitelist - A list of metadata keys that have been whitelisted for entry in the index.
- */_lunr.Builder=function(){this._ref="id";this._fields=Object.create(null);this._documents=Object.create(null);this.invertedIndex=Object.create(null);this.fieldTermFrequencies={};this.fieldLengths={};this.tokenizer=_lunr.tokenizer;this.pipeline=new _lunr.Pipeline();this.searchPipeline=new _lunr.Pipeline();this.documentCount=0;this._b=0.75;this._k1=1.2;this.termIndex=0;this.metadataWhitelist=[];};/**
+ */lunr.Builder=function(){this._ref="id";this._fields=Object.create(null);this._documents=Object.create(null);this.invertedIndex=Object.create(null);this.fieldTermFrequencies={};this.fieldLengths={};this.tokenizer=lunr.tokenizer;this.pipeline=new lunr.Pipeline();this.searchPipeline=new lunr.Pipeline();this.documentCount=0;this._b=0.75;this._k1=1.2;this.termIndex=0;this.metadataWhitelist=[];};/**
  * Sets the document field used as the document reference. Every document must have this field.
  * The type of this field in the document should be a string, if it is not a string it will be
  * coerced into a string by calling toString.
@@ -873,7 +873,7 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
  * added to the index. Changing it during indexing can lead to inconsistent results.
  *
  * @param {string} ref - The name of the reference field in the document.
- */_lunr.Builder.prototype.ref=function(ref){this._ref=ref;};/**
+ */lunr.Builder.prototype.ref=function(ref){this._ref=ref;};/**
  * A function that is used to extract a field from a document.
  *
  * Lunr expects a field to be at the top level of a document, if however the field
@@ -902,20 +902,20 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
  * @param {number} [attributes.boost=1] - Boost applied to all terms within this field.
  * @param {fieldExtractor} [attributes.extractor] - Function to extract a field from a document.
  * @throws {RangeError} fieldName cannot contain unsupported characters '/'
- */_lunr.Builder.prototype.field=function(fieldName,attributes){if(/\//.test(fieldName)){throw new RangeError("Field '"+fieldName+"' contains illegal character '/'");}this._fields[fieldName]=attributes||{};};/**
+ */lunr.Builder.prototype.field=function(fieldName,attributes){if(/\//.test(fieldName)){throw new RangeError("Field '"+fieldName+"' contains illegal character '/'");}this._fields[fieldName]=attributes||{};};/**
  * A parameter to tune the amount of field length normalisation that is applied when
  * calculating relevance scores. A value of 0 will completely disable any normalisation
  * and a value of 1 will fully normalise field lengths. The default is 0.75. Values of b
  * will be clamped to the range 0 - 1.
  *
  * @param {number} number - The value to set for this tuning parameter.
- */_lunr.Builder.prototype.b=function(number){if(number<0){this._b=0;}else if(number>1){this._b=1;}else{this._b=number;}};/**
+ */lunr.Builder.prototype.b=function(number){if(number<0){this._b=0;}else if(number>1){this._b=1;}else{this._b=number;}};/**
  * A parameter that controls the speed at which a rise in term frequency results in term
  * frequency saturation. The default value is 1.2. Setting this to a higher value will give
  * slower saturation levels, a lower value will result in quicker saturation.
  *
  * @param {number} number - The value to set for this tuning parameter.
- */_lunr.Builder.prototype.k1=function(number){this._k1=number;};/**
+ */lunr.Builder.prototype.k1=function(number){this._k1=number;};/**
  * Adds a document to the index.
  *
  * Before adding fields to the index the index should have been fully setup, with the document
@@ -931,7 +931,7 @@ var query=new _lunr.Query(this.fields),matchingFields=Object.create(null),queryV
  * @param {object} doc - The document to add to the index.
  * @param {object} attributes - Optional attributes associated with this document.
  * @param {number} [attributes.boost=1] - Boost applied to all terms within this document.
- */_lunr.Builder.prototype.add=function(doc,attributes){var docRef=doc[this._ref],fields=Object.keys(this._fields);this._documents[docRef]=attributes||{};this.documentCount+=1;for(var i=0;i<fields.length;i++){var fieldName=fields[i],extractor=this._fields[fieldName].extractor,field=extractor?extractor(doc):doc[fieldName],tokens=this.tokenizer(field,{fields:[fieldName]}),terms=this.pipeline.run(tokens),fieldRef=new _lunr.FieldRef(docRef,fieldName),fieldTerms=Object.create(null);this.fieldTermFrequencies[fieldRef]=fieldTerms;this.fieldLengths[fieldRef]=0;// store the length of this field for this document
+ */lunr.Builder.prototype.add=function(doc,attributes){var docRef=doc[this._ref],fields=Object.keys(this._fields);this._documents[docRef]=attributes||{};this.documentCount+=1;for(var i=0;i<fields.length;i++){var fieldName=fields[i],extractor=this._fields[fieldName].extractor,field=extractor?extractor(doc):doc[fieldName],tokens=this.tokenizer(field,{fields:[fieldName]}),terms=this.pipeline.run(tokens),fieldRef=new lunr.FieldRef(docRef,fieldName),fieldTerms=Object.create(null);this.fieldTermFrequencies[fieldRef]=fieldTerms;this.fieldLengths[fieldRef]=0;// store the length of this field for this document
 this.fieldLengths[fieldRef]+=terms.length;// calculate term frequencies for this field
 for(var j=0;j<terms.length;j++){var term=terms[j];if(fieldTerms[term]==undefined){fieldTerms[term]=0;}fieldTerms[term]+=1;// add to inverted index
 // create an initial posting if one doesn't exist
@@ -942,11 +942,11 @@ for(var l=0;l<this.metadataWhitelist.length;l++){var metadataKey=this.metadataWh
  * Calculates the average document length for this index
  *
  * @private
- */_lunr.Builder.prototype.calculateAverageFieldLengths=function(){var fieldRefs=Object.keys(this.fieldLengths),numberOfFields=fieldRefs.length,accumulator={},documentsWithField={};for(var i=0;i<numberOfFields;i++){var fieldRef=_lunr.FieldRef.fromString(fieldRefs[i]),field=fieldRef.fieldName;documentsWithField[field]||(documentsWithField[field]=0);documentsWithField[field]+=1;accumulator[field]||(accumulator[field]=0);accumulator[field]+=this.fieldLengths[fieldRef];}var fields=Object.keys(this._fields);for(var i=0;i<fields.length;i++){var fieldName=fields[i];accumulator[fieldName]=accumulator[fieldName]/documentsWithField[fieldName];}this.averageFieldLength=accumulator;};/**
+ */lunr.Builder.prototype.calculateAverageFieldLengths=function(){var fieldRefs=Object.keys(this.fieldLengths),numberOfFields=fieldRefs.length,accumulator={},documentsWithField={};for(var i=0;i<numberOfFields;i++){var fieldRef=lunr.FieldRef.fromString(fieldRefs[i]),field=fieldRef.fieldName;documentsWithField[field]||(documentsWithField[field]=0);documentsWithField[field]+=1;accumulator[field]||(accumulator[field]=0);accumulator[field]+=this.fieldLengths[fieldRef];}var fields=Object.keys(this._fields);for(var i=0;i<fields.length;i++){var fieldName=fields[i];accumulator[fieldName]=accumulator[fieldName]/documentsWithField[fieldName];}this.averageFieldLength=accumulator;};/**
  * Builds a vector space model of every document using lunr.Vector
  *
  * @private
- */_lunr.Builder.prototype.createFieldVectors=function(){var fieldVectors={},fieldRefs=Object.keys(this.fieldTermFrequencies),fieldRefsLength=fieldRefs.length,termIdfCache=Object.create(null);for(var i=0;i<fieldRefsLength;i++){var fieldRef=_lunr.FieldRef.fromString(fieldRefs[i]),fieldName=fieldRef.fieldName,fieldLength=this.fieldLengths[fieldRef],fieldVector=new _lunr.Vector(),termFrequencies=this.fieldTermFrequencies[fieldRef],terms=Object.keys(termFrequencies),termsLength=terms.length;var fieldBoost=this._fields[fieldName].boost||1,docBoost=this._documents[fieldRef.docRef].boost||1;for(var j=0;j<termsLength;j++){var term=terms[j],tf=termFrequencies[term],termIndex=this.invertedIndex[term]._index,idf,score,scoreWithPrecision;if(termIdfCache[term]===undefined){idf=_lunr.idf(this.invertedIndex[term],this.documentCount);termIdfCache[term]=idf;}else{idf=termIdfCache[term];}score=idf*((this._k1+1)*tf)/(this._k1*(1-this._b+this._b*(fieldLength/this.averageFieldLength[fieldName]))+tf);score*=fieldBoost;score*=docBoost;scoreWithPrecision=Math.round(score*1000)/1000;// Converts 1.23456789 to 1.234.
+ */lunr.Builder.prototype.createFieldVectors=function(){var fieldVectors={},fieldRefs=Object.keys(this.fieldTermFrequencies),fieldRefsLength=fieldRefs.length,termIdfCache=Object.create(null);for(var i=0;i<fieldRefsLength;i++){var fieldRef=lunr.FieldRef.fromString(fieldRefs[i]),fieldName=fieldRef.fieldName,fieldLength=this.fieldLengths[fieldRef],fieldVector=new lunr.Vector(),termFrequencies=this.fieldTermFrequencies[fieldRef],terms=Object.keys(termFrequencies),termsLength=terms.length;var fieldBoost=this._fields[fieldName].boost||1,docBoost=this._documents[fieldRef.docRef].boost||1;for(var j=0;j<termsLength;j++){var term=terms[j],tf=termFrequencies[term],termIndex=this.invertedIndex[term]._index,idf,score,scoreWithPrecision;if(termIdfCache[term]===undefined){idf=lunr.idf(this.invertedIndex[term],this.documentCount);termIdfCache[term]=idf;}else{idf=termIdfCache[term];}score=idf*((this._k1+1)*tf)/(this._k1*(1-this._b+this._b*(fieldLength/this.averageFieldLength[fieldName]))+tf);score*=fieldBoost;score*=docBoost;scoreWithPrecision=Math.round(score*1000)/1000;// Converts 1.23456789 to 1.234.
 // Reducing the precision so that the vectors take up less
 // space when serialised. Doing it now so that they behave
 // the same before and after serialisation. Also, this is
@@ -956,14 +956,14 @@ fieldVector.insert(termIndex,scoreWithPrecision);}fieldVectors[fieldRef]=fieldVe
  * Creates a token set of all tokens in the index using lunr.TokenSet
  *
  * @private
- */_lunr.Builder.prototype.createTokenSet=function(){this.tokenSet=_lunr.TokenSet.fromArray(Object.keys(this.invertedIndex).sort());};/**
+ */lunr.Builder.prototype.createTokenSet=function(){this.tokenSet=lunr.TokenSet.fromArray(Object.keys(this.invertedIndex).sort());};/**
  * Builds the index, creating an instance of lunr.Index.
  *
  * This completes the indexing process and should only be called
  * once all documents have been added to the index.
  *
  * @returns {lunr.Index}
- */_lunr.Builder.prototype.build=function(){this.calculateAverageFieldLengths();this.createFieldVectors();this.createTokenSet();return new _lunr.Index({invertedIndex:this.invertedIndex,fieldVectors:this.fieldVectors,tokenSet:this.tokenSet,fields:Object.keys(this._fields),pipeline:this.searchPipeline});};/**
+ */lunr.Builder.prototype.build=function(){this.calculateAverageFieldLengths();this.createFieldVectors();this.createTokenSet();return new lunr.Index({invertedIndex:this.invertedIndex,fieldVectors:this.fieldVectors,tokenSet:this.tokenSet,fields:Object.keys(this._fields),pipeline:this.searchPipeline});};/**
  * Applies a plugin to the index builder.
  *
  * A plugin is a function that is called with the index builder as its context.
@@ -976,7 +976,7 @@ fieldVector.insert(termIndex,scoreWithPrecision);}fieldVectors[fieldRef]=fieldVe
  * with the index builder as its context.
  *
  * @param {Function} plugin The plugin to apply.
- */_lunr.Builder.prototype.use=function(fn){var args=Array.prototype.slice.call(arguments,1);args.unshift(this);fn.apply(this,args);};/**
+ */lunr.Builder.prototype.use=function(fn){var args=Array.prototype.slice.call(arguments,1);args.unshift(this);fn.apply(this,args);};/**
  * Contains and collects metadata about a matching document.
  * A single instance of lunr.MatchData is returned as part of every
  * lunr.Index~Result.
@@ -987,7 +987,7 @@ fieldVector.insert(termIndex,scoreWithPrecision);}fieldVectors[fieldRef]=fieldVe
  * @param {object} metadata - The metadata recorded about this term in this field
  * @property {object} metadata - A cloned collection of metadata associated with this document.
  * @see {@link lunr.Index~Result}
- */_lunr.MatchData=function(term,field,metadata){var clonedMetadata=Object.create(null),metadataKeys=Object.keys(metadata||{});// Cloning the metadata to prevent the original
+ */lunr.MatchData=function(term,field,metadata){var clonedMetadata=Object.create(null),metadataKeys=Object.keys(metadata||{});// Cloning the metadata to prevent the original
 // being mutated during match data combination.
 // Metadata is kept in an array within the inverted
 // index so cloning the data can be done with
@@ -1000,13 +1000,13 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  *
  * @param {lunr.MatchData} otherMatchData - Another instance of match data to merge with this one.
  * @see {@link lunr.Index~Result}
- */_lunr.MatchData.prototype.combine=function(otherMatchData){var terms=Object.keys(otherMatchData.metadata);for(var i=0;i<terms.length;i++){var term=terms[i],fields=Object.keys(otherMatchData.metadata[term]);if(this.metadata[term]==undefined){this.metadata[term]=Object.create(null);}for(var j=0;j<fields.length;j++){var field=fields[j],keys=Object.keys(otherMatchData.metadata[term][field]);if(this.metadata[term][field]==undefined){this.metadata[term][field]=Object.create(null);}for(var k=0;k<keys.length;k++){var key=keys[k];if(this.metadata[term][field][key]==undefined){this.metadata[term][field][key]=otherMatchData.metadata[term][field][key];}else{this.metadata[term][field][key]=this.metadata[term][field][key].concat(otherMatchData.metadata[term][field][key]);}}}}};/**
+ */lunr.MatchData.prototype.combine=function(otherMatchData){var terms=Object.keys(otherMatchData.metadata);for(var i=0;i<terms.length;i++){var term=terms[i],fields=Object.keys(otherMatchData.metadata[term]);if(this.metadata[term]==undefined){this.metadata[term]=Object.create(null);}for(var j=0;j<fields.length;j++){var field=fields[j],keys=Object.keys(otherMatchData.metadata[term][field]);if(this.metadata[term][field]==undefined){this.metadata[term][field]=Object.create(null);}for(var k=0;k<keys.length;k++){var key=keys[k];if(this.metadata[term][field][key]==undefined){this.metadata[term][field][key]=otherMatchData.metadata[term][field][key];}else{this.metadata[term][field][key]=this.metadata[term][field][key].concat(otherMatchData.metadata[term][field][key]);}}}}};/**
  * Add metadata for a term/field pair to this instance of match data.
  *
  * @param {string} term - The term this match data is associated with
  * @param {string} field - The field in which the term was found
  * @param {object} metadata - The metadata recorded about this term in this field
- */_lunr.MatchData.prototype.add=function(term,field,metadata){if(!(term in this.metadata)){this.metadata[term]=Object.create(null);this.metadata[term][field]=metadata;return;}if(!(field in this.metadata[term])){this.metadata[term][field]=metadata;return;}var metadataKeys=Object.keys(metadata);for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];if(key in this.metadata[term][field]){this.metadata[term][field][key]=this.metadata[term][field][key].concat(metadata[key]);}else{this.metadata[term][field][key]=metadata[key];}}};/**
+ */lunr.MatchData.prototype.add=function(term,field,metadata){if(!(term in this.metadata)){this.metadata[term]=Object.create(null);this.metadata[term][field]=metadata;return;}if(!(field in this.metadata[term])){this.metadata[term][field]=metadata;return;}var metadataKeys=Object.keys(metadata);for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];if(key in this.metadata[term][field]){this.metadata[term][field][key]=this.metadata[term][field][key].concat(metadata[key]);}else{this.metadata[term][field][key]=metadata[key];}}};/**
  * A lunr.Query provides a programmatic way of defining queries to be performed
  * against a {@link lunr.Index}.
  *
@@ -1016,7 +1016,7 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  * @constructor
  * @property {lunr.Query~Clause[]} clauses - An array of query clauses.
  * @property {string[]} allFields - An array of all available fields in a lunr.Index.
- */_lunr.Query=function(allFields){this.clauses=[];this.allFields=allFields;};/**
+ */lunr.Query=function(allFields){this.clauses=[];this.allFields=allFields;};/**
  * Constants for indicating what kind of automatic wildcard insertion will be used when constructing a query clause.
  *
  * This allows wildcards to be added to the beginning and end of a term without having to manually do any string
@@ -1038,7 +1038,7 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  * query.term('foo', {
  *   wildcard: lunr.Query.wildcard.LEADING | lunr.Query.wildcard.TRAILING
  * })
- */_lunr.Query.wildcard=new String("*");_lunr.Query.wildcard.NONE=0;_lunr.Query.wildcard.LEADING=1;_lunr.Query.wildcard.TRAILING=2;/**
+ */lunr.Query.wildcard=new String("*");lunr.Query.wildcard.NONE=0;lunr.Query.wildcard.LEADING=1;lunr.Query.wildcard.TRAILING=2;/**
  * Constants for indicating what kind of presence a term must have in matching documents.
  *
  * @constant
@@ -1048,7 +1048,7 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  * @see lunr.Query#term
  * @example <caption>query term with required presence</caption>
  * query.term('foo', { presence: lunr.Query.presence.REQUIRED })
- */_lunr.Query.presence={/**
+ */lunr.Query.presence={/**
    * Term's presence in a document is optional, this is the default value.
    */OPTIONAL:1,/**
    * Term's presence in a document is required, documents that do not contain
@@ -1076,13 +1076,13 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  * @param {lunr.Query~Clause} clause - The clause to add to this query.
  * @see lunr.Query~Clause
  * @returns {lunr.Query}
- */_lunr.Query.prototype.clause=function(clause){if(!('fields'in clause)){clause.fields=this.allFields;}if(!('boost'in clause)){clause.boost=1;}if(!('usePipeline'in clause)){clause.usePipeline=true;}if(!('wildcard'in clause)){clause.wildcard=_lunr.Query.wildcard.NONE;}if(clause.wildcard&_lunr.Query.wildcard.LEADING&&clause.term.charAt(0)!=_lunr.Query.wildcard){clause.term="*"+clause.term;}if(clause.wildcard&_lunr.Query.wildcard.TRAILING&&clause.term.slice(-1)!=_lunr.Query.wildcard){clause.term=""+clause.term+"*";}if(!('presence'in clause)){clause.presence=_lunr.Query.presence.OPTIONAL;}this.clauses.push(clause);return this;};/**
+ */lunr.Query.prototype.clause=function(clause){if(!('fields'in clause)){clause.fields=this.allFields;}if(!('boost'in clause)){clause.boost=1;}if(!('usePipeline'in clause)){clause.usePipeline=true;}if(!('wildcard'in clause)){clause.wildcard=lunr.Query.wildcard.NONE;}if(clause.wildcard&lunr.Query.wildcard.LEADING&&clause.term.charAt(0)!=lunr.Query.wildcard){clause.term="*"+clause.term;}if(clause.wildcard&lunr.Query.wildcard.TRAILING&&clause.term.slice(-1)!=lunr.Query.wildcard){clause.term=""+clause.term+"*";}if(!('presence'in clause)){clause.presence=lunr.Query.presence.OPTIONAL;}this.clauses.push(clause);return this;};/**
  * A negated query is one in which every clause has a presence of
  * prohibited. These queries require some special processing to return
  * the expected results.
  *
  * @returns boolean
- */_lunr.Query.prototype.isNegated=function(){for(var i=0;i<this.clauses.length;i++){if(this.clauses[i].presence!=_lunr.Query.presence.PROHIBITED){return false;}}return true;};/**
+ */lunr.Query.prototype.isNegated=function(){for(var i=0;i<this.clauses.length;i++){if(this.clauses[i].presence!=lunr.Query.presence.PROHIBITED){return false;}}return true;};/**
  * Adds a term to the current query, under the covers this will create a {@link lunr.Query~Clause}
  * to the list of clauses that make up this query.
  *
@@ -1107,7 +1107,7 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
  * })
  * @example <caption>using lunr.tokenizer to convert a string to tokens before using them as terms</caption>
  * query.term(lunr.tokenizer("foo bar"))
- */_lunr.Query.prototype.term=function(term,options){if(Array.isArray(term)){term.forEach(function(t){this.term(t,_lunr.utils.clone(options));},this);return this;}var clause=options||{};clause.term=term.toString();this.clause(clause);return this;};_lunr.QueryParseError=function(message,start,end){this.name="QueryParseError";this.message=message;this.start=start;this.end=end;};_lunr.QueryParseError.prototype=new Error();_lunr.QueryLexer=function(str){this.lexemes=[];this.str=str;this.length=str.length;this.pos=0;this.start=0;this.escapeCharPositions=[];};_lunr.QueryLexer.prototype.run=function(){var state=_lunr.QueryLexer.lexText;while(state){state=state(this);}};_lunr.QueryLexer.prototype.sliceString=function(){var subSlices=[],sliceStart=this.start,sliceEnd=this.pos;for(var i=0;i<this.escapeCharPositions.length;i++){sliceEnd=this.escapeCharPositions[i];subSlices.push(this.str.slice(sliceStart,sliceEnd));sliceStart=sliceEnd+1;}subSlices.push(this.str.slice(sliceStart,this.pos));this.escapeCharPositions.length=0;return subSlices.join('');};_lunr.QueryLexer.prototype.emit=function(type){this.lexemes.push({type:type,str:this.sliceString(),start:this.start,end:this.pos});this.start=this.pos;};_lunr.QueryLexer.prototype.escapeCharacter=function(){this.escapeCharPositions.push(this.pos-1);this.pos+=1;};_lunr.QueryLexer.prototype.next=function(){if(this.pos>=this.length){return _lunr.QueryLexer.EOS;}var char=this.str.charAt(this.pos);this.pos+=1;return char;};_lunr.QueryLexer.prototype.width=function(){return this.pos-this.start;};_lunr.QueryLexer.prototype.ignore=function(){if(this.start==this.pos){this.pos+=1;}this.start=this.pos;};_lunr.QueryLexer.prototype.backup=function(){this.pos-=1;};_lunr.QueryLexer.prototype.acceptDigitRun=function(){var char,charCode;do{char=this.next();charCode=char.charCodeAt(0);}while(charCode>47&&charCode<58);if(char!=_lunr.QueryLexer.EOS){this.backup();}};_lunr.QueryLexer.prototype.more=function(){return this.pos<this.length;};_lunr.QueryLexer.EOS='EOS';_lunr.QueryLexer.FIELD='FIELD';_lunr.QueryLexer.TERM='TERM';_lunr.QueryLexer.EDIT_DISTANCE='EDIT_DISTANCE';_lunr.QueryLexer.BOOST='BOOST';_lunr.QueryLexer.PRESENCE='PRESENCE';_lunr.QueryLexer.lexField=function(lexer){lexer.backup();lexer.emit(_lunr.QueryLexer.FIELD);lexer.ignore();return _lunr.QueryLexer.lexText;};_lunr.QueryLexer.lexTerm=function(lexer){if(lexer.width()>1){lexer.backup();lexer.emit(_lunr.QueryLexer.TERM);}lexer.ignore();if(lexer.more()){return _lunr.QueryLexer.lexText;}};_lunr.QueryLexer.lexEditDistance=function(lexer){lexer.ignore();lexer.acceptDigitRun();lexer.emit(_lunr.QueryLexer.EDIT_DISTANCE);return _lunr.QueryLexer.lexText;};_lunr.QueryLexer.lexBoost=function(lexer){lexer.ignore();lexer.acceptDigitRun();lexer.emit(_lunr.QueryLexer.BOOST);return _lunr.QueryLexer.lexText;};_lunr.QueryLexer.lexEOS=function(lexer){if(lexer.width()>0){lexer.emit(_lunr.QueryLexer.TERM);}};// This matches the separator used when tokenising fields
+ */lunr.Query.prototype.term=function(term,options){if(Array.isArray(term)){term.forEach(function(t){this.term(t,lunr.utils.clone(options));},this);return this;}var clause=options||{};clause.term=term.toString();this.clause(clause);return this;};lunr.QueryParseError=function(message,start,end){this.name="QueryParseError";this.message=message;this.start=start;this.end=end;};lunr.QueryParseError.prototype=new Error();lunr.QueryLexer=function(str){this.lexemes=[];this.str=str;this.length=str.length;this.pos=0;this.start=0;this.escapeCharPositions=[];};lunr.QueryLexer.prototype.run=function(){var state=lunr.QueryLexer.lexText;while(state){state=state(this);}};lunr.QueryLexer.prototype.sliceString=function(){var subSlices=[],sliceStart=this.start,sliceEnd=this.pos;for(var i=0;i<this.escapeCharPositions.length;i++){sliceEnd=this.escapeCharPositions[i];subSlices.push(this.str.slice(sliceStart,sliceEnd));sliceStart=sliceEnd+1;}subSlices.push(this.str.slice(sliceStart,this.pos));this.escapeCharPositions.length=0;return subSlices.join('');};lunr.QueryLexer.prototype.emit=function(type){this.lexemes.push({type:type,str:this.sliceString(),start:this.start,end:this.pos});this.start=this.pos;};lunr.QueryLexer.prototype.escapeCharacter=function(){this.escapeCharPositions.push(this.pos-1);this.pos+=1;};lunr.QueryLexer.prototype.next=function(){if(this.pos>=this.length){return lunr.QueryLexer.EOS;}var char=this.str.charAt(this.pos);this.pos+=1;return char;};lunr.QueryLexer.prototype.width=function(){return this.pos-this.start;};lunr.QueryLexer.prototype.ignore=function(){if(this.start==this.pos){this.pos+=1;}this.start=this.pos;};lunr.QueryLexer.prototype.backup=function(){this.pos-=1;};lunr.QueryLexer.prototype.acceptDigitRun=function(){var char,charCode;do{char=this.next();charCode=char.charCodeAt(0);}while(charCode>47&&charCode<58);if(char!=lunr.QueryLexer.EOS){this.backup();}};lunr.QueryLexer.prototype.more=function(){return this.pos<this.length;};lunr.QueryLexer.EOS='EOS';lunr.QueryLexer.FIELD='FIELD';lunr.QueryLexer.TERM='TERM';lunr.QueryLexer.EDIT_DISTANCE='EDIT_DISTANCE';lunr.QueryLexer.BOOST='BOOST';lunr.QueryLexer.PRESENCE='PRESENCE';lunr.QueryLexer.lexField=function(lexer){lexer.backup();lexer.emit(lunr.QueryLexer.FIELD);lexer.ignore();return lunr.QueryLexer.lexText;};lunr.QueryLexer.lexTerm=function(lexer){if(lexer.width()>1){lexer.backup();lexer.emit(lunr.QueryLexer.TERM);}lexer.ignore();if(lexer.more()){return lunr.QueryLexer.lexText;}};lunr.QueryLexer.lexEditDistance=function(lexer){lexer.ignore();lexer.acceptDigitRun();lexer.emit(lunr.QueryLexer.EDIT_DISTANCE);return lunr.QueryLexer.lexText;};lunr.QueryLexer.lexBoost=function(lexer){lexer.ignore();lexer.acceptDigitRun();lexer.emit(lunr.QueryLexer.BOOST);return lunr.QueryLexer.lexText;};lunr.QueryLexer.lexEOS=function(lexer){if(lexer.width()>0){lexer.emit(lunr.QueryLexer.TERM);}};// This matches the separator used when tokenising fields
 // within a document. These should match otherwise it is
 // not possible to search for some tokens within a document.
 //
@@ -1118,14 +1118,14 @@ for(var i=0;i<metadataKeys.length;i++){var key=metadataKeys[i];clonedMetadata[ke
 // This means that it is possible to change the separator in
 // such a way that makes some words unsearchable using a search
 // string.
-_lunr.QueryLexer.termSeparator=_lunr.tokenizer.separator;_lunr.QueryLexer.lexText=function(lexer){while(true){var char=lexer.next();if(char==_lunr.QueryLexer.EOS){return _lunr.QueryLexer.lexEOS;}// Escape character is '\'
-if(char.charCodeAt(0)==92){lexer.escapeCharacter();continue;}if(char==":"){return _lunr.QueryLexer.lexField;}if(char=="~"){lexer.backup();if(lexer.width()>0){lexer.emit(_lunr.QueryLexer.TERM);}return _lunr.QueryLexer.lexEditDistance;}if(char=="^"){lexer.backup();if(lexer.width()>0){lexer.emit(_lunr.QueryLexer.TERM);}return _lunr.QueryLexer.lexBoost;}// "+" indicates term presence is required
+lunr.QueryLexer.termSeparator=lunr.tokenizer.separator;lunr.QueryLexer.lexText=function(lexer){while(true){var char=lexer.next();if(char==lunr.QueryLexer.EOS){return lunr.QueryLexer.lexEOS;}// Escape character is '\'
+if(char.charCodeAt(0)==92){lexer.escapeCharacter();continue;}if(char==":"){return lunr.QueryLexer.lexField;}if(char=="~"){lexer.backup();if(lexer.width()>0){lexer.emit(lunr.QueryLexer.TERM);}return lunr.QueryLexer.lexEditDistance;}if(char=="^"){lexer.backup();if(lexer.width()>0){lexer.emit(lunr.QueryLexer.TERM);}return lunr.QueryLexer.lexBoost;}// "+" indicates term presence is required
 // checking for length to ensure that only
 // leading "+" are considered
-if(char=="+"&&lexer.width()===1){lexer.emit(_lunr.QueryLexer.PRESENCE);return _lunr.QueryLexer.lexText;}// "-" indicates term presence is prohibited
+if(char=="+"&&lexer.width()===1){lexer.emit(lunr.QueryLexer.PRESENCE);return lunr.QueryLexer.lexText;}// "-" indicates term presence is prohibited
 // checking for length to ensure that only
 // leading "-" are considered
-if(char=="-"&&lexer.width()===1){lexer.emit(_lunr.QueryLexer.PRESENCE);return _lunr.QueryLexer.lexText;}if(char.match(_lunr.QueryLexer.termSeparator)){return _lunr.QueryLexer.lexTerm;}}};_lunr.QueryParser=function(str,query){this.lexer=new _lunr.QueryLexer(str);this.query=query;this.currentClause={};this.lexemeIdx=0;};_lunr.QueryParser.prototype.parse=function(){this.lexer.run();this.lexemes=this.lexer.lexemes;var state=_lunr.QueryParser.parseClause;while(state){state=state(this);}return this.query;};_lunr.QueryParser.prototype.peekLexeme=function(){return this.lexemes[this.lexemeIdx];};_lunr.QueryParser.prototype.consumeLexeme=function(){var lexeme=this.peekLexeme();this.lexemeIdx+=1;return lexeme;};_lunr.QueryParser.prototype.nextClause=function(){var completedClause=this.currentClause;this.query.clause(completedClause);this.currentClause={};};_lunr.QueryParser.parseClause=function(parser){var lexeme=parser.peekLexeme();if(lexeme==undefined){return;}switch(lexeme.type){case _lunr.QueryLexer.PRESENCE:return _lunr.QueryParser.parsePresence;case _lunr.QueryLexer.FIELD:return _lunr.QueryParser.parseField;case _lunr.QueryLexer.TERM:return _lunr.QueryParser.parseTerm;default:var errorMessage="expected either a field or a term, found "+lexeme.type;if(lexeme.str.length>=1){errorMessage+=" with value '"+lexeme.str+"'";}throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}};_lunr.QueryParser.parsePresence=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}switch(lexeme.str){case"-":parser.currentClause.presence=_lunr.Query.presence.PROHIBITED;break;case"+":parser.currentClause.presence=_lunr.Query.presence.REQUIRED;break;default:var errorMessage="unrecognised presence operator'"+lexeme.str+"'";throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){var errorMessage="expecting term or field, found nothing";throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}switch(nextLexeme.type){case _lunr.QueryLexer.FIELD:return _lunr.QueryParser.parseField;case _lunr.QueryLexer.TERM:return _lunr.QueryParser.parseTerm;default:var errorMessage="expecting term or field, found '"+nextLexeme.type+"'";throw new _lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};_lunr.QueryParser.parseField=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}if(parser.query.allFields.indexOf(lexeme.str)==-1){var possibleFields=parser.query.allFields.map(function(f){return"'"+f+"'";}).join(', '),errorMessage="unrecognised field '"+lexeme.str+"', possible fields: "+possibleFields;throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.fields=[lexeme.str];var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){var errorMessage="expecting term, found nothing";throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}switch(nextLexeme.type){case _lunr.QueryLexer.TERM:return _lunr.QueryParser.parseTerm;default:var errorMessage="expecting term, found '"+nextLexeme.type+"'";throw new _lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};_lunr.QueryParser.parseTerm=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}parser.currentClause.term=lexeme.str.toLowerCase();if(lexeme.str.indexOf("*")!=-1){parser.currentClause.usePipeline=false;}var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case _lunr.QueryLexer.TERM:parser.nextClause();return _lunr.QueryParser.parseTerm;case _lunr.QueryLexer.FIELD:parser.nextClause();return _lunr.QueryParser.parseField;case _lunr.QueryLexer.EDIT_DISTANCE:return _lunr.QueryParser.parseEditDistance;case _lunr.QueryLexer.BOOST:return _lunr.QueryParser.parseBoost;case _lunr.QueryLexer.PRESENCE:parser.nextClause();return _lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new _lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};_lunr.QueryParser.parseEditDistance=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}var editDistance=parseInt(lexeme.str,10);if(isNaN(editDistance)){var errorMessage="edit distance must be numeric";throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.editDistance=editDistance;var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case _lunr.QueryLexer.TERM:parser.nextClause();return _lunr.QueryParser.parseTerm;case _lunr.QueryLexer.FIELD:parser.nextClause();return _lunr.QueryParser.parseField;case _lunr.QueryLexer.EDIT_DISTANCE:return _lunr.QueryParser.parseEditDistance;case _lunr.QueryLexer.BOOST:return _lunr.QueryParser.parseBoost;case _lunr.QueryLexer.PRESENCE:parser.nextClause();return _lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new _lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};_lunr.QueryParser.parseBoost=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}var boost=parseInt(lexeme.str,10);if(isNaN(boost)){var errorMessage="boost must be numeric";throw new _lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.boost=boost;var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case _lunr.QueryLexer.TERM:parser.nextClause();return _lunr.QueryParser.parseTerm;case _lunr.QueryLexer.FIELD:parser.nextClause();return _lunr.QueryParser.parseField;case _lunr.QueryLexer.EDIT_DISTANCE:return _lunr.QueryParser.parseEditDistance;case _lunr.QueryLexer.BOOST:return _lunr.QueryParser.parseBoost;case _lunr.QueryLexer.PRESENCE:parser.nextClause();return _lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new _lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}}/**
+if(char=="-"&&lexer.width()===1){lexer.emit(lunr.QueryLexer.PRESENCE);return lunr.QueryLexer.lexText;}if(char.match(lunr.QueryLexer.termSeparator)){return lunr.QueryLexer.lexTerm;}}};lunr.QueryParser=function(str,query){this.lexer=new lunr.QueryLexer(str);this.query=query;this.currentClause={};this.lexemeIdx=0;};lunr.QueryParser.prototype.parse=function(){this.lexer.run();this.lexemes=this.lexer.lexemes;var state=lunr.QueryParser.parseClause;while(state){state=state(this);}return this.query;};lunr.QueryParser.prototype.peekLexeme=function(){return this.lexemes[this.lexemeIdx];};lunr.QueryParser.prototype.consumeLexeme=function(){var lexeme=this.peekLexeme();this.lexemeIdx+=1;return lexeme;};lunr.QueryParser.prototype.nextClause=function(){var completedClause=this.currentClause;this.query.clause(completedClause);this.currentClause={};};lunr.QueryParser.parseClause=function(parser){var lexeme=parser.peekLexeme();if(lexeme==undefined){return;}switch(lexeme.type){case lunr.QueryLexer.PRESENCE:return lunr.QueryParser.parsePresence;case lunr.QueryLexer.FIELD:return lunr.QueryParser.parseField;case lunr.QueryLexer.TERM:return lunr.QueryParser.parseTerm;default:var errorMessage="expected either a field or a term, found "+lexeme.type;if(lexeme.str.length>=1){errorMessage+=" with value '"+lexeme.str+"'";}throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}};lunr.QueryParser.parsePresence=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}switch(lexeme.str){case"-":parser.currentClause.presence=lunr.Query.presence.PROHIBITED;break;case"+":parser.currentClause.presence=lunr.Query.presence.REQUIRED;break;default:var errorMessage="unrecognised presence operator'"+lexeme.str+"'";throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){var errorMessage="expecting term or field, found nothing";throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}switch(nextLexeme.type){case lunr.QueryLexer.FIELD:return lunr.QueryParser.parseField;case lunr.QueryLexer.TERM:return lunr.QueryParser.parseTerm;default:var errorMessage="expecting term or field, found '"+nextLexeme.type+"'";throw new lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};lunr.QueryParser.parseField=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}if(parser.query.allFields.indexOf(lexeme.str)==-1){var possibleFields=parser.query.allFields.map(function(f){return"'"+f+"'";}).join(', '),errorMessage="unrecognised field '"+lexeme.str+"', possible fields: "+possibleFields;throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.fields=[lexeme.str];var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){var errorMessage="expecting term, found nothing";throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}switch(nextLexeme.type){case lunr.QueryLexer.TERM:return lunr.QueryParser.parseTerm;default:var errorMessage="expecting term, found '"+nextLexeme.type+"'";throw new lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};lunr.QueryParser.parseTerm=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}parser.currentClause.term=lexeme.str.toLowerCase();if(lexeme.str.indexOf("*")!=-1){parser.currentClause.usePipeline=false;}var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case lunr.QueryLexer.TERM:parser.nextClause();return lunr.QueryParser.parseTerm;case lunr.QueryLexer.FIELD:parser.nextClause();return lunr.QueryParser.parseField;case lunr.QueryLexer.EDIT_DISTANCE:return lunr.QueryParser.parseEditDistance;case lunr.QueryLexer.BOOST:return lunr.QueryParser.parseBoost;case lunr.QueryLexer.PRESENCE:parser.nextClause();return lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};lunr.QueryParser.parseEditDistance=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}var editDistance=parseInt(lexeme.str,10);if(isNaN(editDistance)){var errorMessage="edit distance must be numeric";throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.editDistance=editDistance;var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case lunr.QueryLexer.TERM:parser.nextClause();return lunr.QueryParser.parseTerm;case lunr.QueryLexer.FIELD:parser.nextClause();return lunr.QueryParser.parseField;case lunr.QueryLexer.EDIT_DISTANCE:return lunr.QueryParser.parseEditDistance;case lunr.QueryLexer.BOOST:return lunr.QueryParser.parseBoost;case lunr.QueryLexer.PRESENCE:parser.nextClause();return lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}};lunr.QueryParser.parseBoost=function(parser){var lexeme=parser.consumeLexeme();if(lexeme==undefined){return;}var boost=parseInt(lexeme.str,10);if(isNaN(boost)){var errorMessage="boost must be numeric";throw new lunr.QueryParseError(errorMessage,lexeme.start,lexeme.end);}parser.currentClause.boost=boost;var nextLexeme=parser.peekLexeme();if(nextLexeme==undefined){parser.nextClause();return;}switch(nextLexeme.type){case lunr.QueryLexer.TERM:parser.nextClause();return lunr.QueryParser.parseTerm;case lunr.QueryLexer.FIELD:parser.nextClause();return lunr.QueryParser.parseField;case lunr.QueryLexer.EDIT_DISTANCE:return lunr.QueryParser.parseEditDistance;case lunr.QueryLexer.BOOST:return lunr.QueryParser.parseBoost;case lunr.QueryLexer.PRESENCE:parser.nextClause();return lunr.QueryParser.parsePresence;default:var errorMessage="Unexpected lexeme type '"+nextLexeme.type+"'";throw new lunr.QueryParseError(errorMessage,nextLexeme.start,nextLexeme.end);}}/**
    * export the module via AMD, CommonJS or as a browser global
    * Export code from https://github.com/umdjs/umd/blob/master/returnExports.js
    */;(function(root,factory){if(typeof define==='function'&&define.amd){// AMD. Register as an anonymous module.
@@ -1138,7 +1138,7 @@ root.lunr=factory();}})(this,function(){/**
      * Just return a value to define the module export.
      * This example returns an object, but the module
      * can return a function as the exported value.
-     */return _lunr;});})();},{}],33:[function(require,module,exports){'use strict';/** @type {import('./abs')} */module.exports=Math.abs;},{}],34:[function(require,module,exports){'use strict';/** @type {import('./floor')} */module.exports=Math.floor;},{}],35:[function(require,module,exports){'use strict';/** @type {import('./isNaN')} */module.exports=Number.isNaN||function isNaN(a){return a!==a;};},{}],36:[function(require,module,exports){'use strict';/** @type {import('./max')} */module.exports=Math.max;},{}],37:[function(require,module,exports){'use strict';/** @type {import('./min')} */module.exports=Math.min;},{}],38:[function(require,module,exports){'use strict';/** @type {import('./pow')} */module.exports=Math.pow;},{}],39:[function(require,module,exports){'use strict';/** @type {import('./round')} */module.exports=Math.round;},{}],40:[function(require,module,exports){'use strict';var $isNaN=require('./isNaN');/** @type {import('./sign')} */module.exports=function sign(number){if($isNaN(number)||number===0){return number;}return number<0?-1:+1;};},{"./isNaN":35}],41:[function(require,module,exports){(function(global){(function(){var hasMap=typeof Map==='function'&&Map.prototype;var mapSizeDescriptor=Object.getOwnPropertyDescriptor&&hasMap?Object.getOwnPropertyDescriptor(Map.prototype,'size'):null;var mapSize=hasMap&&mapSizeDescriptor&&typeof mapSizeDescriptor.get==='function'?mapSizeDescriptor.get:null;var mapForEach=hasMap&&Map.prototype.forEach;var hasSet=typeof Set==='function'&&Set.prototype;var setSizeDescriptor=Object.getOwnPropertyDescriptor&&hasSet?Object.getOwnPropertyDescriptor(Set.prototype,'size'):null;var setSize=hasSet&&setSizeDescriptor&&typeof setSizeDescriptor.get==='function'?setSizeDescriptor.get:null;var setForEach=hasSet&&Set.prototype.forEach;var hasWeakMap=typeof WeakMap==='function'&&WeakMap.prototype;var weakMapHas=hasWeakMap?WeakMap.prototype.has:null;var hasWeakSet=typeof WeakSet==='function'&&WeakSet.prototype;var weakSetHas=hasWeakSet?WeakSet.prototype.has:null;var hasWeakRef=typeof WeakRef==='function'&&WeakRef.prototype;var weakRefDeref=hasWeakRef?WeakRef.prototype.deref:null;var booleanValueOf=Boolean.prototype.valueOf;var objectToString=Object.prototype.toString;var functionToString=Function.prototype.toString;var $match=String.prototype.match;var $slice=String.prototype.slice;var $replace=String.prototype.replace;var $toUpperCase=String.prototype.toUpperCase;var $toLowerCase=String.prototype.toLowerCase;var $test=RegExp.prototype.test;var $concat=Array.prototype.concat;var $join=Array.prototype.join;var $arrSlice=Array.prototype.slice;var $floor=Math.floor;var bigIntValueOf=typeof BigInt==='function'?BigInt.prototype.valueOf:null;var gOPS=Object.getOwnPropertySymbols;var symToString=typeof Symbol==='function'&&typeof Symbol.iterator==='symbol'?Symbol.prototype.toString:null;var hasShammedSymbols=typeof Symbol==='function'&&typeof Symbol.iterator==='object';// ie, `has-tostringtag/shams
+     */return lunr;});})();},{}],33:[function(require,module,exports){'use strict';/** @type {import('./abs')} */module.exports=Math.abs;},{}],34:[function(require,module,exports){'use strict';/** @type {import('./floor')} */module.exports=Math.floor;},{}],35:[function(require,module,exports){'use strict';/** @type {import('./isNaN')} */module.exports=Number.isNaN||function isNaN(a){return a!==a;};},{}],36:[function(require,module,exports){'use strict';/** @type {import('./max')} */module.exports=Math.max;},{}],37:[function(require,module,exports){'use strict';/** @type {import('./min')} */module.exports=Math.min;},{}],38:[function(require,module,exports){'use strict';/** @type {import('./pow')} */module.exports=Math.pow;},{}],39:[function(require,module,exports){'use strict';/** @type {import('./round')} */module.exports=Math.round;},{}],40:[function(require,module,exports){'use strict';var $isNaN=require('./isNaN');/** @type {import('./sign')} */module.exports=function sign(number){if($isNaN(number)||number===0){return number;}return number<0?-1:+1;};},{"./isNaN":35}],41:[function(require,module,exports){(function(global){(function(){var hasMap=typeof Map==='function'&&Map.prototype;var mapSizeDescriptor=Object.getOwnPropertyDescriptor&&hasMap?Object.getOwnPropertyDescriptor(Map.prototype,'size'):null;var mapSize=hasMap&&mapSizeDescriptor&&typeof mapSizeDescriptor.get==='function'?mapSizeDescriptor.get:null;var mapForEach=hasMap&&Map.prototype.forEach;var hasSet=typeof Set==='function'&&Set.prototype;var setSizeDescriptor=Object.getOwnPropertyDescriptor&&hasSet?Object.getOwnPropertyDescriptor(Set.prototype,'size'):null;var setSize=hasSet&&setSizeDescriptor&&typeof setSizeDescriptor.get==='function'?setSizeDescriptor.get:null;var setForEach=hasSet&&Set.prototype.forEach;var hasWeakMap=typeof WeakMap==='function'&&WeakMap.prototype;var weakMapHas=hasWeakMap?WeakMap.prototype.has:null;var hasWeakSet=typeof WeakSet==='function'&&WeakSet.prototype;var weakSetHas=hasWeakSet?WeakSet.prototype.has:null;var hasWeakRef=typeof WeakRef==='function'&&WeakRef.prototype;var weakRefDeref=hasWeakRef?WeakRef.prototype.deref:null;var booleanValueOf=Boolean.prototype.valueOf;var objectToString=Object.prototype.toString;var functionToString=Function.prototype.toString;var $match=String.prototype.match;var $slice=String.prototype.slice;var $replace=String.prototype.replace;var $toUpperCase=String.prototype.toUpperCase;var $toLowerCase=String.prototype.toLowerCase;var $test=RegExp.prototype.test;var $concat=Array.prototype.concat;var $join=Array.prototype.join;var $arrSlice=Array.prototype.slice;var $floor=Math.floor;var bigIntValueOf=typeof BigInt==='function'?BigInt.prototype.valueOf:null;var gOPS=Object.getOwnPropertySymbols;var symToString=typeof Symbol==='function'&&typeof Symbol.iterator==='symbol'?Symbol.prototype.toString:null;var hasShammedSymbols=typeof Symbol==='function'&&typeof Symbol.iterator==='object';// ie, `has-tostringtag/shams
 var toStringTag=typeof Symbol==='function'&&Symbol.toStringTag&&(typeof Symbol.toStringTag===hasShammedSymbols?'object':'symbol')?Symbol.toStringTag:null;var isEnumerable=Object.prototype.propertyIsEnumerable;var gPO=(typeof Reflect==='function'?Reflect.getPrototypeOf:Object.getPrototypeOf)||([].__proto__===Array.prototype// eslint-disable-line no-proto
 ?function(O){return O.__proto__;// eslint-disable-line no-proto
 }:null);function addNumericSeparator(num,str){if(num===Infinity||num===-Infinity||num!==num||num&&num>-1000&&num<1000||$test.call(/e/,str)){return str;}var sepRegex=/[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;if(typeof num==='number'){var int=num<0?-$floor(-num):$floor(num);// trunc(num)
@@ -1254,147 +1254,147 @@ this.pict=this.fable;// Wire in the essential Pict state
 let tmpManifestKeys=Object.keys(this.options.Manifests);if(tmpManifestKeys.length>0){for(let i=0;i<tmpManifestKeys.length;i++){// Load each manifest
 let tmpManifestKey=tmpManifestKeys[i];this.fable.instantiateServiceProvider('Manifest',this.options.Manifests[tmpManifestKey],tmpManifestKey);}}}/* -------------------------------------------------------------------------- *//*                     Code Section: Solve All Views                          *//* -------------------------------------------------------------------------- *//**
 	 * @return {boolean}
-	 */onPreSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onPreSolve:"));}return true;}/**
+	 */onPreSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onPreSolve:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onPreSolveAsync(fCallback){this.onPreSolve();return fCallback();}/**
 	 * @return {boolean}
-	 */onBeforeSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeSolve:"));}return true;}/**
+	 */onBeforeSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeSolve:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onBeforeSolveAsync(fCallback){this.onBeforeSolve();return fCallback();}/**
 	 * @return {boolean}
-	 */onSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onSolve:"));}return true;}/**
+	 */onSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onSolve:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onSolveAsync(fCallback){this.onSolve();return fCallback();}/**
 	 * @return {boolean}
-	 */solve(){if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," executing solve() function..."));}// Walk through any loaded providers and solve them as well.
+	 */solve(){if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} executing solve() function...`);}// Walk through any loaded providers and solve them as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToSolve=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoSolveWithApp){tmpProvidersToSolve.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToSolve.sort((a,b)=>{return a.options.AutoSolveOrdinal-b.options.AutoSolveOrdinal;});for(let i=0;i<tmpProvidersToSolve.length;i++){tmpProvidersToSolve[i].solve(tmpProvidersToSolve[i]);}this.onBeforeSolve();// Now walk through any loaded views and initialize them as well.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToSolve=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoInitialize){tmpViewsToSolve.push(tmpView);}}// Sort the views by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpViewsToSolve.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpViewsToSolve.length;i++){tmpViewsToSolve[i].solve();}this.onSolve();this.onAfterSolve();this.lastSolvedTimestamp=this.fable.log.getTimeStamp();return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */solveAsync(fCallback){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');tmpAnticipate.anticipate(this.onBeforeSolveAsync.bind(this));// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," solveAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," solveAsync Auto Callback Error: ").concat(pError),pError);}};}// Walk through any loaded providers and solve them as well.
+let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} solveAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} solveAsync Auto Callback Error: ${pError}`,pError);}};}// Walk through any loaded providers and solve them as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToSolve=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoSolveWithApp){tmpProvidersToSolve.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToSolve.sort((a,b)=>{return a.options.AutoSolveOrdinal-b.options.AutoSolveOrdinal;});for(let i=0;i<tmpProvidersToSolve.length;i++){tmpAnticipate.anticipate(tmpProvidersToSolve[i].solveAsync.bind(tmpProvidersToSolve[i]));}// Walk through any loaded views and solve them as well.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToSolve=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoSolveWithApp){tmpViewsToSolve.push(tmpView);}}// Sort the views by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
-tmpViewsToSolve.sort((a,b)=>{return a.options.AutoSolveOrdinal-b.options.AutoSolveOrdinal;});for(let i=0;i<tmpViewsToSolve.length;i++){tmpAnticipate.anticipate(tmpViewsToSolve[i].solveAsync.bind(tmpViewsToSolve[i]));}tmpAnticipate.anticipate(this.onSolveAsync.bind(this));tmpAnticipate.anticipate(this.onAfterSolveAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," solveAsync() complete."));}this.lastSolvedTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+tmpViewsToSolve.sort((a,b)=>{return a.options.AutoSolveOrdinal-b.options.AutoSolveOrdinal;});for(let i=0;i<tmpViewsToSolve.length;i++){tmpAnticipate.anticipate(tmpViewsToSolve[i].solveAsync.bind(tmpViewsToSolve[i]));}tmpAnticipate.anticipate(this.onSolveAsync.bind(this));tmpAnticipate.anticipate(this.onAfterSolveAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} solveAsync() complete.`);}this.lastSolvedTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * @return {boolean}
-	 */onAfterSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterSolve:"));}return true;}/**
+	 */onAfterSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterSolve:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onAfterSolveAsync(fCallback){this.onAfterSolve();return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Application Login                        *//* -------------------------------------------------------------------------- *//**
 	 * @param {(error?: Error) => void} fCallback
-	 */onBeforeLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeLoginAsync:"));}return fCallback();}/**
+	 */onBeforeLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeLoginAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onLoginAsync:"));}return fCallback();}/**
+	 */onLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onLoginAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */loginAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loginAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loginAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeLoginAsync.bind(this));tmpAnticipate.anticipate(this.onLoginAsync.bind(this));tmpAnticipate.anticipate(this.onAfterLoginAsync.bind(this));// check and see if we should automatically trigger a data load
-if(this.options.AutoLoadDataAfterLogin){tmpAnticipate.anticipate(fNext=>{if(!this.isLoggedIn()){return fNext();}if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto loading data after login..."));}//TODO: should data load errors funnel here? this creates a weird coupling between login and data load callbacks
-this.loadDataAsync(pError=>{fNext(pError);});});}tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loginAsync() complete."));}this.lastLoginTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+	 */loginAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loginAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loginAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeLoginAsync.bind(this));tmpAnticipate.anticipate(this.onLoginAsync.bind(this));tmpAnticipate.anticipate(this.onAfterLoginAsync.bind(this));// check and see if we should automatically trigger a data load
+if(this.options.AutoLoadDataAfterLogin){tmpAnticipate.anticipate(fNext=>{if(!this.isLoggedIn()){return fNext();}if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto loading data after login...`);}//TODO: should data load errors funnel here? this creates a weird coupling between login and data load callbacks
+this.loadDataAsync(pError=>{fNext(pError);});});}tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loginAsync() complete.`);}this.lastLoginTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * Check if the application state is logged in. Defaults to true. Override this method in your application based on login requirements.
 	 *
 	 * @return {boolean}
 	 */isLoggedIn(){return true;}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onAfterLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterLoginAsync:"));}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Application LoadData                     *//* -------------------------------------------------------------------------- *//**
+	 */onAfterLoginAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterLoginAsync:`);}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Application LoadData                     *//* -------------------------------------------------------------------------- *//**
 	 * @param {(error?: Error) => void} fCallback
-	 */onBeforeLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeLoadDataAsync:"));}return fCallback();}/**
+	 */onBeforeLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeLoadDataAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onLoadDataAsync:"));}return fCallback();}/**
+	 */onLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onLoadDataAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */loadDataAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loadDataAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loadDataAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeLoadDataAsync.bind(this));// Walk through any loaded providers and load their data as well.
+	 */loadDataAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loadDataAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loadDataAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeLoadDataAsync.bind(this));// Walk through any loaded providers and load their data as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToLoadData=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoLoadDataWithApp){tmpProvidersToLoadData.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToLoadData.sort((a,b)=>{return a.options.AutoLoadDataOrdinal-b.options.AutoLoadDataOrdinal;});for(const tmpProvider of tmpProvidersToLoadData){tmpAnticipate.anticipate(tmpProvider.onBeforeLoadDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onLoadDataAsync.bind(this));//TODO: think about ways to parallelize these
-for(const tmpProvider of tmpProvidersToLoadData){tmpAnticipate.anticipate(tmpProvider.onLoadDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onAfterLoadDataAsync.bind(this));for(const tmpProvider of tmpProvidersToLoadData){tmpAnticipate.anticipate(tmpProvider.onAfterLoadDataAsync.bind(tmpProvider));}tmpAnticipate.wait(/** @param {Error} [pError] */pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," loadDataAsync() complete."));}this.lastLoadDataTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+for(const tmpProvider of tmpProvidersToLoadData){tmpAnticipate.anticipate(tmpProvider.onLoadDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onAfterLoadDataAsync.bind(this));for(const tmpProvider of tmpProvidersToLoadData){tmpAnticipate.anticipate(tmpProvider.onAfterLoadDataAsync.bind(tmpProvider));}tmpAnticipate.wait(/** @param {Error} [pError] */pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} loadDataAsync() complete.`);}this.lastLoadDataTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onAfterLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterLoadDataAsync:"));}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Application SaveData                     *//* -------------------------------------------------------------------------- *//**
+	 */onAfterLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterLoadDataAsync:`);}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Application SaveData                     *//* -------------------------------------------------------------------------- *//**
 	 * @param {(error?: Error) => void} fCallback
-	 */onBeforeSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeSaveDataAsync:"));}return fCallback();}/**
+	 */onBeforeSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeSaveDataAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onSaveDataAsync:"));}return fCallback();}/**
+	 */onSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onSaveDataAsync:`);}return fCallback();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */saveDataAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," saveDataAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," saveDataAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeSaveDataAsync.bind(this));// Walk through any loaded providers and load their data as well.
+	 */saveDataAsync(fCallback){const tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');let tmpCallback=fCallback;if(typeof tmpCallback!=='function'){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} saveDataAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} saveDataAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeSaveDataAsync.bind(this));// Walk through any loaded providers and load their data as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToSaveData=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoSaveDataWithApp){tmpProvidersToSaveData.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToSaveData.sort((a,b)=>{return a.options.AutoSaveDataOrdinal-b.options.AutoSaveDataOrdinal;});for(const tmpProvider of tmpProvidersToSaveData){tmpAnticipate.anticipate(tmpProvider.onBeforeSaveDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onSaveDataAsync.bind(this));//TODO: think about ways to parallelize these
-for(const tmpProvider of tmpProvidersToSaveData){tmpAnticipate.anticipate(tmpProvider.onSaveDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onAfterSaveDataAsync.bind(this));for(const tmpProvider of tmpProvidersToSaveData){tmpAnticipate.anticipate(tmpProvider.onAfterSaveDataAsync.bind(tmpProvider));}tmpAnticipate.wait(/** @param {Error} [pError] */pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," saveDataAsync() complete."));}this.lastSaveDataTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+for(const tmpProvider of tmpProvidersToSaveData){tmpAnticipate.anticipate(tmpProvider.onSaveDataAsync.bind(tmpProvider));}tmpAnticipate.anticipate(this.onAfterSaveDataAsync.bind(this));for(const tmpProvider of tmpProvidersToSaveData){tmpAnticipate.anticipate(tmpProvider.onAfterSaveDataAsync.bind(tmpProvider));}tmpAnticipate.wait(/** @param {Error} [pError] */pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} saveDataAsync() complete.`);}this.lastSaveDataTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */onAfterSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterSaveDataAsync:"));}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Initialize Application                   *//* -------------------------------------------------------------------------- *//**
+	 */onAfterSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterSaveDataAsync:`);}return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Initialize Application                   *//* -------------------------------------------------------------------------- *//**
 	 * @return {boolean}
-	 */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeInitialize:"));}return true;}/**
+	 */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeInitialize:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onBeforeInitializeAsync(fCallback){this.onBeforeInitialize();return fCallback();}/**
 	 * @return {boolean}
-	 */onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onInitialize:"));}return true;}/**
+	 */onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onInitialize:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onInitializeAsync(fCallback){this.onInitialize();return fCallback();}/**
 	 * @return {boolean}
-	 */initialize(){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initialize:"));}if(!this.initializeTimestamp){this.onBeforeInitialize();if('ConfigurationOnlyViews'in this.options){// Load all the configuration only views
-for(let i=0;i<this.options.ConfigurationOnlyViews.length;i++){let tmpViewIdentifier=typeof this.options.ConfigurationOnlyViews[i].ViewIdentifier==='undefined'?"AutoView-".concat(this.fable.getUUID()):this.options.ConfigurationOnlyViews[i].ViewIdentifier;this.log.info("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," adding configuration only view: ").concat(tmpViewIdentifier));this.pict.addView(tmpViewIdentifier,this.options.ConfigurationOnlyViews[i]);}}this.onInitialize();// Walk through any loaded providers and initialize them as well.
+	 */initialize(){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} initialize:`);}if(!this.initializeTimestamp){this.onBeforeInitialize();if('ConfigurationOnlyViews'in this.options){// Load all the configuration only views
+for(let i=0;i<this.options.ConfigurationOnlyViews.length;i++){let tmpViewIdentifier=typeof this.options.ConfigurationOnlyViews[i].ViewIdentifier==='undefined'?`AutoView-${this.fable.getUUID()}`:this.options.ConfigurationOnlyViews[i].ViewIdentifier;this.log.info(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} adding configuration only view: ${tmpViewIdentifier}`);this.pict.addView(tmpViewIdentifier,this.options.ConfigurationOnlyViews[i]);}}this.onInitialize();// Walk through any loaded providers and initialize them as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToInitialize=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoInitialize){tmpProvidersToInitialize.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpProvidersToInitialize.length;i++){tmpProvidersToInitialize[i].initialize();}// Now walk through any loaded views and initialize them as well.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToInitialize=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoInitialize){tmpViewsToInitialize.push(tmpView);}}// Sort the views by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
-tmpViewsToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpViewsToInitialize.length;i++){tmpViewsToInitialize[i].initialize();}this.onAfterInitialize();if(this.options.AutoSolveAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto solving after initialization..."));}// Solve the template synchronously
+tmpViewsToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpViewsToInitialize.length;i++){tmpViewsToInitialize[i].initialize();}this.onAfterInitialize();if(this.options.AutoSolveAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto solving after initialization...`);}// Solve the template synchronously
 this.solve();}// Now check and see if we should automatically render as well
-if(this.options.AutoRenderMainViewportViewAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto rendering after initialization..."));}// Render the template synchronously
-this.render();}this.initializeTimestamp=this.fable.log.getTimeStamp();this.onCompletionOfInitialize();return true;}else{this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initialize called but initialization is already completed.  Aborting."));return false;}}/**
+if(this.options.AutoRenderMainViewportViewAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto rendering after initialization...`);}// Render the template synchronously
+this.render();}this.initializeTimestamp=this.fable.log.getTimeStamp();this.onCompletionOfInitialize();return true;}else{this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} initialize called but initialization is already completed.  Aborting.`);return false;}}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initializeAsync:"));}// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initializeAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initializeAsync Auto Callback Error: ").concat(pError),pError);}};}if(!this.initializeTimestamp){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," beginning initialization..."));}if('ConfigurationOnlyViews'in this.options){// Load all the configuration only views
-for(let i=0;i<this.options.ConfigurationOnlyViews.length;i++){let tmpViewIdentifier=typeof this.options.ConfigurationOnlyViews[i].ViewIdentifier==='undefined'?"AutoView-".concat(this.fable.getUUID()):this.options.ConfigurationOnlyViews[i].ViewIdentifier;this.log.info("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," adding configuration only view: ").concat(tmpViewIdentifier));this.pict.addView(tmpViewIdentifier,this.options.ConfigurationOnlyViews[i]);}}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));// Walk through any loaded providers and solve them as well.
+	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} initializeAsync:`);}// Allow the callback to be passed in as the last parameter no matter what
+let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} initializeAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} initializeAsync Auto Callback Error: ${pError}`,pError);}};}if(!this.initializeTimestamp){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} beginning initialization...`);}if('ConfigurationOnlyViews'in this.options){// Load all the configuration only views
+for(let i=0;i<this.options.ConfigurationOnlyViews.length;i++){let tmpViewIdentifier=typeof this.options.ConfigurationOnlyViews[i].ViewIdentifier==='undefined'?`AutoView-${this.fable.getUUID()}`:this.options.ConfigurationOnlyViews[i].ViewIdentifier;this.log.info(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} adding configuration only view: ${tmpViewIdentifier}`);this.pict.addView(tmpViewIdentifier,this.options.ConfigurationOnlyViews[i]);}}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));// Walk through any loaded providers and solve them as well.
 let tmpLoadedProviders=Object.keys(this.pict.providers);let tmpProvidersToInitialize=[];for(let i=0;i<tmpLoadedProviders.length;i++){let tmpProvider=this.pict.providers[tmpLoadedProviders[i]];if(tmpProvider.options.AutoInitialize){tmpProvidersToInitialize.push(tmpProvider);}}// Sort the providers by their priority (if they are all priority 0, it will end up being add order due to JSON Object Property Key order stuff)
 tmpProvidersToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpProvidersToInitialize.length;i++){tmpAnticipate.anticipate(tmpProvidersToInitialize[i].initializeAsync.bind(tmpProvidersToInitialize[i]));}// Now walk through any loaded views and initialize them as well.
 // TODO: Some optimization cleverness could be gained by grouping them into a parallelized async operation, by ordinal.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToInitialize=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoInitialize){tmpViewsToInitialize.push(tmpView);}}// Sort the views by their priority
 // If they are all the default priority 0, it will end up being add order due to JSON Object Property Key order stuff
-tmpViewsToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpViewsToInitialize.length;i++){let tmpView=tmpViewsToInitialize[i];tmpAnticipate.anticipate(tmpView.initializeAsync.bind(tmpView));}tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));if(this.options.AutoLoginAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto login (asynchronously) after initialization..."));}tmpAnticipate.anticipate(this.loginAsync.bind(this));}if(this.options.AutoSolveAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto solving (asynchronously) after initialization..."));}tmpAnticipate.anticipate(this.solveAsync.bind(this));}if(this.options.AutoRenderMainViewportViewAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," auto rendering (asynchronously) after initialization..."));}tmpAnticipate.anticipate(this.renderMainViewportAsync.bind(this));}tmpAnticipate.wait(pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initializeAsync Error: ").concat(pError.message||pError),{stack:pError.stack});}this.initializeTimestamp=this.fable.log.getTimeStamp();if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," initialization complete."));}return tmpCallback();});}else{this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," async initialize called but initialization is already completed.  Aborting."));// TODO: Should this be an error?
+tmpViewsToInitialize.sort((a,b)=>{return a.options.AutoInitializeOrdinal-b.options.AutoInitializeOrdinal;});for(let i=0;i<tmpViewsToInitialize.length;i++){let tmpView=tmpViewsToInitialize[i];tmpAnticipate.anticipate(tmpView.initializeAsync.bind(tmpView));}tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));if(this.options.AutoLoginAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto login (asynchronously) after initialization...`);}tmpAnticipate.anticipate(this.loginAsync.bind(this));}if(this.options.AutoSolveAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto solving (asynchronously) after initialization...`);}tmpAnticipate.anticipate(this.solveAsync.bind(this));}if(this.options.AutoRenderMainViewportViewAfterInitialize){if(this.pict.LogNoisiness>1){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} auto rendering (asynchronously) after initialization...`);}tmpAnticipate.anticipate(this.renderMainViewportAsync.bind(this));}tmpAnticipate.wait(pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} initializeAsync Error: ${pError.message||pError}`,{stack:pError.stack});}this.initializeTimestamp=this.fable.log.getTimeStamp();if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} initialization complete.`);}return tmpCallback();});}else{this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} async initialize called but initialization is already completed.  Aborting.`);// TODO: Should this be an error?
 return this.onCompletionOfInitializeAsync(tmpCallback);}}/**
 	 * @return {boolean}
-	 */onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterInitialize:"));}return true;}/**
+	 */onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterInitialize:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onAfterInitializeAsync(fCallback){this.onAfterInitialize();return fCallback();}/**
 	 * @return {boolean}
-	 */onCompletionOfInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onCompletionOfInitialize:"));}return true;}/**
+	 */onCompletionOfInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onCompletionOfInitialize:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onCompletionOfInitializeAsync(fCallback){this.onCompletionOfInitialize();return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Marshal Data From All Views              *//* -------------------------------------------------------------------------- *//**
 	 * @return {boolean}
-	 */onBeforeMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeMarshalFromViews:"));}return true;}/**
+	 */onBeforeMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeMarshalFromViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onBeforeMarshalFromViewsAsync(fCallback){this.onBeforeMarshalFromViews();return fCallback();}/**
 	 * @return {boolean}
-	 */onMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onMarshalFromViews:"));}return true;}/**
+	 */onMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onMarshalFromViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onMarshalFromViewsAsync(fCallback){this.onMarshalFromViews();return fCallback();}/**
 	 * @return {boolean}
-	 */marshalFromViews(){if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," executing marshalFromViews() function..."));}this.onBeforeMarshalFromViews();// Now walk through any loaded views and initialize them as well.
+	 */marshalFromViews(){if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} executing marshalFromViews() function...`);}this.onBeforeMarshalFromViews();// Now walk through any loaded views and initialize them as well.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalFromViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalFromViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalFromViews.length;i++){tmpViewsToMarshalFromViews[i].marshalFromView();}this.onMarshalFromViews();this.onAfterMarshalFromViews();this.lastMarshalFromViewsTimestamp=this.fable.log.getTimeStamp();return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */marshalFromViewsAsync(fCallback){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalFromViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalFromViewsAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalFromViewsAsync.bind(this));// Walk through any loaded views and marshalFromViews them as well.
-let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalFromViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalFromViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalFromViews.length;i++){tmpAnticipate.anticipate(tmpViewsToMarshalFromViews[i].marshalFromViewAsync.bind(tmpViewsToMarshalFromViews[i]));}tmpAnticipate.anticipate(this.onMarshalFromViewsAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalFromViewsAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalFromViewsAsync() complete."));}this.lastMarshalFromViewsTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalFromViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalFromViewsAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalFromViewsAsync.bind(this));// Walk through any loaded views and marshalFromViews them as well.
+let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalFromViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalFromViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalFromViews.length;i++){tmpAnticipate.anticipate(tmpViewsToMarshalFromViews[i].marshalFromViewAsync.bind(tmpViewsToMarshalFromViews[i]));}tmpAnticipate.anticipate(this.onMarshalFromViewsAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalFromViewsAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalFromViewsAsync() complete.`);}this.lastMarshalFromViewsTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * @return {boolean}
-	 */onAfterMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterMarshalFromViews:"));}return true;}/**
+	 */onAfterMarshalFromViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterMarshalFromViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onAfterMarshalFromViewsAsync(fCallback){this.onAfterMarshalFromViews();return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Marshal Data To All Views                *//* -------------------------------------------------------------------------- *//**
 	 * @return {boolean}
-	 */onBeforeMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeMarshalToViews:"));}return true;}/**
+	 */onBeforeMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeMarshalToViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onBeforeMarshalToViewsAsync(fCallback){this.onBeforeMarshalToViews();return fCallback();}/**
 	 * @return {boolean}
-	 */onMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onMarshalToViews:"));}return true;}/**
+	 */onMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onMarshalToViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onMarshalToViewsAsync(fCallback){this.onMarshalToViews();return fCallback();}/**
 	 * @return {boolean}
-	 */marshalToViews(){if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," executing marshalToViews() function..."));}this.onBeforeMarshalToViews();// Now walk through any loaded views and initialize them as well.
+	 */marshalToViews(){if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} executing marshalToViews() function...`);}this.onBeforeMarshalToViews();// Now walk through any loaded views and initialize them as well.
 let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalToViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalToViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalToViews.length;i++){tmpViewsToMarshalToViews[i].marshalToView();}this.onMarshalToViews();this.onAfterMarshalToViews();this.lastMarshalToViewsTimestamp=this.fable.log.getTimeStamp();return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */marshalToViewsAsync(fCallback){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalToViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalToViewsAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalToViewsAsync.bind(this));// Walk through any loaded views and marshalToViews them as well.
-let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalToViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalToViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalToViews.length;i++){tmpAnticipate.anticipate(tmpViewsToMarshalToViews[i].marshalToViewAsync.bind(tmpViewsToMarshalToViews[i]));}tmpAnticipate.anticipate(this.onMarshalToViewsAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalToViewsAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalToViewsAsync() complete."));}this.lastMarshalToViewsTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
+let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalToViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalToViewsAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalToViewsAsync.bind(this));// Walk through any loaded views and marshalToViews them as well.
+let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalToViews=[];for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];tmpViewsToMarshalToViews.push(tmpView);}for(let i=0;i<tmpViewsToMarshalToViews.length;i++){tmpAnticipate.anticipate(tmpViewsToMarshalToViews[i].marshalToViewAsync.bind(tmpViewsToMarshalToViews[i]));}tmpAnticipate.anticipate(this.onMarshalToViewsAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalToViewsAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalToViewsAsync() complete.`);}this.lastMarshalToViewsTimestamp=this.fable.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * @return {boolean}
-	 */onAfterMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterMarshalToViews:"));}return true;}/**
+	 */onAfterMarshalToViews(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterMarshalToViews:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onAfterMarshalToViewsAsync(fCallback){this.onAfterMarshalToViews();return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Render View                              *//* -------------------------------------------------------------------------- *//**
 	 * @return {boolean}
-	 */onBeforeRender(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onBeforeRender:"));}return true;}/**
+	 */onBeforeRender(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onBeforeRender:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onBeforeRenderAsync(fCallback){this.onBeforeRender();return fCallback();}/**
 	 * @param {string} [pViewIdentifier] - The hash of the view to render. By default, the main viewport view is rendered.
@@ -1403,10 +1403,10 @@ let tmpLoadedViews=Object.keys(this.pict.views);let tmpViewsToMarshalToViews=[];
 	 * @param {string} [pTemplateDataAddress] - The address where the data for the template is stored.
 	 *
 	 * TODO: Should we support objects for pTemplateDataAddress for parity with pict-view?
-	 */render(pViewIdentifier,pRenderableHash,pRenderDestinationAddress,pTemplateDataAddress){let tmpViewIdentifier=typeof pViewIdentifier!=='string'?this.options.MainViewportViewIdentifier:pViewIdentifier;let tmpRenderableHash=typeof pRenderableHash!=='string'?this.options.MainViewportRenderableHash:pRenderableHash;let tmpRenderDestinationAddress=typeof pRenderDestinationAddress!=='string'?this.options.MainViewportDestinationAddress:pRenderDestinationAddress;let tmpTemplateDataAddress=typeof pTemplateDataAddress!=='string'?this.options.MainViewportDefaultDataAddress:pTemplateDataAddress;if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," VIEW Renderable[").concat(tmpRenderableHash,"] Destination[").concat(tmpRenderDestinationAddress,"] TemplateDataAddress[").concat(tmpTemplateDataAddress,"] render:"));}this.onBeforeRender();// Now get the view (by hash) from the loaded views
-let tmpView=typeof tmpViewIdentifier==='string'?this.servicesMap.PictView[tmpViewIdentifier]:false;if(!tmpView){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," could not render from View ").concat(tmpViewIdentifier," because it is not a valid view."));return false;}this.onRender();tmpView.render(tmpRenderableHash,tmpRenderDestinationAddress,tmpTemplateDataAddress);this.onAfterRender();return true;}/**
+	 */render(pViewIdentifier,pRenderableHash,pRenderDestinationAddress,pTemplateDataAddress){let tmpViewIdentifier=typeof pViewIdentifier!=='string'?this.options.MainViewportViewIdentifier:pViewIdentifier;let tmpRenderableHash=typeof pRenderableHash!=='string'?this.options.MainViewportRenderableHash:pRenderableHash;let tmpRenderDestinationAddress=typeof pRenderDestinationAddress!=='string'?this.options.MainViewportDestinationAddress:pRenderDestinationAddress;let tmpTemplateDataAddress=typeof pTemplateDataAddress!=='string'?this.options.MainViewportDefaultDataAddress:pTemplateDataAddress;if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} VIEW Renderable[${tmpRenderableHash}] Destination[${tmpRenderDestinationAddress}] TemplateDataAddress[${tmpTemplateDataAddress}] render:`);}this.onBeforeRender();// Now get the view (by hash) from the loaded views
+let tmpView=typeof tmpViewIdentifier==='string'?this.servicesMap.PictView[tmpViewIdentifier]:false;if(!tmpView){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} could not render from View ${tmpViewIdentifier} because it is not a valid view.`);return false;}this.onRender();tmpView.render(tmpRenderableHash,tmpRenderDestinationAddress,tmpTemplateDataAddress);this.onAfterRender();return true;}/**
 	 * @return {boolean}
-	 */onRender(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onRender:"));}return true;}/**
+	 */onRender(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onRender:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onRenderAsync(fCallback){this.onRender();return fCallback();}/**
 	 * @param {string|((error?: Error) => void)} pViewIdentifier - The hash of the view to render. By default, the main viewport view is rendered. (or the callback)
@@ -1417,27 +1417,27 @@ let tmpView=typeof tmpViewIdentifier==='string'?this.servicesMap.PictView[tmpVie
 	 *
 	 * TODO: Should we support objects for pTemplateDataAddress for parity with pict-view?
 	 */renderAsync(pViewIdentifier,pRenderableHash,pRenderDestinationAddress,pTemplateDataAddress,fCallback){let tmpViewIdentifier=typeof pViewIdentifier!=='string'?this.options.MainViewportViewIdentifier:pViewIdentifier;let tmpRenderableHash=typeof pRenderableHash!=='string'?this.options.MainViewportRenderableHash:pRenderableHash;let tmpRenderDestinationAddress=typeof pRenderDestinationAddress!=='string'?this.options.MainViewportDestinationAddress:pRenderDestinationAddress;let tmpTemplateDataAddress=typeof pTemplateDataAddress!=='string'?this.options.MainViewportDefaultDataAddress:pTemplateDataAddress;// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateDataAddress==='function'?pTemplateDataAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:typeof pViewIdentifier==='function'?pViewIdentifier:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAsync Auto Callback Error: ").concat(pError),pError);}};}if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," VIEW Renderable[").concat(tmpRenderableHash,"] Destination[").concat(tmpRenderDestinationAddress,"] TemplateDataAddress[").concat(tmpTemplateDataAddress,"] renderAsync:"));}let tmpRenderAnticipate=this.fable.newAnticipate();tmpRenderAnticipate.anticipate(this.onBeforeRenderAsync.bind(this));let tmpView=typeof tmpViewIdentifier==='string'?this.servicesMap.PictView[tmpViewIdentifier]:false;if(!tmpView){let tmpErrorMessage="PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," could not asynchronously render from View ").concat(tmpViewIdentifier," because it is not a valid view.");if(this.pict.LogNoisiness>3){this.log.error(tmpErrorMessage);}return tmpCallback(new Error(tmpErrorMessage));}tmpRenderAnticipate.anticipate(this.onRenderAsync.bind(this));tmpRenderAnticipate.anticipate(fNext=>{tmpView.renderAsync.call(tmpView,tmpRenderableHash,tmpRenderDestinationAddress,tmpTemplateDataAddress,fNext);});tmpRenderAnticipate.anticipate(this.onAfterRenderAsync.bind(this));return tmpRenderAnticipate.wait(tmpCallback);}/**
+let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateDataAddress==='function'?pTemplateDataAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:typeof pViewIdentifier==='function'?pViewIdentifier:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAsync Auto Callback Error: ${pError}`,pError);}};}if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} VIEW Renderable[${tmpRenderableHash}] Destination[${tmpRenderDestinationAddress}] TemplateDataAddress[${tmpTemplateDataAddress}] renderAsync:`);}let tmpRenderAnticipate=this.fable.newAnticipate();tmpRenderAnticipate.anticipate(this.onBeforeRenderAsync.bind(this));let tmpView=typeof tmpViewIdentifier==='string'?this.servicesMap.PictView[tmpViewIdentifier]:false;if(!tmpView){let tmpErrorMessage=`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} could not asynchronously render from View ${tmpViewIdentifier} because it is not a valid view.`;if(this.pict.LogNoisiness>3){this.log.error(tmpErrorMessage);}return tmpCallback(new Error(tmpErrorMessage));}tmpRenderAnticipate.anticipate(this.onRenderAsync.bind(this));tmpRenderAnticipate.anticipate(fNext=>{tmpView.renderAsync.call(tmpView,tmpRenderableHash,tmpRenderDestinationAddress,tmpTemplateDataAddress,fNext);});tmpRenderAnticipate.anticipate(this.onAfterRenderAsync.bind(this));return tmpRenderAnticipate.wait(tmpCallback);}/**
 	 * @return {boolean}
-	 */onAfterRender(){if(this.pict.LogNoisiness>3){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," onAfterRender:"));}return true;}/**
+	 */onAfterRender(){if(this.pict.LogNoisiness>3){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} onAfterRender:`);}return true;}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */onAfterRenderAsync(fCallback){this.onAfterRender();return fCallback();}/**
 	 * @return {boolean}
-	 */renderMainViewport(){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderMainViewport:"));}return this.render();}/**
+	 */renderMainViewport(){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderMainViewport:`);}return this.render();}/**
 	 * @param {(error?: Error) => void} fCallback
-	 */renderMainViewportAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow APPLICATION [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderMainViewportAsync:"));}return this.renderAsync(fCallback);}/**
+	 */renderMainViewportAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow APPLICATION [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderMainViewportAsync:`);}return this.renderAsync(fCallback);}/**
 	 * @return {void}
-	 */renderAutoViews(){if(this.pict.LogNoisiness>0){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," beginning renderAutoViews..."));}// Now walk through any loaded views and sort them by the AutoRender ordinal
+	 */renderAutoViews(){if(this.pict.LogNoisiness>0){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} beginning renderAutoViews...`);}// Now walk through any loaded views and sort them by the AutoRender ordinal
 let tmpLoadedViews=Object.keys(this.pict.views);// Sort the views by their priority
 // If they are all the default priority 0, it will end up being add order due to JSON Object Property Key order stuff
-tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-this.pict.views[b].options.AutoRenderOrdinal;});for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoRender){tmpView.render();}}if(this.pict.LogNoisiness>0){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAutoViewsAsync complete."));}}/**
+tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-this.pict.views[b].options.AutoRenderOrdinal;});for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoRender){tmpView.render();}}if(this.pict.LogNoisiness>0){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAutoViewsAsync complete.`);}}/**
 	 * @param {(error?: Error) => void} fCallback
 	 */renderAutoViewsAsync(fCallback){let tmpAnticipate=this.fable.instantiateServiceProviderWithoutRegistration('Anticipate');// Allow the callback to be passed in as the last parameter no matter what
-let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAutoViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAutoViewsAsync Auto Callback Error: ").concat(pError),pError);}};}if(this.pict.LogNoisiness>0){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," beginning renderAutoViewsAsync..."));}// Now walk through any loaded views and sort them by the AutoRender ordinal
+let tmpCallback=typeof fCallback==='function'?fCallback:false;if(!tmpCallback){this.log.warn(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAutoViewsAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAutoViewsAsync Auto Callback Error: ${pError}`,pError);}};}if(this.pict.LogNoisiness>0){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} beginning renderAutoViewsAsync...`);}// Now walk through any loaded views and sort them by the AutoRender ordinal
 // TODO: Some optimization cleverness could be gained by grouping them into a parallelized async operation, by ordinal.
 let tmpLoadedViews=Object.keys(this.pict.views);// Sort the views by their priority
 // If they are all the default priority 0, it will end up being add order due to JSON Object Property Key order stuff
-tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-this.pict.views[b].options.AutoRenderOrdinal;});for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoRender){tmpAnticipate.anticipate(tmpView.renderAsync.bind(tmpView));}}tmpAnticipate.wait(pError=>{this.lastAutoRenderTimestamp=this.fable.log.getTimeStamp();if(this.pict.LogNoisiness>0){this.log.trace("PictApp [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAutoViewsAsync complete."));}return tmpCallback(pError);});}/**
+tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-this.pict.views[b].options.AutoRenderOrdinal;});for(let i=0;i<tmpLoadedViews.length;i++){let tmpView=this.pict.views[tmpLoadedViews[i]];if(tmpView.options.AutoRender){tmpAnticipate.anticipate(tmpView.renderAsync.bind(tmpView));}}tmpAnticipate.wait(pError=>{this.lastAutoRenderTimestamp=this.fable.log.getTimeStamp();if(this.pict.LogNoisiness>0){this.log.trace(`PictApp [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAutoViewsAsync complete.`);}return tmpCallback(pError);});}/**
 	 * @return {boolean}
 	 */get isPictApplication(){return true;}}module.exports=PictApplication;},{"../package.json":43,"fable-serviceproviderbase":20}],45:[function(require,module,exports){module.exports={"Name":"Pict Docuserve","Hash":"Docuserve","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"Docuserve-Pict-Application"}};},{}],46:[function(require,module,exports){const libPictApplication=require('pict-application');// Provider
 const libDocumentationProvider=require('./providers/Pict-Provider-Docuserve-Documentation.js');// Views
@@ -1544,8 +1544,8 @@ return null;};}/**
 // a README.md so the site works with plain markdown folders.
 let tmpPending=5;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// If no sidebar data was populated by catalog or _sidebar.md,
 // try to auto-discover a README.md to provide minimal navigation.
-if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info("Docuserve: No catalog at [".concat(tmpCatalogURL,"]; running in standalone mode."));return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
-this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.log.info("Docuserve: Catalog load error (".concat(pError,"); continuing in standalone mode."));tmpLoadOptionalFiles();});}/**
+if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info(`Docuserve: No catalog at [${tmpCatalogURL}]; running in standalone mode.`);return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
+this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.log.info(`Docuserve: Catalog load error (${pError}); continuing in standalone mode.`);tmpLoadOptionalFiles();});}/**
 	 * Auto-discover sidebar content when no catalog or _sidebar.md is available.
 	 *
 	 * Attempts to fetch README.md from the docs root.  If found, creates a
@@ -1556,7 +1556,7 @@ this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.l
 	 */autoDiscoverSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'README.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(pMarkdown){// Extract a title from the first heading in the README
 let tmpTitleMatch=pMarkdown.match(/^#+\s+(.+)/m);let tmpTitle=tmpTitleMatch?tmpTitleMatch[1].trim():'Docs';// Build a minimal sidebar group so the sidebar has something to show
 this.pict.AppData.Docuserve.SidebarGroups=[{Name:tmpTitle,Key:'docs',Route:'#/page/README',Modules:[]}];// Also set this as a fallback cover title if we have no cover
-if(!this.pict.AppData.Docuserve.CoverLoaded){this.pict.AppData.Docuserve.Cover={Title:tmpTitle,Tagline:'',Description:'',Highlights:[],Actions:[{Text:'Read the Docs',Href:'README.md'}]};this.pict.AppData.Docuserve.CoverLoaded=true;}}else{this.log.info('Docuserve: No README.md found; sidebar will be empty.');}return tmpCallback();}).catch(pError=>{this.log.info("Docuserve: README.md discovery failed (".concat(pError,")."));return tmpCallback();});}/**
+if(!this.pict.AppData.Docuserve.CoverLoaded){this.pict.AppData.Docuserve.Cover={Title:tmpTitle,Tagline:'',Description:'',Highlights:[],Actions:[{Text:'Read the Docs',Href:'README.md'}]};this.pict.AppData.Docuserve.CoverLoaded=true;}}else{this.log.info('Docuserve: No README.md found; sidebar will be empty.');}return tmpCallback();}).catch(pError=>{this.log.info(`Docuserve: README.md discovery failed (${pError}).`);return tmpCallback();});}/**
 	 * Fetch and parse _cover.md into structured data for the splash view.
 	 *
 	 * The expected _cover.md format follows the docsify convention:
@@ -1570,7 +1570,7 @@ if(!this.pict.AppData.Docuserve.CoverLoaded){this.pict.AppData.Docuserve.Cover={
 	 *   { Title, Tagline, Description, Highlights: [{Label, Text}], Actions: [{Text, Href}] }
 	 *
 	 * @param {Function} fCallback - Callback when done
-	 */loadCover(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_cover.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _cover.md found; splash will use catalog data.');return tmpCallback();}this.pict.AppData.Docuserve.Cover=this.parseCover(pMarkdown);this.pict.AppData.Docuserve.CoverLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn("Docuserve: Error loading _cover.md: ".concat(pError));return tmpCallback();});}/**
+	 */loadCover(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_cover.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _cover.md found; splash will use catalog data.');return tmpCallback();}this.pict.AppData.Docuserve.Cover=this.parseCover(pMarkdown);this.pict.AppData.Docuserve.CoverLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _cover.md: ${pError}`);return tmpCallback();});}/**
 	 * Parse _cover.md markdown text into a structured object.
 	 *
 	 * @param {string} pMarkdown - Raw _cover.md content
@@ -1595,7 +1595,7 @@ if(!tmpCover.Description){tmpCover.Description=tmpLine;}else{tmpCover.Descriptio
 	 * the catalog-inferred SidebarGroups in AppData.
 	 *
 	 * @param {Function} fCallback - Callback when done
-	 */loadSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_sidebar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _sidebar.md found; sidebar will use catalog data.');return tmpCallback();}let tmpSidebarData=this.parseSidebarMarkdown(pMarkdown);if(tmpSidebarData&&tmpSidebarData.length>0){this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarData;this.pict.AppData.Docuserve.SidebarLoaded=true;}return tmpCallback();}).catch(pError=>{this.log.warn("Docuserve: Error loading _sidebar.md: ".concat(pError));return tmpCallback();});}/**
+	 */loadSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_sidebar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _sidebar.md found; sidebar will use catalog data.');return tmpCallback();}let tmpSidebarData=this.parseSidebarMarkdown(pMarkdown);if(tmpSidebarData&&tmpSidebarData.length>0){this.pict.AppData.Docuserve.SidebarGroups=tmpSidebarData;this.pict.AppData.Docuserve.SidebarLoaded=true;}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _sidebar.md: ${pError}`);return tmpCallback();});}/**
 	 * Fetch and parse _topbar.md into structured data for the top bar view.
 	 *
 	 * The expected _topbar.md format:
@@ -1611,7 +1611,7 @@ if(!tmpCover.Description){tmpCover.Description=tmpLine;}else{tmpCover.Descriptio
 	 *   { Brand, NavLinks: [{Text, Href, External}], ExternalLinks: [{Text, Href}] }
 	 *
 	 * @param {Function} fCallback - Callback when done
-	 */loadTopbar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_topbar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _topbar.md found; top bar will use defaults.');return tmpCallback();}this.pict.AppData.Docuserve.TopBar=this.parseTopbar(pMarkdown);this.pict.AppData.Docuserve.TopBarLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn("Docuserve: Error loading _topbar.md: ".concat(pError));return tmpCallback();});}/**
+	 */loadTopbar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_topbar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No _topbar.md found; top bar will use defaults.');return tmpCallback();}this.pict.AppData.Docuserve.TopBar=this.parseTopbar(pMarkdown);this.pict.AppData.Docuserve.TopBarLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _topbar.md: ${pError}`);return tmpCallback();});}/**
 	 * Parse _topbar.md markdown text into a structured object.
 	 *
 	 * @param {string} pMarkdown - Raw _topbar.md content
@@ -1629,7 +1629,7 @@ let tmpRoute=this.convertSidebarLink(tmpHref);tmpTopBar.NavLinks.push({Text:tmpT
 	 * getErrorPageHTML).
 	 *
 	 * @param {Function} fCallback - Callback when done
-	 */loadErrorPage(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'errorpage.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No errorpage.md found; errors will use default page.');return tmpCallback();}this.pict.AppData.Docuserve.ErrorPageHTML=this._ContentProvider.parseMarkdown(pMarkdown);this.pict.AppData.Docuserve.ErrorPageLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn("Docuserve: Error loading errorpage.md: ".concat(pError));return tmpCallback();});}/**
+	 */loadErrorPage(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'errorpage.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('Docuserve: No errorpage.md found; errors will use default page.');return tmpCallback();}this.pict.AppData.Docuserve.ErrorPageHTML=this._ContentProvider.parseMarkdown(pMarkdown);this.pict.AppData.Docuserve.ErrorPageLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading errorpage.md: ${pError}`);return tmpCallback();});}/**
 	 * Load the keyword search index (retold-keyword-index.json).
 	 *
 	 * If the index file exists, hydrates a lunr.Index for client-side search
@@ -1637,7 +1637,7 @@ let tmpRoute=this.convertSidebarLink(tmpHref);tmpTopBar.NavLinks.push({Text:tmpT
 	 * features will simply not appear in the UI.
 	 *
 	 * @param {Function} fCallback - Callback when done
-	 */loadKeywordIndex(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'retold-keyword-index.json').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pIndexData=>{if(!pIndexData||!pIndexData.LunrIndex||!pIndexData.Documents){this.log.info('Docuserve: No keyword index found; search will be unavailable.');return tmpCallback();}try{this._LunrIndex=libLunr.Index.load(pIndexData.LunrIndex);this._KeywordDocuments=pIndexData.Documents;this.pict.AppData.Docuserve.KeywordIndexLoaded=true;this.pict.AppData.Docuserve.KeywordDocumentCount=pIndexData.DocumentCount||0;this.log.info("Docuserve: Keyword index loaded (".concat(pIndexData.DocumentCount||0," documents)."));}catch(pError){this.log.warn("Docuserve: Error hydrating lunr index: ".concat(pError));}return tmpCallback();}).catch(pError=>{this.log.warn("Docuserve: Error loading keyword index: ".concat(pError));return tmpCallback();});}/**
+	 */loadKeywordIndex(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'retold-keyword-index.json').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pIndexData=>{if(!pIndexData||!pIndexData.LunrIndex||!pIndexData.Documents){this.log.info('Docuserve: No keyword index found; search will be unavailable.');return tmpCallback();}try{this._LunrIndex=libLunr.Index.load(pIndexData.LunrIndex);this._KeywordDocuments=pIndexData.Documents;this.pict.AppData.Docuserve.KeywordIndexLoaded=true;this.pict.AppData.Docuserve.KeywordDocumentCount=pIndexData.DocumentCount||0;this.log.info(`Docuserve: Keyword index loaded (${pIndexData.DocumentCount||0} documents).`);}catch(pError){this.log.warn(`Docuserve: Error hydrating lunr index: ${pError}`);}return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading keyword index: ${pError}`);return tmpCallback();});}/**
 	 * Check whether a group/module pair exists in the loaded catalog.
 	 *
 	 * Used by search() to decide whether a result should route to
@@ -1676,7 +1676,7 @@ let tmpParts=tmpRef.split('/');let tmpRoute='';if(tmpParts.length>=2){// Check w
 // If it does, route to #/doc/ which fetches from GitHub.
 // If not, fall back to #/page/ which fetches locally.
 let tmpGroup=tmpParts[0];let tmpModule=tmpParts[1];if(this.isModuleInCatalog(tmpGroup,tmpModule)){tmpRoute='#/doc/'+tmpRef;}else{// Local document — route via #/page/ using the full ref path
-tmpRoute='#/page/'+tmpRef;}}tmpResults.push({Key:tmpRef,Title:tmpDoc.Title||tmpRef,Group:tmpDoc.Group||'',Module:tmpDoc.Module||'',DocPath:tmpDoc.DocPath||'',Score:tmpScore,Route:tmpRoute});}}catch(pError){this.log.warn("Docuserve: Search error: ".concat(pError));}return tmpResults;}/**
+tmpRoute='#/page/'+tmpRef;}}tmpResults.push({Key:tmpRef,Title:tmpDoc.Title||tmpRef,Group:tmpDoc.Group||'',Module:tmpDoc.Module||'',DocPath:tmpDoc.DocPath||'',Score:tmpScore,Route:tmpRoute});}}catch(pError){this.log.warn(`Docuserve: Search error: ${pError}`);}return tmpResults;}/**
 	 * Get the error page HTML for a given requested path.
 	 *
 	 * If a custom errorpage.md was loaded, its parsed HTML is returned with
@@ -1786,7 +1786,7 @@ for(let i=0;i<this._Catalog.Groups.length;i++){let tmpGroup=this._Catalog.Groups
 	 * @param {string} [pCurrentModule] - The current module name for link resolution
 	 * @param {string} [pCurrentDocPath] - The current document path for link resolution
 	 */fetchDocument(pURL,fCallback,pCurrentGroup,pCurrentModule,pCurrentDocPath){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pURL){return tmpCallback('No URL provided','');}// Check cache
-if(this._ContentCache[pURL]){return tmpCallback(null,this._ContentCache[pURL]);}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){return tmpCallback('Document not found',this.getErrorPageHTML(pURL));}let tmpHTML=this._ContentProvider.parseMarkdown(pMarkdown,this._createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath));this._ContentCache[pURL]=tmpHTML;return tmpCallback(null,tmpHTML);}).catch(pError=>{this.log.warn("Docuserve: Error fetching document [".concat(pURL,"]: ").concat(pError));return tmpCallback(pError,this.getErrorPageHTML(pURL));});}/**
+if(this._ContentCache[pURL]){return tmpCallback(null,this._ContentCache[pURL]);}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){return tmpCallback('Document not found',this.getErrorPageHTML(pURL));}let tmpHTML=this._ContentProvider.parseMarkdown(pMarkdown,this._createLinkResolver(pCurrentGroup,pCurrentModule,pCurrentDocPath));this._ContentCache[pURL]=tmpHTML;return tmpCallback(null,tmpHTML);}).catch(pError=>{this.log.warn(`Docuserve: Error fetching document [${pURL}]: ${pError}`);return tmpCallback(pError,this.getErrorPageHTML(pURL));});}/**
 	 * Fetch a local document relative to the docs folder.
 	 *
 	 * @param {string} pPath - The relative path (e.g. 'architecture.md')
@@ -1820,7 +1820,176 @@ if(tmpPath.match(/\.md$/)){let tmpPageKey=tmpPath.replace(/\.md$/,'');return'#/p
 // the child provides its own.  We cannot read the parent's
 // default_configuration.CSS at module scope because browserify's
 // module initialisation order does not guarantee it is populated yet.
-CSS:/*css*/"\n\t\t.pict-content {\n\t\t\tpadding: 2em 3em;\n\t\t\tmax-width: 900px;\n\t\t\tmargin: 0 auto;\n\t\t}\n\t\t.pict-content-loading {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tmin-height: 200px;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 1em;\n\t\t}\n\t\t.pict-content h1 {\n\t\t\tfont-size: 2em;\n\t\t\tcolor: #3D3229;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tpadding-bottom: 0.3em;\n\t\t\tmargin-top: 0;\n\t\t}\n\t\t.pict-content h2 {\n\t\t\tfont-size: 1.5em;\n\t\t\tcolor: #3D3229;\n\t\t\tborder-bottom: 1px solid #EAE3D8;\n\t\t\tpadding-bottom: 0.25em;\n\t\t\tmargin-top: 1.5em;\n\t\t}\n\t\t.pict-content h3 {\n\t\t\tfont-size: 1.25em;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin-top: 1.25em;\n\t\t}\n\t\t.pict-content h4, .pict-content h5, .pict-content h6 {\n\t\t\tcolor: #5E5549;\n\t\t\tmargin-top: 1em;\n\t\t}\n\t\t.pict-content p {\n\t\t\tline-height: 1.7;\n\t\t\tcolor: #423D37;\n\t\t\tmargin: 0.75em 0;\n\t\t}\n\t\t.pict-content a {\n\t\t\tcolor: #2E7D74;\n\t\t\ttext-decoration: none;\n\t\t}\n\t\t.pict-content a:hover {\n\t\t\ttext-decoration: underline;\n\t\t}\n\t\t.pict-content pre {\n\t\t\tbackground: #3D3229;\n\t\t\tcolor: #E8E0D4;\n\t\t\tpadding: 1.25em;\n\t\t\tborder-radius: 6px;\n\t\t\toverflow-x: auto;\n\t\t\tline-height: 1.5;\n\t\t\tfont-size: 0.9em;\n\t\t}\n\t\t.pict-content code {\n\t\t\tbackground: #F0ECE4;\n\t\t\tpadding: 0.15em 0.4em;\n\t\t\tborder-radius: 3px;\n\t\t\tfont-size: 0.9em;\n\t\t\tcolor: #9E6B47;\n\t\t}\n\t\t.pict-content pre code {\n\t\t\tbackground: none;\n\t\t\tpadding: 0;\n\t\t\tcolor: inherit;\n\t\t\tfont-size: inherit;\n\t\t}\n\t\t.pict-content blockquote {\n\t\t\tborder-left: 4px solid #2E7D74;\n\t\t\tmargin: 1em 0;\n\t\t\tpadding: 0.5em 1em;\n\t\t\tbackground: #F7F5F0;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.pict-content blockquote p {\n\t\t\tmargin: 0.25em 0;\n\t\t}\n\t\t.pict-content ul, .pict-content ol {\n\t\t\tpadding-left: 2em;\n\t\t\tline-height: 1.8;\n\t\t}\n\t\t.pict-content li {\n\t\t\tmargin: 0.25em 0;\n\t\t\tcolor: #423D37;\n\t\t}\n\t\t.pict-content hr {\n\t\t\tborder: none;\n\t\t\tborder-top: 1px solid #DDD6CA;\n\t\t\tmargin: 2em 0;\n\t\t}\n\t\t.pict-content table {\n\t\t\twidth: 100%;\n\t\t\tborder-collapse: collapse;\n\t\t\tmargin: 1em 0;\n\t\t}\n\t\t.pict-content table th {\n\t\t\tbackground: #F5F0E8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tpadding: 0.6em 0.8em;\n\t\t\ttext-align: left;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.pict-content table td {\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tpadding: 0.5em 0.8em;\n\t\t\tcolor: #423D37;\n\t\t}\n\t\t.pict-content table tr:nth-child(even) {\n\t\t\tbackground: #F7F5F0;\n\t\t}\n\t\t.pict-content img {\n\t\t\tmax-width: 100%;\n\t\t\theight: auto;\n\t\t}\n\t\t.pict-content pre.mermaid {\n\t\t\tbackground: #fff;\n\t\t\tcolor: #3D3229;\n\t\t\ttext-align: center;\n\t\t\tpadding: 1em;\n\t\t}\n\t\t.pict-content .pict-content-katex-display {\n\t\t\ttext-align: center;\n\t\t\tmargin: 1em 0;\n\t\t\tpadding: 0.5em;\n\t\t\toverflow-x: auto;\n\t\t}\n\t\t.pict-content .pict-content-katex-inline {\n\t\t\tdisplay: inline;\n\t\t}\n\t\t.docuserve-module-external-link {\n\t\t\tpadding: 0.5em 0;\n\t\t\tmargin-bottom: 0.5em;\n\t\t\tborder-bottom: 1px solid #EAE3D8;\n\t\t\tfont-size: 0.85em;\n\t\t\ttext-align: right;\n\t\t}\n\t\t.docuserve-module-external-link a {\n\t\t\tcolor: #2E7D74;\n\t\t\ttext-decoration: none;\n\t\t}\n\t\t.docuserve-module-external-link a:hover {\n\t\t\ttext-decoration: underline;\n\t\t}\n\t\t.docuserve-not-found {\n\t\t\ttext-align: center;\n\t\t\tpadding: 3em 1em;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.docuserve-not-found h2 {\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 1.5em;\n\t\t\tborder-bottom: none;\n\t\t}\n\t\t.docuserve-not-found code {\n\t\t\tbackground: #F0ECE4;\n\t\t\tpadding: 0.15em 0.4em;\n\t\t\tborder-radius: 3px;\n\t\t\tfont-size: 0.9em;\n\t\t\tcolor: #9E6B47;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-Content-Template",Template:/*html*/"\n<div class=\"pict-content\" id=\"Docuserve-Content-Body\">\n\t<div class=\"pict-content-loading\">Loading documentation...</div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-Content-Display",TemplateHash:"Docuserve-Content-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveContentView extends libPictContentView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+CSS:/*css*/`
+		.pict-content {
+			padding: 2em 3em;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.pict-content-loading {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 200px;
+			color: #8A7F72;
+			font-size: 1em;
+		}
+		.pict-content h1 {
+			font-size: 2em;
+			color: #3D3229;
+			border-bottom: 1px solid #DDD6CA;
+			padding-bottom: 0.3em;
+			margin-top: 0;
+		}
+		.pict-content h2 {
+			font-size: 1.5em;
+			color: #3D3229;
+			border-bottom: 1px solid #EAE3D8;
+			padding-bottom: 0.25em;
+			margin-top: 1.5em;
+		}
+		.pict-content h3 {
+			font-size: 1.25em;
+			color: #3D3229;
+			margin-top: 1.25em;
+		}
+		.pict-content h4, .pict-content h5, .pict-content h6 {
+			color: #5E5549;
+			margin-top: 1em;
+		}
+		.pict-content p {
+			line-height: 1.7;
+			color: #423D37;
+			margin: 0.75em 0;
+		}
+		.pict-content a {
+			color: #2E7D74;
+			text-decoration: none;
+		}
+		.pict-content a:hover {
+			text-decoration: underline;
+		}
+		.pict-content pre {
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 1.25em;
+			border-radius: 6px;
+			overflow-x: auto;
+			line-height: 1.5;
+			font-size: 0.9em;
+		}
+		.pict-content code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
+		.pict-content pre code {
+			background: none;
+			padding: 0;
+			color: inherit;
+			font-size: inherit;
+		}
+		.pict-content blockquote {
+			border-left: 4px solid #2E7D74;
+			margin: 1em 0;
+			padding: 0.5em 1em;
+			background: #F7F5F0;
+			color: #5E5549;
+		}
+		.pict-content blockquote p {
+			margin: 0.25em 0;
+		}
+		.pict-content ul, .pict-content ol {
+			padding-left: 2em;
+			line-height: 1.8;
+		}
+		.pict-content li {
+			margin: 0.25em 0;
+			color: #423D37;
+		}
+		.pict-content hr {
+			border: none;
+			border-top: 1px solid #DDD6CA;
+			margin: 2em 0;
+		}
+		.pict-content table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 1em 0;
+		}
+		.pict-content table th {
+			background: #F5F0E8;
+			border: 1px solid #DDD6CA;
+			padding: 0.6em 0.8em;
+			text-align: left;
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.pict-content table td {
+			border: 1px solid #DDD6CA;
+			padding: 0.5em 0.8em;
+			color: #423D37;
+		}
+		.pict-content table tr:nth-child(even) {
+			background: #F7F5F0;
+		}
+		.pict-content img {
+			max-width: 100%;
+			height: auto;
+		}
+		.pict-content pre.mermaid {
+			background: #fff;
+			color: #3D3229;
+			text-align: center;
+			padding: 1em;
+		}
+		.pict-content .pict-content-katex-display {
+			text-align: center;
+			margin: 1em 0;
+			padding: 0.5em;
+			overflow-x: auto;
+		}
+		.pict-content .pict-content-katex-inline {
+			display: inline;
+		}
+		.docuserve-module-external-link {
+			padding: 0.5em 0;
+			margin-bottom: 0.5em;
+			border-bottom: 1px solid #EAE3D8;
+			font-size: 0.85em;
+			text-align: right;
+		}
+		.docuserve-module-external-link a {
+			color: #2E7D74;
+			text-decoration: none;
+		}
+		.docuserve-module-external-link a:hover {
+			text-decoration: underline;
+		}
+		.docuserve-not-found {
+			text-align: center;
+			padding: 3em 1em;
+			color: #5E5549;
+		}
+		.docuserve-not-found h2 {
+			color: #8A7F72;
+			font-size: 1.5em;
+			border-bottom: none;
+		}
+		.docuserve-not-found code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
+	`,Templates:[{Hash:"Docuserve-Content-Template",Template:/*html*/`
+<div class="pict-content" id="Docuserve-Content-Body">
+	<div class="pict-content-loading">Loading documentation...</div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Content-Display",TemplateHash:"Docuserve-Content-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveContentView extends libPictContentView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
 	 * Display parsed HTML content in the content area.
 	 *
 	 * When viewing a module's documentation, prepends a link to the
@@ -1829,14 +1998,126 @@ CSS:/*css*/"\n\t\t.pict-content {\n\t\t\tpadding: 2em 3em;\n\t\t\tmax-width: 900
 	 * @param {string} pHTMLContent - The HTML to display
 	 */displayContent(pHTMLContent){let tmpHTML=pHTMLContent;let tmpGroup=this.pict.AppData.Docuserve.CurrentGroup;let tmpModule=this.pict.AppData.Docuserve.CurrentModule;if(tmpGroup&&tmpModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(tmpDocProvider){let tmpPagesURL=tmpDocProvider.resolveGitHubPagesURL(tmpGroup,tmpModule);if(tmpPagesURL){tmpHTML='<div class="docuserve-module-external-link">'+'<a href="'+tmpPagesURL+'" target="_blank" rel="noopener">'+'&#x2197; View '+tmpModule+' documentation site'+'</a>'+'</div>'+tmpHTML;}}}super.displayContent(tmpHTML,'Docuserve-Content-Body');}/**
 	 * Show a loading indicator.
-	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":59}],49:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/"\n\t\t#Docuserve-Application-Container {\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100vh;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t#Docuserve-TopBar-Container {\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.docuserve-body {\n\t\t\tdisplay: flex;\n\t\t\tflex: 1;\n\t\t\tmin-height: 0;\n\t\t}\n\t\t#Docuserve-Sidebar-Container {\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 280px;\n\t\t\toverflow-y: auto;\n\t\t\tbackground-color: #F5F0E8;\n\t\t}\n\t\t#Docuserve-Content-Container {\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t\toverflow-y: auto;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-Layout-Shell-Template",Template:/*html*/"\n<div id=\"Docuserve-TopBar-Container\"></div>\n<div class=\"docuserve-body\">\n\t<div id=\"Docuserve-Sidebar-Container\"></div>\n\t<div id=\"Docuserve-Content-Container\"></div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-Layout-Shell",TemplateHash:"Docuserve-Layout-Shell-Template",DestinationAddress:"#Docuserve-Application-Container",RenderMethod:"replace"}]};class DocuserveLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// After the layout shell is rendered, render the child views into their containers
+	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":59}],49:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/`
+		#Docuserve-Application-Container {
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			overflow: hidden;
+		}
+		#Docuserve-TopBar-Container {
+			flex-shrink: 0;
+		}
+		.docuserve-body {
+			display: flex;
+			flex: 1;
+			min-height: 0;
+		}
+		#Docuserve-Sidebar-Container {
+			flex-shrink: 0;
+			width: 280px;
+			overflow-y: auto;
+			background-color: #F5F0E8;
+		}
+		#Docuserve-Content-Container {
+			flex: 1;
+			min-width: 0;
+			overflow-y: auto;
+		}
+	`,Templates:[{Hash:"Docuserve-Layout-Shell-Template",Template:/*html*/`
+<div id="Docuserve-TopBar-Container"></div>
+<div class="docuserve-body">
+	<div id="Docuserve-Sidebar-Container"></div>
+	<div id="Docuserve-Content-Container"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Layout-Shell",TemplateHash:"Docuserve-Layout-Shell-Template",DestinationAddress:"#Docuserve-Application-Container",RenderMethod:"replace"}]};class DocuserveLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// After the layout shell is rendered, render the child views into their containers
 this.pict.views['Docuserve-TopBar'].render();this.pict.views['Docuserve-Sidebar'].render();// Show the splash screen initially
 this.pict.views['Docuserve-Splash'].render();// Inject all view CSS into the PICT-CSS style element
 this.pict.CSSMap.injectCSS();// Resolve the current hash on initial load
 this.pict.PictApplication.resolveHash();// Listen for hash changes so that plain <a href="#/..."> links trigger
 // navigation.  This covers sidebar links, splash action buttons,
 // in-content links, and browser back/forward navigation.
-if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/"\n\t\t.docuserve-search {\n\t\t\tpadding: 2em 3em;\n\t\t\tmax-width: 900px;\n\t\t\tmargin: 0 auto;\n\t\t}\n\t\t.docuserve-search-header {\n\t\t\tmargin-bottom: 1.5em;\n\t\t}\n\t\t.docuserve-search-header h1 {\n\t\t\tfont-size: 1.75em;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin: 0 0 0.75em 0;\n\t\t}\n\t\t.docuserve-search-input {\n\t\t\twidth: 100%;\n\t\t\tpadding: 0.75em 1em;\n\t\t\tfont-size: 1.1em;\n\t\t\tborder: 2px solid #D4CCBE;\n\t\t\tborder-radius: 6px;\n\t\t\toutline: none;\n\t\t\tbox-sizing: border-box;\n\t\t\ttransition: border-color 0.15s;\n\t\t}\n\t\t.docuserve-search-input:focus {\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.docuserve-search-status {\n\t\t\tmargin-top: 0.75em;\n\t\t\tfont-size: 0.9em;\n\t\t\tcolor: #8A7F72;\n\t\t}\n\t\t.docuserve-search-results {\n\t\t\tmargin-top: 1em;\n\t\t}\n\t\t.docuserve-search-result {\n\t\t\tdisplay: block;\n\t\t\tpadding: 1em 1.25em;\n\t\t\tmargin-bottom: 0.5em;\n\t\t\tborder: 1px solid #EAE3D8;\n\t\t\tborder-radius: 6px;\n\t\t\ttext-decoration: none;\n\t\t\tcolor: inherit;\n\t\t\ttransition: border-color 0.15s, box-shadow 0.15s;\n\t\t}\n\t\t.docuserve-search-result:hover {\n\t\t\tborder-color: #2E7D74;\n\t\t\tbox-shadow: 0 2px 8px rgba(46, 125, 116, 0.1);\n\t\t}\n\t\t.docuserve-search-result-title {\n\t\t\tfont-size: 1.05em;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #2E7D74;\n\t\t\tmargin-bottom: 0.25em;\n\t\t}\n\t\t.docuserve-search-result-breadcrumb {\n\t\t\tfont-size: 0.8em;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-bottom: 0.2em;\n\t\t}\n\t\t.docuserve-search-result-path {\n\t\t\tfont-size: 0.8em;\n\t\t\tcolor: #A39889;\n\t\t\tfont-family: monospace;\n\t\t}\n\t\t.docuserve-search-empty {\n\t\t\ttext-align: center;\n\t\t\tpadding: 3em 1em;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 1em;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-Search-Template",Template:/*html*/"\n<div class=\"docuserve-search\">\n\t<div class=\"docuserve-search-header\">\n\t\t<h1>Search Documentation</h1>\n\t\t<input type=\"text\" class=\"docuserve-search-input\" id=\"Docuserve-Search-Input\" placeholder=\"Search across all modules...\">\n\t\t<div id=\"Docuserve-Search-Status\" class=\"docuserve-search-status\"></div>\n\t</div>\n\t<div id=\"Docuserve-Search-Results\" class=\"docuserve-search-results\"></div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-Search-Display",TemplateHash:"Docuserve-Search-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveSearchView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Attach the search input listener
+if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-search {
+			padding: 2em 3em;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.docuserve-search-header {
+			margin-bottom: 1.5em;
+		}
+		.docuserve-search-header h1 {
+			font-size: 1.75em;
+			color: #3D3229;
+			margin: 0 0 0.75em 0;
+		}
+		.docuserve-search-input {
+			width: 100%;
+			padding: 0.75em 1em;
+			font-size: 1.1em;
+			border: 2px solid #D4CCBE;
+			border-radius: 6px;
+			outline: none;
+			box-sizing: border-box;
+			transition: border-color 0.15s;
+		}
+		.docuserve-search-input:focus {
+			border-color: #2E7D74;
+		}
+		.docuserve-search-status {
+			margin-top: 0.75em;
+			font-size: 0.9em;
+			color: #8A7F72;
+		}
+		.docuserve-search-results {
+			margin-top: 1em;
+		}
+		.docuserve-search-result {
+			display: block;
+			padding: 1em 1.25em;
+			margin-bottom: 0.5em;
+			border: 1px solid #EAE3D8;
+			border-radius: 6px;
+			text-decoration: none;
+			color: inherit;
+			transition: border-color 0.15s, box-shadow 0.15s;
+		}
+		.docuserve-search-result:hover {
+			border-color: #2E7D74;
+			box-shadow: 0 2px 8px rgba(46, 125, 116, 0.1);
+		}
+		.docuserve-search-result-title {
+			font-size: 1.05em;
+			font-weight: 600;
+			color: #2E7D74;
+			margin-bottom: 0.25em;
+		}
+		.docuserve-search-result-breadcrumb {
+			font-size: 0.8em;
+			color: #8A7F72;
+			margin-bottom: 0.2em;
+		}
+		.docuserve-search-result-path {
+			font-size: 0.8em;
+			color: #A39889;
+			font-family: monospace;
+		}
+		.docuserve-search-empty {
+			text-align: center;
+			padding: 3em 1em;
+			color: #8A7F72;
+			font-size: 1em;
+		}
+	`,Templates:[{Hash:"Docuserve-Search-Template",Template:/*html*/`
+<div class="docuserve-search">
+	<div class="docuserve-search-header">
+		<h1>Search Documentation</h1>
+		<input type="text" class="docuserve-search-input" id="Docuserve-Search-Input" placeholder="Search across all modules...">
+		<div id="Docuserve-Search-Status" class="docuserve-search-status"></div>
+	</div>
+	<div id="Docuserve-Search-Results" class="docuserve-search-results"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Search-Display",TemplateHash:"Docuserve-Search-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocuserveSearchView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Attach the search input listener
 let tmpInput=document.getElementById('Docuserve-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SearchDebounceTimer){clearTimeout(this._SearchDebounceTimer);}this._SearchDebounceTimer=setTimeout(()=>{this.performSearch(tmpInput.value);},250);});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Show the search page with an optional initial query.
 	 *
@@ -1853,7 +2134,205 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/"\n\t\t.docuserve-sidebar {\n\t\t\tborder-right: 1px solid #DDD6CA;\n\t\t\tpadding: 1em 0;\n\t\t\tpadding-top: 0;\n\t\t\tmin-height: 100%;\n\t\t\tposition: relative;\n\t\t}\n\t\t.docuserve-sidebar-header {\n\t\t\tdisplay: flex;\n\t\t\tjustify-content: flex-end;\n\t\t\tpadding: 0.4em 0.5em 0;\n\t\t}\n\t\t.docuserve-sidebar-close {\n\t\t\tbackground: none;\n\t\t\tborder: none;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 1.2em;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 0.2em 0.4em;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.docuserve-sidebar-close:hover {\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-search {\n\t\t\tpadding: 0 1em 1em 1em;\n\t\t\tborder-bottom: 1px solid #EAE3D8;\n\t\t\tmargin-bottom: 0.5em;\n\t\t}\n\t\t.docuserve-sidebar-search input {\n\t\t\twidth: 100%;\n\t\t\tpadding: 0.5em 0.75em;\n\t\t\tborder: 1px solid #D4CCBE;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.85em;\n\t\t\toutline: none;\n\t\t\tbox-sizing: border-box;\n\t\t}\n\t\t.docuserve-sidebar-search input:focus {\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-search-results {\n\t\t\tmargin-top: 0.5em;\n\t\t}\n\t\t.docuserve-sidebar-search-results a {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.4em 0.5em;\n\t\t\tcolor: #423D37;\n\t\t\ttext-decoration: none;\n\t\t\tfont-size: 0.82em;\n\t\t\tborder-radius: 3px;\n\t\t\ttransition: background-color 0.1s;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-sidebar-search-results a:hover {\n\t\t\tbackground-color: #EAE3D8;\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-search-result-title {\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.docuserve-sidebar-search-results a:hover .docuserve-sidebar-search-result-title {\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-search-result-meta {\n\t\t\tfont-size: 0.9em;\n\t\t\tcolor: #8A7F72;\n\t\t}\n\t\t.docuserve-sidebar-search-all {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.4em 0.5em;\n\t\t\tfont-size: 0.82em;\n\t\t\tcolor: #2E7D74;\n\t\t\ttext-decoration: none;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t\tborder-top: 1px solid #EAE3D8;\n\t\t\tmargin-top: 0.25em;\n\t\t\tpadding-top: 0.5em;\n\t\t}\n\t\t.docuserve-sidebar-search-all:hover {\n\t\t\ttext-decoration: underline;\n\t\t}\n\t\t.docuserve-sidebar-home {\n\t\t\tpadding: 0.5em 1.25em;\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 0.85em;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.03em;\n\t\t}\n\t\t.docuserve-sidebar-home a {\n\t\t\tcolor: #5E5549;\n\t\t\ttext-decoration: none;\n\t\t\tcursor: pointer;\n\t\t\tuser-select: none;\n\t\t}\n\t\t.docuserve-sidebar-home a:hover {\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-group {\n\t\t\tmargin-top: 0.25em;\n\t\t}\n\t\t.docuserve-sidebar-group-title {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.5em 1.25em;\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 0.85em;\n\t\t\tcolor: #5E5549;\n\t\t\ttext-decoration: none;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.03em;\n\t\t\tcursor: pointer;\n\t\t\tuser-select: none;\n\t\t\ttransition: background-color 0.1s, color 0.1s;\n\t\t}\n\t\t.docuserve-sidebar-group-title:hover {\n\t\t\tcolor: #2E7D74;\n\t\t\tbackground-color: #EAE3D8;\n\t\t}\n\t\ta.docuserve-sidebar-group-title.active {\n\t\t\tcolor: #2E7D74;\n\t\t\tbackground-color: #E0EDEB;\n\t\t}\n\t\t.docuserve-sidebar-modules {\n\t\t\tlist-style: none;\n\t\t\tmargin: 0;\n\t\t\tpadding: 0;\n\t\t}\n\t\t.docuserve-sidebar-modules li {\n\t\t\tpadding: 0;\n\t\t}\n\t\t.docuserve-sidebar-modules a {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.3em 1.25em 0.3em 2em;\n\t\t\tcolor: #5E5549;\n\t\t\ttext-decoration: none;\n\t\t\tfont-size: 0.85em;\n\t\t\ttransition: background-color 0.1s, color 0.1s;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-sidebar-modules a:hover {\n\t\t\tbackground-color: #EAE3D8;\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.docuserve-sidebar-modules a.active {\n\t\t\tcolor: #2E7D74;\n\t\t\tfont-weight: 600;\n\t\t\tbackground-color: #E0EDEB;\n\t\t}\n\t\t.docuserve-sidebar-modules .no-docs {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.3em 1.25em 0.3em 2em;\n\t\t\tcolor: #A39889;\n\t\t\tfont-size: 0.85em;\n\t\t}\n\t\t.docuserve-sidebar-module-nav {\n\t\t\tborder-top: 1px solid #EAE3D8;\n\t\t\tmargin-top: 0.5em;\n\t\t\tpadding-top: 0.5em;\n\t\t}\n\t\t.docuserve-sidebar-module-nav-section {\n\t\t\tpadding: 0.4em 1.25em;\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 0.8em;\n\t\t\tcolor: #8A7F72;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.02em;\n\t\t}\n\t\t.docuserve-sidebar-module-nav a {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0.25em 1.25em 0.25em 2.25em;\n\t\t\tcolor: #5E5549;\n\t\t\ttext-decoration: none;\n\t\t\tfont-size: 0.82em;\n\t\t\ttransition: background-color 0.1s, color 0.1s;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-sidebar-module-nav a:hover {\n\t\t\tbackground-color: #EAE3D8;\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-Sidebar-Template",Template:/*html*/"\n<div class=\"docuserve-sidebar\">\n\t<div class=\"docuserve-sidebar-header\">\n\t\t<button class=\"docuserve-sidebar-close\" onclick=\"{~P~}.views['Docuserve-Sidebar'].toggleSidebar()\">&times;</button>\n\t</div>\n\t<div id=\"Docuserve-Sidebar-Search\" class=\"docuserve-sidebar-search\" style=\"display:none;\">\n\t\t<input type=\"text\" placeholder=\"Search docs...\" id=\"Docuserve-Sidebar-Search-Input\">\n\t\t<div id=\"Docuserve-Sidebar-Search-Results\" class=\"docuserve-sidebar-search-results\"></div>\n\t</div>\n\t<div class=\"docuserve-sidebar-home\">\n\t\t<a onclick=\"{~P~}.PictApplication.navigateTo('/Home')\">Home</a>\n\t</div>\n\t<div id=\"Docuserve-Sidebar-Groups\"></div>\n\t<div id=\"Docuserve-Sidebar-ModuleNav\"></div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();// Conditionally show the search box if the keyword index is loaded
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-sidebar {
+			border-right: 1px solid #DDD6CA;
+			padding: 1em 0;
+			padding-top: 0;
+			min-height: 100%;
+			position: relative;
+		}
+		.docuserve-sidebar-header {
+			display: flex;
+			justify-content: flex-end;
+			padding: 0.4em 0.5em 0;
+		}
+		.docuserve-sidebar-close {
+			background: none;
+			border: none;
+			color: #8A7F72;
+			font-size: 1.2em;
+			cursor: pointer;
+			padding: 0.2em 0.4em;
+			line-height: 1;
+		}
+		.docuserve-sidebar-close:hover {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search {
+			padding: 0 1em 1em 1em;
+			border-bottom: 1px solid #EAE3D8;
+			margin-bottom: 0.5em;
+		}
+		.docuserve-sidebar-search input {
+			width: 100%;
+			padding: 0.5em 0.75em;
+			border: 1px solid #D4CCBE;
+			border-radius: 4px;
+			font-size: 0.85em;
+			outline: none;
+			box-sizing: border-box;
+		}
+		.docuserve-sidebar-search input:focus {
+			border-color: #2E7D74;
+		}
+		.docuserve-sidebar-search-results {
+			margin-top: 0.5em;
+		}
+		.docuserve-sidebar-search-results a {
+			display: block;
+			padding: 0.4em 0.5em;
+			color: #423D37;
+			text-decoration: none;
+			font-size: 0.82em;
+			border-radius: 3px;
+			transition: background-color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-search-results a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search-result-title {
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.docuserve-sidebar-search-results a:hover .docuserve-sidebar-search-result-title {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-search-result-meta {
+			font-size: 0.9em;
+			color: #8A7F72;
+		}
+		.docuserve-sidebar-search-all {
+			display: block;
+			padding: 0.4em 0.5em;
+			font-size: 0.82em;
+			color: #2E7D74;
+			text-decoration: none;
+			font-weight: 600;
+			cursor: pointer;
+			border-top: 1px solid #EAE3D8;
+			margin-top: 0.25em;
+			padding-top: 0.5em;
+		}
+		.docuserve-sidebar-search-all:hover {
+			text-decoration: underline;
+		}
+		.docuserve-sidebar-home {
+			padding: 0.5em 1.25em;
+			font-weight: 600;
+			font-size: 0.85em;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+		}
+		.docuserve-sidebar-home a {
+			color: #5E5549;
+			text-decoration: none;
+			cursor: pointer;
+			user-select: none;
+		}
+		.docuserve-sidebar-home a:hover {
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-group {
+			margin-top: 0.25em;
+		}
+		.docuserve-sidebar-group-title {
+			display: block;
+			padding: 0.5em 1.25em;
+			font-weight: 600;
+			font-size: 0.85em;
+			color: #5E5549;
+			text-decoration: none;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			cursor: pointer;
+			user-select: none;
+			transition: background-color 0.1s, color 0.1s;
+		}
+		.docuserve-sidebar-group-title:hover {
+			color: #2E7D74;
+			background-color: #EAE3D8;
+		}
+		a.docuserve-sidebar-group-title.active {
+			color: #2E7D74;
+			background-color: #E0EDEB;
+		}
+		.docuserve-sidebar-modules {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.docuserve-sidebar-modules li {
+			padding: 0;
+		}
+		.docuserve-sidebar-modules a {
+			display: block;
+			padding: 0.3em 1.25em 0.3em 2em;
+			color: #5E5549;
+			text-decoration: none;
+			font-size: 0.85em;
+			transition: background-color 0.1s, color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-modules a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+		.docuserve-sidebar-modules a.active {
+			color: #2E7D74;
+			font-weight: 600;
+			background-color: #E0EDEB;
+		}
+		.docuserve-sidebar-modules .no-docs {
+			display: block;
+			padding: 0.3em 1.25em 0.3em 2em;
+			color: #A39889;
+			font-size: 0.85em;
+		}
+		.docuserve-sidebar-module-nav {
+			border-top: 1px solid #EAE3D8;
+			margin-top: 0.5em;
+			padding-top: 0.5em;
+		}
+		.docuserve-sidebar-module-nav-section {
+			padding: 0.4em 1.25em;
+			font-weight: 600;
+			font-size: 0.8em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.02em;
+		}
+		.docuserve-sidebar-module-nav a {
+			display: block;
+			padding: 0.25em 1.25em 0.25em 2.25em;
+			color: #5E5549;
+			text-decoration: none;
+			font-size: 0.82em;
+			transition: background-color 0.1s, color 0.1s;
+			cursor: pointer;
+		}
+		.docuserve-sidebar-module-nav a:hover {
+			background-color: #EAE3D8;
+			color: #2E7D74;
+		}
+	`,Templates:[{Hash:"Docuserve-Sidebar-Template",Template:/*html*/`
+<div class="docuserve-sidebar">
+	<div class="docuserve-sidebar-header">
+		<button class="docuserve-sidebar-close" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&times;</button>
+	</div>
+	<div id="Docuserve-Sidebar-Search" class="docuserve-sidebar-search" style="display:none;">
+		<input type="text" placeholder="Search docs..." id="Docuserve-Sidebar-Search-Input">
+		<div id="Docuserve-Sidebar-Search-Results" class="docuserve-sidebar-search-results"></div>
+	</div>
+	<div class="docuserve-sidebar-home">
+		<a onclick="{~P~}.PictApplication.navigateTo('/Home')">Home</a>
+	</div>
+	<div id="Docuserve-Sidebar-Groups"></div>
+	<div id="Docuserve-Sidebar-ModuleNav"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();// Conditionally show the search box if the keyword index is loaded
 let tmpSearchContainer=document.getElementById('Docuserve-Sidebar-Search');if(tmpSearchContainer&&this.pict.AppData.Docuserve.KeywordIndexLoaded){tmpSearchContainer.style.display='';let tmpInput=document.getElementById('Docuserve-Sidebar-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SidebarSearchDebounceTimer){clearTimeout(this._SidebarSearchDebounceTimer);}this._SidebarSearchDebounceTimer=setTimeout(()=>{this.performSidebarSearch(tmpInput.value);},250);});}}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Render the sidebar group navigation from catalog data.
 	 */renderSidebarGroups(){let tmpGroups=this.pict.AppData.Docuserve.SidebarGroups;if(!tmpGroups||tmpGroups.length<1){// Empty sidebar -- don't show a permanent loading message
@@ -1880,7 +2359,115 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/"\n\t\t.docuserve-splash {\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tmin-height: calc(100vh - 56px);\n\t\t\tpadding: 3em 2em;\n\t\t\ttext-align: center;\n\t\t\tbackground: linear-gradient(135deg, #F5F0E8 0%, #E4EFED 100%);\n\t\t}\n\t\t.docuserve-splash h1 {\n\t\t\tfont-size: 3em;\n\t\t\tfont-weight: 700;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin: 0 0 0.25em 0;\n\t\t}\n\t\t.docuserve-splash h1 small {\n\t\t\tfont-size: 0.4em;\n\t\t\tfont-weight: 400;\n\t\t\tcolor: #7A7568;\n\t\t\tvertical-align: middle;\n\t\t\tmargin-left: 0.15em;\n\t\t}\n\t\t.docuserve-splash-tagline {\n\t\t\tfont-size: 1.25em;\n\t\t\tcolor: #7A7568;\n\t\t\tmargin-bottom: 1.5em;\n\t\t\tfont-style: italic;\n\t\t}\n\t\t.docuserve-splash-description {\n\t\t\tfont-size: 1em;\n\t\t\tcolor: #5E5549;\n\t\t\tmax-width: 600px;\n\t\t\tline-height: 1.7;\n\t\t\tmargin-bottom: 2em;\n\t\t}\n\t\t.docuserve-splash-highlights {\n\t\t\tdisplay: grid;\n\t\t\tgrid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n\t\t\tgap: 1.25em;\n\t\t\tmax-width: 900px;\n\t\t\twidth: 100%;\n\t\t\tmargin-bottom: 2.5em;\n\t\t}\n\t\t.docuserve-splash-highlight-card {\n\t\t\tbackground: #fff;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 8px;\n\t\t\tpadding: 1.25em;\n\t\t\ttext-align: left;\n\t\t\ttransition: box-shadow 0.2s, border-color 0.2s;\n\t\t}\n\t\t.docuserve-splash-highlight-card:hover {\n\t\t\tbox-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.docuserve-splash-highlight-card h3 {\n\t\t\tmargin: 0 0 0.5em 0;\n\t\t\tcolor: #3D3229;\n\t\t\tfont-size: 1em;\n\t\t}\n\t\t.docuserve-splash-highlight-card p {\n\t\t\tmargin: 0;\n\t\t\tcolor: #7A7568;\n\t\t\tfont-size: 0.85em;\n\t\t\tline-height: 1.5;\n\t\t}\n\t\t.docuserve-splash-actions {\n\t\t\tdisplay: flex;\n\t\t\tgap: 1em;\n\t\t\tflex-wrap: wrap;\n\t\t\tjustify-content: center;\n\t\t}\n\t\t.docuserve-splash-actions a {\n\t\t\tdisplay: inline-block;\n\t\t\tpadding: 0.7em 1.5em;\n\t\t\tborder-radius: 6px;\n\t\t\tfont-size: 0.95em;\n\t\t\tfont-weight: 600;\n\t\t\ttext-decoration: none;\n\t\t\ttransition: background-color 0.15s, color 0.15s;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-splash-actions .primary {\n\t\t\tbackground-color: #2E7D74;\n\t\t\tcolor: #fff;\n\t\t}\n\t\t.docuserve-splash-actions .primary:hover {\n\t\t\tbackground-color: #256861;\n\t\t}\n\t\t.docuserve-splash-actions .secondary {\n\t\t\tbackground-color: #fff;\n\t\t\tcolor: #3D3229;\n\t\t\tborder: 2px solid #2E7D74;\n\t\t}\n\t\t.docuserve-splash-actions .secondary:hover {\n\t\t\tborder-color: #256861;\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-Splash-Template",Template:/*html*/"\n<div class=\"docuserve-splash\">\n\t<h1 id=\"Docuserve-Splash-Title\"></h1>\n\t<div class=\"docuserve-splash-tagline\" id=\"Docuserve-Splash-Tagline\"></div>\n\t<div class=\"docuserve-splash-description\" id=\"Docuserve-Splash-Description\"></div>\n\t<div class=\"docuserve-splash-highlights\" id=\"Docuserve-Splash-Highlights\"></div>\n\t<div class=\"docuserve-splash-actions\" id=\"Docuserve-Splash-Actions\"></div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-Splash-Content",TemplateHash:"Docuserve-Splash-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocusserveSplashView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover){this.renderFromCover(tmpDocuserve.Cover);}else{this.renderFromCatalog(tmpDocuserve);}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-splash {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: calc(100vh - 56px);
+			padding: 3em 2em;
+			text-align: center;
+			background: linear-gradient(135deg, #F5F0E8 0%, #E4EFED 100%);
+		}
+		.docuserve-splash h1 {
+			font-size: 3em;
+			font-weight: 700;
+			color: #3D3229;
+			margin: 0 0 0.25em 0;
+		}
+		.docuserve-splash h1 small {
+			font-size: 0.4em;
+			font-weight: 400;
+			color: #7A7568;
+			vertical-align: middle;
+			margin-left: 0.15em;
+		}
+		.docuserve-splash-tagline {
+			font-size: 1.25em;
+			color: #7A7568;
+			margin-bottom: 1.5em;
+			font-style: italic;
+		}
+		.docuserve-splash-description {
+			font-size: 1em;
+			color: #5E5549;
+			max-width: 600px;
+			line-height: 1.7;
+			margin-bottom: 2em;
+		}
+		.docuserve-splash-highlights {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 1.25em;
+			max-width: 900px;
+			width: 100%;
+			margin-bottom: 2.5em;
+		}
+		.docuserve-splash-highlight-card {
+			background: #fff;
+			border: 1px solid #DDD6CA;
+			border-radius: 8px;
+			padding: 1.25em;
+			text-align: left;
+			transition: box-shadow 0.2s, border-color 0.2s;
+		}
+		.docuserve-splash-highlight-card:hover {
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+			border-color: #2E7D74;
+		}
+		.docuserve-splash-highlight-card h3 {
+			margin: 0 0 0.5em 0;
+			color: #3D3229;
+			font-size: 1em;
+		}
+		.docuserve-splash-highlight-card p {
+			margin: 0;
+			color: #7A7568;
+			font-size: 0.85em;
+			line-height: 1.5;
+		}
+		.docuserve-splash-actions {
+			display: flex;
+			gap: 1em;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+		.docuserve-splash-actions a {
+			display: inline-block;
+			padding: 0.7em 1.5em;
+			border-radius: 6px;
+			font-size: 0.95em;
+			font-weight: 600;
+			text-decoration: none;
+			transition: background-color 0.15s, color 0.15s;
+			cursor: pointer;
+		}
+		.docuserve-splash-actions .primary {
+			background-color: #2E7D74;
+			color: #fff;
+		}
+		.docuserve-splash-actions .primary:hover {
+			background-color: #256861;
+		}
+		.docuserve-splash-actions .secondary {
+			background-color: #fff;
+			color: #3D3229;
+			border: 2px solid #2E7D74;
+		}
+		.docuserve-splash-actions .secondary:hover {
+			border-color: #256861;
+			color: #2E7D74;
+		}
+	`,Templates:[{Hash:"Docuserve-Splash-Template",Template:/*html*/`
+<div class="docuserve-splash">
+	<h1 id="Docuserve-Splash-Title"></h1>
+	<div class="docuserve-splash-tagline" id="Docuserve-Splash-Tagline"></div>
+	<div class="docuserve-splash-description" id="Docuserve-Splash-Description"></div>
+	<div class="docuserve-splash-highlights" id="Docuserve-Splash-Highlights"></div>
+	<div class="docuserve-splash-actions" id="Docuserve-Splash-Actions"></div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-Splash-Content",TemplateHash:"Docuserve-Splash-Template",DestinationAddress:"#Docuserve-Content-Container",RenderMethod:"replace"}]};class DocusserveSplashView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover){this.renderFromCover(tmpDocuserve.Cover);}else{this.renderFromCatalog(tmpDocuserve);}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Render the splash screen from parsed _cover.md data.
 	 *
 	 * @param {Object} pCover - The parsed cover data { Title, Tagline, Description, Highlights, Actions }
@@ -1909,7 +2496,100 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/"\n\t\t.docuserve-topbar {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tbackground-color: #3D3229;\n\t\t\tcolor: #E8E0D4;\n\t\t\tpadding: 0 1.5em;\n\t\t\theight: 56px;\n\t\t\tbox-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);\n\t\t\tposition: sticky;\n\t\t\ttop: 0;\n\t\t\tz-index: 100;\n\t\t}\n\t\t.docuserve-topbar-brand {\n\t\t\tfont-size: 1.25em;\n\t\t\tfont-weight: 600;\n\t\t\tletter-spacing: 0.02em;\n\t\t\tcolor: #E8E0D4;\n\t\t\ttext-decoration: none;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-topbar-brand small {\n\t\t\tfont-size: 0.65em;\n\t\t\tfont-weight: 400;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-left: 0.2em;\n\t\t}\n\t\t.docuserve-topbar-brand:hover {\n\t\t\tcolor: #fff;\n\t\t}\n\t\t.docuserve-topbar-nav {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 0.25em;\n\t\t}\n\t\t.docuserve-topbar-nav a {\n\t\t\tcolor: #B5AA9A;\n\t\t\ttext-decoration: none;\n\t\t\tpadding: 0.5em 0.75em;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.9em;\n\t\t\ttransition: background-color 0.15s, color 0.15s;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.docuserve-topbar-nav a:hover {\n\t\t\tbackground-color: #524438;\n\t\t\tcolor: #fff;\n\t\t}\n\t\t.docuserve-topbar-links {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 0.5em;\n\t\t}\n\t\t.docuserve-topbar-links a {\n\t\t\tcolor: #8A7F72;\n\t\t\ttext-decoration: none;\n\t\t\tfont-size: 0.85em;\n\t\t\tpadding: 0.4em 0.6em;\n\t\t\tborder-radius: 4px;\n\t\t\ttransition: background-color 0.15s, color 0.15s;\n\t\t}\n\t\t.docuserve-topbar-links a:hover {\n\t\t\tbackground-color: #524438;\n\t\t\tcolor: #E8E0D4;\n\t\t}\n\t\t.docuserve-topbar-toggle {\n\t\t\tdisplay: none;\n\t\t\tbackground: none;\n\t\t\tborder: none;\n\t\t\tcolor: #B5AA9A;\n\t\t\tfont-size: 1.3em;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 0.3em 0.5em;\n\t\t\tmargin-left: 0.5em;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.docuserve-topbar-toggle:hover {\n\t\t\tcolor: #fff;\n\t\t}\n\t\t.docuserve-topbar-right {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t}\n\t",Templates:[{Hash:"Docuserve-TopBar-Template",Template:/*html*/"\n<div class=\"docuserve-topbar\">\n\t<a id=\"Docuserve-TopBar-Brand\" class=\"docuserve-topbar-brand\" href=\"#/Home\"></a>\n\t<div id=\"Docuserve-TopBar-Nav\" class=\"docuserve-topbar-nav\"></div>\n\t<div class=\"docuserve-topbar-right\">\n\t\t<div id=\"Docuserve-TopBar-Links\" class=\"docuserve-topbar-links\"></div>\n\t\t<button id=\"Docuserve-TopBar-Toggle\" class=\"docuserve-topbar-toggle\" onclick=\"{~P~}.views['Docuserve-Sidebar'].toggleSidebar()\">&#9776;</button>\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
+		.docuserve-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background-color: #3D3229;
+			color: #E8E0D4;
+			padding: 0 1.5em;
+			height: 56px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+			position: sticky;
+			top: 0;
+			z-index: 100;
+		}
+		.docuserve-topbar-brand {
+			font-size: 1.25em;
+			font-weight: 600;
+			letter-spacing: 0.02em;
+			color: #E8E0D4;
+			text-decoration: none;
+			cursor: pointer;
+		}
+		.docuserve-topbar-brand small {
+			font-size: 0.65em;
+			font-weight: 400;
+			color: #8A7F72;
+			margin-left: 0.2em;
+		}
+		.docuserve-topbar-brand:hover {
+			color: #fff;
+		}
+		.docuserve-topbar-nav {
+			display: flex;
+			align-items: center;
+			gap: 0.25em;
+		}
+		.docuserve-topbar-nav a {
+			color: #B5AA9A;
+			text-decoration: none;
+			padding: 0.5em 0.75em;
+			border-radius: 4px;
+			font-size: 0.9em;
+			transition: background-color 0.15s, color 0.15s;
+			cursor: pointer;
+		}
+		.docuserve-topbar-nav a:hover {
+			background-color: #524438;
+			color: #fff;
+		}
+		.docuserve-topbar-links {
+			display: flex;
+			align-items: center;
+			gap: 0.5em;
+		}
+		.docuserve-topbar-links a {
+			color: #8A7F72;
+			text-decoration: none;
+			font-size: 0.85em;
+			padding: 0.4em 0.6em;
+			border-radius: 4px;
+			transition: background-color 0.15s, color 0.15s;
+		}
+		.docuserve-topbar-links a:hover {
+			background-color: #524438;
+			color: #E8E0D4;
+		}
+		.docuserve-topbar-toggle {
+			display: none;
+			background: none;
+			border: none;
+			color: #B5AA9A;
+			font-size: 1.3em;
+			cursor: pointer;
+			padding: 0.3em 0.5em;
+			margin-left: 0.5em;
+			line-height: 1;
+		}
+		.docuserve-topbar-toggle:hover {
+			color: #fff;
+		}
+		.docuserve-topbar-right {
+			display: flex;
+			align-items: center;
+		}
+	`,Templates:[{Hash:"Docuserve-TopBar-Template",Template:/*html*/`
+<div class="docuserve-topbar">
+	<a id="Docuserve-TopBar-Brand" class="docuserve-topbar-brand" href="#/Home"></a>
+	<div id="Docuserve-TopBar-Nav" class="docuserve-topbar-nav"></div>
+	<div class="docuserve-topbar-right">
+		<div id="Docuserve-TopBar-Links" class="docuserve-topbar-links"></div>
+		<button id="Docuserve-TopBar-Toggle" class="docuserve-topbar-toggle" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&#9776;</button>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Populate the top bar from _topbar.md data or fall back to defaults.
 	 */renderTopBarContent(){let tmpDocuserve=this.pict.AppData.Docuserve;let tmpBrandEl=document.getElementById('Docuserve-TopBar-Brand');let tmpNavEl=document.getElementById('Docuserve-TopBar-Nav');let tmpLinksEl=document.getElementById('Docuserve-TopBar-Links');if(!tmpBrandEl||!tmpNavEl||!tmpLinksEl){return;}if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar){// Data-driven from _topbar.md
 let tmpTopBar=tmpDocuserve.TopBar;// Brand
@@ -1927,26 +2607,26 @@ AutoInitialize:true,AutoInitializeOrdinal:0,AutoLoadDataWithApp:true,AutoLoadDat
 	 * @param {Record<string, any>} [pOptions] - The options for the provider.
 	 * @param {string} [pServiceHash] - The service hash for the provider.
 	 */constructor(pFable,pOptions,pServiceHash){// Intersect default options, parent constructor, service information
-let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(defaultPictProviderSettings)),pOptions);super(pFable,tmpOptions,pServiceHash);/** @type {import('fable') & import('pict') & { instantiateServiceProviderWithoutRegistration(pServiceType: string, pOptions?: Record<string, any>, pCustomServiceHash?: string): any }} */this.fable;/** @type {import('fable') & import('pict') & { instantiateServiceProviderWithoutRegistration(pServiceType: string, pOptions?: Record<string, any>, pCustomServiceHash?: string): any }} */this.pict;/** @type {any} */this.log;/** @type {Record<string, any>} */this.options;/** @type {string} */this.UUID;/** @type {string} */this.Hash;if(!this.options.ProviderIdentifier){this.options.ProviderIdentifier="AutoProviderID-".concat(this.fable.getUUID());}this.serviceType='PictProvider';/** @type {Record<string, any>} */this._Package=libPackage;// Convenience and consistency naming
+let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(defaultPictProviderSettings)),pOptions);super(pFable,tmpOptions,pServiceHash);/** @type {import('fable') & import('pict') & { instantiateServiceProviderWithoutRegistration(pServiceType: string, pOptions?: Record<string, any>, pCustomServiceHash?: string): any }} */this.fable;/** @type {import('fable') & import('pict') & { instantiateServiceProviderWithoutRegistration(pServiceType: string, pOptions?: Record<string, any>, pCustomServiceHash?: string): any }} */this.pict;/** @type {any} */this.log;/** @type {Record<string, any>} */this.options;/** @type {string} */this.UUID;/** @type {string} */this.Hash;if(!this.options.ProviderIdentifier){this.options.ProviderIdentifier=`AutoProviderID-${this.fable.getUUID()}`;}this.serviceType='PictProvider';/** @type {Record<string, any>} */this._Package=libPackage;// Convenience and consistency naming
 this.pict=this.fable;// Wire in the essential Pict application state
-/** @type {Record<string, any>} */this.AppData=this.pict.AppData;/** @type {Record<string, any>} */this.Bundle=this.pict.Bundle;this.initializeTimestamp=false;this.lastSolvedTimestamp=false;for(let i=0;i<this.options.Templates.length;i++){let tmpDefaultTemplate=this.options.Templates[i];if(!tmpDefaultTemplate.hasOwnProperty('Postfix')||!tmpDefaultTemplate.hasOwnProperty('Template')){this.log.error("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," could not load Default Template ").concat(i," in the options array."),tmpDefaultTemplate);}else{if(!tmpDefaultTemplate.Source){tmpDefaultTemplate.Source="PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," options object.");}this.pict.TemplateProvider.addDefaultTemplate(tmpDefaultTemplate.Prefix,tmpDefaultTemplate.Postfix,tmpDefaultTemplate.Template,tmpDefaultTemplate.Source);}}}/* -------------------------------------------------------------------------- *//*                        Code Section: Initialization                        *//* -------------------------------------------------------------------------- */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onBeforeInitialize:"));}return true;}/**
+/** @type {Record<string, any>} */this.AppData=this.pict.AppData;/** @type {Record<string, any>} */this.Bundle=this.pict.Bundle;this.initializeTimestamp=false;this.lastSolvedTimestamp=false;for(let i=0;i<this.options.Templates.length;i++){let tmpDefaultTemplate=this.options.Templates[i];if(!tmpDefaultTemplate.hasOwnProperty('Postfix')||!tmpDefaultTemplate.hasOwnProperty('Template')){this.log.error(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} could not load Default Template ${i} in the options array.`,tmpDefaultTemplate);}else{if(!tmpDefaultTemplate.Source){tmpDefaultTemplate.Source=`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} options object.`;}this.pict.TemplateProvider.addDefaultTemplate(tmpDefaultTemplate.Prefix,tmpDefaultTemplate.Postfix,tmpDefaultTemplate.Template,tmpDefaultTemplate.Source);}}}/* -------------------------------------------------------------------------- *//*                        Code Section: Initialization                        *//* -------------------------------------------------------------------------- */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onBeforeInitialize:`);}return true;}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after pre-pinitialization.
 	 *
 	 * @return {void}
-	 */onBeforeInitializeAsync(fCallback){this.onBeforeInitialize();return fCallback();}onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onInitialize:"));}return true;}/**
+	 */onBeforeInitializeAsync(fCallback){this.onBeforeInitialize();return fCallback();}onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onInitialize:`);}return true;}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after initialization.
 	 *
 	 * @return {void}
-	 */onInitializeAsync(fCallback){this.onInitialize();return fCallback();}initialize(){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow PROVIDER [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," initialize:"));}if(!this.initializeTimestamp){this.onBeforeInitialize();this.onInitialize();this.onAfterInitialize();this.initializeTimestamp=this.pict.log.getTimeStamp();return true;}else{this.log.warn("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," initialize called but initialization is already completed.  Aborting."));return false;}}/**
+	 */onInitializeAsync(fCallback){this.onInitialize();return fCallback();}initialize(){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow PROVIDER [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} initialize:`);}if(!this.initializeTimestamp){this.onBeforeInitialize();this.onInitialize();this.onAfterInitialize();this.initializeTimestamp=this.pict.log.getTimeStamp();return true;}else{this.log.warn(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} initialize called but initialization is already completed.  Aborting.`);return false;}}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after initialization.
 	 *
 	 * @return {void}
-	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow PROVIDER [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," initializeAsync:"));}if(!this.initializeTimestamp){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>0){this.log.info("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," beginning initialization..."));}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));tmpAnticipate.wait(pError=>{this.initializeTimestamp=this.pict.log.getTimeStamp();if(pError){this.log.error("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," initialization failed: ").concat(pError.message||pError),{Stack:pError.stack});}else if(this.pict.LogNoisiness>0){this.log.info("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," initialization complete."));}return fCallback();});}else{this.log.warn("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," async initialize called but initialization is already completed.  Aborting."));// TODO: Should this be an error?
-return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onAfterInitialize:"));}return true;}/**
+	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow PROVIDER [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} initializeAsync:`);}if(!this.initializeTimestamp){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>0){this.log.info(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} beginning initialization...`);}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));tmpAnticipate.wait(pError=>{this.initializeTimestamp=this.pict.log.getTimeStamp();if(pError){this.log.error(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} initialization failed: ${pError.message||pError}`,{Stack:pError.stack});}else if(this.pict.LogNoisiness>0){this.log.info(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} initialization complete.`);}return fCallback();});}else{this.log.warn(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} async initialize called but initialization is already completed.  Aborting.`);// TODO: Should this be an error?
+return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onAfterInitialize:`);}return true;}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after initialization.
 	 *
 	 * @return {void}
-	 */onAfterInitializeAsync(fCallback){this.onAfterInitialize();return fCallback();}onPreRender(){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onPreRender:"));}return true;}/**
+	 */onAfterInitializeAsync(fCallback){this.onAfterInitialize();return fCallback();}onPreRender(){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onPreRender:`);}return true;}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after pre-render.
 	 *
 	 * @return {void}
@@ -1954,7 +2634,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after render.
 	 *
 	 * @return {void}
-	 */renderAsync(fCallback){this.onPreRender();return fCallback();}onPreSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onPreSolve:"));}return true;}/**
+	 */renderAsync(fCallback){this.onPreRender();return fCallback();}onPreSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onPreSolve:`);}return true;}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after pre-solve.
 	 *
 	 * @return {void}
@@ -1968,7 +2648,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 * Hook to allow the provider to load data during application data load.
 	 *
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data load.
-	 */onLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onLoadDataAsync:"));}return fCallback();}/**
+	 */onLoadDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onLoadDataAsync:`);}return fCallback();}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data post-load.
 	 */onAfterLoadDataAsync(fCallback){return fCallback();}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data pre-load.
@@ -1980,7 +2660,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data load.
 	 *
 	 * @return {void}
-	 */onSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace("PictProvider [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ProviderIdentifier," onSaveDataAsync:"));}return fCallback();}/**
+	 */onSaveDataAsync(fCallback){if(this.pict.LogNoisiness>3){this.log.trace(`PictProvider [${this.UUID}]::[${this.Hash}] ${this.options.ProviderIdentifier} onSaveDataAsync:`);}return fCallback();}/**
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data post-load.
 	 *
 	 * @return {void}
@@ -2014,7 +2694,7 @@ if(pLanguageDef.selectors){pLanguageDef.selectors.lastIndex=0;tmpResult=tmpResul
 if(pLanguageDef.properties){pLanguageDef.properties.lastIndex=0;tmpResult=tmpResult.replace(pLanguageDef.properties,'<span class="property">$1</span>:');}// Keywords
 if(pLanguageDef.keywords){pLanguageDef.keywords.lastIndex=0;tmpResult=tmpResult.replace(pLanguageDef.keywords,'<span class="keyword">$1</span>');}// Builtins
 if(pLanguageDef.builtins){pLanguageDef.builtins.lastIndex=0;tmpResult=tmpResult.replace(pLanguageDef.builtins,'<span class="keyword">$1</span>');}// Numbers (CSS numbers may have units as a capture group, others do not)
-if(pLanguageDef.numbers){pLanguageDef.numbers.lastIndex=0;tmpResult=tmpResult.replace(pLanguageDef.numbers,pMatch=>{return"<span class=\"number\">".concat(pMatch,"</span>");});}return tmpResult;}/**
+if(pLanguageDef.numbers){pLanguageDef.numbers.lastIndex=0;tmpResult=tmpResult.replace(pLanguageDef.numbers,pMatch=>{return`<span class="number">${pMatch}</span>`;});}return tmpResult;}/**
  * Highlight an HTML tag token, applying tag name, attribute name, and attribute value colors.
  *
  * The approach: parse the raw tag into structured pieces first, then build the
@@ -2049,9 +2729,9 @@ let tmpResult='';let tmpLastIndex=0;let tmpTagGroupIndex=tmpLanguageDef.tagGroup
 if(tmpMatch.index>tmpLastIndex){let tmpSegment=tmpCode.substring(tmpLastIndex,tmpMatch.index);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}let tmpFullMatch=tmpMatch[0];// Determine token type from capture groups
 // Group 1 is always comments, Group 2+ are strings/template literals/regex
 if(tmpMatch[1]){// Comment
-tmpResult+="<span class=\"comment\">".concat(escapeHTML(tmpFullMatch),"</span>");}else if(tmpTagGroupIndex>0&&tmpMatch[tmpTagGroupIndex]){// HTML tag — highlight tag name, attributes, and values
+tmpResult+=`<span class="comment">${escapeHTML(tmpFullMatch)}</span>`;}else if(tmpTagGroupIndex>0&&tmpMatch[tmpTagGroupIndex]){// HTML tag — highlight tag name, attributes, and values
 tmpResult+=highlightHTMLTag(tmpFullMatch);}else{// String, template literal, or regex
-tmpResult+="<span class=\"string\">".concat(escapeHTML(tmpFullMatch),"</span>");}tmpLastIndex=tmpLanguageDef.tokenizer.lastIndex;}// Add any remaining code after the last match
+tmpResult+=`<span class="string">${escapeHTML(tmpFullMatch)}</span>`;}tmpLastIndex=tmpLanguageDef.tokenizer.lastIndex;}// Add any remaining code after the last match
 if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}pElement.innerHTML=tmpResult;};}module.exports=createHighlighter;module.exports.LanguageDefinitions=_LanguageDefinitions;},{}],57:[function(require,module,exports){module.exports={"RenderOnLoad":true,"DefaultRenderable":"CodeEditor-Wrap","DefaultDestinationAddress":"#CodeEditor-Container-Div","Templates":[{"Hash":"CodeEditor-Container","Template":"<!-- CodeEditor-Container Rendering Soon -->"}],"Renderables":[{"RenderableHash":"CodeEditor-Wrap","TemplateHash":"CodeEditor-Container","DestinationAddress":"#CodeEditor-Container-Div"}],"TargetElementAddress":"#CodeEditor-Container-Div",// Address in AppData or other Pict address space to read/write code content
 "CodeDataAddress":false,// The language for syntax highlighting (e.g. "javascript", "html", "css", "json")
 "Language":"javascript",// Whether the editor is read-only
@@ -2063,7 +2743,72 @@ if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);t
 "CatchTab":true,// Whether to show line numbers
 "LineNumbers":true,// Default code content if no address is provided
 "DefaultCode":"// Enter your code here\n",// CSS for the code editor
-"CSS":".pict-code-editor-wrap\n{\n\tdisplay: flex;\n\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;\n\tfont-size: 14px;\n\tline-height: 1.5;\n\tborder: 1px solid #D0D0D0;\n\tborder-radius: 4px;\n\toverflow: auto;\n}\n.pict-code-editor-wrap .pict-code-line-numbers\n{\n\tposition: sticky;\n\tleft: 0;\n\twidth: 40px;\n\tmin-width: 40px;\n\tpadding: 10px 0;\n\ttext-align: right;\n\tbackground: #F5F5F5;\n\tborder-right: 1px solid #D0D0D0;\n\tcolor: #999;\n\tfont-size: 13px;\n\tline-height: 1.5;\n\tuser-select: none;\n\tpointer-events: none;\n\tbox-sizing: border-box;\n\tz-index: 1;\n}\n.pict-code-editor-wrap .pict-code-line-numbers span\n{\n\tdisplay: block;\n\tpadding: 0 8px 0 0;\n}\n.pict-code-editor-wrap .pict-code-editor\n{\n\tmargin: 0;\n\tpadding: 10px 10px 10px 8px;\n\tmin-height: 100px;\n\tflex: 1;\n\tmin-width: 0;\n\toutline: none;\n\ttab-size: 4;\n\twhite-space: pre;\n\toverflow-wrap: normal;\n\tcolor: #383A42;\n\tbackground: #FAFAFA;\n\tcaret-color: #526FFF;\n\tborder-radius: 0 4px 4px 0;\n}\n.pict-code-editor-wrap .pict-code-editor.pict-code-no-line-numbers\n{\n\tpadding-left: 10px;\n\tborder-radius: 4px;\n}\n.pict-code-editor-wrap .pict-code-editor .keyword { color: #A626A4; }\n.pict-code-editor-wrap .pict-code-editor .string { color: #50A14F; }\n.pict-code-editor-wrap .pict-code-editor .number { color: #986801; }\n.pict-code-editor-wrap .pict-code-editor .comment { color: #A0A1A7; font-style: italic; }\n.pict-code-editor-wrap .pict-code-editor .operator { color: #0184BC; }\n.pict-code-editor-wrap .pict-code-editor .punctuation { color: #383A42; }\n.pict-code-editor-wrap .pict-code-editor .function-name { color: #4078F2; }\n.pict-code-editor-wrap .pict-code-editor .property { color: #E45649; }\n.pict-code-editor-wrap .pict-code-editor .tag { color: #E45649; }\n.pict-code-editor-wrap .pict-code-editor .attr-name { color: #986801; }\n.pict-code-editor-wrap .pict-code-editor .attr-value { color: #50A14F; }\n"};},{}],58:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
+"CSS":`.pict-code-editor-wrap
+{
+	display: flex;
+	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+	font-size: 14px;
+	line-height: 1.5;
+	border: 1px solid #D0D0D0;
+	border-radius: 4px;
+	overflow: auto;
+}
+.pict-code-editor-wrap .pict-code-line-numbers
+{
+	position: sticky;
+	left: 0;
+	width: 40px;
+	min-width: 40px;
+	padding: 10px 0;
+	text-align: right;
+	background: #F5F5F5;
+	border-right: 1px solid #D0D0D0;
+	color: #999;
+	font-size: 13px;
+	line-height: 1.5;
+	user-select: none;
+	pointer-events: none;
+	box-sizing: border-box;
+	z-index: 1;
+}
+.pict-code-editor-wrap .pict-code-line-numbers span
+{
+	display: block;
+	padding: 0 8px 0 0;
+}
+.pict-code-editor-wrap .pict-code-editor
+{
+	margin: 0;
+	padding: 10px 10px 10px 8px;
+	min-height: 100px;
+	flex: 1;
+	min-width: 0;
+	outline: none;
+	tab-size: 4;
+	white-space: pre;
+	overflow-wrap: normal;
+	color: #383A42;
+	background: #FAFAFA;
+	caret-color: #526FFF;
+	border-radius: 0 4px 4px 0;
+}
+.pict-code-editor-wrap .pict-code-editor.pict-code-no-line-numbers
+{
+	padding-left: 10px;
+	border-radius: 4px;
+}
+.pict-code-editor-wrap .pict-code-editor .keyword { color: #A626A4; }
+.pict-code-editor-wrap .pict-code-editor .string { color: #50A14F; }
+.pict-code-editor-wrap .pict-code-editor .number { color: #986801; }
+.pict-code-editor-wrap .pict-code-editor .comment { color: #A0A1A7; font-style: italic; }
+.pict-code-editor-wrap .pict-code-editor .operator { color: #0184BC; }
+.pict-code-editor-wrap .pict-code-editor .punctuation { color: #383A42; }
+.pict-code-editor-wrap .pict-code-editor .function-name { color: #4078F2; }
+.pict-code-editor-wrap .pict-code-editor .property { color: #E45649; }
+.pict-code-editor-wrap .pict-code-editor .tag { color: #E45649; }
+.pict-code-editor-wrap .pict-code-editor .attr-name { color: #986801; }
+.pict-code-editor-wrap .pict-code-editor .attr-value { color: #50A14F; }
+`};},{}],58:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
 this.codeJar=null;// The highlight function (can be overridden)
 this._highlightFunction=null;// The current language
 this._language=this.options.Language||'javascript';}onBeforeInitialize(){super.onBeforeInitialize();this._codeJarPrototype=null;this.targetElement=false;// Build the default highlight function for the configured language
@@ -2074,10 +2819,10 @@ this._highlightFunction=libCreateHighlighter(this._language);return super.onBefo
 	 * @param {function} [pCodeJarPrototype] - The CodeJar constructor function
 	 * @returns {boolean|void}
 	 */connectCodeJarPrototype(pCodeJarPrototype){if(typeof pCodeJarPrototype==='function'){this._codeJarPrototype=pCodeJarPrototype;return;}// Try to find CodeJar in global scope
-if(typeof window!=='undefined'){if(typeof window.CodeJar==='function'){this.log.trace("PICT-Code Found CodeJar in window.CodeJar.");this._codeJarPrototype=window.CodeJar;return;}}this.log.error("PICT-Code No CodeJar prototype found. Include codejar via script tag or call connectCodeJarPrototype(CodeJar) explicitly.");return false;}onAfterRender(pRenderable){// Ensure the CSS from all registered views is injected into the DOM
+if(typeof window!=='undefined'){if(typeof window.CodeJar==='function'){this.log.trace(`PICT-Code Found CodeJar in window.CodeJar.`);this._codeJarPrototype=window.CodeJar;return;}}this.log.error(`PICT-Code No CodeJar prototype found. Include codejar via script tag or call connectCodeJarPrototype(CodeJar) explicitly.`);return false;}onAfterRender(pRenderable){// Ensure the CSS from all registered views is injected into the DOM
 this.pict.CSSMap.injectCSS();if(!this.initialRenderComplete){this.onAfterInitialRender();this.initialRenderComplete=true;}return super.onAfterRender(pRenderable);}onAfterInitialRender(){// Resolve the CodeJar prototype if not already set
-if(!this._codeJarPrototype){this.connectCodeJarPrototype();}if(!this._codeJarPrototype){this.log.error("PICT-Code Cannot initialize editor; no CodeJar prototype available.");return false;}if(this.codeJar){this.log.error("PICT-Code editor is already initialized!");return false;}// Find the target element
-let tmpTargetElementSet=this.services.ContentAssignment.getElement(this.options.TargetElementAddress);if(!tmpTargetElementSet||tmpTargetElementSet.length<1){this.log.error("PICT-Code Could not find target element [".concat(this.options.TargetElementAddress,"]!"));this.targetElement=false;return false;}this.targetElement=tmpTargetElementSet[0];// Build the editor DOM structure
+if(!this._codeJarPrototype){this.connectCodeJarPrototype();}if(!this._codeJarPrototype){this.log.error(`PICT-Code Cannot initialize editor; no CodeJar prototype available.`);return false;}if(this.codeJar){this.log.error(`PICT-Code editor is already initialized!`);return false;}// Find the target element
+let tmpTargetElementSet=this.services.ContentAssignment.getElement(this.options.TargetElementAddress);if(!tmpTargetElementSet||tmpTargetElementSet.length<1){this.log.error(`PICT-Code Could not find target element [${this.options.TargetElementAddress}]!`);this.targetElement=false;return false;}this.targetElement=tmpTargetElementSet[0];// Build the editor DOM structure
 this._buildEditorDOM();// Get initial code content
 let tmpCode=this._resolveCodeContent();// Create the CodeJar options
 let tmpCodeJarOptions={};if(this.options.Tab){tmpCodeJarOptions.tab=this.options.Tab;}if(this.options.IndentOn){tmpCodeJarOptions.indentOn=this.options.IndentOn;}if(this.options.MoveToNewLine){tmpCodeJarOptions.moveToNewLine=this.options.MoveToNewLine;}if(typeof this.options.AddClosing!=='undefined'){tmpCodeJarOptions.addClosing=this.options.AddClosing;}if(typeof this.options.CatchTab!=='undefined'){tmpCodeJarOptions.catchTab=this.options.CatchTab;}this.customConfigureEditorOptions(tmpCodeJarOptions);// Instantiate CodeJar on the editor element
@@ -2097,7 +2842,7 @@ let tmpWrap=document.createElement('div');tmpWrap.className='pict-code-editor-wr
 if(this.options.LineNumbers){let tmpLineNumbers=document.createElement('div');tmpLineNumbers.className='pict-code-line-numbers';tmpWrap.appendChild(tmpLineNumbers);this._lineNumbersElement=tmpLineNumbers;}// Create the editor element (CodeJar needs a pre or div)
 let tmpEditor=document.createElement('div');tmpEditor.className='pict-code-editor language-'+this._language;if(!this.options.LineNumbers){tmpEditor.className+=' pict-code-no-line-numbers';}tmpWrap.appendChild(tmpEditor);this.targetElement.appendChild(tmpWrap);this._editorElement=tmpEditor;this._wrapElement=tmpWrap;}/**
 	 * Update the line numbers display based on current code content.
-	 */_updateLineNumbers(){if(!this.options.LineNumbers||!this._lineNumbersElement||!this._editorElement){return;}let tmpCode=this._editorElement.textContent||'';let tmpLineCount=tmpCode.split('\n').length;let tmpHTML='';for(let i=1;i<=tmpLineCount;i++){tmpHTML+="<span>".concat(i,"</span>");}this._lineNumbersElement.innerHTML=tmpHTML;}/**
+	 */_updateLineNumbers(){if(!this.options.LineNumbers||!this._lineNumbersElement||!this._editorElement){return;}let tmpCode=this._editorElement.textContent||'';let tmpLineCount=tmpCode.split('\n').length;let tmpHTML='';for(let i=1;i<=tmpLineCount;i++){tmpHTML+=`<span>${i}</span>`;}this._lineNumbersElement.innerHTML=tmpHTML;}/**
 	 * Reset inline styles that CodeJar sets on the editor element.
 	 *
 	 * CodeJar forces white-space:pre-wrap and overflow-wrap:break-word so
@@ -2108,7 +2853,7 @@ let tmpEditor=document.createElement('div');tmpEditor.className='pict-code-edito
 	 * Resolve the initial code content from address or default.
 	 *
 	 * @returns {string} The code content
-	 */_resolveCodeContent(){if(this.options.CodeDataAddress){const tmpAddressSpace={Fable:this.fable,Pict:this.fable,AppData:this.AppData,Bundle:this.Bundle,Options:this.options};let tmpAddressedData=this.fable.manifest.getValueByHash(tmpAddressSpace,this.options.CodeDataAddress);if(typeof tmpAddressedData==='string'){return tmpAddressedData;}else{this.log.warn("PICT-Code Address [".concat(this.options.CodeDataAddress,"] did not return a string; it was ").concat(typeof tmpAddressedData,"."));}}return this.options.DefaultCode||'';}/**
+	 */_resolveCodeContent(){if(this.options.CodeDataAddress){const tmpAddressSpace={Fable:this.fable,Pict:this.fable,AppData:this.AppData,Bundle:this.Bundle,Options:this.options};let tmpAddressedData=this.fable.manifest.getValueByHash(tmpAddressSpace,this.options.CodeDataAddress);if(typeof tmpAddressedData==='string'){return tmpAddressedData;}else{this.log.warn(`PICT-Code Address [${this.options.CodeDataAddress}] did not return a string; it was ${typeof tmpAddressedData}.`);}}return this.options.DefaultCode||'';}/**
 	 * Hook for subclasses to customize CodeJar options before instantiation.
 	 *
 	 * @param {object} pOptions - The CodeJar options object to modify
@@ -2235,7 +2980,203 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55,"pict-section-code":58}],61:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/"\n\t\t.pict-content {\n\t\t\tpadding: 2em 3em;\n\t\t\tmax-width: 900px;\n\t\t\tmargin: 0 auto;\n\t\t}\n\t\t.pict-content-loading {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tmin-height: 200px;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 1em;\n\t\t}\n\t\t.pict-content h1 {\n\t\t\tfont-size: 2em;\n\t\t\tcolor: #3D3229;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tpadding-bottom: 0.3em;\n\t\t\tmargin-top: 0;\n\t\t}\n\t\t.pict-content h2 {\n\t\t\tfont-size: 1.5em;\n\t\t\tcolor: #3D3229;\n\t\t\tborder-bottom: 1px solid #EAE3D8;\n\t\t\tpadding-bottom: 0.25em;\n\t\t\tmargin-top: 1.5em;\n\t\t}\n\t\t.pict-content h3 {\n\t\t\tfont-size: 1.25em;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin-top: 1.25em;\n\t\t}\n\t\t.pict-content h4, .pict-content h5, .pict-content h6 {\n\t\t\tcolor: #5E5549;\n\t\t\tmargin-top: 1em;\n\t\t}\n\t\t.pict-content p {\n\t\t\tline-height: 1.7;\n\t\t\tcolor: #423D37;\n\t\t\tmargin: 0.75em 0;\n\t\t}\n\t\t.pict-content a {\n\t\t\tcolor: #2E7D74;\n\t\t\ttext-decoration: none;\n\t\t}\n\t\t.pict-content a:hover {\n\t\t\ttext-decoration: underline;\n\t\t}\n\t\t.pict-content-code-wrap {\n\t\t\tposition: relative;\n\t\t\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;\n\t\t\tfont-size: 14px;\n\t\t\tline-height: 1.5;\n\t\t\tborder-radius: 6px;\n\t\t\toverflow: auto;\n\t\t\tmargin: 1em 0;\n\t\t\tbackground: #3D3229;\n\t\t}\n\t\t.pict-content-code-wrap .pict-content-code-line-numbers {\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 40px;\n\t\t\tpadding: 1.25em 0;\n\t\t\ttext-align: right;\n\t\t\tbackground: #342A22;\n\t\t\tborder-right: 1px solid #4A3F35;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 13px;\n\t\t\tline-height: 1.5;\n\t\t\tuser-select: none;\n\t\t\tpointer-events: none;\n\t\t\tbox-sizing: border-box;\n\t\t}\n\t\t.pict-content-code-wrap .pict-content-code-line-numbers span {\n\t\t\tdisplay: block;\n\t\t\tpadding: 0 8px 0 0;\n\t\t}\n\t\t.pict-content-code-wrap pre {\n\t\t\tmargin: 0;\n\t\t\tbackground: #3D3229;\n\t\t\tcolor: #E8E0D4;\n\t\t\tpadding: 1.25em 1.25em 1.25em 52px;\n\t\t\tborder-radius: 6px;\n\t\t\toverflow-x: auto;\n\t\t\tline-height: 1.5;\n\t\t\tfont-size: inherit;\n\t\t}\n\t\t.pict-content-code-wrap pre code {\n\t\t\tbackground: none;\n\t\t\tpadding: 0;\n\t\t\tcolor: inherit;\n\t\t\tfont-size: inherit;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.pict-content-code-wrap .keyword { color: #C678DD; }\n\t\t.pict-content-code-wrap .string { color: #98C379; }\n\t\t.pict-content-code-wrap .number { color: #D19A66; }\n\t\t.pict-content-code-wrap .comment { color: #7F848E; font-style: italic; }\n\t\t.pict-content-code-wrap .operator { color: #56B6C2; }\n\t\t.pict-content-code-wrap .punctuation { color: #E8E0D4; }\n\t\t.pict-content-code-wrap .function-name { color: #61AFEF; }\n\t\t.pict-content-code-wrap .property { color: #E06C75; }\n\t\t.pict-content-code-wrap .tag { color: #E06C75; }\n\t\t.pict-content-code-wrap .attr-name { color: #D19A66; }\n\t\t.pict-content-code-wrap .attr-value { color: #98C379; }\n\t\t.pict-content pre {\n\t\t\tbackground: #3D3229;\n\t\t\tcolor: #E8E0D4;\n\t\t\tpadding: 1.25em;\n\t\t\tborder-radius: 6px;\n\t\t\toverflow-x: auto;\n\t\t\tline-height: 1.5;\n\t\t\tfont-size: 0.9em;\n\t\t}\n\t\t.pict-content code {\n\t\t\tbackground: #F0ECE4;\n\t\t\tpadding: 0.15em 0.4em;\n\t\t\tborder-radius: 3px;\n\t\t\tfont-size: 0.9em;\n\t\t\tcolor: #9E6B47;\n\t\t}\n\t\t.pict-content pre code {\n\t\t\tbackground: none;\n\t\t\tpadding: 0;\n\t\t\tcolor: inherit;\n\t\t\tfont-size: inherit;\n\t\t}\n\t\t.pict-content blockquote {\n\t\t\tborder-left: 4px solid #2E7D74;\n\t\t\tmargin: 1em 0;\n\t\t\tpadding: 0.5em 1em;\n\t\t\tbackground: #F7F5F0;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.pict-content blockquote p {\n\t\t\tmargin: 0.25em 0;\n\t\t}\n\t\t.pict-content ul, .pict-content ol {\n\t\t\tpadding-left: 2em;\n\t\t\tline-height: 1.8;\n\t\t}\n\t\t.pict-content li {\n\t\t\tmargin: 0.25em 0;\n\t\t\tcolor: #423D37;\n\t\t}\n\t\t.pict-content hr {\n\t\t\tborder: none;\n\t\t\tborder-top: 1px solid #DDD6CA;\n\t\t\tmargin: 2em 0;\n\t\t}\n\t\t.pict-content table {\n\t\t\twidth: 100%;\n\t\t\tborder-collapse: collapse;\n\t\t\tmargin: 1em 0;\n\t\t}\n\t\t.pict-content table th {\n\t\t\tbackground: #F5F0E8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tpadding: 0.6em 0.8em;\n\t\t\ttext-align: left;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.pict-content table td {\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tpadding: 0.5em 0.8em;\n\t\t\tcolor: #423D37;\n\t\t}\n\t\t.pict-content table tr:nth-child(even) {\n\t\t\tbackground: #F7F5F0;\n\t\t}\n\t\t.pict-content img {\n\t\t\tmax-width: 100%;\n\t\t\theight: auto;\n\t\t}\n\t\t.pict-content pre.mermaid {\n\t\t\tbackground: #fff;\n\t\t\tcolor: #3D3229;\n\t\t\ttext-align: center;\n\t\t\tpadding: 1em;\n\t\t}\n\t\t.pict-content .pict-content-katex-display {\n\t\t\ttext-align: center;\n\t\t\tmargin: 1em 0;\n\t\t\tpadding: 0.5em;\n\t\t\toverflow-x: auto;\n\t\t}\n\t\t.pict-content .pict-content-katex-inline {\n\t\t\tdisplay: inline;\n\t\t}\n\t",Templates:[{Hash:"Pict-Content-Template",Template:/*html*/"\n<div class=\"pict-content\" id=\"Pict-Content-Body\">\n\t<div class=\"pict-content-loading\">Loading content...</div>\n</div>\n"}],Renderables:[{RenderableHash:"Pict-Content-Display",TemplateHash:"Pict-Content-Template",DestinationAddress:"#Pict-Content-Container",RenderMethod:"replace"}]};class PictContentView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55,"pict-section-code":58}],61:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
+		.pict-content {
+			padding: 2em 3em;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.pict-content-loading {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 200px;
+			color: #8A7F72;
+			font-size: 1em;
+		}
+		.pict-content h1 {
+			font-size: 2em;
+			color: #3D3229;
+			border-bottom: 1px solid #DDD6CA;
+			padding-bottom: 0.3em;
+			margin-top: 0;
+		}
+		.pict-content h2 {
+			font-size: 1.5em;
+			color: #3D3229;
+			border-bottom: 1px solid #EAE3D8;
+			padding-bottom: 0.25em;
+			margin-top: 1.5em;
+		}
+		.pict-content h3 {
+			font-size: 1.25em;
+			color: #3D3229;
+			margin-top: 1.25em;
+		}
+		.pict-content h4, .pict-content h5, .pict-content h6 {
+			color: #5E5549;
+			margin-top: 1em;
+		}
+		.pict-content p {
+			line-height: 1.7;
+			color: #423D37;
+			margin: 0.75em 0;
+		}
+		.pict-content a {
+			color: #2E7D74;
+			text-decoration: none;
+		}
+		.pict-content a:hover {
+			text-decoration: underline;
+		}
+		.pict-content-code-wrap {
+			position: relative;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+			font-size: 14px;
+			line-height: 1.5;
+			border-radius: 6px;
+			overflow: auto;
+			margin: 1em 0;
+			background: #3D3229;
+		}
+		.pict-content-code-wrap .pict-content-code-line-numbers {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 40px;
+			padding: 1.25em 0;
+			text-align: right;
+			background: #342A22;
+			border-right: 1px solid #4A3F35;
+			color: #8A7F72;
+			font-size: 13px;
+			line-height: 1.5;
+			user-select: none;
+			pointer-events: none;
+			box-sizing: border-box;
+		}
+		.pict-content-code-wrap .pict-content-code-line-numbers span {
+			display: block;
+			padding: 0 8px 0 0;
+		}
+		.pict-content-code-wrap pre {
+			margin: 0;
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 1.25em 1.25em 1.25em 52px;
+			border-radius: 6px;
+			overflow-x: auto;
+			line-height: 1.5;
+			font-size: inherit;
+		}
+		.pict-content-code-wrap pre code {
+			background: none;
+			padding: 0;
+			color: inherit;
+			font-size: inherit;
+			font-family: inherit;
+		}
+		.pict-content-code-wrap .keyword { color: #C678DD; }
+		.pict-content-code-wrap .string { color: #98C379; }
+		.pict-content-code-wrap .number { color: #D19A66; }
+		.pict-content-code-wrap .comment { color: #7F848E; font-style: italic; }
+		.pict-content-code-wrap .operator { color: #56B6C2; }
+		.pict-content-code-wrap .punctuation { color: #E8E0D4; }
+		.pict-content-code-wrap .function-name { color: #61AFEF; }
+		.pict-content-code-wrap .property { color: #E06C75; }
+		.pict-content-code-wrap .tag { color: #E06C75; }
+		.pict-content-code-wrap .attr-name { color: #D19A66; }
+		.pict-content-code-wrap .attr-value { color: #98C379; }
+		.pict-content pre {
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 1.25em;
+			border-radius: 6px;
+			overflow-x: auto;
+			line-height: 1.5;
+			font-size: 0.9em;
+		}
+		.pict-content code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
+		.pict-content pre code {
+			background: none;
+			padding: 0;
+			color: inherit;
+			font-size: inherit;
+		}
+		.pict-content blockquote {
+			border-left: 4px solid #2E7D74;
+			margin: 1em 0;
+			padding: 0.5em 1em;
+			background: #F7F5F0;
+			color: #5E5549;
+		}
+		.pict-content blockquote p {
+			margin: 0.25em 0;
+		}
+		.pict-content ul, .pict-content ol {
+			padding-left: 2em;
+			line-height: 1.8;
+		}
+		.pict-content li {
+			margin: 0.25em 0;
+			color: #423D37;
+		}
+		.pict-content hr {
+			border: none;
+			border-top: 1px solid #DDD6CA;
+			margin: 2em 0;
+		}
+		.pict-content table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 1em 0;
+		}
+		.pict-content table th {
+			background: #F5F0E8;
+			border: 1px solid #DDD6CA;
+			padding: 0.6em 0.8em;
+			text-align: left;
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.pict-content table td {
+			border: 1px solid #DDD6CA;
+			padding: 0.5em 0.8em;
+			color: #423D37;
+		}
+		.pict-content table tr:nth-child(even) {
+			background: #F7F5F0;
+		}
+		.pict-content img {
+			max-width: 100%;
+			height: auto;
+		}
+		.pict-content pre.mermaid {
+			background: #fff;
+			color: #3D3229;
+			text-align: center;
+			padding: 1em;
+		}
+		.pict-content .pict-content-katex-display {
+			text-align: center;
+			margin: 1em 0;
+			padding: 0.5em;
+			overflow-x: auto;
+		}
+		.pict-content .pict-content-katex-inline {
+			display: inline;
+		}
+	`,Templates:[{Hash:"Pict-Content-Template",Template:/*html*/`
+<div class="pict-content" id="Pict-Content-Body">
+	<div class="pict-content-loading">Loading content...</div>
+</div>
+`}],Renderables:[{RenderableHash:"Pict-Content-Display",TemplateHash:"Pict-Content-Template",DestinationAddress:"#Pict-Content-Container",RenderMethod:"replace"}]};class PictContentView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
 	 * Display parsed HTML content in the content area.
 	 *
 	 * @param {string} pHTMLContent - The HTML to display
@@ -2272,8 +3213,349 @@ let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-disp
 // Type: "folder" or "file"
 // Additional properties: Size, Modified, Extension, MimeType, Path, Icon, ThumbnailURL
 "FileListAddress":"AppData.PictFileBrowser.FileList","FolderTreeAddress":"AppData.PictFileBrowser.FolderTree","ChildFolderCacheAddress":"AppData.PictFileBrowser.ChildFolderCache",// --- Templates ---
-"Templates":[{"Hash":"FileBrowser-Container-Template","Template":/*html*/"\n<div class=\"pict-filebrowser\" id=\"Pict-FileBrowser-Wrap\">\n\t<div class=\"pict-filebrowser-browse-pane\" id=\"Pict-FileBrowser-BrowsePane\"></div>\n\t<div class=\"pict-filebrowser-main-pane\">\n\t\t<div class=\"pict-filebrowser-list-pane\" id=\"Pict-FileBrowser-ListPane\"></div>\n\t\t<div class=\"pict-filebrowser-view-pane\" id=\"Pict-FileBrowser-ViewPane\"></div>\n\t</div>\n</div>\n"}],"Renderables":[{"RenderableHash":"FileBrowser-Container","TemplateHash":"FileBrowser-Container-Template","DestinationAddress":"#Pict-FileBrowser-Container","RenderMethod":"replace"}],// --- CSS ---
-"CSS":/*css*/"\n\t\t.pict-filebrowser {\n\t\t\tdisplay: flex;\n\t\t\theight: 100%;\n\t\t\tfont-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n\t\t\tfont-size: 14px;\n\t\t\tcolor: #3D3229;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\toverflow: hidden;\n\t\t\tbackground: #FAFAF8;\n\t\t}\n\n\t\t.pict-filebrowser-browse-pane {\n\t\t\twidth: 240px;\n\t\t\tmin-width: 180px;\n\t\t\tborder-right: 1px solid #DDD6CA;\n\t\t\toverflow-y: auto;\n\t\t\tbackground: #F5F0E8;\n\t\t\tflex-shrink: 0;\n\t\t}\n\n\t\t.pict-filebrowser-main-pane {\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t}\n\n\t\t.pict-filebrowser-list-pane {\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\toverflow-x: hidden;\n\t\t}\n\n\t\t.pict-filebrowser-view-pane {\n\t\t\tborder-top: 1px solid #DDD6CA;\n\t\t\toverflow-y: auto;\n\t\t\tbackground: #FAFAF8;\n\t\t}\n\n\t\t/* --- Browsing: Tree --- */\n\t\t.pict-fb-tree {\n\t\t\tpadding: 8px 0;\n\t\t}\n\t\t.pict-fb-tree-node {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tpadding: 4px 8px 4px 0;\n\t\t\tcursor: pointer;\n\t\t\tuser-select: none;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.pict-fb-tree-node:hover {\n\t\t\tbackground: #EAE3D8;\n\t\t}\n\t\t.pict-fb-tree-node.selected {\n\t\t\tbackground: #DDD6CA;\n\t\t\tfont-weight: 600;\n\t\t}\n\t\t.pict-fb-tree-toggle {\n\t\t\tdisplay: inline-block;\n\t\t\twidth: 16px;\n\t\t\ttext-align: center;\n\t\t\tflex-shrink: 0;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 10px;\n\t\t}\n\t\t.pict-fb-tree-icon {\n\t\t\tmargin-right: 6px;\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 14px;\n\t\t}\n\t\t.pict-fb-tree-label {\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\t\t.pict-fb-tree-children {\n\t\t\tdisplay: none;\n\t\t}\n\t\t.pict-fb-tree-children.expanded {\n\t\t\tdisplay: block;\n\t\t}\n\n\t\t/* --- Browsing: Search --- */\n\t\t.pict-fb-search {\n\t\t\tpadding: 8px;\n\t\t}\n\t\t.pict-fb-search-input {\n\t\t\twidth: 100%;\n\t\t\tbox-sizing: border-box;\n\t\t\tpadding: 6px 10px;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 13px;\n\t\t\toutline: none;\n\t\t\tbackground: #fff;\n\t\t}\n\t\t.pict-fb-search-input:focus {\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.pict-fb-search-results {\n\t\t\tmargin-top: 4px;\n\t\t}\n\t\t.pict-fb-search-result {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tpadding: 5px 8px;\n\t\t\tcursor: pointer;\n\t\t\tborder-radius: 3px;\n\t\t}\n\t\t.pict-fb-search-result:hover {\n\t\t\tbackground: #EAE3D8;\n\t\t}\n\t\t.pict-fb-search-result-icon {\n\t\t\tmargin-right: 6px;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.pict-fb-search-result-name {\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.pict-fb-search-result-path {\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 11px;\n\t\t\tmargin-left: auto;\n\t\t\tpadding-left: 8px;\n\t\t\twhite-space: nowrap;\n\t\t}\n\n\t\t/* --- Listing: Detail --- */\n\t\t.pict-fb-detail {\n\t\t\twidth: 100%;\n\t\t}\n\t\t.pict-fb-detail-header {\n\t\t\tdisplay: flex;\n\t\t\tpadding: 6px 12px;\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 12px;\n\t\t\ttext-transform: uppercase;\n\t\t\tcolor: #8A7F72;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tbackground: #F5F0E8;\n\t\t\tuser-select: none;\n\t\t}\n\t\t.pict-fb-detail-header-cell {\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.pict-fb-detail-header-cell:hover {\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.pict-fb-detail-col-name {\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t}\n\t\t.pict-fb-detail-col-size {\n\t\t\twidth: 90px;\n\t\t\ttext-align: right;\n\t\t\tflex-shrink: 0;\n\t\t\tpadding-right: 12px;\n\t\t}\n\t\t.pict-fb-detail-col-modified {\n\t\t\twidth: 150px;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.pict-fb-detail-row {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tpadding: 5px 12px;\n\t\t\tcursor: pointer;\n\t\t\tborder-bottom: 1px solid #F0ECE4;\n\t\t}\n\t\t.pict-fb-detail-row:hover {\n\t\t\tbackground: #F0ECE4;\n\t\t}\n\t\t.pict-fb-detail-row.selected {\n\t\t\tbackground: #E0EDE9;\n\t\t}\n\t\t.pict-fb-detail-icon {\n\t\t\tmargin-right: 8px;\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 16px;\n\t\t}\n\t\t.pict-fb-detail-name {\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.pict-fb-detail-size {\n\t\t\twidth: 90px;\n\t\t\ttext-align: right;\n\t\t\tflex-shrink: 0;\n\t\t\tpadding-right: 12px;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 12px;\n\t\t}\n\t\t.pict-fb-detail-modified {\n\t\t\twidth: 150px;\n\t\t\tflex-shrink: 0;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 12px;\n\t\t}\n\n\t\t/* --- Listing: Icons --- */\n\t\t.pict-fb-icons {\n\t\t\tdisplay: flex;\n\t\t\tflex-wrap: wrap;\n\t\t\tpadding: 12px;\n\t\t\tgap: 8px;\n\t\t}\n\t\t.pict-fb-icon-item {\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\twidth: 96px;\n\t\t\tpadding: 10px 6px;\n\t\t\tcursor: pointer;\n\t\t\tborder-radius: 6px;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.pict-fb-icon-item:hover {\n\t\t\tbackground: #F0ECE4;\n\t\t}\n\t\t.pict-fb-icon-item.selected {\n\t\t\tbackground: #E0EDE9;\n\t\t}\n\t\t.pict-fb-icon-graphic {\n\t\t\tfont-size: 36px;\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.pict-fb-icon-label {\n\t\t\tfont-size: 12px;\n\t\t\tword-break: break-word;\n\t\t\tline-height: 1.3;\n\t\t\tmax-height: 2.6em;\n\t\t\toverflow: hidden;\n\t\t}\n\n\t\t/* --- Viewing: FileInfo --- */\n\t\t.pict-fb-fileinfo {\n\t\t\tpadding: 12px 16px;\n\t\t}\n\t\t.pict-fb-fileinfo-title {\n\t\t\tfont-size: 15px;\n\t\t\tfont-weight: 600;\n\t\t\tmargin-bottom: 8px;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.pict-fb-fileinfo-table {\n\t\t\twidth: 100%;\n\t\t\tfont-size: 13px;\n\t\t}\n\t\t.pict-fb-fileinfo-table td {\n\t\t\tpadding: 3px 0;\n\t\t}\n\t\t.pict-fb-fileinfo-label {\n\t\t\tcolor: #8A7F72;\n\t\t\twidth: 100px;\n\t\t\tfont-weight: 500;\n\t\t}\n\t\t.pict-fb-fileinfo-value {\n\t\t\tcolor: #423D37;\n\t\t}\n\t\t.pict-fb-fileinfo-none {\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-style: italic;\n\t\t}\n\n\t\t/* --- Viewing: Image --- */\n\t\t.pict-fb-image-viewer {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tpadding: 16px;\n\t\t\tmin-height: 200px;\n\t\t}\n\t\t.pict-fb-image-viewer img {\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: 500px;\n\t\t\tobject-fit: contain;\n\t\t\tborder-radius: 4px;\n\t\t\tbox-shadow: 0 1px 3px rgba(0,0,0,0.1);\n\t\t}\n\t\t.pict-fb-image-viewer-none {\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-style: italic;\n\t\t}\n\n\t\t/* --- Breadcrumb / Location Bar --- */\n\t\t.pict-fb-breadcrumb {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tpadding: 6px 12px;\n\t\t\tfont-size: 13px;\n\t\t\tbackground: #F5F0E8;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\toverflow-x: auto;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.pict-fb-breadcrumb-segment {\n\t\t\tcursor: pointer;\n\t\t\tcolor: #2E7D74;\n\t\t\tpadding: 2px 4px;\n\t\t\tborder-radius: 3px;\n\t\t}\n\t\t.pict-fb-breadcrumb-segment:hover {\n\t\t\tbackground: #EAE3D8;\n\t\t}\n\t\t.pict-fb-breadcrumb-separator {\n\t\t\tmargin: 0 2px;\n\t\t\tcolor: #8A7F72;\n\t\t}\n\t\t.pict-fb-breadcrumb-current {\n\t\t\tcolor: #3D3229;\n\t\t\tfont-weight: 500;\n\t\t\tpadding: 2px 4px;\n\t\t}\n\n\t\t/* --- Empty state --- */\n\t\t.pict-fb-empty {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tpadding: 32px;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-style: italic;\n\t\t}\n\t"};},{}],63:[function(require,module,exports){// Pict Section FileBrowser
+"Templates":[{"Hash":"FileBrowser-Container-Template","Template":/*html*/`
+<div class="pict-filebrowser" id="Pict-FileBrowser-Wrap">
+	<div class="pict-filebrowser-browse-pane" id="Pict-FileBrowser-BrowsePane"></div>
+	<div class="pict-filebrowser-main-pane">
+		<div class="pict-filebrowser-list-pane" id="Pict-FileBrowser-ListPane"></div>
+		<div class="pict-filebrowser-view-pane" id="Pict-FileBrowser-ViewPane"></div>
+	</div>
+</div>
+`}],"Renderables":[{"RenderableHash":"FileBrowser-Container","TemplateHash":"FileBrowser-Container-Template","DestinationAddress":"#Pict-FileBrowser-Container","RenderMethod":"replace"}],// --- CSS ---
+"CSS":/*css*/`
+		.pict-filebrowser {
+			display: flex;
+			height: 100%;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			font-size: 14px;
+			color: #3D3229;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			overflow: hidden;
+			background: #FAFAF8;
+		}
+
+		.pict-filebrowser-browse-pane {
+			width: 240px;
+			min-width: 180px;
+			border-right: 1px solid #DDD6CA;
+			overflow-y: auto;
+			background: #F5F0E8;
+			flex-shrink: 0;
+		}
+
+		.pict-filebrowser-main-pane {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.pict-filebrowser-list-pane {
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		.pict-filebrowser-view-pane {
+			border-top: 1px solid #DDD6CA;
+			overflow-y: auto;
+			background: #FAFAF8;
+		}
+
+		/* --- Browsing: Tree --- */
+		.pict-fb-tree {
+			padding: 8px 0;
+		}
+		.pict-fb-tree-node {
+			display: flex;
+			align-items: center;
+			padding: 4px 8px 4px 0;
+			cursor: pointer;
+			user-select: none;
+			white-space: nowrap;
+		}
+		.pict-fb-tree-node:hover {
+			background: #EAE3D8;
+		}
+		.pict-fb-tree-node.selected {
+			background: #DDD6CA;
+			font-weight: 600;
+		}
+		.pict-fb-tree-toggle {
+			display: inline-block;
+			width: 16px;
+			text-align: center;
+			flex-shrink: 0;
+			color: #8A7F72;
+			font-size: 10px;
+		}
+		.pict-fb-tree-icon {
+			margin-right: 6px;
+			flex-shrink: 0;
+			font-size: 14px;
+		}
+		.pict-fb-tree-label {
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.pict-fb-tree-children {
+			display: none;
+		}
+		.pict-fb-tree-children.expanded {
+			display: block;
+		}
+
+		/* --- Browsing: Search --- */
+		.pict-fb-search {
+			padding: 8px;
+		}
+		.pict-fb-search-input {
+			width: 100%;
+			box-sizing: border-box;
+			padding: 6px 10px;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			font-size: 13px;
+			outline: none;
+			background: #fff;
+		}
+		.pict-fb-search-input:focus {
+			border-color: #2E7D74;
+		}
+		.pict-fb-search-results {
+			margin-top: 4px;
+		}
+		.pict-fb-search-result {
+			display: flex;
+			align-items: center;
+			padding: 5px 8px;
+			cursor: pointer;
+			border-radius: 3px;
+		}
+		.pict-fb-search-result:hover {
+			background: #EAE3D8;
+		}
+		.pict-fb-search-result-icon {
+			margin-right: 6px;
+			flex-shrink: 0;
+		}
+		.pict-fb-search-result-name {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.pict-fb-search-result-path {
+			color: #8A7F72;
+			font-size: 11px;
+			margin-left: auto;
+			padding-left: 8px;
+			white-space: nowrap;
+		}
+
+		/* --- Listing: Detail --- */
+		.pict-fb-detail {
+			width: 100%;
+		}
+		.pict-fb-detail-header {
+			display: flex;
+			padding: 6px 12px;
+			font-weight: 600;
+			font-size: 12px;
+			text-transform: uppercase;
+			color: #8A7F72;
+			border-bottom: 1px solid #DDD6CA;
+			background: #F5F0E8;
+			user-select: none;
+		}
+		.pict-fb-detail-header-cell {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			cursor: pointer;
+		}
+		.pict-fb-detail-header-cell:hover {
+			color: #3D3229;
+		}
+		.pict-fb-detail-col-name {
+			flex: 1;
+			min-width: 0;
+		}
+		.pict-fb-detail-col-size {
+			width: 90px;
+			text-align: right;
+			flex-shrink: 0;
+			padding-right: 12px;
+		}
+		.pict-fb-detail-col-modified {
+			width: 150px;
+			flex-shrink: 0;
+		}
+		.pict-fb-detail-row {
+			display: flex;
+			align-items: center;
+			padding: 5px 12px;
+			cursor: pointer;
+			border-bottom: 1px solid #F0ECE4;
+		}
+		.pict-fb-detail-row:hover {
+			background: #F0ECE4;
+		}
+		.pict-fb-detail-row.selected {
+			background: #E0EDE9;
+		}
+		.pict-fb-detail-icon {
+			margin-right: 8px;
+			flex-shrink: 0;
+			font-size: 16px;
+		}
+		.pict-fb-detail-name {
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.pict-fb-detail-size {
+			width: 90px;
+			text-align: right;
+			flex-shrink: 0;
+			padding-right: 12px;
+			color: #8A7F72;
+			font-size: 12px;
+		}
+		.pict-fb-detail-modified {
+			width: 150px;
+			flex-shrink: 0;
+			color: #8A7F72;
+			font-size: 12px;
+		}
+
+		/* --- Listing: Icons --- */
+		.pict-fb-icons {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 12px;
+			gap: 8px;
+		}
+		.pict-fb-icon-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 96px;
+			padding: 10px 6px;
+			cursor: pointer;
+			border-radius: 6px;
+			text-align: center;
+		}
+		.pict-fb-icon-item:hover {
+			background: #F0ECE4;
+		}
+		.pict-fb-icon-item.selected {
+			background: #E0EDE9;
+		}
+		.pict-fb-icon-graphic {
+			font-size: 36px;
+			margin-bottom: 6px;
+		}
+		.pict-fb-icon-label {
+			font-size: 12px;
+			word-break: break-word;
+			line-height: 1.3;
+			max-height: 2.6em;
+			overflow: hidden;
+		}
+
+		/* --- Viewing: FileInfo --- */
+		.pict-fb-fileinfo {
+			padding: 12px 16px;
+		}
+		.pict-fb-fileinfo-title {
+			font-size: 15px;
+			font-weight: 600;
+			margin-bottom: 8px;
+			color: #3D3229;
+		}
+		.pict-fb-fileinfo-table {
+			width: 100%;
+			font-size: 13px;
+		}
+		.pict-fb-fileinfo-table td {
+			padding: 3px 0;
+		}
+		.pict-fb-fileinfo-label {
+			color: #8A7F72;
+			width: 100px;
+			font-weight: 500;
+		}
+		.pict-fb-fileinfo-value {
+			color: #423D37;
+		}
+		.pict-fb-fileinfo-none {
+			color: #8A7F72;
+			font-style: italic;
+		}
+
+		/* --- Viewing: Image --- */
+		.pict-fb-image-viewer {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 16px;
+			min-height: 200px;
+		}
+		.pict-fb-image-viewer img {
+			max-width: 100%;
+			max-height: 500px;
+			object-fit: contain;
+			border-radius: 4px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+		}
+		.pict-fb-image-viewer-none {
+			color: #8A7F72;
+			font-style: italic;
+		}
+
+		/* --- Breadcrumb / Location Bar --- */
+		.pict-fb-breadcrumb {
+			display: flex;
+			align-items: center;
+			padding: 6px 12px;
+			font-size: 13px;
+			background: #F5F0E8;
+			border-bottom: 1px solid #DDD6CA;
+			overflow-x: auto;
+			white-space: nowrap;
+		}
+		.pict-fb-breadcrumb-segment {
+			cursor: pointer;
+			color: #2E7D74;
+			padding: 2px 4px;
+			border-radius: 3px;
+		}
+		.pict-fb-breadcrumb-segment:hover {
+			background: #EAE3D8;
+		}
+		.pict-fb-breadcrumb-separator {
+			margin: 0 2px;
+			color: #8A7F72;
+		}
+		.pict-fb-breadcrumb-current {
+			color: #3D3229;
+			font-weight: 500;
+			padding: 2px 4px;
+		}
+
+		/* --- Empty state --- */
+		.pict-fb-empty {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 32px;
+			color: #8A7F72;
+			font-style: italic;
+		}
+	`};},{}],63:[function(require,module,exports){// Pict Section FileBrowser
 // A composable file browser section with browsing, listing, and viewing views.
 // The main container view
 module.exports=require('./views/Pict-View-FileBrowser.js');// --- Providers (base classes for each view type) ---
@@ -2697,7 +3979,21 @@ tmpNodes.sort((pA,pB)=>{return pA.Name.localeCompare(pB.Name);});return fCallbac
 	 *
 	 * @param {string} pRelativePath - Path relative to basePath
 	 * @param {Function} fCallback - Callback(pError, pInfo)
-	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":110}],70:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/"\n<div class=\"pict-fb-search\">\n\t<input type=\"text\" class=\"pict-fb-search-input\"\n\t\tid=\"Pict-FileBrowser-SearchInput\"\n\t\tplaceholder=\"Search files...\"\n\t\toninput=\"pict.views['{~D:Record.ViewHash~}'].onSearchInput(this.value)\" />\n\t<div class=\"pict-fb-search-results\" id=\"Pict-FileBrowser-SearchResults\"></div>\n</div>\n"},{"Hash":"FileBrowser-BrowseSearch-Result-Template","Template":/*html*/"\n<div class=\"pict-fb-search-result\" onclick=\"{~D:Record.ClickHandler~}\">\n\t<span class=\"pict-fb-search-result-icon\">{~D:Record.Icon~}</span>\n\t<span class=\"pict-fb-search-result-name\">{~D:Record.Name~}</span>\n\t<span class=\"pict-fb-search-result-path\">{~D:Record.Path~}</span>\n</div>\n"},{"Hash":"FileBrowser-BrowseSearch-Empty-Template","Template":/*html*/"<div class=\"pict-fb-empty\">{~D:Record.Message~}</div>"}],"Renderables":[{"RenderableHash":"BrowseSearch-Container","TemplateHash":"FileBrowser-BrowseSearch-Container-Template","DestinationAddress":"#Pict-FileBrowser-BrowsePane","RenderMethod":"replace"}]};/**
+	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":110}],70:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
+<div class="pict-fb-search">
+	<input type="text" class="pict-fb-search-input"
+		id="Pict-FileBrowser-SearchInput"
+		placeholder="Search files..."
+		oninput="pict.views['{~D:Record.ViewHash~}'].onSearchInput(this.value)" />
+	<div class="pict-fb-search-results" id="Pict-FileBrowser-SearchResults"></div>
+</div>
+`},{"Hash":"FileBrowser-BrowseSearch-Result-Template","Template":/*html*/`
+<div class="pict-fb-search-result" onclick="{~D:Record.ClickHandler~}">
+	<span class="pict-fb-search-result-icon">{~D:Record.Icon~}</span>
+	<span class="pict-fb-search-result-name">{~D:Record.Name~}</span>
+	<span class="pict-fb-search-result-path">{~D:Record.Path~}</span>
+</div>
+`},{"Hash":"FileBrowser-BrowseSearch-Empty-Template","Template":/*html*/`<div class="pict-fb-empty">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"BrowseSearch-Container","TemplateHash":"FileBrowser-BrowseSearch-Container-Template","DestinationAddress":"#Pict-FileBrowser-BrowsePane","RenderMethod":"replace"}]};/**
  * Browsing view that provides a search input for filtering files by name.
  *
  * Renders a search box and a results list. As the user types, the results
@@ -2718,7 +4014,16 @@ this._lastResults=tmpResults;}/**
 	 * Handle clicking a search result.
 	 *
 	 * @param {number} pIndex - The result index
-	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],71:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/"<div class=\"pict-fb-tree\" id=\"Pict-FileBrowser-Tree\"></div>"},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/"\n<div class=\"pict-fb-tree-node{~D:Record.SelectedClass~}\" style=\"padding-left: {~D:Record.Indent~}px;\" data-path=\"{~D:Record.Path~}\" onclick=\"{~D:Record.ClickHandler~}\">\n\t<span class=\"{~D:Record.ToggleClass~}\" onclick=\"{~D:Record.ToggleHandler~}\">{~D:Record.ToggleIcon~}</span>\n\t<span class=\"pict-fb-tree-icon\">{~D:Record.Icon~}</span>\n\t<span class=\"pict-fb-tree-label\">{~D:Record.Name~}</span>\n</div>\n<div class=\"pict-fb-tree-children{~D:Record.ExpandedClass~}\" id=\"Pict-FB-TreeChildren-{~D:Record.NodeID~}\">\n{~D:Record.ChildrenHTML~}\n</div>\n"}],"Renderables":[{"RenderableHash":"BrowseTree-Container","TemplateHash":"FileBrowser-BrowseTree-Container-Template","DestinationAddress":"#Pict-FileBrowser-BrowsePane","RenderMethod":"replace"}]};/**
+	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],71:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
+<div class="pict-fb-tree-node{~D:Record.SelectedClass~}" style="padding-left: {~D:Record.Indent~}px;" data-path="{~D:Record.Path~}" onclick="{~D:Record.ClickHandler~}">
+	<span class="{~D:Record.ToggleClass~}" onclick="{~D:Record.ToggleHandler~}">{~D:Record.ToggleIcon~}</span>
+	<span class="pict-fb-tree-icon">{~D:Record.Icon~}</span>
+	<span class="pict-fb-tree-label">{~D:Record.Name~}</span>
+</div>
+<div class="pict-fb-tree-children{~D:Record.ExpandedClass~}" id="Pict-FB-TreeChildren-{~D:Record.NodeID~}">
+{~D:Record.ChildrenHTML~}
+</div>
+`}],"Renderables":[{"RenderableHash":"BrowseTree-Container","TemplateHash":"FileBrowser-BrowseTree-Container-Template","DestinationAddress":"#Pict-FileBrowser-BrowsePane","RenderMethod":"replace"}]};/**
  * Browsing view that renders a lazy-loaded hierarchical tree of folders.
  *
  * Only loads one level of child folders at a time via the browse provider's
@@ -2766,7 +4071,24 @@ let tmpCached=tmpBrowseProvider.getChildFolders(pPath);if(!tmpCached){if(typeof 
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],72:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/"\n<div class=\"pict-fb-detail\" id=\"Pict-FileBrowser-DetailList\">\n\t<div class=\"pict-fb-breadcrumb\" id=\"Pict-FileBrowser-Breadcrumb\"></div>\n\t<div class=\"pict-fb-detail-header\">\n\t\t<div class=\"pict-fb-detail-header-cell pict-fb-detail-col-name\" onclick=\"pict.views['{~D:Record.ViewHash~}'].sortBy('Name')\">Name</div>\n\t\t<div class=\"pict-fb-detail-header-cell pict-fb-detail-col-size\" onclick=\"pict.views['{~D:Record.ViewHash~}'].sortBy('Size')\">Size</div>\n\t\t<div class=\"pict-fb-detail-header-cell pict-fb-detail-col-modified\" onclick=\"pict.views['{~D:Record.ViewHash~}'].sortBy('Modified')\">Modified</div>\n\t</div>\n\t<div id=\"Pict-FileBrowser-DetailRows\"></div>\n</div>\n"},{"Hash":"FileBrowser-ListDetail-Row-Template","Template":/*html*/"\n<div class=\"pict-fb-detail-row{~D:Record.SelectedClass~}\" data-index=\"{~D:Record.Index~}\" onclick=\"{~D:Record.ClickHandler~}\" ondblclick=\"{~D:Record.DblClickHandler~}\">\n\t<span class=\"pict-fb-detail-icon\">{~D:Record.Icon~}</span>\n\t<span class=\"pict-fb-detail-name\">{~D:Record.Name~}</span>\n\t<span class=\"pict-fb-detail-size\">{~D:Record.SizeFormatted~}</span>\n\t<span class=\"pict-fb-detail-modified\">{~D:Record.ModifiedFormatted~}</span>\n</div>\n"},{"Hash":"FileBrowser-ListDetail-Empty-Template","Template":/*html*/"<div class=\"pict-fb-empty\">{~D:Record.Message~}</div>"},{"Hash":"FileBrowser-Breadcrumb-Segment-Template","Template":/*html*/"<span class=\"pict-fb-breadcrumb-segment\" onclick=\"{~D:Record.ClickHandler~}\">{~D:Record.Label~}</span>"},{"Hash":"FileBrowser-Breadcrumb-Separator-Template","Template":/*html*/"<span class=\"pict-fb-breadcrumb-separator\">/</span>"},{"Hash":"FileBrowser-Breadcrumb-Current-Template","Template":/*html*/"<span class=\"pict-fb-breadcrumb-current\">{~D:Record.Label~}</span>"}],"Renderables":[{"RenderableHash":"ListDetail-Container","TemplateHash":"FileBrowser-ListDetail-Container-Template","DestinationAddress":"#Pict-FileBrowser-ListPane","RenderMethod":"replace"}]};/**
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],72:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
+<div class="pict-fb-detail" id="Pict-FileBrowser-DetailList">
+	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-Breadcrumb"></div>
+	<div class="pict-fb-detail-header">
+		<div class="pict-fb-detail-header-cell pict-fb-detail-col-name" onclick="pict.views['{~D:Record.ViewHash~}'].sortBy('Name')">Name</div>
+		<div class="pict-fb-detail-header-cell pict-fb-detail-col-size" onclick="pict.views['{~D:Record.ViewHash~}'].sortBy('Size')">Size</div>
+		<div class="pict-fb-detail-header-cell pict-fb-detail-col-modified" onclick="pict.views['{~D:Record.ViewHash~}'].sortBy('Modified')">Modified</div>
+	</div>
+	<div id="Pict-FileBrowser-DetailRows"></div>
+</div>
+`},{"Hash":"FileBrowser-ListDetail-Row-Template","Template":/*html*/`
+<div class="pict-fb-detail-row{~D:Record.SelectedClass~}" data-index="{~D:Record.Index~}" onclick="{~D:Record.ClickHandler~}" ondblclick="{~D:Record.DblClickHandler~}">
+	<span class="pict-fb-detail-icon">{~D:Record.Icon~}</span>
+	<span class="pict-fb-detail-name">{~D:Record.Name~}</span>
+	<span class="pict-fb-detail-size">{~D:Record.SizeFormatted~}</span>
+	<span class="pict-fb-detail-modified">{~D:Record.ModifiedFormatted~}</span>
+</div>
+`},{"Hash":"FileBrowser-ListDetail-Empty-Template","Template":/*html*/`<div class="pict-fb-empty">{~D:Record.Message~}</div>`},{"Hash":"FileBrowser-Breadcrumb-Segment-Template","Template":/*html*/`<span class="pict-fb-breadcrumb-segment" onclick="{~D:Record.ClickHandler~}">{~D:Record.Label~}</span>`},{"Hash":"FileBrowser-Breadcrumb-Separator-Template","Template":/*html*/`<span class="pict-fb-breadcrumb-separator">/</span>`},{"Hash":"FileBrowser-Breadcrumb-Current-Template","Template":/*html*/`<span class="pict-fb-breadcrumb-current">{~D:Record.Label~}</span>`}],"Renderables":[{"RenderableHash":"ListDetail-Container","TemplateHash":"FileBrowser-ListDetail-Container-Template","DestinationAddress":"#Pict-FileBrowser-ListPane","RenderMethod":"replace"}]};/**
  * Listing view that shows files in a detailed table with columns for
  * name, size, and modified date.
  *
@@ -2801,7 +4123,17 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Current-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/"\n<div id=\"Pict-FileBrowser-IconList\">\n\t<div class=\"pict-fb-breadcrumb\" id=\"Pict-FileBrowser-IconBreadcrumb\"></div>\n\t<div class=\"pict-fb-icons\" id=\"Pict-FileBrowser-IconGrid\"></div>\n</div>\n"},{"Hash":"FileBrowser-ListIcons-Item-Template","Template":/*html*/"\n<div class=\"pict-fb-icon-item{~D:Record.SelectedClass~}\" data-index=\"{~D:Record.Index~}\" onclick=\"{~D:Record.ClickHandler~}\" ondblclick=\"{~D:Record.DblClickHandler~}\">\n\t<div class=\"pict-fb-icon-graphic\">{~D:Record.Icon~}</div>\n\t<div class=\"pict-fb-icon-label\">{~D:Record.Name~}</div>\n</div>\n"},{"Hash":"FileBrowser-ListIcons-Empty-Template","Template":/*html*/"<div class=\"pict-fb-empty\">{~D:Record.Message~}</div>"}],"Renderables":[{"RenderableHash":"ListIcons-Container","TemplateHash":"FileBrowser-ListIcons-Container-Template","DestinationAddress":"#Pict-FileBrowser-ListPane","RenderMethod":"replace"}]};/**
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
+<div id="Pict-FileBrowser-IconList">
+	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-IconBreadcrumb"></div>
+	<div class="pict-fb-icons" id="Pict-FileBrowser-IconGrid"></div>
+</div>
+`},{"Hash":"FileBrowser-ListIcons-Item-Template","Template":/*html*/`
+<div class="pict-fb-icon-item{~D:Record.SelectedClass~}" data-index="{~D:Record.Index~}" onclick="{~D:Record.ClickHandler~}" ondblclick="{~D:Record.DblClickHandler~}">
+	<div class="pict-fb-icon-graphic">{~D:Record.Icon~}</div>
+	<div class="pict-fb-icon-label">{~D:Record.Name~}</div>
+</div>
+`},{"Hash":"FileBrowser-ListIcons-Empty-Template","Template":/*html*/`<div class="pict-fb-empty">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ListIcons-Container","TemplateHash":"FileBrowser-ListIcons-Container-Template","DestinationAddress":"#Pict-FileBrowser-ListPane","RenderMethod":"replace"}]};/**
  * Listing view that shows files as an icon grid.
  *
  * Each file or folder is displayed as a large icon with a label beneath it.
@@ -2829,7 +4161,31 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/"<div class=\"pict-fb-fileinfo\" id=\"Pict-FileBrowser-FileInfo\"></div>"},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/"\n<div class=\"pict-fb-fileinfo-title\">{~D:Record.Name~}</div>\n<table class=\"pict-fb-fileinfo-table\">\n\t<tr>\n\t\t<td class=\"pict-fb-fileinfo-label\">Type</td>\n\t\t<td class=\"pict-fb-fileinfo-value\">{~D:Record.TypeDescription~}</td>\n\t</tr>\n\t<tr>\n\t\t<td class=\"pict-fb-fileinfo-label\">Size</td>\n\t\t<td class=\"pict-fb-fileinfo-value\">{~D:Record.SizeFormatted~}</td>\n\t</tr>\n\t<tr>\n\t\t<td class=\"pict-fb-fileinfo-label\">Modified</td>\n\t\t<td class=\"pict-fb-fileinfo-value\">{~D:Record.ModifiedFormatted~}</td>\n\t</tr>\n\t<tr>\n\t\t<td class=\"pict-fb-fileinfo-label\">Extension</td>\n\t\t<td class=\"pict-fb-fileinfo-value\">{~D:Record.Extension~}</td>\n\t</tr>\n\t<tr>\n\t\t<td class=\"pict-fb-fileinfo-label\">Path</td>\n\t\t<td class=\"pict-fb-fileinfo-value\">{~D:Record.Path~}</td>\n\t</tr>\n</table>\n"},{"Hash":"FileBrowser-ViewFileInfo-Empty-Template","Template":/*html*/"<div class=\"pict-fb-fileinfo-none\">No file selected</div>"}],"Renderables":[{"RenderableHash":"ViewFileInfo-Container","TemplateHash":"FileBrowser-ViewFileInfo-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
+<div class="pict-fb-fileinfo-title">{~D:Record.Name~}</div>
+<table class="pict-fb-fileinfo-table">
+	<tr>
+		<td class="pict-fb-fileinfo-label">Type</td>
+		<td class="pict-fb-fileinfo-value">{~D:Record.TypeDescription~}</td>
+	</tr>
+	<tr>
+		<td class="pict-fb-fileinfo-label">Size</td>
+		<td class="pict-fb-fileinfo-value">{~D:Record.SizeFormatted~}</td>
+	</tr>
+	<tr>
+		<td class="pict-fb-fileinfo-label">Modified</td>
+		<td class="pict-fb-fileinfo-value">{~D:Record.ModifiedFormatted~}</td>
+	</tr>
+	<tr>
+		<td class="pict-fb-fileinfo-label">Extension</td>
+		<td class="pict-fb-fileinfo-value">{~D:Record.Extension~}</td>
+	</tr>
+	<tr>
+		<td class="pict-fb-fileinfo-label">Path</td>
+		<td class="pict-fb-fileinfo-value">{~D:Record.Path~}</td>
+	</tr>
+</table>
+`},{"Hash":"FileBrowser-ViewFileInfo-Empty-Template","Template":/*html*/`<div class="pict-fb-fileinfo-none">No file selected</div>`}],"Renderables":[{"RenderableHash":"ViewFileInfo-Container","TemplateHash":"FileBrowser-ViewFileInfo-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
  * Viewing view that shows file metadata/stats for the currently selected file.
  *
  * Displays name, type description, size, modification date, extension, and path
@@ -2838,7 +4194,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with file info.
 	 */onAfterRender(pRenderable){this.rebuildFileInfo();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the file info display.
-	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/"<div class=\"pict-fb-image-viewer\" id=\"Pict-FileBrowser-ImageViewer\"></div>"},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/"<img src=\"{~D:Record.ImageURL~}\" alt=\"{~D:Record.Name~}\" />"},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/"<div class=\"pict-fb-image-viewer-none\">{~D:Record.Message~}</div>"}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
+	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
  * Viewing view that displays an image preview for the currently selected file.
  *
  * If the selected file is an image and has a URL or ThumbnailURL, it renders
@@ -2899,7 +4255,7 @@ tmpExtensions.push(tmpCM.EditorView.updateListener.of(pUpdate=>{if(pUpdate.docCh
 if(pUpdate.focusChanged){if(pUpdate.view.hasFocus){pView._setActiveSegment(pSegmentIndex);// Position sidebar at cursor on focus
 pView._updateSidebarPosition(pSegmentIndex);}else{// Small delay so clicking a sidebar button doesn't immediately deactivate
 setTimeout(()=>{if(pView._activeSegmentIndex===pSegmentIndex){// Check if focus moved to another segment or truly left
-let tmpSegEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(tmpSegEl&&!tmpSegEl.contains(document.activeElement)){pView._clearActiveSegment(pSegmentIndex);pView._resetSidebarPosition(pSegmentIndex);}}},100);}}// Track cursor/selection changes to move the sidebar
+let tmpSegEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(tmpSegEl&&!tmpSegEl.contains(document.activeElement)){pView._clearActiveSegment(pSegmentIndex);pView._resetSidebarPosition(pSegmentIndex);}}},100);}}// Track cursor/selection changes to move the sidebar
 if(pUpdate.selectionSet&&pUpdate.view.hasFocus){pView._updateSidebarPosition(pSegmentIndex);}}));// Keyboard shortcuts for formatting and image paste handling
 tmpExtensions.push(tmpCM.EditorView.domEventHandlers({keydown:(pEvent,pEditorView)=>{// Ctrl/Cmd + B = bold
 if((pEvent.ctrlKey||pEvent.metaKey)&&pEvent.key==='b'){pEvent.preventDefault();pView.applyFormatting(pSegmentIndex,'bold');return true;}// Ctrl/Cmd + I = italic
@@ -2945,7 +4301,7 @@ continue;}// Calculate the payload length (base64 data between comma and closing
 let tmpPayloadLength=tmpPayloadEnd-tmpPayloadStart;if(tmpPayloadLength<tmpMinLength){// Too short to bother collapsing
 continue;}// Build a human-readable size label
 let tmpSizeBytes=Math.round(tmpPayloadLength*0.75);// base64 to bytes approx
-let tmpSizeLabel;if(tmpSizeBytes>=1024*1024){tmpSizeLabel=(tmpSizeBytes/(1024*1024)).toFixed(1)+'MB';}else if(tmpSizeBytes>=1024){tmpSizeLabel=Math.round(tmpSizeBytes/1024)+'KB';}else{tmpSizeLabel=tmpSizeBytes+'B';}let tmpMimeType=tmpMatch[1]||'image';let tmpWidgetLabel="\u2026".concat(tmpSizeLabel,")");// Replace from the start of the base64 payload to after the closing paren
+let tmpSizeLabel;if(tmpSizeBytes>=1024*1024){tmpSizeLabel=(tmpSizeBytes/(1024*1024)).toFixed(1)+'MB';}else if(tmpSizeBytes>=1024){tmpSizeLabel=Math.round(tmpSizeBytes/1024)+'KB';}else{tmpSizeLabel=tmpSizeBytes+'B';}let tmpMimeType=tmpMatch[1]||'image';let tmpWidgetLabel=`\u2026${tmpSizeLabel})`;// Replace from the start of the base64 payload to after the closing paren
 let tmpWidget=tmpDecoration.replace({widget:new DataURIWidget(tmpWidgetLabel)});tmpDecorations.push(tmpWidget.range(tmpPayloadStart,tmpPayloadEnd+1));}}return tmpDecoration.set(tmpDecorations,true);}// Create the ViewPlugin
 let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],78:[function(require,module,exports){/**
  * Pict-MDE-DragAndReorder: Helper module for PictSectionMarkdownEditor
@@ -2978,7 +4334,7 @@ if(!pSegmentElement.contains(pEvent.relatedTarget)){pSegmentElement.classList.re
 	 * @param {number} pFromInternalIndex - The internal index of the dragged segment
 	 * @param {number} pToInternalIndex - The internal index of the drop target
 	 * @param {boolean} pDropBelow - Whether the drop was on the bottom half of the target
-	 */pView._reorderSegment=function _reorderSegment(pFromInternalIndex,pToInternalIndex,pDropBelow){let tmpFromLogical=pView._getLogicalIndex(pFromInternalIndex);let tmpToLogical=pView._getLogicalIndex(pToInternalIndex);if(tmpFromLogical<0||tmpToLogical<0){pView.log.warn("PICT-MarkdownEditor _reorderSegment: could not resolve logical indices (from=".concat(tmpFromLogical,", to=").concat(tmpToLogical,")."));return;}if(tmpFromLogical===tmpToLogical){return;}// Marshal all editor content back to data before manipulating the array
+	 */pView._reorderSegment=function _reorderSegment(pFromInternalIndex,pToInternalIndex,pDropBelow){let tmpFromLogical=pView._getLogicalIndex(pFromInternalIndex);let tmpToLogical=pView._getLogicalIndex(pToInternalIndex);if(tmpFromLogical<0||tmpToLogical<0){pView.log.warn(`PICT-MarkdownEditor _reorderSegment: could not resolve logical indices (from=${tmpFromLogical}, to=${tmpToLogical}).`);return;}if(tmpFromLogical===tmpToLogical){return;}// Marshal all editor content back to data before manipulating the array
 pView._marshalAllEditorsToData();let tmpSegments=pView._getSegmentsFromData();if(!tmpSegments||tmpSegments.length<2){return;}// Calculate the target insertion index
 let tmpInsertAt=pDropBelow?tmpToLogical+1:tmpToLogical;// Adjust for the removal shifting indices down
 if(tmpFromLogical<tmpInsertAt){tmpInsertAt--;}// If the insert position equals the source, no move needed
@@ -3006,11 +4362,11 @@ pView._hiddenPreviewSegments={};for(let i=0;i<tmpStates.length;i++){if(tmpStates
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
 	 */pView._setActiveSegment=function _setActiveSegment(pSegmentIndex){// Clear previous active
-if(pView._activeSegmentIndex>=0&&pView._activeSegmentIndex!==pSegmentIndex){let tmpPrevEl=document.getElementById("PictMDE-Segment-".concat(pView._activeSegmentIndex));if(tmpPrevEl){tmpPrevEl.classList.remove('pict-mde-active');}}pView._activeSegmentIndex=pSegmentIndex;let tmpSegEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(tmpSegEl){tmpSegEl.classList.add('pict-mde-active');}};/**
+if(pView._activeSegmentIndex>=0&&pView._activeSegmentIndex!==pSegmentIndex){let tmpPrevEl=document.getElementById(`PictMDE-Segment-${pView._activeSegmentIndex}`);if(tmpPrevEl){tmpPrevEl.classList.remove('pict-mde-active');}}pView._activeSegmentIndex=pSegmentIndex;let tmpSegEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(tmpSegEl){tmpSegEl.classList.add('pict-mde-active');}};/**
 	 * Clear the active state from a segment (on blur).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._clearActiveSegment=function _clearActiveSegment(pSegmentIndex){if(pView._activeSegmentIndex===pSegmentIndex){pView._activeSegmentIndex=-1;}let tmpSegEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(tmpSegEl){tmpSegEl.classList.remove('pict-mde-active');}// Reset sidebar back to sticky when segment is no longer active
+	 */pView._clearActiveSegment=function _clearActiveSegment(pSegmentIndex){if(pView._activeSegmentIndex===pSegmentIndex){pView._activeSegmentIndex=-1;}let tmpSegEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(tmpSegEl){tmpSegEl.classList.remove('pict-mde-active');}// Reset sidebar back to sticky when segment is no longer active
 pView._resetSidebarPosition(pSegmentIndex);};// -- Sidebar Cursor Tracking --
 /**
 	 * Update the sidebar formatting-buttons position so they float next to the
@@ -3020,16 +4376,16 @@ pView._resetSidebarPosition(pSegmentIndex);};// -- Sidebar Cursor Tracking --
 	 * from sticky positioning to absolute, offset to align with the cursor line.
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._updateSidebarPosition=function _updateSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){return;}// Get the cursor position in the editor
+	 */pView._updateSidebarPosition=function _updateSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){return;}// Get the cursor position in the editor
 let tmpCursorPos=tmpEditor.state.selection.main.head;let tmpCursorCoords=tmpEditor.coordsAtPos(tmpCursorPos);if(!tmpCursorCoords){// If we can't get coords, revert to sticky
 pView._resetSidebarPosition(pSegmentIndex);return;}// Calculate the offset relative to the segment element
 let tmpSegmentRect=tmpSegmentEl.getBoundingClientRect();let tmpOffsetTop=tmpCursorCoords.top-tmpSegmentRect.top;// Clamp so the sidebar buttons don't go above the segment or below it
 let tmpSidebarHeight=tmpQuadrantTR.offsetHeight||0;let tmpSegmentHeight=tmpSegmentEl.offsetHeight||0;let tmpMaxOffset=Math.max(0,tmpSegmentHeight-tmpSidebarHeight);tmpOffsetTop=Math.max(0,Math.min(tmpOffsetTop,tmpMaxOffset));// Apply the cursor-relative positioning
-tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.setProperty('--pict-mde-sidebar-top',"".concat(tmpOffsetTop,"px"));};/**
+tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.setProperty('--pict-mde-sidebar-top',`${tmpOffsetTop}px`);};/**
 	 * Reset the sidebar back to default sticky positioning (no cursor tracking).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],79:[function(require,module,exports){/**
+	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],79:[function(require,module,exports){/**
  * Pict-MDE-Formatting: Helper module for PictSectionMarkdownEditor
  *
  * Handles markdown formatting operations (bold, italic, code, heading, link)
@@ -3048,7 +4404,7 @@ const _FormattingMap={bold:{wrap:'**'},italic:{wrap:'*'},code:{wrap:'`'},heading
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
 	 * @param {string} pFormatType - One of: 'bold', 'italic', 'code', 'heading', 'link'
-	 */pView.applyFormatting=function applyFormatting(pSegmentIndex,pFormatType){let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){pView.log.warn("PICT-MarkdownEditor applyFormatting: no editor for segment ".concat(pSegmentIndex,"."));return;}let tmpFormat=_FormattingMap[pFormatType];if(!tmpFormat){pView.log.warn("PICT-MarkdownEditor applyFormatting: unknown format type \"".concat(pFormatType,"\"."));return;}let tmpState=tmpEditor.state;let tmpSelection=tmpState.selection.main;let tmpFrom=tmpSelection.from;let tmpTo=tmpSelection.to;let tmpHasSelection=tmpFrom!==tmpTo;let tmpSelectedText=tmpHasSelection?tmpState.sliceDoc(tmpFrom,tmpTo):'';let tmpChanges;let tmpCursorPos;if(tmpFormat.wrap){// Toggle-style: wrap selection or insert empty wrapper
+	 */pView.applyFormatting=function applyFormatting(pSegmentIndex,pFormatType){let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){pView.log.warn(`PICT-MarkdownEditor applyFormatting: no editor for segment ${pSegmentIndex}.`);return;}let tmpFormat=_FormattingMap[pFormatType];if(!tmpFormat){pView.log.warn(`PICT-MarkdownEditor applyFormatting: unknown format type "${pFormatType}".`);return;}let tmpState=tmpEditor.state;let tmpSelection=tmpState.selection.main;let tmpFrom=tmpSelection.from;let tmpTo=tmpSelection.to;let tmpHasSelection=tmpFrom!==tmpTo;let tmpSelectedText=tmpHasSelection?tmpState.sliceDoc(tmpFrom,tmpTo):'';let tmpChanges;let tmpCursorPos;if(tmpFormat.wrap){// Toggle-style: wrap selection or insert empty wrapper
 let tmpWrap=tmpFormat.wrap;if(tmpHasSelection){// Check if already wrapped — if so, unwrap
 let tmpBefore=tmpState.sliceDoc(Math.max(0,tmpFrom-tmpWrap.length),tmpFrom);let tmpAfter=tmpState.sliceDoc(tmpTo,Math.min(tmpState.doc.length,tmpTo+tmpWrap.length));if(tmpBefore===tmpWrap&&tmpAfter===tmpWrap){// Unwrap
 tmpChanges=[{from:tmpFrom-tmpWrap.length,to:tmpFrom,insert:''},{from:tmpTo,to:tmpTo+tmpWrap.length,insert:''}];tmpCursorPos=tmpFrom-tmpWrap.length;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos,head:tmpCursorPos+tmpSelectedText.length}});return;}// Wrap the selection
@@ -3073,7 +4429,7 @@ tmpEditor.focus();};};},{}],80:[function(require,module,exports){/**
 	 * Called by the sidebar image button onclick handler.
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView.openImagePicker=function openImagePicker(pSegmentIndex){let tmpFileInput=document.getElementById("PictMDE-ImageInput-".concat(pSegmentIndex));if(!tmpFileInput){pView.log.warn("PICT-MarkdownEditor openImagePicker: file input not found for segment ".concat(pSegmentIndex,"."));return;}// Wire the change handler fresh each time (in case it was already used)
+	 */pView.openImagePicker=function openImagePicker(pSegmentIndex){let tmpFileInput=document.getElementById(`PictMDE-ImageInput-${pSegmentIndex}`);if(!tmpFileInput){pView.log.warn(`PICT-MarkdownEditor openImagePicker: file input not found for segment ${pSegmentIndex}.`);return;}// Wire the change handler fresh each time (in case it was already used)
 tmpFileInput.onchange=()=>{if(tmpFileInput.files&&tmpFileInput.files.length>0){pView._processImageFile(tmpFileInput.files[0],pSegmentIndex);}// Reset the input so the same file can be re-selected
 tmpFileInput.value='';};tmpFileInput.click();};/**
 	 * Process an image File object from any input method (picker, drag, paste).
@@ -3084,16 +4440,16 @@ tmpFileInput.value='';};tmpFileInput.click();};/**
 	 *
 	 * @param {File} pFile - The image File object
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._processImageFile=function _processImageFile(pFile,pSegmentIndex){if(!pFile||!pFile.type||!pFile.type.startsWith('image/')){pView.log.warn("PICT-MarkdownEditor _processImageFile: not an image file (type: ".concat(pFile?pFile.type:'null',")."));return;}let tmpAltText=pFile.name?pFile.name.replace(/\.[^.]+$/,''):'image';// Check if the consumer wants to handle the upload
-let tmpCallback=(pError,pURL)=>{if(pError){pView.log.error("PICT-MarkdownEditor image upload error: ".concat(pError));return;}if(pURL){pView._insertImageMarkdown(pSegmentIndex,pURL,tmpAltText);}};let tmpHandled=pView.onImageUpload(pFile,pSegmentIndex,tmpCallback);if(tmpHandled){// Consumer is handling the upload asynchronously
+	 */pView._processImageFile=function _processImageFile(pFile,pSegmentIndex){if(!pFile||!pFile.type||!pFile.type.startsWith('image/')){pView.log.warn(`PICT-MarkdownEditor _processImageFile: not an image file (type: ${pFile?pFile.type:'null'}).`);return;}let tmpAltText=pFile.name?pFile.name.replace(/\.[^.]+$/,''):'image';// Check if the consumer wants to handle the upload
+let tmpCallback=(pError,pURL)=>{if(pError){pView.log.error(`PICT-MarkdownEditor image upload error: ${pError}`);return;}if(pURL){pView._insertImageMarkdown(pSegmentIndex,pURL,tmpAltText);}};let tmpHandled=pView.onImageUpload(pFile,pSegmentIndex,tmpCallback);if(tmpHandled){// Consumer is handling the upload asynchronously
 return;}// Default: convert to base64 data URI
-if(typeof FileReader==='undefined'){pView.log.error("PICT-MarkdownEditor _processImageFile: FileReader not available in this environment.");return;}let tmpReader=new FileReader();tmpReader.onload=()=>{pView._insertImageMarkdown(pSegmentIndex,tmpReader.result,tmpAltText);};tmpReader.onerror=()=>{pView.log.error("PICT-MarkdownEditor _processImageFile: FileReader error.");};tmpReader.readAsDataURL(pFile);};/**
+if(typeof FileReader==='undefined'){pView.log.error(`PICT-MarkdownEditor _processImageFile: FileReader not available in this environment.`);return;}let tmpReader=new FileReader();tmpReader.onload=()=>{pView._insertImageMarkdown(pSegmentIndex,tmpReader.result,tmpAltText);};tmpReader.onerror=()=>{pView.log.error(`PICT-MarkdownEditor _processImageFile: FileReader error.`);};tmpReader.readAsDataURL(pFile);};/**
 	 * Insert markdown image syntax at the cursor position in a segment editor.
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
 	 * @param {string} pURL - The image URL (data URI or remote URL)
 	 * @param {string} [pAltText] - The alt text (default: 'image')
-	 */pView._insertImageMarkdown=function _insertImageMarkdown(pSegmentIndex,pURL,pAltText){let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){pView.log.warn("PICT-MarkdownEditor _insertImageMarkdown: no editor for segment ".concat(pSegmentIndex,"."));return;}let tmpAlt=pAltText||'image';let tmpInsert="![".concat(tmpAlt,"](").concat(pURL,")");let tmpState=tmpEditor.state;let tmpCursorPos=tmpState.selection.main.head;tmpEditor.dispatch({changes:{from:tmpCursorPos,insert:tmpInsert},selection:{anchor:tmpCursorPos+tmpInsert.length}});tmpEditor.focus();// Update the image preview area for this segment
+	 */pView._insertImageMarkdown=function _insertImageMarkdown(pSegmentIndex,pURL,pAltText){let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){pView.log.warn(`PICT-MarkdownEditor _insertImageMarkdown: no editor for segment ${pSegmentIndex}.`);return;}let tmpAlt=pAltText||'image';let tmpInsert=`![${tmpAlt}](${pURL})`;let tmpState=tmpEditor.state;let tmpCursorPos=tmpState.selection.main.head;tmpEditor.dispatch({changes:{from:tmpCursorPos,insert:tmpInsert},selection:{anchor:tmpCursorPos+tmpInsert.length}});tmpEditor.focus();// Update the image preview area for this segment
 pView._updateImagePreviews(pSegmentIndex);};/**
 	 * Scan the content of a segment for markdown image references and render
 	 * preview thumbnails in the preview area below the editor.
@@ -3102,9 +4458,9 @@ pView._updateImagePreviews(pSegmentIndex);};/**
 	 * The preview area is hidden when there are no images.
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._updateImagePreviews=function _updateImagePreviews(pSegmentIndex){let tmpPreviewEl=document.getElementById("PictMDE-ImagePreview-".concat(pSegmentIndex));if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-images');return;}let tmpContent=tmpEditor.state.doc.toString();// Match markdown image syntax: ![alt text](url)
+	 */pView._updateImagePreviews=function _updateImagePreviews(pSegmentIndex){let tmpPreviewEl=document.getElementById(`PictMDE-ImagePreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-images');return;}let tmpContent=tmpEditor.state.doc.toString();// Match markdown image syntax: ![alt text](url)
 let tmpImageRegex=/!\[([^\]]*)\]\(([^)]+)\)/g;let tmpMatches=[];let tmpMatch;while((tmpMatch=tmpImageRegex.exec(tmpContent))!==null){tmpMatches.push({alt:tmpMatch[1]||'image',url:tmpMatch[2]});}if(tmpMatches.length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-images');return;}// Build preview HTML
-let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');let tmpURL=tmpMatches[i].url.replace(/&/g,'&amp;').replace(/"/g,'&quot;');tmpHTML+="<div class=\"pict-mde-image-preview-item\"><img src=\"".concat(tmpURL,"\" alt=\"").concat(tmpAlt,"\" /><span class=\"pict-mde-image-preview-label\">").concat(tmpAlt,"</span></div>");}tmpPreviewEl.innerHTML=tmpHTML;tmpPreviewEl.classList.add('pict-mde-has-images');};/**
+let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');let tmpURL=tmpMatches[i].url.replace(/&/g,'&amp;').replace(/"/g,'&quot;');tmpHTML+=`<div class="pict-mde-image-preview-item"><img src="${tmpURL}" alt="${tmpAlt}" /><span class="pict-mde-image-preview-label">${tmpAlt}</span></div>`;}tmpPreviewEl.innerHTML=tmpHTML;tmpPreviewEl.classList.add('pict-mde-has-images');};/**
 	 * Wire drag-and-drop events for image files on a segment editor container.
 	 *
 	 * These events are separate from the segment-reorder drag events.
@@ -3143,10 +4499,10 @@ if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTrans
 	 * are available on window -- loaded by the consumer via CDN).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._updateRichPreviews=function _updateRichPreviews(pSegmentIndex){if(!pView.options.EnableRichPreview){return;}let tmpPreviewEl=document.getElementById("PictMDE-RichPreview-".concat(pSegmentIndex));if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}let tmpContent=tmpEditor.state.doc.toString();if(!tmpContent||tmpContent.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Use pict-section-content's provider to parse the raw markdown into HTML
+	 */pView._updateRichPreviews=function _updateRichPreviews(pSegmentIndex){if(!pView.options.EnableRichPreview){return;}let tmpPreviewEl=document.getElementById(`PictMDE-RichPreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}let tmpContent=tmpEditor.state.doc.toString();if(!tmpContent||tmpContent.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Use pict-section-content's provider to parse the raw markdown into HTML
 let tmpProvider=pView._getContentProvider();let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpContent);if(!tmpRenderedHTML||tmpRenderedHTML.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Wrap the rendered HTML in a pict-content container so that
 // pict-section-content's CSS classes take effect
-let tmpPreviewID="PictMDE-RichPreviewBody-".concat(pSegmentIndex);tmpPreviewEl.innerHTML="<div class=\"pict-content\" id=\"".concat(tmpPreviewID,"\">").concat(tmpRenderedHTML,"</div>");tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Bump generation counter for stale-render protection (mermaid is async)
+let tmpPreviewID=`PictMDE-RichPreviewBody-${pSegmentIndex}`;tmpPreviewEl.innerHTML=`<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Bump generation counter for stale-render protection (mermaid is async)
 let tmpGeneration=(pView._richPreviewGenerations[pSegmentIndex]||0)+1;pView._richPreviewGenerations[pSegmentIndex]=tmpGeneration;// Post-render: call mermaid.run() for mermaid diagram elements
 pView._postRenderMermaid(tmpPreviewID,pSegmentIndex,tmpGeneration);// Post-render: call katex.render() for KaTeX math elements
 pView._postRenderKaTeX(tmpPreviewID);};/**
@@ -3159,14 +4515,14 @@ pView._postRenderKaTeX(tmpPreviewID);};/**
 	 */pView._postRenderMermaid=function _postRenderMermaid(pContainerID,pSegmentIndex,pGeneration){if(typeof mermaid==='undefined'){return;}let tmpContainer=document.getElementById(pContainerID);if(!tmpContainer){return;}let tmpMermaidElements=tmpContainer.querySelectorAll('pre.mermaid');if(tmpMermaidElements.length<1){return;}try{let tmpPromise=mermaid.run({nodes:tmpMermaidElements});if(tmpPromise&&typeof tmpPromise.catch==='function'){tmpPromise.catch(pError=>{// Check stale-render: rendered view uses _renderedViewGeneration,
 // per-segment previews use _richPreviewGenerations
 let tmpCurrentGen=pSegmentIndex===-1?pView._renderedViewGeneration:pView._richPreviewGenerations[pSegmentIndex];if(tmpCurrentGen!==pGeneration){return;// stale render -- a newer update has replaced us
-}pView.log.warn("PICT-MarkdownEditor mermaid render error: ".concat(pError.message||pError));});}}catch(pError){pView.log.warn("PICT-MarkdownEditor mermaid render error: ".concat(pError.message||pError));}};/**
+}pView.log.warn(`PICT-MarkdownEditor mermaid render error: ${pError.message||pError}`);});}}catch(pError){pView.log.warn(`PICT-MarkdownEditor mermaid render error: ${pError.message||pError}`);}};/**
 	 * Post-render hook: render KaTeX inline and display math in the preview container.
 	 * Uses the same approach as pict-section-content's renderKaTeXEquations().
 	 *
 	 * @param {string} pContainerID - The container element ID
 	 */pView._postRenderKaTeX=function _postRenderKaTeX(pContainerID){if(typeof katex==='undefined'){return;}let tmpContainer=document.getElementById(pContainerID);if(!tmpContainer){return;}// Render inline math: <span class="pict-content-katex-inline">
-let tmpInlineElements=tmpContainer.querySelectorAll('.pict-content-katex-inline');for(let i=0;i<tmpInlineElements.length;i++){try{katex.render(tmpInlineElements[i].textContent,tmpInlineElements[i],{throwOnError:false,displayMode:false});}catch(pError){pView.log.warn("PICT-MarkdownEditor KaTeX inline error: ".concat(pError.message||pError));}}// Render display math: <div class="pict-content-katex-display">
-let tmpDisplayElements=tmpContainer.querySelectorAll('.pict-content-katex-display');for(let i=0;i<tmpDisplayElements.length;i++){try{katex.render(tmpDisplayElements[i].textContent,tmpDisplayElements[i],{throwOnError:false,displayMode:true});}catch(pError){pView.log.warn("PICT-MarkdownEditor KaTeX display error: ".concat(pError.message||pError));}}};/**
+let tmpInlineElements=tmpContainer.querySelectorAll('.pict-content-katex-inline');for(let i=0;i<tmpInlineElements.length;i++){try{katex.render(tmpInlineElements[i].textContent,tmpInlineElements[i],{throwOnError:false,displayMode:false});}catch(pError){pView.log.warn(`PICT-MarkdownEditor KaTeX inline error: ${pError.message||pError}`);}}// Render display math: <div class="pict-content-katex-display">
+let tmpDisplayElements=tmpContainer.querySelectorAll('.pict-content-katex-display');for(let i=0;i<tmpDisplayElements.length;i++){try{katex.render(tmpDisplayElements[i].textContent,tmpDisplayElements[i],{throwOnError:false,displayMode:true});}catch(pError){pView.log.warn(`PICT-MarkdownEditor KaTeX display error: ${pError.message||pError}`);}}};/**
 	 * Simple HTML escape for error messages in the rich preview.
 	 *
 	 * @param {string} pText - The text to escape
@@ -3186,12 +4542,30 @@ pView._marshalAllEditorsToData();// Combine all segments into a single markdown 
 let tmpSegments=pView._getSegmentsFromData();let tmpCombinedContent='';if(tmpSegments&&tmpSegments.length>0){let tmpParts=[];for(let i=0;i<tmpSegments.length;i++){tmpParts.push(tmpSegments[i].Content||'');}tmpCombinedContent=tmpParts.join('\n\n');}// Destroy existing CodeMirror editors
 for(let tmpIdx in pView._segmentEditors){if(pView._segmentEditors[tmpIdx]){pView._segmentEditors[tmpIdx].destroy();}}pView._segmentEditors={};// Render the combined markdown via pict-section-content
 let tmpProvider=pView._getContentProvider();let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpCombinedContent);// Build the rendered view container
-let tmpRenderedViewID='PictMDE-RenderedView';tmpContainer.innerHTML="<div class=\"pict-mde-rendered-view\" id=\"".concat(tmpRenderedViewID,"\"><div class=\"pict-content\">").concat(tmpRenderedHTML||'',"</div></div>");tmpContainer.classList.add('pict-mde-rendered-mode');// Bump generation for stale-render protection
+let tmpRenderedViewID='PictMDE-RenderedView';tmpContainer.innerHTML=`<div class="pict-mde-rendered-view" id="${tmpRenderedViewID}"><div class="pict-content">${tmpRenderedHTML||''}</div></div>`;tmpContainer.classList.add('pict-mde-rendered-mode');// Bump generation for stale-render protection
 pView._renderedViewGeneration++;let tmpGeneration=pView._renderedViewGeneration;// Post-render hooks for mermaid diagrams and KaTeX equations
-let tmpContentContainer=tmpContainer.querySelector("#".concat(tmpRenderedViewID," .pict-content"));if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
+let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-content`);if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
 	 * Switch back from rendered view to the editing view: rebuild the
 	 * full editor UI from the data.
-	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":59}],82:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/"<div class=\"pict-mde\" id=\"PictMDE-Container\"></div>"},{"Hash":"MarkdownEditor-Segment","Template":/*html*/"<div class=\"pict-mde-segment\" id=\"PictMDE-Segment-{~D:Record.SegmentIndex~}\" data-segment-index=\"{~D:Record.SegmentIndex~}\">\n\t<div class=\"pict-mde-left-controls\">\n\t\t<div class=\"pict-mde-quadrant-tl\"></div>\n\t\t<div class=\"pict-mde-quadrant-bl\"></div>\n\t</div>\n\t<div class=\"pict-mde-drag-handle\" draggable=\"true\" title=\"Drag to reorder\"></div>\n\t<div class=\"pict-mde-segment-body\">\n\t\t<div class=\"pict-mde-segment-editor\" id=\"PictMDE-SegmentEditor-{~D:Record.SegmentIndex~}\"></div>\n\t\t<div class=\"pict-mde-image-preview\" id=\"PictMDE-ImagePreview-{~D:Record.SegmentIndex~}\"></div>\n\t\t<div class=\"pict-mde-rich-preview\" id=\"PictMDE-RichPreview-{~D:Record.SegmentIndex~}\"></div>\n\t</div>\n\t<div class=\"pict-mde-sidebar\" id=\"PictMDE-Sidebar-{~D:Record.SegmentIndex~}\">\n\t\t<div class=\"pict-mde-quadrant-tr\"></div>\n\t\t<div class=\"pict-mde-quadrant-br\"></div>\n\t\t<input type=\"file\" accept=\"image/*\" class=\"pict-mde-image-input\" id=\"PictMDE-ImageInput-{~D:Record.SegmentIndex~}\" style=\"display:none\" />\n\t</div>\n</div>"},{"Hash":"MarkdownEditor-AddSegment","Template":/*html*/"<div class=\"pict-mde-add-segment\">\n\t<button type=\"button\" class=\"pict-mde-btn-add\" onclick=\"{~D:Record.ViewIdentifier~}.addSegment()\">+ Add Segment</button>\n</div>"}],"Renderables":[{"RenderableHash":"MarkdownEditor-Wrap","TemplateHash":"MarkdownEditor-Container","DestinationAddress":"#MarkdownEditor-Container-Div"}],"TargetElementAddress":"#MarkdownEditor-Container-Div",// Address in AppData to read/write the segments array
+	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":59}],82:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
+	<div class="pict-mde-left-controls">
+		<div class="pict-mde-quadrant-tl"></div>
+		<div class="pict-mde-quadrant-bl"></div>
+	</div>
+	<div class="pict-mde-drag-handle" draggable="true" title="Drag to reorder"></div>
+	<div class="pict-mde-segment-body">
+		<div class="pict-mde-segment-editor" id="PictMDE-SegmentEditor-{~D:Record.SegmentIndex~}"></div>
+		<div class="pict-mde-image-preview" id="PictMDE-ImagePreview-{~D:Record.SegmentIndex~}"></div>
+		<div class="pict-mde-rich-preview" id="PictMDE-RichPreview-{~D:Record.SegmentIndex~}"></div>
+	</div>
+	<div class="pict-mde-sidebar" id="PictMDE-Sidebar-{~D:Record.SegmentIndex~}">
+		<div class="pict-mde-quadrant-tr"></div>
+		<div class="pict-mde-quadrant-br"></div>
+		<input type="file" accept="image/*" class="pict-mde-image-input" id="PictMDE-ImageInput-{~D:Record.SegmentIndex~}" style="display:none" />
+	</div>
+</div>`},{"Hash":"MarkdownEditor-AddSegment","Template":/*html*/`<div class="pict-mde-add-segment">
+	<button type="button" class="pict-mde-btn-add" onclick="{~D:Record.ViewIdentifier~}.addSegment()">+ Add Segment</button>
+</div>`}],"Renderables":[{"RenderableHash":"MarkdownEditor-Wrap","TemplateHash":"MarkdownEditor-Container","DestinationAddress":"#MarkdownEditor-Container-Div"}],"TargetElementAddress":"#MarkdownEditor-Container-Div",// Address in AppData to read/write the segments array
 // The data at this address should be an array of objects, each with a "Content" property
 // e.g. AppData.Document.Segments = [ { Content: "# Hello" }, { Content: "Some text" } ]
 "ContentDataAddress":false,// Whether the editor should be read-only
@@ -3210,7 +4584,478 @@ let tmpContentContainer=tmpContainer.querySelector("#".concat(tmpRenderedViewID,
 // Left quadrant buttons (TL, BL) get the "pict-mde-left-btn" base class.
 // Right quadrant buttons (TR, BR) get the "pict-mde-sidebar-btn" base class.
 "ButtonsTL":[{"HTML":"&times;","Action":"removeSegment","Class":"pict-mde-btn-remove","Title":"Remove Segment"}],"ButtonsBL":[{"HTML":"&uarr;","Action":"moveSegmentUp","Class":"pict-mde-btn-move","Title":"Move Up"},{"HTML":"&darr;","Action":"moveSegmentDown","Class":"pict-mde-btn-move","Title":"Move Down"},{"HTML":"&#x229E;","Action":"toggleControls","Class":"pict-mde-btn-linenums","Title":"Toggle Controls"},{"HTML":"&#x25CE;","Action":"toggleSegmentPreview","Class":"pict-mde-btn-preview","Title":"Toggle Preview"}],"ButtonsTR":[{"HTML":"<b>B</b>","Action":"applyFormatting:bold","Class":"","Title":"Bold (Ctrl+B)"},{"HTML":"<i>I</i>","Action":"applyFormatting:italic","Class":"","Title":"Italic (Ctrl+I)"},{"HTML":"<code>&lt;&gt;</code>","Action":"applyFormatting:code","Class":"","Title":"Inline Code (Ctrl+E)"},{"HTML":"#","Action":"applyFormatting:heading","Class":"","Title":"Heading"},{"HTML":"[&thinsp;]","Action":"applyFormatting:link","Class":"","Title":"Link"},{"HTML":"&#x25A3;","Action":"openImagePicker","Class":"pict-mde-sidebar-btn-image","Title":"Insert Image"}],"ButtonsBR":[],// CSS for the markdown editor
-"CSS":/*css*/"\n/* ---- Container ---- */\n.pict-mde\n{\n\tfont-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;\n\tfont-size: 14px;\n}\n\n/* ---- Segment row: left-controls | drag-handle | editor body | sidebar ---- */\n.pict-mde-segment\n{\n\tposition: relative;\n\tdisplay: flex;\n\tflex-direction: row;\n\talign-items: stretch;\n\tmargin-bottom: 6px;\n\tmin-height: 48px;\n\ttransition: background-color 0.15s ease;\n}\n\n/* ---- Left controls column ---- */\n.pict-mde-left-controls\n{\n\tflex: 0 0 22px;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tjustify-content: space-between;\n\tpadding: 2px 0;\n}\n\n/* ---- Left-side quadrants ---- */\n.pict-mde-quadrant-tl\n{\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tposition: sticky;\n\ttop: 2px;\n\tz-index: 2;\n}\n.pict-mde-quadrant-bl\n{\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tgap: 1px;\n\tposition: sticky;\n\tbottom: 2px;\n\tz-index: 2;\n}\n\n/* ---- Left-side buttons (shared base) ---- */\n.pict-mde-left-btn\n{\n\tdisplay: flex;\n\talign-items: center;\n\tjustify-content: center;\n\twidth: 20px;\n\theight: 20px;\n\tborder: none;\n\tbackground: transparent;\n\tcursor: pointer;\n\tfont-size: 12px;\n\tpadding: 0;\n\tcolor: #888;\n\tline-height: 1;\n\tfont-family: inherit;\n\topacity: 0;\n\ttransition: opacity 0.15s ease;\n}\n.pict-mde-segment:hover .pict-mde-left-btn,\n.pict-mde-segment.pict-mde-active .pict-mde-left-btn\n{\n\topacity: 1;\n}\n.pict-mde-left-btn:hover\n{\n\tcolor: #222;\n}\n.pict-mde-btn-remove:hover\n{\n\tcolor: #CC3333;\n}\n.pict-mde-btn-linenums\n{\n\tfont-size: 11px;\n\tfont-weight: 600;\n\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;\n}\n/* Highlight when controls are active */\n.pict-mde.pict-mde-controls-on .pict-mde-btn-linenums\n{\n\tcolor: #4A90D9;\n}\n.pict-mde-btn-preview\n{\n\tfont-size: 11px;\n}\n/* Highlight the preview button when preview is visible (not hidden) */\n.pict-mde-segment:not(.pict-mde-preview-hidden) .pict-mde-btn-preview\n{\n\tcolor: #4A90D9;\n}\n/* Dim preview button when this segment's preview is individually hidden */\n.pict-mde-segment.pict-mde-preview-hidden .pict-mde-btn-preview\n{\n\tcolor: #CCC;\n}\n\n/* ---- Drag handle (simple grey bar) ---- */\n.pict-mde-drag-handle\n{\n\tflex: 0 0 8px;\n\tcursor: grab;\n\tbackground: #EDEDED;\n\ttransition: background-color 0.15s ease;\n\tuser-select: none;\n}\n.pict-mde-drag-handle:active\n{\n\tcursor: grabbing;\n}\n.pict-mde-drag-handle:hover\n{\n\tbackground: #C8C8C8;\n}\n\n/* ---- Editor body (middle column) ---- */\n.pict-mde-segment-body\n{\n\tflex: 1 1 auto;\n\tmin-width: 0;\n\tbackground: #FFFFFF;\n\ttransition: background-color 0.15s ease;\n}\n.pict-mde-segment-editor\n{\n\tmin-height: 48px;\n}\n\n/* ---- Image preview area below the editor ---- */\n.pict-mde-image-preview\n{\n\tdisplay: none;\n}\n.pict-mde-image-preview.pict-mde-has-images\n{\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tgap: 8px;\n\tpadding: 8px 12px;\n\tborder-top: 1px solid #EDEDED;\n}\n.pict-mde-image-preview img\n{\n\tmax-width: 200px;\n\tmax-height: 150px;\n\tborder-radius: 3px;\n\tborder: 1px solid #E0E0E0;\n\tobject-fit: contain;\n\tbackground: #F8F8F8;\n}\n.pict-mde-image-preview-item\n{\n\tposition: relative;\n\tdisplay: inline-block;\n}\n.pict-mde-image-preview-label\n{\n\tdisplay: block;\n\tfont-size: 10px;\n\tcolor: #999;\n\tmargin-top: 2px;\n\tmax-width: 200px;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\twhite-space: nowrap;\n}\n\n/* ---- Rich content preview area (rendered via pict-section-content) ---- */\n.pict-mde-rich-preview\n{\n\tdisplay: none;\n}\n.pict-mde-rich-preview.pict-mde-has-rich-preview\n{\n\tdisplay: block;\n\tborder-top: 1px solid #EDEDED;\n\tbackground: #FCFCFC;\n}\n/* Global preview toggle: hide all previews when container has class */\n.pict-mde.pict-mde-previews-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,\n.pict-mde.pict-mde-previews-hidden .pict-mde-image-preview.pict-mde-has-images\n{\n\tdisplay: none;\n}\n/* Per-segment preview toggle: hide previews for a specific segment */\n.pict-mde-segment.pict-mde-preview-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,\n.pict-mde-segment.pict-mde-preview-hidden .pict-mde-image-preview.pict-mde-has-images\n{\n\tdisplay: none;\n}\n/* Constrain the pict-content inside the preview to fit the segment */\n.pict-mde-rich-preview .pict-content\n{\n\tpadding: 12px;\n\tmax-width: none;\n\tmargin: 0;\n\tfont-size: 13px;\n}\n/* Reduce heading sizes in the preview to be proportional */\n.pict-mde-rich-preview .pict-content h1\n{\n\tfont-size: 1.4em;\n\tmargin-top: 0;\n}\n.pict-mde-rich-preview .pict-content h2\n{\n\tfont-size: 1.2em;\n\tmargin-top: 0.75em;\n}\n.pict-mde-rich-preview .pict-content h3\n{\n\tfont-size: 1.1em;\n\tmargin-top: 0.6em;\n}\n\n/* ---- Rendered view (full document preview mode) ---- */\n.pict-mde-rendered-view\n{\n\tpadding: 16px 20px;\n\tbackground: #FFFFFF;\n\tmin-height: 120px;\n}\n.pict-mde-rendered-view .pict-content\n{\n\tmax-width: none;\n\tmargin: 0;\n}\n/* Hide the add-segment button in rendered mode */\n.pict-mde.pict-mde-rendered-mode .pict-mde-add-segment\n{\n\tdisplay: none;\n}\n\n/* Focused / active editor gets subtle warm background */\n.pict-mde-segment.pict-mde-active .pict-mde-segment-body\n{\n\tbackground: #FAFAF5;\n}\n.pict-mde-segment.pict-mde-active .pict-mde-drag-handle\n{\n\tbackground: #9CB4C8;\n}\n\n/* ---- Right sidebar column ---- */\n.pict-mde-sidebar\n{\n\tflex: 0 0 30px;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: flex-start;\n\tjustify-content: space-between;\n\tposition: relative;\n}\n\n/* ---- Right-side quadrants ---- */\n.pict-mde-quadrant-tr\n{\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tgap: 1px;\n\tpadding: 4px 0;\n\twidth: 100%;\n\topacity: 0;\n\ttransition: opacity 0.15s ease, top 0.1s ease;\n\tposition: sticky;\n\ttop: 0;\n}\n.pict-mde-quadrant-br\n{\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n\tgap: 1px;\n\tpadding: 4px 0;\n\twidth: 100%;\n\topacity: 0;\n\ttransition: opacity 0.15s ease;\n\tposition: sticky;\n\tbottom: 0;\n}\n\n/* Active segment always shows its right-side quadrants */\n.pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,\n.pict-mde-segment.pict-mde-active .pict-mde-quadrant-br\n{\n\topacity: 1;\n}\n/* When no segment is active, hovering shows both left + right controls */\n.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-tr,\n.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-br\n{\n\topacity: 1;\n}\n\n/* ---- Controls-hidden mode: right quadrants show faintly on hover ---- */\n.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-tr,\n.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-br\n{\n\topacity: 0;\n}\n.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-tr,\n.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-br\n{\n\topacity: 0.3;\n}\n.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,\n.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-br\n{\n\topacity: 0.3;\n}\n\n/* When JS sets a cursor-relative offset, switch TR from sticky to absolute positioning */\n.pict-mde-quadrant-tr.pict-mde-sidebar-at-cursor\n{\n\tposition: absolute;\n\ttop: var(--pict-mde-sidebar-top, 0px);\n}\n\n/* ---- Right-side buttons (shared base) ---- */\n.pict-mde-sidebar-btn\n{\n\tdisplay: flex;\n\talign-items: center;\n\tjustify-content: center;\n\twidth: 24px;\n\theight: 22px;\n\tborder: none;\n\tbackground: transparent;\n\tcursor: pointer;\n\tfont-size: 12px;\n\tpadding: 0;\n\tborder-radius: 3px;\n\tcolor: #666;\n\tline-height: 1;\n\tfont-family: inherit;\n}\n.pict-mde-sidebar-btn:hover\n{\n\tcolor: #222;\n}\n.pict-mde-sidebar-btn b\n{\n\tfont-size: 13px;\n\tfont-weight: 700;\n}\n.pict-mde-sidebar-btn i\n{\n\tfont-size: 13px;\n\tfont-style: italic;\n}\n.pict-mde-sidebar-btn code\n{\n\tfont-size: 10px;\n\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;\n}\n\n/* ---- Add segment button ---- */\n.pict-mde-add-segment\n{\n\tmargin-top: 6px;\n\tpadding-left: 30px;\n}\n.pict-mde-btn-add\n{\n\tdisplay: block;\n\twidth: 100%;\n\tpadding: 7px;\n\tborder: 2px dashed #D0D0D0;\n\tborder-radius: 4px;\n\tbackground: transparent;\n\tcolor: #999;\n\tfont-size: 12px;\n\tfont-weight: 600;\n\tcursor: pointer;\n\ttransition: all 0.15s ease;\n}\n.pict-mde-btn-add:hover\n{\n\tborder-color: #4A90D9;\n\tcolor: #4A90D9;\n\tbackground: rgba(74, 144, 217, 0.04);\n}\n\n/* ---- Image drag-over indicator ---- */\n.pict-mde-segment-editor.pict-mde-image-dragover\n{\n\toutline: 2px dashed #4A90D9;\n\toutline-offset: -2px;\n}\n\n/* ---- Drag-in-progress: prevent CodeMirror from intercepting drop events ---- */\n.pict-mde.pict-mde-dragging .pict-mde-segment-editor\n{\n\tpointer-events: none;\n}\n\n/* ---- Drop target indicators for drag reorder ---- */\n.pict-mde-segment.pict-mde-drag-over-top\n{\n\tbox-shadow: 0 -2px 0 0 #4A90D9;\n}\n.pict-mde-segment.pict-mde-drag-over-bottom\n{\n\tbox-shadow: 0 2px 0 0 #4A90D9;\n}\n\n/* ---- CodeMirror overrides inside segments ---- */\n.pict-mde-segment-editor .cm-editor\n{\n\tborder: none;\n}\n.pict-mde-segment-editor .cm-editor .cm-scroller\n{\n\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;\n\tfont-size: 14px;\n\tline-height: 1.6;\n}\n.pict-mde-segment-editor .cm-editor.cm-focused\n{\n\toutline: none;\n}\n.pict-mde-segment-editor .cm-editor .cm-content\n{\n\tpadding: 8px 12px;\n\tmin-height: 36px;\n}\n.pict-mde-segment-editor .cm-editor .cm-gutters\n{\n\tbackground: #F8F8F8;\n\tborder-right: 1px solid #E8E8E8;\n\tcolor: #BBB;\n}\n\n/* ---- Collapsed data URI widget ---- */\n.pict-mde-data-uri-collapsed\n{\n\tdisplay: inline;\n\tbackground: #F0F0F0;\n\tcolor: #888;\n\tfont-size: 11px;\n\tpadding: 1px 4px;\n\tborder-radius: 3px;\n\tborder: 1px solid #E0E0E0;\n\tfont-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;\n\tcursor: default;\n\twhite-space: nowrap;\n}\n\n/* ---- Line number / controls toggle: gutters hidden by default ---- */\n.pict-mde .cm-editor .cm-gutters\n{\n\tdisplay: none;\n}\n.pict-mde.pict-mde-controls-on .cm-editor .cm-gutters\n{\n\tdisplay: flex;\n}\n"};},{}],83:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
+"CSS":/*css*/`
+/* ---- Container ---- */
+.pict-mde
+{
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+}
+
+/* ---- Segment row: left-controls | drag-handle | editor body | sidebar ---- */
+.pict-mde-segment
+{
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	margin-bottom: 6px;
+	min-height: 48px;
+	transition: background-color 0.15s ease;
+}
+
+/* ---- Left controls column ---- */
+.pict-mde-left-controls
+{
+	flex: 0 0 22px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 0;
+}
+
+/* ---- Left-side quadrants ---- */
+.pict-mde-quadrant-tl
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: sticky;
+	top: 2px;
+	z-index: 2;
+}
+.pict-mde-quadrant-bl
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	position: sticky;
+	bottom: 2px;
+	z-index: 2;
+}
+
+/* ---- Left-side buttons (shared base) ---- */
+.pict-mde-left-btn
+{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 12px;
+	padding: 0;
+	color: #888;
+	line-height: 1;
+	font-family: inherit;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+.pict-mde-segment:hover .pict-mde-left-btn,
+.pict-mde-segment.pict-mde-active .pict-mde-left-btn
+{
+	opacity: 1;
+}
+.pict-mde-left-btn:hover
+{
+	color: #222;
+}
+.pict-mde-btn-remove:hover
+{
+	color: #CC3333;
+}
+.pict-mde-btn-linenums
+{
+	font-size: 11px;
+	font-weight: 600;
+	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+}
+/* Highlight when controls are active */
+.pict-mde.pict-mde-controls-on .pict-mde-btn-linenums
+{
+	color: #4A90D9;
+}
+.pict-mde-btn-preview
+{
+	font-size: 11px;
+}
+/* Highlight the preview button when preview is visible (not hidden) */
+.pict-mde-segment:not(.pict-mde-preview-hidden) .pict-mde-btn-preview
+{
+	color: #4A90D9;
+}
+/* Dim preview button when this segment's preview is individually hidden */
+.pict-mde-segment.pict-mde-preview-hidden .pict-mde-btn-preview
+{
+	color: #CCC;
+}
+
+/* ---- Drag handle (simple grey bar) ---- */
+.pict-mde-drag-handle
+{
+	flex: 0 0 8px;
+	cursor: grab;
+	background: #EDEDED;
+	transition: background-color 0.15s ease;
+	user-select: none;
+}
+.pict-mde-drag-handle:active
+{
+	cursor: grabbing;
+}
+.pict-mde-drag-handle:hover
+{
+	background: #C8C8C8;
+}
+
+/* ---- Editor body (middle column) ---- */
+.pict-mde-segment-body
+{
+	flex: 1 1 auto;
+	min-width: 0;
+	background: #FFFFFF;
+	transition: background-color 0.15s ease;
+}
+.pict-mde-segment-editor
+{
+	min-height: 48px;
+}
+
+/* ---- Image preview area below the editor ---- */
+.pict-mde-image-preview
+{
+	display: none;
+}
+.pict-mde-image-preview.pict-mde-has-images
+{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px 12px;
+	border-top: 1px solid #EDEDED;
+}
+.pict-mde-image-preview img
+{
+	max-width: 200px;
+	max-height: 150px;
+	border-radius: 3px;
+	border: 1px solid #E0E0E0;
+	object-fit: contain;
+	background: #F8F8F8;
+}
+.pict-mde-image-preview-item
+{
+	position: relative;
+	display: inline-block;
+}
+.pict-mde-image-preview-label
+{
+	display: block;
+	font-size: 10px;
+	color: #999;
+	margin-top: 2px;
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ---- Rich content preview area (rendered via pict-section-content) ---- */
+.pict-mde-rich-preview
+{
+	display: none;
+}
+.pict-mde-rich-preview.pict-mde-has-rich-preview
+{
+	display: block;
+	border-top: 1px solid #EDEDED;
+	background: #FCFCFC;
+}
+/* Global preview toggle: hide all previews when container has class */
+.pict-mde.pict-mde-previews-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,
+.pict-mde.pict-mde-previews-hidden .pict-mde-image-preview.pict-mde-has-images
+{
+	display: none;
+}
+/* Per-segment preview toggle: hide previews for a specific segment */
+.pict-mde-segment.pict-mde-preview-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,
+.pict-mde-segment.pict-mde-preview-hidden .pict-mde-image-preview.pict-mde-has-images
+{
+	display: none;
+}
+/* Constrain the pict-content inside the preview to fit the segment */
+.pict-mde-rich-preview .pict-content
+{
+	padding: 12px;
+	max-width: none;
+	margin: 0;
+	font-size: 13px;
+}
+/* Reduce heading sizes in the preview to be proportional */
+.pict-mde-rich-preview .pict-content h1
+{
+	font-size: 1.4em;
+	margin-top: 0;
+}
+.pict-mde-rich-preview .pict-content h2
+{
+	font-size: 1.2em;
+	margin-top: 0.75em;
+}
+.pict-mde-rich-preview .pict-content h3
+{
+	font-size: 1.1em;
+	margin-top: 0.6em;
+}
+
+/* ---- Rendered view (full document preview mode) ---- */
+.pict-mde-rendered-view
+{
+	padding: 16px 20px;
+	background: #FFFFFF;
+	min-height: 120px;
+}
+.pict-mde-rendered-view .pict-content
+{
+	max-width: none;
+	margin: 0;
+}
+/* Hide the add-segment button in rendered mode */
+.pict-mde.pict-mde-rendered-mode .pict-mde-add-segment
+{
+	display: none;
+}
+
+/* Focused / active editor gets subtle warm background */
+.pict-mde-segment.pict-mde-active .pict-mde-segment-body
+{
+	background: #FAFAF5;
+}
+.pict-mde-segment.pict-mde-active .pict-mde-drag-handle
+{
+	background: #9CB4C8;
+}
+
+/* ---- Right sidebar column ---- */
+.pict-mde-sidebar
+{
+	flex: 0 0 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-between;
+	position: relative;
+}
+
+/* ---- Right-side quadrants ---- */
+.pict-mde-quadrant-tr
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	padding: 4px 0;
+	width: 100%;
+	opacity: 0;
+	transition: opacity 0.15s ease, top 0.1s ease;
+	position: sticky;
+	top: 0;
+}
+.pict-mde-quadrant-br
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	padding: 4px 0;
+	width: 100%;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	position: sticky;
+	bottom: 0;
+}
+
+/* Active segment always shows its right-side quadrants */
+.pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,
+.pict-mde-segment.pict-mde-active .pict-mde-quadrant-br
+{
+	opacity: 1;
+}
+/* When no segment is active, hovering shows both left + right controls */
+.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-tr,
+.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-br
+{
+	opacity: 1;
+}
+
+/* ---- Controls-hidden mode: right quadrants show faintly on hover ---- */
+.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-br
+{
+	opacity: 0;
+}
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-br
+{
+	opacity: 0.3;
+}
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-br
+{
+	opacity: 0.3;
+}
+
+/* When JS sets a cursor-relative offset, switch TR from sticky to absolute positioning */
+.pict-mde-quadrant-tr.pict-mde-sidebar-at-cursor
+{
+	position: absolute;
+	top: var(--pict-mde-sidebar-top, 0px);
+}
+
+/* ---- Right-side buttons (shared base) ---- */
+.pict-mde-sidebar-btn
+{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 22px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 12px;
+	padding: 0;
+	border-radius: 3px;
+	color: #666;
+	line-height: 1;
+	font-family: inherit;
+}
+.pict-mde-sidebar-btn:hover
+{
+	color: #222;
+}
+.pict-mde-sidebar-btn b
+{
+	font-size: 13px;
+	font-weight: 700;
+}
+.pict-mde-sidebar-btn i
+{
+	font-size: 13px;
+	font-style: italic;
+}
+.pict-mde-sidebar-btn code
+{
+	font-size: 10px;
+	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+}
+
+/* ---- Add segment button ---- */
+.pict-mde-add-segment
+{
+	margin-top: 6px;
+	padding-left: 30px;
+}
+.pict-mde-btn-add
+{
+	display: block;
+	width: 100%;
+	padding: 7px;
+	border: 2px dashed #D0D0D0;
+	border-radius: 4px;
+	background: transparent;
+	color: #999;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+.pict-mde-btn-add:hover
+{
+	border-color: #4A90D9;
+	color: #4A90D9;
+	background: rgba(74, 144, 217, 0.04);
+}
+
+/* ---- Image drag-over indicator ---- */
+.pict-mde-segment-editor.pict-mde-image-dragover
+{
+	outline: 2px dashed #4A90D9;
+	outline-offset: -2px;
+}
+
+/* ---- Drag-in-progress: prevent CodeMirror from intercepting drop events ---- */
+.pict-mde.pict-mde-dragging .pict-mde-segment-editor
+{
+	pointer-events: none;
+}
+
+/* ---- Drop target indicators for drag reorder ---- */
+.pict-mde-segment.pict-mde-drag-over-top
+{
+	box-shadow: 0 -2px 0 0 #4A90D9;
+}
+.pict-mde-segment.pict-mde-drag-over-bottom
+{
+	box-shadow: 0 2px 0 0 #4A90D9;
+}
+
+/* ---- CodeMirror overrides inside segments ---- */
+.pict-mde-segment-editor .cm-editor
+{
+	border: none;
+}
+.pict-mde-segment-editor .cm-editor .cm-scroller
+{
+	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+	font-size: 14px;
+	line-height: 1.6;
+}
+.pict-mde-segment-editor .cm-editor.cm-focused
+{
+	outline: none;
+}
+.pict-mde-segment-editor .cm-editor .cm-content
+{
+	padding: 8px 12px;
+	min-height: 36px;
+}
+.pict-mde-segment-editor .cm-editor .cm-gutters
+{
+	background: #F8F8F8;
+	border-right: 1px solid #E8E8E8;
+	color: #BBB;
+}
+
+/* ---- Collapsed data URI widget ---- */
+.pict-mde-data-uri-collapsed
+{
+	display: inline;
+	background: #F0F0F0;
+	color: #888;
+	font-size: 11px;
+	padding: 1px 4px;
+	border-radius: 3px;
+	border: 1px solid #E0E0E0;
+	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+	cursor: default;
+	white-space: nowrap;
+}
+
+/* ---- Line number / controls toggle: gutters hidden by default ---- */
+.pict-mde .cm-editor .cm-gutters
+{
+	display: none;
+}
+.pict-mde.pict-mde-controls-on .cm-editor .cm-gutters
+{
+	display: flex;
+}
+`};},{}],83:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
 const libFormatting=require('./Pict-MDE-Formatting.js');const libImageHandling=require('./Pict-MDE-ImageHandling.js');const libDragAndReorder=require('./Pict-MDE-DragAndReorder.js');const libRichPreview=require('./Pict-MDE-RichPreview.js');const libCodeMirror=require('./Pict-MDE-CodeMirror.js');class PictSectionMarkdownEditor extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// CodeMirror prototype references (injected by consumer or found on window)
 this._codeMirrorModules=null;// Map of segment index to CodeMirror EditorView instance
 this._segmentEditors={};// Internal segment counter (monotonically increasing for unique IDs)
@@ -3239,20 +5084,20 @@ libFormatting.attach(this);libImageHandling.attach(this);libDragAndReorder.attac
 	 * @param {object} [pCodeMirrorModules] - The CodeMirror modules object
 	 * @returns {boolean|void}
 	 */connectCodeMirrorModules(pCodeMirrorModules){if(pCodeMirrorModules&&typeof pCodeMirrorModules==='object'){if(typeof pCodeMirrorModules.EditorView==='function'&&typeof pCodeMirrorModules.EditorState==='function'){this._codeMirrorModules=pCodeMirrorModules;return;}}// Try to find CodeMirror modules in global scope
-if(typeof window!=='undefined'){if(window.CodeMirrorModules&&typeof window.CodeMirrorModules.EditorView==='function'){this.log.trace("PICT-MarkdownEditor Found CodeMirror modules on window.CodeMirrorModules.");this._codeMirrorModules=window.CodeMirrorModules;return;}}this.log.error("PICT-MarkdownEditor No CodeMirror modules found. Provide them via connectCodeMirrorModules() or set window.CodeMirrorModules.");return false;}onAfterRender(pRenderable){// Inject CSS from all registered views
+if(typeof window!=='undefined'){if(window.CodeMirrorModules&&typeof window.CodeMirrorModules.EditorView==='function'){this.log.trace(`PICT-MarkdownEditor Found CodeMirror modules on window.CodeMirrorModules.`);this._codeMirrorModules=window.CodeMirrorModules;return;}}this.log.error(`PICT-MarkdownEditor No CodeMirror modules found. Provide them via connectCodeMirrorModules() or set window.CodeMirrorModules.`);return false;}onAfterRender(pRenderable){// Inject CSS from all registered views
 this.pict.CSSMap.injectCSS();if(!this.initialRenderComplete){this.onAfterInitialRender();this.initialRenderComplete=true;}return super.onAfterRender(pRenderable);}onAfterInitialRender(){// Resolve CodeMirror modules if not already set
-if(!this._codeMirrorModules){this.connectCodeMirrorModules();}if(!this._codeMirrorModules){this.log.error("PICT-MarkdownEditor Cannot initialize; no CodeMirror modules available.");return false;}// Register pict-section-content's CSS for rich preview rendering.
+if(!this._codeMirrorModules){this.connectCodeMirrorModules();}if(!this._codeMirrorModules){this.log.error(`PICT-MarkdownEditor Cannot initialize; no CodeMirror modules available.`);return false;}// Register pict-section-content's CSS for rich preview rendering.
 // This ensures the rendered markdown (headings, code blocks, tables, etc.)
 // is styled correctly inside the preview area.
 if(this.options.EnableRichPreview){let tmpContentViewConfig=libPictSectionContent.default_configuration;if(tmpContentViewConfig&&tmpContentViewConfig.CSS){this.pict.CSSMap.addCSS('Pict-Content-View',tmpContentViewConfig.CSS);}}// Find the target element
-let tmpTargetElementSet=this.services.ContentAssignment.getElement(this.options.TargetElementAddress);if(!tmpTargetElementSet||tmpTargetElementSet.length<1){this.log.error("PICT-MarkdownEditor Could not find target element [".concat(this.options.TargetElementAddress,"]!"));this.targetElement=false;return false;}this.targetElement=tmpTargetElementSet[0];// Determine the view call identifier for onclick handlers
+let tmpTargetElementSet=this.services.ContentAssignment.getElement(this.options.TargetElementAddress);if(!tmpTargetElementSet||tmpTargetElementSet.length<1){this.log.error(`PICT-MarkdownEditor Could not find target element [${this.options.TargetElementAddress}]!`);this.targetElement=false;return false;}this.targetElement=tmpTargetElementSet[0];// Determine the view call identifier for onclick handlers
 this._viewCallIdentifier=this._resolveViewCallIdentifier();// Build the editor UI
 this._buildEditorUI();}/**
 	 * Resolve how the view can be referenced from global onclick handlers.
 	 * Returns a string like "_Pict.views.MyViewHash"
 	 *
 	 * @returns {string}
-	 */_resolveViewCallIdentifier(){let tmpViews=this.pict.views;for(let tmpViewHash in tmpViews){if(tmpViews[tmpViewHash]===this){return"_Pict.views.".concat(tmpViewHash);}}return"_Pict.servicesMap.PictView['".concat(this.Hash,"']");}/**
+	 */_resolveViewCallIdentifier(){let tmpViews=this.pict.views;for(let tmpViewHash in tmpViews){if(tmpViews[tmpViewHash]===this){return`_Pict.views.${tmpViewHash}`;}}return`_Pict.servicesMap.PictView['${this.Hash}']`;}/**
 	 * Get the .pict-mde container element.  Always does a fresh DOM lookup
 	 * because pict's async render pipeline can replace the element between calls.
 	 *
@@ -3274,7 +5119,7 @@ let tmpSegments=this._getSegmentsFromData();if(!tmpSegments||tmpSegments.length=
 this._buildQuadrantButtons(tmpSegmentElement,tmpSegmentIndex);// Restore per-segment preview hidden state (tracked by logical index)
 if(this._hiddenPreviewSegments[pIndex]){tmpSegmentElement.classList.add('pict-mde-preview-hidden');}// Wire up drag-and-drop on the drag handle
 this._wireSegmentDragEvents(tmpSegmentElement,tmpSegmentIndex);// Create the CodeMirror editor in the segment editor container
-let tmpEditorContainer=document.getElementById("PictMDE-SegmentEditor-".concat(tmpSegmentIndex));if(tmpEditorContainer){this._createEditorInContainer(tmpEditorContainer,tmpSegmentIndex,pContent);// Wire image drag-and-drop on the editor container
+let tmpEditorContainer=document.getElementById(`PictMDE-SegmentEditor-${tmpSegmentIndex}`);if(tmpEditorContainer){this._createEditorInContainer(tmpEditorContainer,tmpSegmentIndex,pContent);// Wire image drag-and-drop on the editor container
 this._wireImageDragEvents(tmpEditorContainer,tmpSegmentIndex);// Render image previews for existing content
 if(pContent){this._updateImagePreviews(tmpSegmentIndex);this._updateRichPreviews(tmpSegmentIndex);}}}/**
 	 * Build buttons in all four quadrants (TL, BL, TR, BR) from the
@@ -3291,7 +5136,7 @@ if(pContent){this._updateImagePreviews(tmpSegmentIndex);this._updateRichPreviews
 	 * @param {number} pSegmentIndex - The internal segment index
 	 */_buildQuadrantButtons(pSegmentElement,pSegmentIndex){let tmpQuadrants=[{key:'ButtonsTL',selector:'.pict-mde-quadrant-tl',baseClass:'pict-mde-left-btn'},{key:'ButtonsBL',selector:'.pict-mde-quadrant-bl',baseClass:'pict-mde-left-btn'},{key:'ButtonsTR',selector:'.pict-mde-quadrant-tr',baseClass:'pict-mde-sidebar-btn'},{key:'ButtonsBR',selector:'.pict-mde-quadrant-br',baseClass:'pict-mde-sidebar-btn'}];let tmpSelf=this;for(let q=0;q<tmpQuadrants.length;q++){let tmpQuadrant=tmpQuadrants[q];let tmpContainer=pSegmentElement.querySelector(tmpQuadrant.selector);if(!tmpContainer){continue;}let tmpButtons=this.options[tmpQuadrant.key];if(!Array.isArray(tmpButtons)){continue;}for(let b=0;b<tmpButtons.length;b++){let tmpBtnConfig=tmpButtons[b];let tmpButton=document.createElement('button');tmpButton.type='button';tmpButton.className=tmpQuadrant.baseClass;if(tmpBtnConfig.Class){tmpButton.className+=' '+tmpBtnConfig.Class;}tmpButton.innerHTML=tmpBtnConfig.HTML||'';tmpButton.title=tmpBtnConfig.Title||'';// Parse the action string: "methodName" or "methodName:arg"
 let tmpAction=tmpBtnConfig.Action||'';let tmpMethod=tmpAction;let tmpArg=null;let tmpColonIndex=tmpAction.indexOf(':');if(tmpColonIndex>=0){tmpMethod=tmpAction.substring(0,tmpColonIndex);tmpArg=tmpAction.substring(tmpColonIndex+1);}// Build the click handler
-(function(pMethod,pArg,pSegIdx){tmpButton.addEventListener('click',()=>{if(typeof tmpSelf[pMethod]==='function'){if(pArg!==null){tmpSelf[pMethod](pSegIdx,pArg);}else{tmpSelf[pMethod](pSegIdx);}}else{tmpSelf.log.warn("PICT-MarkdownEditor _buildQuadrantButtons: method \"".concat(pMethod,"\" not found."));}});})(tmpMethod,tmpArg,pSegmentIndex);tmpContainer.appendChild(tmpButton);}}}/**
+(function(pMethod,pArg,pSegIdx){tmpButton.addEventListener('click',()=>{if(typeof tmpSelf[pMethod]==='function'){if(pArg!==null){tmpSelf[pMethod](pSegIdx,pArg);}else{tmpSelf[pMethod](pSegIdx);}}else{tmpSelf.log.warn(`PICT-MarkdownEditor _buildQuadrantButtons: method "${pMethod}" not found.`);}});})(tmpMethod,tmpArg,pSegmentIndex);tmpContainer.appendChild(tmpButton);}}}/**
 	 * Hook for subclasses to customize the CodeMirror extensions before editor creation.
 	 *
 	 * @param {Array} pExtensions - The extensions array to modify
@@ -3353,7 +5198,7 @@ let tmpVisible=pVisible;if(typeof pSegmentIndexOrVisible==='boolean'){tmpVisible
 	 * @param {number} pSegmentIndex - The internal segment index
 	 * @param {boolean} [pVisible] - If provided, set to this value; otherwise toggle
 	 */toggleSegmentPreview(pSegmentIndex,pVisible){// Convert internal index to logical index for persistent tracking
-let tmpLogicalIndex=this._getLogicalIndex(pSegmentIndex);if(tmpLogicalIndex<0){return;}let tmpCurrentlyHidden=!!this._hiddenPreviewSegments[tmpLogicalIndex];if(typeof pVisible==='boolean'){tmpCurrentlyHidden=!pVisible;}else{tmpCurrentlyHidden=!tmpCurrentlyHidden;}if(tmpCurrentlyHidden){this._hiddenPreviewSegments[tmpLogicalIndex]=true;}else{delete this._hiddenPreviewSegments[tmpLogicalIndex];}let tmpSegmentEl=document.getElementById("PictMDE-Segment-".concat(pSegmentIndex));if(tmpSegmentEl){if(tmpCurrentlyHidden){tmpSegmentEl.classList.add('pict-mde-preview-hidden');}else{tmpSegmentEl.classList.remove('pict-mde-preview-hidden');}}}// -- Segment Data Management --
+let tmpLogicalIndex=this._getLogicalIndex(pSegmentIndex);if(tmpLogicalIndex<0){return;}let tmpCurrentlyHidden=!!this._hiddenPreviewSegments[tmpLogicalIndex];if(typeof pVisible==='boolean'){tmpCurrentlyHidden=!pVisible;}else{tmpCurrentlyHidden=!tmpCurrentlyHidden;}if(tmpCurrentlyHidden){this._hiddenPreviewSegments[tmpLogicalIndex]=true;}else{delete this._hiddenPreviewSegments[tmpLogicalIndex];}let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(tmpSegmentEl){if(tmpCurrentlyHidden){tmpSegmentEl.classList.add('pict-mde-preview-hidden');}else{tmpSegmentEl.classList.remove('pict-mde-preview-hidden');}}}// -- Segment Data Management --
 /**
 	 * Get the segments array from the configured data address.
 	 *
@@ -3393,7 +5238,7 @@ if(this._richPreviewTimers[pSegmentIndex]){clearTimeout(this._richPreviewTimers[
 	 * Remove a segment by its internal index.
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */removeSegment(pSegmentIndex){let tmpLogicalIndex=this._getLogicalIndex(pSegmentIndex);if(tmpLogicalIndex<0){this.log.warn("PICT-MarkdownEditor removeSegment: segment index ".concat(pSegmentIndex," not found."));return;}let tmpSegments=this._getSegmentsFromData();if(!tmpSegments||tmpSegments.length<=1){this.log.warn("PICT-MarkdownEditor removeSegment: cannot remove the last segment.");return;}if(this._segmentEditors[pSegmentIndex]){this._segmentEditors[pSegmentIndex].destroy();delete this._segmentEditors[pSegmentIndex];}tmpSegments.splice(tmpLogicalIndex,1);this._setSegmentsToData(tmpSegments);// Update per-segment hidden preview state after removal
+	 */removeSegment(pSegmentIndex){let tmpLogicalIndex=this._getLogicalIndex(pSegmentIndex);if(tmpLogicalIndex<0){this.log.warn(`PICT-MarkdownEditor removeSegment: segment index ${pSegmentIndex} not found.`);return;}let tmpSegments=this._getSegmentsFromData();if(!tmpSegments||tmpSegments.length<=1){this.log.warn(`PICT-MarkdownEditor removeSegment: cannot remove the last segment.`);return;}if(this._segmentEditors[pSegmentIndex]){this._segmentEditors[pSegmentIndex].destroy();delete this._segmentEditors[pSegmentIndex];}tmpSegments.splice(tmpLogicalIndex,1);this._setSegmentsToData(tmpSegments);// Update per-segment hidden preview state after removal
 let tmpNewHidden={};for(let tmpKey in this._hiddenPreviewSegments){let tmpIdx=parseInt(tmpKey,10);if(tmpIdx<tmpLogicalIndex){tmpNewHidden[tmpIdx]=true;}else if(tmpIdx>tmpLogicalIndex){tmpNewHidden[tmpIdx-1]=true;}// tmpIdx === tmpLogicalIndex is the removed segment; skip it
 }this._hiddenPreviewSegments=tmpNewHidden;this._buildEditorUI();}/**
 	 * Move a segment up by its internal index.
@@ -3415,7 +5260,7 @@ this._swapHiddenPreviewState(tmpLogicalIndex,tmpLogicalIndex+1);this._buildEdito
 	 *
 	 * @param {number} pLogicalIndex - The logical (0-based) index
 	 * @param {string} pContent - The content to set
-	 */setSegmentContent(pLogicalIndex,pContent){let tmpOrderedIndices=this._getOrderedSegmentIndices();if(pLogicalIndex<0||pLogicalIndex>=tmpOrderedIndices.length){this.log.warn("PICT-MarkdownEditor setSegmentContent: index ".concat(pLogicalIndex," out of range."));return;}let tmpInternalIndex=tmpOrderedIndices[pLogicalIndex];let tmpEditor=this._segmentEditors[tmpInternalIndex];if(tmpEditor){tmpEditor.dispatch({changes:{from:0,to:tmpEditor.state.doc.length,insert:pContent}});}}/**
+	 */setSegmentContent(pLogicalIndex,pContent){let tmpOrderedIndices=this._getOrderedSegmentIndices();if(pLogicalIndex<0||pLogicalIndex>=tmpOrderedIndices.length){this.log.warn(`PICT-MarkdownEditor setSegmentContent: index ${pLogicalIndex} out of range.`);return;}let tmpInternalIndex=tmpOrderedIndices[pLogicalIndex];let tmpEditor=this._segmentEditors[tmpInternalIndex];if(tmpEditor){tmpEditor.dispatch({changes:{from:0,to:tmpEditor.state.doc.length,insert:pContent}});}}/**
 	 * Get the total number of segments.
 	 *
 	 * @returns {number}
@@ -3464,14 +5309,14 @@ AutoRender:true,AutoRenderOrdinal:0,AutoSolveWithApp:true,AutoSolveOrdinal:0,CSS
 	 */constructor(pFable,pOptions,pServiceHash){// Intersect default options, parent constructor, service information
 let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(defaultPictViewSettings)),pOptions);super(pFable,tmpOptions,pServiceHash);//FIXME: add types to fable and ancillaries
 /** @type {any} */this.fable;/** @type {any} */this.options;/** @type {String} */this.UUID;/** @type {String} */this.Hash;/** @type {any} */this.log;const tmpHashIsUUID=this.Hash===this.UUID;//NOTE: since many places are using the view UUID as the HTML element ID, we prefix it to avoid starting with a number
-this.UUID="V-".concat(this.UUID);if(tmpHashIsUUID){this.Hash=this.UUID;}if(!this.options.ViewIdentifier){this.options.ViewIdentifier="AutoViewID-".concat(this.fable.getUUID());}this.serviceType='PictView';/** @type {Record<string, any>} */this._Package=libPackage;// Convenience and consistency naming
+this.UUID=`V-${this.UUID}`;if(tmpHashIsUUID){this.Hash=this.UUID;}if(!this.options.ViewIdentifier){this.options.ViewIdentifier=`AutoViewID-${this.fable.getUUID()}`;}this.serviceType='PictView';/** @type {Record<string, any>} */this._Package=libPackage;// Convenience and consistency naming
 /** @type {import('pict') & { log: any, instantiateServiceProviderWithoutRegistration: (hash: String) => any, instantiateServiceProviderIfNotExists: (hash: string) => any, TransactionTracking: import('pict/types/source/services/Fable-Service-TransactionTracking') }} */this.pict=this.fable;// Wire in the essential Pict application state
 this.AppData=this.pict.AppData;this.Bundle=this.pict.Bundle;/** @type {PictTimestamp} */this.initializeTimestamp=false;/** @type {PictTimestamp} */this.lastSolvedTimestamp=false;/** @type {PictTimestamp} */this.lastRenderedTimestamp=false;/** @type {PictTimestamp} */this.lastMarshalFromViewTimestamp=false;/** @type {PictTimestamp} */this.lastMarshalToViewTimestamp=false;this.pict.instantiateServiceProviderIfNotExists('TransactionTracking');// Load all templates from the array in the options
 // Templates are in the form of {Hash:'Some-Template-Hash',Template:'Template content',Source:'TemplateSource'}
-for(let i=0;i<this.options.Templates.length;i++){let tmpTemplate=this.options.Templates[i];if(!('Hash'in tmpTemplate)||!('Template'in tmpTemplate)){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not load Template ").concat(i," in the options array."),tmpTemplate);}else{if(!tmpTemplate.Source){tmpTemplate.Source="PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," options object.");}this.pict.TemplateProvider.addTemplate(tmpTemplate.Hash,tmpTemplate.Template,tmpTemplate.Source);}}// Load all default templates from the array in the options
+for(let i=0;i<this.options.Templates.length;i++){let tmpTemplate=this.options.Templates[i];if(!('Hash'in tmpTemplate)||!('Template'in tmpTemplate)){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not load Template ${i} in the options array.`,tmpTemplate);}else{if(!tmpTemplate.Source){tmpTemplate.Source=`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} options object.`;}this.pict.TemplateProvider.addTemplate(tmpTemplate.Hash,tmpTemplate.Template,tmpTemplate.Source);}}// Load all default templates from the array in the options
 // Templates are in the form of {Prefix:'',Postfix:'-List-Row',Template:'Template content',Source:'TemplateSourceString'}
-for(let i=0;i<this.options.DefaultTemplates.length;i++){let tmpDefaultTemplate=this.options.DefaultTemplates[i];if(!('Postfix'in tmpDefaultTemplate)||!('Template'in tmpDefaultTemplate)){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not load Default Template ").concat(i," in the options array."),tmpDefaultTemplate);}else{if(!tmpDefaultTemplate.Source){tmpDefaultTemplate.Source="PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," options object.");}this.pict.TemplateProvider.addDefaultTemplate(tmpDefaultTemplate.Prefix,tmpDefaultTemplate.Postfix,tmpDefaultTemplate.Template,tmpDefaultTemplate.Source);}}// Load the CSS if it's available
-if(this.options.CSS){let tmpCSSHash=this.options.CSSHash?this.options.CSSHash:"View-".concat(this.options.ViewIdentifier);let tmpCSSProvider=this.options.CSSProvider?this.options.CSSProvider:tmpCSSHash;this.pict.CSSMap.addCSS(tmpCSSHash,this.options.CSS,tmpCSSProvider,this.options.CSSPriority);}// Load all renderables
+for(let i=0;i<this.options.DefaultTemplates.length;i++){let tmpDefaultTemplate=this.options.DefaultTemplates[i];if(!('Postfix'in tmpDefaultTemplate)||!('Template'in tmpDefaultTemplate)){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not load Default Template ${i} in the options array.`,tmpDefaultTemplate);}else{if(!tmpDefaultTemplate.Source){tmpDefaultTemplate.Source=`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} options object.`;}this.pict.TemplateProvider.addDefaultTemplate(tmpDefaultTemplate.Prefix,tmpDefaultTemplate.Postfix,tmpDefaultTemplate.Template,tmpDefaultTemplate.Source);}}// Load the CSS if it's available
+if(this.options.CSS){let tmpCSSHash=this.options.CSSHash?this.options.CSSHash:`View-${this.options.ViewIdentifier}`;let tmpCSSProvider=this.options.CSSProvider?this.options.CSSProvider:tmpCSSHash;this.pict.CSSMap.addCSS(tmpCSSHash,this.options.CSS,tmpCSSProvider,this.options.CSSPriority);}// Load all renderables
 // Renderables are launchable renderable instructions with templates
 // They look as such: {Identifier:'ContentEntry', TemplateHash:'Content-Entry-Section-Main', ContentDestinationAddress:'#ContentSection', RecordAddress:'AppData.Content.DefaultText', ManifestTransformation:'ManyfestHash', ManifestDestinationAddress:'AppData.Content.DataToTransformContent'}
 // The only parts that are necessary are Identifier and Template
@@ -3486,26 +5331,26 @@ if(this.options.CSS){let tmpCSSHash=this.options.CSSHash?this.options.CSSHash:"V
 	 * @param {RenderMethod} [pRenderMethod=replace] - (optional) The method to use when rendering the renderable (ex. 'replace').
 	 */addRenderable(pRenderableHash,pTemplateHash,pDefaultTemplateRecordAddress,pDefaultDestinationAddress,pRenderMethod){/** @type {Renderable} */let tmpRenderable;if(typeof pRenderableHash=='object'){// The developer passed in the renderable as an object.
 // Use theirs instead!
-tmpRenderable=pRenderableHash;}else{/** @type {RenderMethod} */let tmpRenderMethod=typeof pRenderMethod!=='string'?pRenderMethod:'replace';tmpRenderable={RenderableHash:pRenderableHash,TemplateHash:pTemplateHash,DefaultTemplateRecordAddress:pDefaultTemplateRecordAddress,ContentDestinationAddress:pDefaultDestinationAddress,RenderMethod:tmpRenderMethod};}if(typeof tmpRenderable.RenderableHash!='string'||typeof tmpRenderable.TemplateHash!='string'){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not load Renderable; RenderableHash or TemplateHash are invalid."),tmpRenderable);}else{if(this.pict.LogNoisiness>0){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," adding renderable [").concat(tmpRenderable.RenderableHash,"] pointed to template ").concat(tmpRenderable.TemplateHash,"."));}this.renderables[tmpRenderable.RenderableHash]=tmpRenderable;}}/* -------------------------------------------------------------------------- *//*                        Code Section: Initialization                        *//* -------------------------------------------------------------------------- *//**
+tmpRenderable=pRenderableHash;}else{/** @type {RenderMethod} */let tmpRenderMethod=typeof pRenderMethod!=='string'?pRenderMethod:'replace';tmpRenderable={RenderableHash:pRenderableHash,TemplateHash:pTemplateHash,DefaultTemplateRecordAddress:pDefaultTemplateRecordAddress,ContentDestinationAddress:pDefaultDestinationAddress,RenderMethod:tmpRenderMethod};}if(typeof tmpRenderable.RenderableHash!='string'||typeof tmpRenderable.TemplateHash!='string'){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not load Renderable; RenderableHash or TemplateHash are invalid.`,tmpRenderable);}else{if(this.pict.LogNoisiness>0){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} adding renderable [${tmpRenderable.RenderableHash}] pointed to template ${tmpRenderable.TemplateHash}.`);}this.renderables[tmpRenderable.RenderableHash]=tmpRenderable;}}/* -------------------------------------------------------------------------- *//*                        Code Section: Initialization                        *//* -------------------------------------------------------------------------- *//**
 	 * Lifecycle hook that triggers before the view is initialized.
-	 */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeInitialize:"));}return true;}/**
+	 */onBeforeInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeInitialize:`);}return true;}/**
 	 * Lifecycle hook that triggers before the view is initialized (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onBeforeInitializeAsync(fCallback){this.onBeforeInitialize();return fCallback();}/**
 	 * Lifecycle hook that triggers when the view is initialized.
-	 */onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onInitialize:"));}return true;}/**
+	 */onInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onInitialize:`);}return true;}/**
 	 * Lifecycle hook that triggers when the view is initialized (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onInitializeAsync(fCallback){this.onInitialize();return fCallback();}/**
 	 * Performs view initialization.
-	 */initialize(){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow VIEW [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," initialize:"));}if(!this.initializeTimestamp){this.onBeforeInitialize();this.onInitialize();this.onAfterInitialize();this.initializeTimestamp=this.pict.log.getTimeStamp();return true;}else{this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," initialize called but initialization is already completed.  Aborting."));return false;}}/**
+	 */initialize(){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow VIEW [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} initialize:`);}if(!this.initializeTimestamp){this.onBeforeInitialize();this.onInitialize();this.onAfterInitialize();this.initializeTimestamp=this.pict.log.getTimeStamp();return true;}else{this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} initialize called but initialization is already completed.  Aborting.`);return false;}}/**
 	 * Performs view initialization (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow VIEW [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," initializeAsync:"));}if(!this.initializeTimestamp){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>0){this.log.info("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," beginning initialization..."));}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));tmpAnticipate.wait(/** @param {Error} pError */pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," initialization failed: ").concat(pError.message||pError),{stack:pError.stack});}this.initializeTimestamp=this.pict.log.getTimeStamp();if(this.pict.LogNoisiness>0){this.log.info("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," initialization complete."));}return fCallback();});}else{this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," async initialize called but initialization is already completed.  Aborting."));// TODO: Should this be an error?
-return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterInitialize:"));}return true;}/**
+	 */initializeAsync(fCallback){if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow VIEW [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} initializeAsync:`);}if(!this.initializeTimestamp){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');if(this.pict.LogNoisiness>0){this.log.info(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} beginning initialization...`);}tmpAnticipate.anticipate(this.onBeforeInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onInitializeAsync.bind(this));tmpAnticipate.anticipate(this.onAfterInitializeAsync.bind(this));tmpAnticipate.wait(/** @param {Error} pError */pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} initialization failed: ${pError.message||pError}`,{stack:pError.stack});}this.initializeTimestamp=this.pict.log.getTimeStamp();if(this.pict.LogNoisiness>0){this.log.info(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} initialization complete.`);}return fCallback();});}else{this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} async initialize called but initialization is already completed.  Aborting.`);// TODO: Should this be an error?
+return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterInitialize:`);}return true;}/**
 	 * Lifecycle hook that triggers after the view is initialized (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3514,7 +5359,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 *
 	 * @param {Renderable} pRenderable - The renderable that will be rendered.
 	 */onBeforeRender(pRenderable){// Overload this to mess with stuff before the content gets generated from the template
-if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeRender:"));}return true;}/**
+if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeRender:`);}return true;}/**
 	 * Lifecycle hook that triggers before the view is rendered (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3524,7 +5369,7 @@ if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::["
 	 *
 	 * @param {Renderable} pRenderable - The renderable that will be projected.
 	 */onBeforeProject(pRenderable){// Overload this to mess with stuff before the content gets generated from the template
-if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeProject:"));}return true;}/**
+if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeProject:`);}return true;}/**
 	 * Lifecycle hook that triggers before the view is projected into the DOM (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3537,7 +5382,7 @@ if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::["
 	 * @param {string|ErrorCallback} [pRenderableHash] - The hash of the renderable to render.
 	 * @param {string|ErrorCallback} [pRenderDestinationAddress] - The address where the renderable will be rendered.
 	 * @param {string|object|ErrorCallback} [pTemplateRecordAddress] - The address of (or actual obejct) where the data for the template is stored.
-	 */buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress){let tmpRenderOptions={Valid:true};tmpRenderOptions.RenderableHash=typeof pRenderableHash==='string'?pRenderableHash:typeof this.options.DefaultRenderable=='string'?this.options.DefaultRenderable:false;if(!tmpRenderOptions.RenderableHash){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not find a suitable RenderableHash ").concat(tmpRenderOptions.RenderableHash," (param ").concat(pRenderableHash,"because it is not a valid renderable."));tmpRenderOptions.Valid=false;}tmpRenderOptions.Renderable=this.renderables[tmpRenderOptions.RenderableHash];if(!tmpRenderOptions.Renderable){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderOptions.RenderableHash," (param ").concat(pRenderableHash,") because it does not exist."));tmpRenderOptions.Valid=false;}tmpRenderOptions.DestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderOptions.Renderable.ContentDestinationAddress==='string'?tmpRenderOptions.Renderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:false;if(!tmpRenderOptions.DestinationAddress){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderOptions.RenderableHash," (param ").concat(pRenderableHash,") because it does not have a valid destination address (param ").concat(pRenderDestinationAddress,")."));tmpRenderOptions.Valid=false;}if(typeof pTemplateRecordAddress==='object'){tmpRenderOptions.RecordAddress='Passed in as object';tmpRenderOptions.Record=pTemplateRecordAddress;}else{tmpRenderOptions.RecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderOptions.Renderable.DefaultTemplateRecordAddress==='string'?tmpRenderOptions.Renderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRenderOptions.Record=typeof tmpRenderOptions.RecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRenderOptions.RecordAddress):undefined;}return tmpRenderOptions;}/**
+	 */buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress){let tmpRenderOptions={Valid:true};tmpRenderOptions.RenderableHash=typeof pRenderableHash==='string'?pRenderableHash:typeof this.options.DefaultRenderable=='string'?this.options.DefaultRenderable:false;if(!tmpRenderOptions.RenderableHash){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not find a suitable RenderableHash ${tmpRenderOptions.RenderableHash} (param ${pRenderableHash}because it is not a valid renderable.`);tmpRenderOptions.Valid=false;}tmpRenderOptions.Renderable=this.renderables[tmpRenderOptions.RenderableHash];if(!tmpRenderOptions.Renderable){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderOptions.RenderableHash} (param ${pRenderableHash}) because it does not exist.`);tmpRenderOptions.Valid=false;}tmpRenderOptions.DestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderOptions.Renderable.ContentDestinationAddress==='string'?tmpRenderOptions.Renderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:false;if(!tmpRenderOptions.DestinationAddress){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderOptions.RenderableHash} (param ${pRenderableHash}) because it does not have a valid destination address (param ${pRenderDestinationAddress}).`);tmpRenderOptions.Valid=false;}if(typeof pTemplateRecordAddress==='object'){tmpRenderOptions.RecordAddress='Passed in as object';tmpRenderOptions.Record=pTemplateRecordAddress;}else{tmpRenderOptions.RecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderOptions.Renderable.DefaultTemplateRecordAddress==='string'?tmpRenderOptions.Renderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRenderOptions.Record=typeof tmpRenderOptions.RecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRenderOptions.RecordAddress):undefined;}return tmpRenderOptions;}/**
 	 * Assigns the content to the destination address.
 	 *
 	 * For DRY purposes on the three flavors of render.
@@ -3564,9 +5409,9 @@ if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::["
 	 * @param {string|object} [pTemplateRecordAddress] - The address where the data for the template is stored.
 	 * @param {Renderable} [pRootRenderable] - The root renderable for the render operation, if applicable.
 	 * @return {boolean}
-	 */renderWithScope(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress,pRootRenderable){let tmpRenderableHash=typeof pRenderableHash==='string'?pRenderableHash:typeof this.options.DefaultRenderable=='string'?this.options.DefaultRenderable:false;if(!tmpRenderableHash){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it is not a valid renderable."));return false;}/** @type {Renderable} */let tmpRenderable;if(tmpRenderableHash=='__Virtual'){tmpRenderable={RenderableHash:'__Virtual',TemplateHash:this.renderables[this.options.DefaultRenderable].TemplateHash,ContentDestinationAddress:typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null,RenderMethod:'virtual-assignment',TransactionHash:pRootRenderable&&pRootRenderable.TransactionHash,RootRenderableViewHash:pRootRenderable&&pRootRenderable.RootRenderableViewHash};}else{tmpRenderable=Object.assign({},this.renderables[tmpRenderableHash]);tmpRenderable.ContentDestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null;}if(!tmpRenderable.TransactionHash){tmpRenderable.TransactionHash="ViewRender-V-".concat(this.options.ViewIdentifier,"-R-").concat(tmpRenderableHash,"-U-").concat(this.pict.getUUID());tmpRenderable.RootRenderableViewHash=this.Hash;this.pict.TransactionTracking.registerTransaction(tmpRenderable.TransactionHash);}if(!tmpRenderable){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it does not exist."));return false;}if(!tmpRenderable.ContentDestinationAddress){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it does not have a valid destination address."));return false;}let tmpRecordAddress;let tmpRecord;if(typeof pTemplateRecordAddress==='object'){tmpRecord=pTemplateRecordAddress;tmpRecordAddress='Passed in as object';}else{tmpRecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderable.DefaultTemplateRecordAddress==='string'?tmpRenderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRecord=typeof tmpRecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRecordAddress):undefined;}// Execute the developer-overridable pre-render behavior
-this.onBeforeRender(tmpRenderable);if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow VIEW [".concat(this.UUID,"]::[").concat(this.Hash,"] Renderable[").concat(tmpRenderableHash,"] Destination[").concat(tmpRenderable.ContentDestinationAddress,"] TemplateRecordAddress[").concat(tmpRecordAddress,"] render:"));}if(this.pict.LogNoisiness>0){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," Beginning Render of Renderable[").concat(tmpRenderableHash,"] to Destination [").concat(tmpRenderable.ContentDestinationAddress,"]..."));}// Generate the content output from the template and data
-tmpRenderable.Content=this.pict.parseTemplateByHash(tmpRenderable.TemplateHash,tmpRecord,null,[this],pScope,{RootRenderable:typeof pRootRenderable==='object'?pRootRenderable:tmpRenderable});if(this.pict.LogNoisiness>0){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," Assigning Renderable[").concat(tmpRenderableHash,"] content length ").concat(tmpRenderable.Content.length," to Destination [").concat(tmpRenderable.ContentDestinationAddress,"] using render method [").concat(tmpRenderable.RenderMethod,"]."));}this.onBeforeProject(tmpRenderable);this.onProject(tmpRenderable);if(tmpRenderable.RenderMethod!=='virtual-assignment'){this.onAfterProject(tmpRenderable);// Execute the developer-overridable post-render behavior
+	 */renderWithScope(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress,pRootRenderable){let tmpRenderableHash=typeof pRenderableHash==='string'?pRenderableHash:typeof this.options.DefaultRenderable=='string'?this.options.DefaultRenderable:false;if(!tmpRenderableHash){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it is not a valid renderable.`);return false;}/** @type {Renderable} */let tmpRenderable;if(tmpRenderableHash=='__Virtual'){tmpRenderable={RenderableHash:'__Virtual',TemplateHash:this.renderables[this.options.DefaultRenderable].TemplateHash,ContentDestinationAddress:typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null,RenderMethod:'virtual-assignment',TransactionHash:pRootRenderable&&pRootRenderable.TransactionHash,RootRenderableViewHash:pRootRenderable&&pRootRenderable.RootRenderableViewHash};}else{tmpRenderable=Object.assign({},this.renderables[tmpRenderableHash]);tmpRenderable.ContentDestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null;}if(!tmpRenderable.TransactionHash){tmpRenderable.TransactionHash=`ViewRender-V-${this.options.ViewIdentifier}-R-${tmpRenderableHash}-U-${this.pict.getUUID()}`;tmpRenderable.RootRenderableViewHash=this.Hash;this.pict.TransactionTracking.registerTransaction(tmpRenderable.TransactionHash);}if(!tmpRenderable){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it does not exist.`);return false;}if(!tmpRenderable.ContentDestinationAddress){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it does not have a valid destination address.`);return false;}let tmpRecordAddress;let tmpRecord;if(typeof pTemplateRecordAddress==='object'){tmpRecord=pTemplateRecordAddress;tmpRecordAddress='Passed in as object';}else{tmpRecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderable.DefaultTemplateRecordAddress==='string'?tmpRenderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRecord=typeof tmpRecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRecordAddress):undefined;}// Execute the developer-overridable pre-render behavior
+this.onBeforeRender(tmpRenderable);if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow VIEW [${this.UUID}]::[${this.Hash}] Renderable[${tmpRenderableHash}] Destination[${tmpRenderable.ContentDestinationAddress}] TemplateRecordAddress[${tmpRecordAddress}] render:`);}if(this.pict.LogNoisiness>0){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} Beginning Render of Renderable[${tmpRenderableHash}] to Destination [${tmpRenderable.ContentDestinationAddress}]...`);}// Generate the content output from the template and data
+tmpRenderable.Content=this.pict.parseTemplateByHash(tmpRenderable.TemplateHash,tmpRecord,null,[this],pScope,{RootRenderable:typeof pRootRenderable==='object'?pRootRenderable:tmpRenderable});if(this.pict.LogNoisiness>0){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} Assigning Renderable[${tmpRenderableHash}] content length ${tmpRenderable.Content.length} to Destination [${tmpRenderable.ContentDestinationAddress}] using render method [${tmpRenderable.RenderMethod}].`);}this.onBeforeProject(tmpRenderable);this.onProject(tmpRenderable);if(tmpRenderable.RenderMethod!=='virtual-assignment'){this.onAfterProject(tmpRenderable);// Execute the developer-overridable post-render behavior
 this.onAfterRender(tmpRenderable);}return true;}/**
 	 * Render a renderable from this view.
 	 *
@@ -3589,8 +5434,8 @@ this.onAfterRender(tmpRenderable);}return true;}/**
 	 *
 	 * @return {void}
 	 */renderWithScopeAsync(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress,pRootRenderable,fCallback){let tmpRenderableHash=typeof pRenderableHash==='string'?pRenderableHash:typeof this.options.DefaultRenderable=='string'?this.options.DefaultRenderable:false;// Allow the callback to be passed in as the last parameter no matter what
-/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateRecordAddress==='function'?pTemplateRecordAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:typeof pRootRenderable==='function'?pRootRenderable:null;if(!tmpCallback){this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," renderAsync Auto Callback Error: ").concat(pError),pError);}};}if(!tmpRenderableHash){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not asynchronously render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,"because it is not a valid renderable."));return tmpCallback(new Error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not asynchronously render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,"because it is not a valid renderable.")));}/** @type {Renderable} */let tmpRenderable;if(tmpRenderableHash=='__Virtual'){tmpRenderable={RenderableHash:'__Virtual',TemplateHash:this.renderables[this.options.DefaultRenderable].TemplateHash,ContentDestinationAddress:typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null,RenderMethod:'virtual-assignment',TransactionHash:pRootRenderable&&typeof pRootRenderable!=='function'&&pRootRenderable.TransactionHash,RootRenderableViewHash:pRootRenderable&&typeof pRootRenderable!=='function'&&pRootRenderable.RootRenderableViewHash};}else{tmpRenderable=Object.assign({},this.renderables[tmpRenderableHash]);tmpRenderable.ContentDestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null;}if(!tmpRenderable.TransactionHash){tmpRenderable.TransactionHash="ViewRender-V-".concat(this.options.ViewIdentifier,"-R-").concat(tmpRenderableHash,"-U-").concat(this.pict.getUUID());tmpRenderable.RootRenderableViewHash=this.Hash;this.pict.TransactionTracking.registerTransaction(tmpRenderable.TransactionHash);}if(!tmpRenderable){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it does not exist."));return tmpCallback(new Error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it does not exist.")));}if(!tmpRenderable.ContentDestinationAddress){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it does not have a valid destination address."));return tmpCallback(new Error("Could not render ".concat(tmpRenderableHash)));}let tmpRecordAddress;let tmpRecord;if(typeof pTemplateRecordAddress==='object'){tmpRecord=pTemplateRecordAddress;tmpRecordAddress='Passed in as object';}else{tmpRecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderable.DefaultTemplateRecordAddress==='string'?tmpRenderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRecord=typeof tmpRecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRecordAddress):undefined;}if(this.pict.LogControlFlow){this.log.trace("PICT-ControlFlow VIEW [".concat(this.UUID,"]::[").concat(this.Hash,"] Renderable[").concat(tmpRenderableHash,"] Destination[").concat(tmpRenderable.ContentDestinationAddress,"] TemplateRecordAddress[").concat(tmpRecordAddress,"] renderAsync:"));}if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," Beginning Asynchronous Render (callback-style)..."));}let tmpAnticipate=this.fable.newAnticipate();tmpAnticipate.anticipate(fOnBeforeRenderCallback=>{this.onBeforeRenderAsync(fOnBeforeRenderCallback,tmpRenderable);});tmpAnticipate.anticipate(fAsyncTemplateCallback=>{// Render the template (asynchronously)
-this.pict.parseTemplateByHash(tmpRenderable.TemplateHash,tmpRecord,(pError,pContent)=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render (asynchronously) ").concat(tmpRenderableHash," (param ").concat(pRenderableHash,") because it did not parse the template."),pError);return fAsyncTemplateCallback(pError);}tmpRenderable.Content=pContent;return fAsyncTemplateCallback();},[this],pScope,{RootRenderable:typeof pRootRenderable==='object'?pRootRenderable:tmpRenderable});});tmpAnticipate.anticipate(fNext=>{this.onBeforeProjectAsync(fNext,tmpRenderable);});tmpAnticipate.anticipate(fNext=>{this.onProjectAsync(fNext,tmpRenderable);});if(tmpRenderable.RenderMethod!=='virtual-assignment'){tmpAnticipate.anticipate(fNext=>{this.onAfterProjectAsync(fNext,tmpRenderable);});// Execute the developer-overridable post-render behavior
+/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateRecordAddress==='function'?pTemplateRecordAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:typeof pRootRenderable==='function'?pRootRenderable:null;if(!tmpCallback){this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} renderAsync Auto Callback Error: ${pError}`,pError);}};}if(!tmpRenderableHash){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not asynchronously render ${tmpRenderableHash} (param ${pRenderableHash}because it is not a valid renderable.`);return tmpCallback(new Error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not asynchronously render ${tmpRenderableHash} (param ${pRenderableHash}because it is not a valid renderable.`));}/** @type {Renderable} */let tmpRenderable;if(tmpRenderableHash=='__Virtual'){tmpRenderable={RenderableHash:'__Virtual',TemplateHash:this.renderables[this.options.DefaultRenderable].TemplateHash,ContentDestinationAddress:typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null,RenderMethod:'virtual-assignment',TransactionHash:pRootRenderable&&typeof pRootRenderable!=='function'&&pRootRenderable.TransactionHash,RootRenderableViewHash:pRootRenderable&&typeof pRootRenderable!=='function'&&pRootRenderable.RootRenderableViewHash};}else{tmpRenderable=Object.assign({},this.renderables[tmpRenderableHash]);tmpRenderable.ContentDestinationAddress=typeof pRenderDestinationAddress==='string'?pRenderDestinationAddress:typeof tmpRenderable.ContentDestinationAddress==='string'?tmpRenderable.ContentDestinationAddress:typeof this.options.DefaultDestinationAddress==='string'?this.options.DefaultDestinationAddress:null;}if(!tmpRenderable.TransactionHash){tmpRenderable.TransactionHash=`ViewRender-V-${this.options.ViewIdentifier}-R-${tmpRenderableHash}-U-${this.pict.getUUID()}`;tmpRenderable.RootRenderableViewHash=this.Hash;this.pict.TransactionTracking.registerTransaction(tmpRenderable.TransactionHash);}if(!tmpRenderable){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it does not exist.`);return tmpCallback(new Error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it does not exist.`));}if(!tmpRenderable.ContentDestinationAddress){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render ${tmpRenderableHash} (param ${pRenderableHash}) because it does not have a valid destination address.`);return tmpCallback(new Error(`Could not render ${tmpRenderableHash}`));}let tmpRecordAddress;let tmpRecord;if(typeof pTemplateRecordAddress==='object'){tmpRecord=pTemplateRecordAddress;tmpRecordAddress='Passed in as object';}else{tmpRecordAddress=typeof pTemplateRecordAddress==='string'?pTemplateRecordAddress:typeof tmpRenderable.DefaultTemplateRecordAddress==='string'?tmpRenderable.DefaultTemplateRecordAddress:typeof this.options.DefaultTemplateRecordAddress==='string'?this.options.DefaultTemplateRecordAddress:false;tmpRecord=typeof tmpRecordAddress==='string'?this.pict.DataProvider.getDataByAddress(tmpRecordAddress):undefined;}if(this.pict.LogControlFlow){this.log.trace(`PICT-ControlFlow VIEW [${this.UUID}]::[${this.Hash}] Renderable[${tmpRenderableHash}] Destination[${tmpRenderable.ContentDestinationAddress}] TemplateRecordAddress[${tmpRecordAddress}] renderAsync:`);}if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} Beginning Asynchronous Render (callback-style)...`);}let tmpAnticipate=this.fable.newAnticipate();tmpAnticipate.anticipate(fOnBeforeRenderCallback=>{this.onBeforeRenderAsync(fOnBeforeRenderCallback,tmpRenderable);});tmpAnticipate.anticipate(fAsyncTemplateCallback=>{// Render the template (asynchronously)
+this.pict.parseTemplateByHash(tmpRenderable.TemplateHash,tmpRecord,(pError,pContent)=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render (asynchronously) ${tmpRenderableHash} (param ${pRenderableHash}) because it did not parse the template.`,pError);return fAsyncTemplateCallback(pError);}tmpRenderable.Content=pContent;return fAsyncTemplateCallback();},[this],pScope,{RootRenderable:typeof pRootRenderable==='object'?pRootRenderable:tmpRenderable});});tmpAnticipate.anticipate(fNext=>{this.onBeforeProjectAsync(fNext,tmpRenderable);});tmpAnticipate.anticipate(fNext=>{this.onProjectAsync(fNext,tmpRenderable);});if(tmpRenderable.RenderMethod!=='virtual-assignment'){tmpAnticipate.anticipate(fNext=>{this.onAfterProjectAsync(fNext,tmpRenderable);});// Execute the developer-overridable post-render behavior
 tmpAnticipate.anticipate(fNext=>{this.onAfterRenderAsync(fNext,tmpRenderable);});}tmpAnticipate.wait(tmpCallback);}/**
 	 * Renders the default renderable.
 	 *
@@ -3605,7 +5450,7 @@ this.renderAsync(fCallback);}/**
 	 * @param {string} [pRenderableHash] - The hash of the renderable to render.
 	 * @param {string} [pRenderDestinationAddress] - The address where the renderable will be rendered.
 	 * @param {string|object} [pTemplateRecordAddress] - The address of (or actual obejct) where the data for the template is stored.
-	 */basicRenderWithScope(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress){let tmpRenderOptions=this.buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress);if(tmpRenderOptions.Valid){this.assignRenderContent(tmpRenderOptions.Renderable,tmpRenderOptions.DestinationAddress,this.pict.parseTemplateByHash(tmpRenderOptions.Renderable.TemplateHash,tmpRenderOptions.Record,null,[this],pScope,{RootRenderable:tmpRenderOptions.Renderable}));return true;}else{this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not perform a basic render of ").concat(tmpRenderOptions.RenderableHash," because it is not valid."));return false;}}/**
+	 */basicRenderWithScope(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress){let tmpRenderOptions=this.buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress);if(tmpRenderOptions.Valid){this.assignRenderContent(tmpRenderOptions.Renderable,tmpRenderOptions.DestinationAddress,this.pict.parseTemplateByHash(tmpRenderOptions.Renderable.TemplateHash,tmpRenderOptions.Record,null,[this],pScope,{RootRenderable:tmpRenderOptions.Renderable}));return true;}else{this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not perform a basic render of ${tmpRenderOptions.RenderableHash} because it is not valid.`);return false;}}/**
 	 * @param {string|ErrorCallback} [pRenderableHash] - The hash of the renderable to render.
 	 * @param {string|ErrorCallback} [pRenderDestinationAddress] - The address where the renderable will be rendered.
 	 * @param {string|Object|ErrorCallback} [pTemplateRecordAddress] - The address of (or actual obejct) where the data for the template is stored.
@@ -3617,12 +5462,12 @@ this.renderAsync(fCallback);}/**
 	 * @param {string|Object|ErrorCallback} [pTemplateRecordAddress] - The address of (or actual obejct) where the data for the template is stored.
 	 * @param {ErrorCallback} [fCallback] - The callback to call when the async operation is complete.
 	 */basicRenderWithScopeAsync(pScope,pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress,fCallback){// Allow the callback to be passed in as the last parameter no matter what
-/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateRecordAddress==='function'?pTemplateRecordAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:null;if(!tmpCallback){this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," basicRenderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," basicRenderAsync Auto Callback Error: ").concat(pError),pError);}};}const tmpRenderOptions=this.buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress);if(tmpRenderOptions.Valid){this.pict.parseTemplateByHash(tmpRenderOptions.Renderable.TemplateHash,tmpRenderOptions.Record,/**
+/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:typeof pTemplateRecordAddress==='function'?pTemplateRecordAddress:typeof pRenderDestinationAddress==='function'?pRenderDestinationAddress:typeof pRenderableHash==='function'?pRenderableHash:null;if(!tmpCallback){this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} basicRenderAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} basicRenderAsync Auto Callback Error: ${pError}`,pError);}};}const tmpRenderOptions=this.buildRenderOptions(pRenderableHash,pRenderDestinationAddress,pTemplateRecordAddress);if(tmpRenderOptions.Valid){this.pict.parseTemplateByHash(tmpRenderOptions.Renderable.TemplateHash,tmpRenderOptions.Record,/**
 				 * @param {Error} [pError] - The error that occurred during template parsing.
 				 * @param {string} [pContent] - The content that was rendered from the template.
-				 */(pError,pContent)=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not render (asynchronously) ").concat(tmpRenderOptions.RenderableHash," because it did not parse the template."),pError);return tmpCallback(pError);}this.assignRenderContent(tmpRenderOptions.Renderable,tmpRenderOptions.DestinationAddress,pContent);return tmpCallback();},[this],pScope,{RootRenderable:tmpRenderOptions.Renderable});}else{let tmpErrorMessage="PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," could not perform a basic render of ").concat(tmpRenderOptions.RenderableHash," because it is not valid.");this.log.error(tmpErrorMessage);return tmpCallback(new Error(tmpErrorMessage));}}/**
+				 */(pError,pContent)=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not render (asynchronously) ${tmpRenderOptions.RenderableHash} because it did not parse the template.`,pError);return tmpCallback(pError);}this.assignRenderContent(tmpRenderOptions.Renderable,tmpRenderOptions.DestinationAddress,pContent);return tmpCallback();},[this],pScope,{RootRenderable:tmpRenderOptions.Renderable});}else{let tmpErrorMessage=`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} could not perform a basic render of ${tmpRenderOptions.RenderableHash} because it is not valid.`;this.log.error(tmpErrorMessage);return tmpCallback(new Error(tmpErrorMessage));}}/**
 	 * @param {Renderable} pRenderable - The renderable that was rendered.
-	 */onProject(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onProject:"));}if(pRenderable.RenderMethod==='virtual-assignment'){this.pict.TransactionTracking.pushToTransactionQueue(pRenderable.TransactionHash,{ViewHash:this.Hash,Renderable:pRenderable},'Deferred-Post-Content-Assignment');}if(this.pict.LogNoisiness>0){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," Assigning Renderable[").concat(pRenderable.RenderableHash,"] content length ").concat(pRenderable.Content.length," to Destination [").concat(pRenderable.ContentDestinationAddress,"] using Async render method ").concat(pRenderable.RenderMethod,"."));}// Assign the content to the destination address
+	 */onProject(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onProject:`);}if(pRenderable.RenderMethod==='virtual-assignment'){this.pict.TransactionTracking.pushToTransactionQueue(pRenderable.TransactionHash,{ViewHash:this.Hash,Renderable:pRenderable},'Deferred-Post-Content-Assignment');}if(this.pict.LogNoisiness>0){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} Assigning Renderable[${pRenderable.RenderableHash}] content length ${pRenderable.Content.length} to Destination [${pRenderable.ContentDestinationAddress}] using Async render method ${pRenderable.RenderMethod}.`);}// Assign the content to the destination address
 this.pict.ContentAssignment.projectContent(pRenderable.RenderMethod,pRenderable.ContentDestinationAddress,pRenderable.Content,pRenderable.TestAddress);this.lastRenderedTimestamp=this.pict.log.getTimeStamp();}/**
 	 * Lifecycle hook that triggers after the view is projected into the DOM (async flow).
 	 *
@@ -3632,31 +5477,31 @@ this.pict.ContentAssignment.projectContent(pRenderable.RenderMethod,pRenderable.
 	 * Lifecycle hook that triggers after the view is rendered.
 	 *
 	 * @param {Renderable} pRenderable - The renderable that was rendered.
-	 */onAfterRender(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterRender:"));}if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const tmpTransactionQueue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const tmpEvent of tmpTransactionQueue){const tmpView=this.pict.views[tmpEvent.Data.ViewHash];if(!tmpView){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterRender: Could not find view for transaction hash ").concat(pRenderable.TransactionHash," and ViewHash ").concat(tmpEvent.Data.ViewHash,"."));continue;}tmpView.onAfterProject();// Execute the developer-overridable post-render behavior
+	 */onAfterRender(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRender:`);}if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const tmpTransactionQueue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const tmpEvent of tmpTransactionQueue){const tmpView=this.pict.views[tmpEvent.Data.ViewHash];if(!tmpView){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRender: Could not find view for transaction hash ${pRenderable.TransactionHash} and ViewHash ${tmpEvent.Data.ViewHash}.`);continue;}tmpView.onAfterProject();// Execute the developer-overridable post-render behavior
 tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Lifecycle hook that triggers after the view is rendered (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 * @param {Renderable} pRenderable - The renderable that was rendered.
-	 */onAfterRenderAsync(fCallback,pRenderable){this.onAfterRender(pRenderable);const tmpAnticipate=this.fable.newAnticipate();if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const queue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const event of queue){/** @type {PictView} */const tmpView=this.pict.views[event.Data.ViewHash];if(!tmpView){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterRenderAsync: Could not find view for transaction hash ").concat(pRenderable.TransactionHash," and ViewHash ").concat(event.Data.ViewHash,"."));continue;}tmpAnticipate.anticipate(tmpView.onAfterProjectAsync.bind(tmpView));tmpAnticipate.anticipate(fNext=>{tmpView.onAfterRenderAsync(fNext,event.Data.Renderable);});// Execute the developer-overridable post-render behavior
+	 */onAfterRenderAsync(fCallback,pRenderable){this.onAfterRender(pRenderable);const tmpAnticipate=this.fable.newAnticipate();if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const queue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const event of queue){/** @type {PictView} */const tmpView=this.pict.views[event.Data.ViewHash];if(!tmpView){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRenderAsync: Could not find view for transaction hash ${pRenderable.TransactionHash} and ViewHash ${event.Data.ViewHash}.`);continue;}tmpAnticipate.anticipate(tmpView.onAfterProjectAsync.bind(tmpView));tmpAnticipate.anticipate(fNext=>{tmpView.onAfterRenderAsync(fNext,event.Data.Renderable);});// Execute the developer-overridable post-render behavior
 }}return tmpAnticipate.wait(fCallback);}/**
 	 * Lifecycle hook that triggers after the view is projected into the DOM.
 	 *
 	 * @param {Renderable} pRenderable - The renderable that was projected.
-	 */onAfterProject(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterProject:"));}return true;}/**
+	 */onAfterProject(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterProject:`);}return true;}/**
 	 * Lifecycle hook that triggers after the view is projected into the DOM (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 * @param {Renderable} pRenderable - The renderable that was projected.
 	 */onAfterProjectAsync(fCallback,pRenderable){return fCallback();}/* -------------------------------------------------------------------------- *//*                            Code Section: Solver                            *//* -------------------------------------------------------------------------- *//**
 	 * Lifecycle hook that triggers before the view is solved.
-	 */onBeforeSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeSolve:"));}return true;}/**
+	 */onBeforeSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeSolve:`);}return true;}/**
 	 * Lifecycle hook that triggers before the view is solved (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onBeforeSolveAsync(fCallback){this.onBeforeSolve();return fCallback();}/**
 	 * Lifecycle hook that triggers when the view is solved.
-	 */onSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onSolve:"));}return true;}/**
+	 */onSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onSolve:`);}return true;}/**
 	 * Lifecycle hook that triggers when the view is solved (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3664,13 +5509,13 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Performs view solving and triggers lifecycle hooks.
 	 *
 	 * @return {boolean} - True if the view was solved successfully, false otherwise.
-	 */solve(){if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," executing solve() function..."));}this.onBeforeSolve();this.onSolve();this.onAfterSolve();this.lastSolvedTimestamp=this.pict.log.getTimeStamp();return true;}/**
+	 */solve(){if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} executing solve() function...`);}this.onBeforeSolve();this.onSolve();this.onAfterSolve();this.lastSolvedTimestamp=this.pict.log.getTimeStamp();return true;}/**
 	 * Performs view solving and triggers lifecycle hooks (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */solveAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," solveAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," solveAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeSolveAsync.bind(this));tmpAnticipate.anticipate(this.onSolveAsync.bind(this));tmpAnticipate.anticipate(this.onAfterSolveAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," solveAsync() complete."));}this.lastSolvedTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
+	 */solveAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} solveAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} solveAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeSolveAsync.bind(this));tmpAnticipate.anticipate(this.onSolveAsync.bind(this));tmpAnticipate.anticipate(this.onAfterSolveAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} solveAsync() complete.`);}this.lastSolvedTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * Lifecycle hook that triggers after the view is solved.
-	 */onAfterSolve(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterSolve:"));}return true;}/**
+	 */onAfterSolve(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterSolve:`);}return true;}/**
 	 * Lifecycle hook that triggers after the view is solved (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3678,13 +5523,13 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Lifecycle hook that triggers before data is marshaled from the view.
 	 *
 	 * @return {boolean} - True if the operation was successful, false otherwise.
-	 */onBeforeMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeMarshalFromView:"));}return true;}/**
+	 */onBeforeMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeMarshalFromView:`);}return true;}/**
 	 * Lifecycle hook that triggers before data is marshaled from the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onBeforeMarshalFromViewAsync(fCallback){this.onBeforeMarshalFromView();return fCallback();}/**
 	 * Lifecycle hook that triggers when data is marshaled from the view.
-	 */onMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onMarshalFromView:"));}return true;}/**
+	 */onMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onMarshalFromView:`);}return true;}/**
 	 * Lifecycle hook that triggers when data is marshaled from the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3692,25 +5537,25 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Marshals data from the view.
 	 *
 	 * @return {boolean} - True if the operation was successful, false otherwise.
-	 */marshalFromView(){if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," executing solve() function..."));}this.onBeforeMarshalFromView();this.onMarshalFromView();this.onAfterMarshalFromView();this.lastMarshalFromViewTimestamp=this.pict.log.getTimeStamp();return true;}/**
+	 */marshalFromView(){if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} executing solve() function...`);}this.onBeforeMarshalFromView();this.onMarshalFromView();this.onAfterMarshalFromView();this.lastMarshalFromViewTimestamp=this.pict.log.getTimeStamp();return true;}/**
 	 * Marshals data from the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */marshalFromViewAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalFromViewAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalFromViewAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalFromViewAsync.bind(this));tmpAnticipate.anticipate(this.onMarshalFromViewAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalFromViewAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," marshalFromViewAsync() complete."));}this.lastMarshalFromViewTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
+	 */marshalFromViewAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalFromViewAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalFromViewAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalFromViewAsync.bind(this));tmpAnticipate.anticipate(this.onMarshalFromViewAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalFromViewAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} marshalFromViewAsync() complete.`);}this.lastMarshalFromViewTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * Lifecycle hook that triggers after data is marshaled from the view.
-	 */onAfterMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterMarshalFromView:"));}return true;}/**
+	 */onAfterMarshalFromView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterMarshalFromView:`);}return true;}/**
 	 * Lifecycle hook that triggers after data is marshaled from the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onAfterMarshalFromViewAsync(fCallback){this.onAfterMarshalFromView();return fCallback();}/* -------------------------------------------------------------------------- *//*                     Code Section: Marshal To View                          *//* -------------------------------------------------------------------------- *//**
 	 * Lifecycle hook that triggers before data is marshaled into the view.
-	 */onBeforeMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onBeforeMarshalToView:"));}return true;}/**
+	 */onBeforeMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onBeforeMarshalToView:`);}return true;}/**
 	 * Lifecycle hook that triggers before data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 */onBeforeMarshalToViewAsync(fCallback){this.onBeforeMarshalToView();return fCallback();}/**
 	 * Lifecycle hook that triggers when data is marshaled into the view.
-	 */onMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onMarshalToView:"));}return true;}/**
+	 */onMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onMarshalToView:`);}return true;}/**
 	 * Lifecycle hook that triggers when data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3718,13 +5563,13 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Marshals data into the view.
 	 *
 	 * @return {boolean} - True if the operation was successful, false otherwise.
-	 */marshalToView(){if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," executing solve() function..."));}this.onBeforeMarshalToView();this.onMarshalToView();this.onAfterMarshalToView();this.lastMarshalToViewTimestamp=this.pict.log.getTimeStamp();return true;}/**
+	 */marshalToView(){if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} executing solve() function...`);}this.onBeforeMarshalToView();this.onMarshalToView();this.onAfterMarshalToView();this.lastMarshalToViewTimestamp=this.pict.log.getTimeStamp();return true;}/**
 	 * Marshals data into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */marshalToViewAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalToViewAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions."));tmpCallback=pError=>{if(pError){this.log.error("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.Name," marshalToViewAsync Auto Callback Error: ").concat(pError),pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalToViewAsync.bind(this));tmpAnticipate.anticipate(this.onMarshalToViewAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalToViewAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," marshalToViewAsync() complete."));}this.lastMarshalToViewTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
+	 */marshalToViewAsync(fCallback){let tmpAnticipate=this.pict.instantiateServiceProviderWithoutRegistration('Anticipate');/** @type {ErrorCallback} */let tmpCallback=typeof fCallback==='function'?fCallback:null;if(!tmpCallback){this.log.warn(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalToViewAsync was called without a valid callback.  A callback will be generated but this could lead to race conditions.`);tmpCallback=pError=>{if(pError){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.Name} marshalToViewAsync Auto Callback Error: ${pError}`,pError);}};}tmpAnticipate.anticipate(this.onBeforeMarshalToViewAsync.bind(this));tmpAnticipate.anticipate(this.onMarshalToViewAsync.bind(this));tmpAnticipate.anticipate(this.onAfterMarshalToViewAsync.bind(this));tmpAnticipate.wait(pError=>{if(this.pict.LogNoisiness>2){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} marshalToViewAsync() complete.`);}this.lastMarshalToViewTimestamp=this.pict.log.getTimeStamp();return tmpCallback(pError);});}/**
 	 * Lifecycle hook that triggers after data is marshaled into the view.
-	 */onAfterMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace("PictView [".concat(this.UUID,"]::[").concat(this.Hash,"] ").concat(this.options.ViewIdentifier," onAfterMarshalToView:"));}return true;}/**
+	 */onAfterMarshalToView(){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterMarshalToView:`);}return true;}/**
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
@@ -3901,7 +5746,7 @@ for/* no condition */(q=delta,k=base;;k+=base){t=k<=bias?tMin:k>=bias+tMax?tMax:
 if(typeof define=='function'&&typeof define.amd=='object'&&define.amd){define('punycode',function(){return punycode;});}else if(freeExports&&freeModule){if(module.exports==freeExports){// in Node.js, io.js, or RingoJS v0.8.0+
 freeModule.exports=punycode;}else{// in Narwhal or RingoJS v0.7.0-
 for(key in punycode){punycode.hasOwnProperty(key)&&(freeExports[key]=punycode[key]);}}}else{// in Rhino or a web browser
-root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],88:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function RFC1738(value){return replace.call(value,percentTwenties,'+');},RFC3986:function RFC3986(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],89:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":88,"./parse":90,"./stringify":91}],90:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function interpretNumericEntities(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function parseArrayValue(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
+root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],88:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],89:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":88,"./parse":90,"./stringify":91}],90:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
 // application/x-www-form-urlencoded body and the encoding of the page containing
 // the form is iso-8859-1, or when the submitted form has an accept-charset
 // attribute of iso-8859-1. Presumably also with other charsets that do not contain
@@ -3911,10 +5756,10 @@ var isoSentinel='utf8=%26%2310003%3B';// encodeURIComponent('&#10003;')
 var charsetSentinel='utf8=%E2%9C%93';// encodeURIComponent('✓')
 var parseValues=function parseQueryStringValues(str,options){var obj={__proto__:null};var cleanStr=options.ignoreQueryPrefix?str.replace(/^\?/,''):str;cleanStr=cleanStr.replace(/%5B/gi,'[').replace(/%5D/gi,']');var limit=options.parameterLimit===Infinity?void undefined:options.parameterLimit;var parts=cleanStr.split(options.delimiter,options.throwOnLimitExceeded?limit+1:limit);if(options.throwOnLimitExceeded&&parts.length>limit){throw new RangeError('Parameter limit exceeded. Only '+limit+' parameter'+(limit===1?'':'s')+' allowed.');}var skipIndex=-1;// Keep track of where the utf8 sentinel was found
 var i;var charset=options.charset;if(options.charsetSentinel){for(i=0;i<parts.length;++i){if(parts[i].indexOf('utf8=')===0){if(parts[i]===charsetSentinel){charset='utf-8';}else if(parts[i]===isoSentinel){charset='iso-8859-1';}skipIndex=i;i=parts.length;// The eslint settings do not allow break;
-}}}for(i=0;i<parts.length;++i){if(i===skipIndex){continue;}var part=parts[i];var bracketEqualsPos=part.indexOf(']=');var pos=bracketEqualsPos===-1?part.indexOf('='):bracketEqualsPos+1;var key;var val;if(pos===-1){key=options.decoder(part,defaults.decoder,charset,'key');val=options.strictNullHandling?null:'';}else{key=options.decoder(part.slice(0,pos),defaults.decoder,charset,'key');if(key!==null){val=utils.maybeMap(parseArrayValue(part.slice(pos+1),options,isArray(obj[key])?obj[key].length:0),function(encodedVal){return options.decoder(encodedVal,defaults.decoder,charset,'value');});}}if(val&&options.interpretNumericEntities&&charset==='iso-8859-1'){val=interpretNumericEntities(String(val));}if(part.indexOf('[]=')>-1){val=isArray(val)?[val]:val;}if(options.comma&&isArray(val)&&val.length>options.arrayLimit){if(options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}val=utils.combine([],val,options.arrayLimit,options.plainObjects);}if(key!==null){var existing=has.call(obj,key);if(existing&&(options.duplicates==='combine'||part.indexOf('[]=')>-1)){obj[key]=utils.combine(obj[key],val,options.arrayLimit,options.plainObjects);}else if(!existing||options.duplicates==='last'){obj[key]=val;}}}return obj;};var parseObject=function parseObject(chain,val,options,valuesParsed){var currentArrayLength=0;if(chain.length>0&&chain[chain.length-1]==='[]'){var parentKey=chain.slice(0,-1).join('');currentArrayLength=Array.isArray(val)&&val[parentKey]?val[parentKey].length:0;}var leaf=valuesParsed?val:parseArrayValue(val,options,currentArrayLength);for(var i=chain.length-1;i>=0;--i){var obj;var root=chain[i];if(root==='[]'&&options.parseArrays){if(utils.isOverflow(leaf)){// leaf is already an overflow object, preserve it
+}}}for(i=0;i<parts.length;++i){if(i===skipIndex){continue;}var part=parts[i];var bracketEqualsPos=part.indexOf(']=');var pos=bracketEqualsPos===-1?part.indexOf('='):bracketEqualsPos+1;var key;var val;if(pos===-1){key=options.decoder(part,defaults.decoder,charset,'key');val=options.strictNullHandling?null:'';}else{key=options.decoder(part.slice(0,pos),defaults.decoder,charset,'key');if(key!==null){val=utils.maybeMap(parseArrayValue(part.slice(pos+1),options,isArray(obj[key])?obj[key].length:0),function(encodedVal){return options.decoder(encodedVal,defaults.decoder,charset,'value');});}}if(val&&options.interpretNumericEntities&&charset==='iso-8859-1'){val=interpretNumericEntities(String(val));}if(part.indexOf('[]=')>-1){val=isArray(val)?[val]:val;}if(options.comma&&isArray(val)&&val.length>options.arrayLimit){if(options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}val=utils.combine([],val,options.arrayLimit,options.plainObjects);}if(key!==null){var existing=has.call(obj,key);if(existing&&(options.duplicates==='combine'||part.indexOf('[]=')>-1)){obj[key]=utils.combine(obj[key],val,options.arrayLimit,options.plainObjects);}else if(!existing||options.duplicates==='last'){obj[key]=val;}}}return obj;};var parseObject=function(chain,val,options,valuesParsed){var currentArrayLength=0;if(chain.length>0&&chain[chain.length-1]==='[]'){var parentKey=chain.slice(0,-1).join('');currentArrayLength=Array.isArray(val)&&val[parentKey]?val[parentKey].length:0;}var leaf=valuesParsed?val:parseArrayValue(val,options,currentArrayLength);for(var i=chain.length-1;i>=0;--i){var obj;var root=chain[i];if(root==='[]'&&options.parseArrays){if(utils.isOverflow(leaf)){// leaf is already an overflow object, preserve it
 obj=leaf;}else{obj=options.allowEmptyArrays&&(leaf===''||options.strictNullHandling&&leaf===null)?[]:utils.combine([],leaf,options.arrayLimit,options.plainObjects);}}else{obj=options.plainObjects?{__proto__:null}:{};var cleanRoot=root.charAt(0)==='['&&root.charAt(root.length-1)===']'?root.slice(1,-1):root;var decodedRoot=options.decodeDotInKeys?cleanRoot.replace(/%2E/g,'.'):cleanRoot;var index=parseInt(decodedRoot,10);var isValidArrayIndex=!isNaN(index)&&root!==decodedRoot&&String(index)===decodedRoot&&index>=0&&options.parseArrays;if(!options.parseArrays&&decodedRoot===''){obj={0:leaf};}else if(isValidArrayIndex&&index<options.arrayLimit){obj=[];obj[index]=leaf;}else if(isValidArrayIndex&&options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}else if(isValidArrayIndex){obj[index]=leaf;utils.markOverflow(obj,index);}else if(decodedRoot!=='__proto__'){obj[decodedRoot]=leaf;}}leaf=obj;}return leaf;};var splitKeyIntoSegments=function splitKeyIntoSegments(givenKey,options){var key=options.allowDots?givenKey.replace(/\.([^.[]+)/g,'[$1]'):givenKey;if(options.depth<=0){if(!options.plainObjects&&has.call(Object.prototype,key)){if(!options.allowPrototypes){return;}}return[key];}var brackets=/(\[[^[\]]*])/;var child=/(\[[^[\]]*])/g;var segment=brackets.exec(key);var parent=segment?key.slice(0,segment.index):key;var keys=[];if(parent){if(!options.plainObjects&&has.call(Object.prototype,parent)){if(!options.allowPrototypes){return;}}keys[keys.length]=parent;}var i=0;while((segment=child.exec(key))!==null&&i<options.depth){i+=1;var segmentContent=segment[1].slice(1,-1);if(!options.plainObjects&&has.call(Object.prototype,segmentContent)){if(!options.allowPrototypes){return;}}keys[keys.length]=segment[1];}if(segment){if(options.strictDepth===true){throw new RangeError('Input depth exceeded depth option of '+options.depth+' and strictDepth is true');}keys[keys.length]='['+key.slice(segment.index)+']';}return keys;};var parseKeys=function parseQueryStringKeys(givenKey,val,options,valuesParsed){if(!givenKey){return;}var keys=splitKeyIntoSegments(givenKey,options);if(!keys){return;}return parseObject(keys,val,options,valuesParsed);};var normalizeParseOptions=function normalizeParseOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.decodeDotInKeys!=='undefined'&&typeof opts.decodeDotInKeys!=='boolean'){throw new TypeError('`decodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.decoder!==null&&typeof opts.decoder!=='undefined'&&typeof opts.decoder!=='function'){throw new TypeError('Decoder has to be a function.');}if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}if(typeof opts.throwOnLimitExceeded!=='undefined'&&typeof opts.throwOnLimitExceeded!=='boolean'){throw new TypeError('`throwOnLimitExceeded` option must be a boolean');}var charset=typeof opts.charset==='undefined'?defaults.charset:opts.charset;var duplicates=typeof opts.duplicates==='undefined'?defaults.duplicates:opts.duplicates;if(duplicates!=='combine'&&duplicates!=='first'&&duplicates!=='last'){throw new TypeError('The duplicates option must be either combine, first, or last');}var allowDots=typeof opts.allowDots==='undefined'?opts.decodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,allowPrototypes:typeof opts.allowPrototypes==='boolean'?opts.allowPrototypes:defaults.allowPrototypes,allowSparse:typeof opts.allowSparse==='boolean'?opts.allowSparse:defaults.allowSparse,arrayLimit:typeof opts.arrayLimit==='number'?opts.arrayLimit:defaults.arrayLimit,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,comma:typeof opts.comma==='boolean'?opts.comma:defaults.comma,decodeDotInKeys:typeof opts.decodeDotInKeys==='boolean'?opts.decodeDotInKeys:defaults.decodeDotInKeys,decoder:typeof opts.decoder==='function'?opts.decoder:defaults.decoder,delimiter:typeof opts.delimiter==='string'||utils.isRegExp(opts.delimiter)?opts.delimiter:defaults.delimiter,// eslint-disable-next-line no-implicit-coercion, no-extra-parens
 depth:typeof opts.depth==='number'||opts.depth===false?+opts.depth:defaults.depth,duplicates:duplicates,ignoreQueryPrefix:opts.ignoreQueryPrefix===true,interpretNumericEntities:typeof opts.interpretNumericEntities==='boolean'?opts.interpretNumericEntities:defaults.interpretNumericEntities,parameterLimit:typeof opts.parameterLimit==='number'?opts.parameterLimit:defaults.parameterLimit,parseArrays:opts.parseArrays!==false,plainObjects:typeof opts.plainObjects==='boolean'?opts.plainObjects:defaults.plainObjects,strictDepth:typeof opts.strictDepth==='boolean'?!!opts.strictDepth:defaults.strictDepth,strictMerge:typeof opts.strictMerge==='boolean'?!!opts.strictMerge:defaults.strictMerge,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling,throwOnLimitExceeded:typeof opts.throwOnLimitExceeded==='boolean'?opts.throwOnLimitExceeded:false};};module.exports=function(str,opts){var options=normalizeParseOptions(opts);if(str===''||str===null||typeof str==='undefined'){return options.plainObjects?{__proto__:null}:{};}var tempObj=typeof str==='string'?parseValues(str,options):str;var obj=options.plainObjects?{__proto__:null}:{};// Iterate over the keys and setup the new object
-var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":92}],91:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function pushToArray(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
+var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":92}],91:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
 indices:false,serializeDate:function serializeDate(date){return toISO.call(date);},skipNulls:false,strictNullHandling:false};var isNonNullishPrimitive=function isNonNullishPrimitive(v){return typeof v==='string'||typeof v==='number'||typeof v==='boolean'||typeof v==='symbol'||typeof v==='bigint';};var sentinel={};var stringify=function stringify(object,prefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,sideChannel){var obj=object;var tmpSc=sideChannel;var step=0;var findFlag=false;while((tmpSc=tmpSc.get(sentinel))!==void undefined&&!findFlag){// Where object last appeared in the ref tree
 var pos=tmpSc.get(object);step+=1;if(typeof pos!=='undefined'){if(pos===step){throw new RangeError('Cyclic object value');}else{findFlag=true;// Break while
 }}if(typeof tmpSc.get(sentinel)==='undefined'){step=0;}}if(typeof filter==='function'){obj=filter(prefix,obj);}else if(obj instanceof Date){obj=serializeDate(obj);}else if(generateArrayPrefix==='comma'&&isArray(obj)){obj=utils.maybeMap(obj,function(value){if(value instanceof Date){return serializeDate(value);}return value;});}if(obj===null){if(strictNullHandling){return encoder&&!encodeValuesOnly?encoder(prefix,defaults.encoder,charset,'key',format):prefix;}obj='';}if(isNonNullishPrimitive(obj)||utils.isBuffer(obj)){if(encoder){var keyValue=encodeValuesOnly?prefix:encoder(prefix,defaults.encoder,charset,'key',format);return[formatter(keyValue)+'='+formatter(encoder(obj,defaults.encoder,charset,'value',format))];}return[formatter(prefix)+'='+formatter(String(obj))];}var values=[];if(typeof obj==='undefined'){return values;}var objKeys;if(generateArrayPrefix==='comma'&&isArray(obj)){// we need to join elements in
@@ -3924,7 +5769,7 @@ prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./form
 // Stores the current max numeric index for O(1) lookup
 var overflowChannel=getSideChannel();var markOverflow=function markOverflow(obj,maxIndex){overflowChannel.set(obj,maxIndex);return obj;};var isOverflow=function isOverflow(obj){return overflowChannel.has(obj);};var getMaxIndex=function getMaxIndex(obj){return overflowChannel.get(obj);};var setMaxIndex=function setMaxIndex(obj,maxIndex){overflowChannel.set(obj,maxIndex);};var hexTable=function(){var array=[];for(var i=0;i<256;++i){array[array.length]='%'+((i<16?'0':'')+i.toString(16)).toUpperCase();}return array;}();var compactQueue=function compactQueue(queue){while(queue.length>1){var item=queue.pop();var obj=item.obj[item.prop];if(isArray(obj)){var compacted=[];for(var j=0;j<obj.length;++j){if(typeof obj[j]!=='undefined'){compacted[compacted.length]=obj[j];}}item.obj[item.prop]=compacted;}}};var arrayToObject=function arrayToObject(source,options){var obj=options&&options.plainObjects?{__proto__:null}:{};for(var i=0;i<source.length;++i){if(typeof source[i]!=='undefined'){obj[i]=source[i];}}return obj;};var merge=function merge(target,source,options){/* eslint no-param-reassign: 0 */if(!source){return target;}if(typeof source!=='object'&&typeof source!=='function'){if(isArray(target)){var nextIndex=target.length;if(options&&typeof options.arrayLimit==='number'&&nextIndex>options.arrayLimit){return markOverflow(arrayToObject(target.concat(source),options),nextIndex);}target[nextIndex]=source;}else if(target&&typeof target==='object'){if(isOverflow(target)){// Add at next numeric index for overflow objects
 var newIndex=getMaxIndex(target)+1;target[newIndex]=source;setMaxIndex(target,newIndex);}else if(options&&options.strictMerge){return[target,source];}else if(options&&(options.plainObjects||options.allowPrototypes)||!has.call(Object.prototype,source)){target[source]=true;}}else{return[target,source];}return target;}if(!target||typeof target!=='object'){if(isOverflow(source)){// Create new object with target at 0, source values shifted by 1
-var sourceKeys=Object.keys(source);var result=options&&options.plainObjects?{__proto__:null,0:target}:{0:target};for(var m=0;m<sourceKeys.length;m++){var oldKey=parseInt(sourceKeys[m],10);result[oldKey+1]=source[sourceKeys[m]];}return markOverflow(result,getMaxIndex(source)+1);}var combined=[target].concat(source);if(options&&typeof options.arrayLimit==='number'&&combined.length>options.arrayLimit){return markOverflow(arrayToObject(combined,options),combined.length-1);}return combined;}var mergeTarget=target;if(isArray(target)&&!isArray(source)){mergeTarget=arrayToObject(target,options);}if(isArray(target)&&isArray(source)){source.forEach(function(item,i){if(has.call(target,i)){var targetItem=target[i];if(targetItem&&typeof targetItem==='object'&&item&&typeof item==='object'){target[i]=merge(targetItem,item,options);}else{target[target.length]=item;}}else{target[i]=item;}});return target;}return Object.keys(source).reduce(function(acc,key){var value=source[key];if(has.call(acc,key)){acc[key]=merge(acc[key],value,options);}else{acc[key]=value;}if(isOverflow(source)&&!isOverflow(acc)){markOverflow(acc,getMaxIndex(source));}if(isOverflow(acc)){var keyNum=parseInt(key,10);if(String(keyNum)===key&&keyNum>=0&&keyNum>getMaxIndex(acc)){setMaxIndex(acc,keyNum);}}return acc;},mergeTarget);};var assign=function assignSingleSource(target,source){return Object.keys(source).reduce(function(acc,key){acc[key]=source[key];return acc;},target);};var decode=function decode(str,defaultDecoder,charset){var strWithoutPlus=str.replace(/\+/g,' ');if(charset==='iso-8859-1'){// unescape never throws, no try...catch needed:
+var sourceKeys=Object.keys(source);var result=options&&options.plainObjects?{__proto__:null,0:target}:{0:target};for(var m=0;m<sourceKeys.length;m++){var oldKey=parseInt(sourceKeys[m],10);result[oldKey+1]=source[sourceKeys[m]];}return markOverflow(result,getMaxIndex(source)+1);}var combined=[target].concat(source);if(options&&typeof options.arrayLimit==='number'&&combined.length>options.arrayLimit){return markOverflow(arrayToObject(combined,options),combined.length-1);}return combined;}var mergeTarget=target;if(isArray(target)&&!isArray(source)){mergeTarget=arrayToObject(target,options);}if(isArray(target)&&isArray(source)){source.forEach(function(item,i){if(has.call(target,i)){var targetItem=target[i];if(targetItem&&typeof targetItem==='object'&&item&&typeof item==='object'){target[i]=merge(targetItem,item,options);}else{target[target.length]=item;}}else{target[i]=item;}});return target;}return Object.keys(source).reduce(function(acc,key){var value=source[key];if(has.call(acc,key)){acc[key]=merge(acc[key],value,options);}else{acc[key]=value;}if(isOverflow(source)&&!isOverflow(acc)){markOverflow(acc,getMaxIndex(source));}if(isOverflow(acc)){var keyNum=parseInt(key,10);if(String(keyNum)===key&&keyNum>=0&&keyNum>getMaxIndex(acc)){setMaxIndex(acc,keyNum);}}return acc;},mergeTarget);};var assign=function assignSingleSource(target,source){return Object.keys(source).reduce(function(acc,key){acc[key]=source[key];return acc;},target);};var decode=function(str,defaultDecoder,charset){var strWithoutPlus=str.replace(/\+/g,' ');if(charset==='iso-8859-1'){// unescape never throws, no try...catch needed:
 return strWithoutPlus.replace(/%[0-9a-f]{2}/gi,unescape);}// utf-8
 try{return decodeURIComponent(strWithoutPlus);}catch(e){return strWithoutPlus;}};var limit=1024;/* eslint operator-linebreak: [2, "before"] */var encode=function encode(str,defaultEncoder,charset,kind,format){// This code was originally written by Brian White (mscdex) for the io.js core querystring library.
 // It has been adapted here for stricter adherence to RFC 3986
@@ -3980,7 +5825,7 @@ let tmpTopicsPath=this.pict.AppData.ContentEditor.TopicsFilePath;if(tmpTopicsPat
 let tmpPath=typeof pPath==='string'?pPath:null;if(tmpPath===null&&this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpURL='/api/filebrowser/list';if(tmpPath&&tmpPath.length>0){tmpURL+='?path='+encodeURIComponent(tmpPath);}fetch(tmpURL).then(pResponse=>pResponse.json()).then(pFileList=>{// FileBrowserService returns an array directly
 tmpSelf.pict.AppData.PictFileBrowser=tmpSelf.pict.AppData.PictFileBrowser||{};tmpSelf.pict.AppData.PictFileBrowser.FileList=pFileList||[];// Render the file browser container (creates pane structure)
 let tmpFileBrowserView=tmpSelf.pict.views['Pict-FileBrowser'];if(tmpFileBrowserView){tmpFileBrowserView.render();}// Render the list detail sub-view (populates the list pane with file rows)
-let tmpListDetailView=tmpSelf.pict.views['Pict-FileBrowser-ListDetail'];if(tmpListDetailView){tmpListDetailView.render();}return tmpCallback();}).catch(pError=>{tmpSelf.log.error("Failed to load file list: ".concat(pError.message));return tmpCallback();});}/**
+let tmpListDetailView=tmpSelf.pict.views['Pict-FileBrowser-ListDetail'];if(tmpListDetailView){tmpListDetailView.render();}return tmpCallback();}).catch(pError=>{tmpSelf.log.error(`Failed to load file list: ${pError.message}`);return tmpCallback();});}/**
 	 * Resolve the current hash route.
 	 *
 	 * Supports:
@@ -4197,13 +6042,13 @@ if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictCont
 	 *
 	 * @param {string} pFilePath - The relative file path
 	 * @param {Function} fCallback - Callback receiving (error, contentString)
-	 */loadFile(pFilePath,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified','');}fetch('/api/content/read/'+encodeURIComponent(pFilePath)).then(pResponse=>{if(!pResponse.ok){return tmpCallback('File not found: '+pResponse.status,'');}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Content||'');}return tmpCallback(pData?pData.Error:'Unknown error','');}).catch(pError=>{this.log.warn("ContentEditor: Error loading file [".concat(pFilePath,"]: ").concat(pError));return tmpCallback(pError.message,'');});}/**
+	 */loadFile(pFilePath,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified','');}fetch('/api/content/read/'+encodeURIComponent(pFilePath)).then(pResponse=>{if(!pResponse.ok){return tmpCallback('File not found: '+pResponse.status,'');}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Content||'');}return tmpCallback(pData?pData.Error:'Unknown error','');}).catch(pError=>{this.log.warn(`ContentEditor: Error loading file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message,'');});}/**
 	 * Save markdown content to a file.
 	 *
 	 * @param {string} pFilePath - The relative file path
 	 * @param {string} pContent - The markdown content to save
 	 * @param {Function} fCallback - Callback receiving (error)
-	 */saveFile(pFilePath,pContent,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified');}fetch('/api/content/save/'+encodeURIComponent(pFilePath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Content:pContent})}).then(pResponse=>{if(!pResponse.ok){return tmpCallback('Save failed: '+pResponse.status);}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null);}return tmpCallback(pData?pData.Error:'Unknown error');}).catch(pError=>{this.log.warn("ContentEditor: Error saving file [".concat(pFilePath,"]: ").concat(pError));return tmpCallback(pError.message);});}/**
+	 */saveFile(pFilePath,pContent,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified');}fetch('/api/content/save/'+encodeURIComponent(pFilePath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Content:pContent})}).then(pResponse=>{if(!pResponse.ok){return tmpCallback('Save failed: '+pResponse.status);}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null);}return tmpCallback(pData?pData.Error:'Unknown error');}).catch(pError=>{this.log.warn(`ContentEditor: Error saving file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message);});}/**
 	 * Upload an image file to the server.
 	 *
 	 * The image is saved into the content folder the user is currently
@@ -4212,11 +6057,11 @@ if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictCont
 	 * @param {File} pFile - The image file to upload
 	 * @param {Function} fCallback - Callback receiving (error, url)
 	 */uploadImage(pFile,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};// Determine the target folder from the currently open file
-let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn("ContentEditor: Image upload failed: ".concat(pError));return tmpCallback(pError.message);});}/**
+let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn(`ContentEditor: Image upload failed: ${pError}`);return tmpCallback(pError.message);});}/**
 	 * List uploaded images.
 	 *
 	 * @param {Function} fCallback - Callback receiving (error, filesArray)
-	 */listUploads(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/content/uploads').then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Files||[]);}return tmpCallback(pData?pData.Error:'Unknown error',[]);}).catch(pError=>{this.log.warn("ContentEditor: Error listing uploads: ".concat(pError));return tmpCallback(pError.message,[]);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55}],99:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
+	 */listUploads(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/content/uploads').then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Files||[]);}return tmpCallback(pData?pData.Error:'Unknown error',[]);}).catch(pError=>{this.log.warn(`ContentEditor: Error listing uploads: ${pError}`);return tmpCallback(pError.message,[]);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55}],99:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
  * Map of file extensions to highlight.js language identifiers.
  *
  * highlight.js supports 190+ languages. This map covers the most common
@@ -4256,7 +6101,582 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 	 *
 	 * @param {string} pExtension - The file extension (without dot)
 	 * @returns {string} The highlight.js language identifier
-	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":58}],100:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/"\n\t\t#ContentEditor-Application-Container\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100vh;\n\t\t\tbackground: #F5F3EE;\n\t\t}\n\t\t#ContentEditor-TopBar-Container\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.content-editor-body\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex: 1;\n\t\t\tmin-height: 0;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t/* Sidebar wrapper holds the sidebar content + collapse toggle */\n\t\t.content-editor-sidebar-wrap\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-shrink: 0;\n\t\t\tposition: relative;\n\t\t\ttransition: width 0.2s ease;\n\t\t}\n\t\t/* Inner wrapper: vertical flex for tab bar + panes */\n\t\t.content-editor-sidebar-inner\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t\tmin-height: 0;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t/* Sidebar tab bar */\n\t\t.content-editor-sidebar-tabs\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-shrink: 0;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tbackground: #F5F0EA;\n\t\t}\n\t\t.content-editor-sidebar-tab\n\t\t{\n\t\t\tflex: 1;\n\t\t\tpadding: 7px 0;\n\t\t\tborder: none;\n\t\t\tbackground: transparent;\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #8A7F72;\n\t\t\tcursor: pointer;\n\t\t\tborder-bottom: 2px solid transparent;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t}\n\t\t.content-editor-sidebar-tab:hover\n\t\t{\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.content-editor-sidebar-tab.active\n\t\t{\n\t\t\tcolor: #2E7D74;\n\t\t\tborder-bottom-color: #2E7D74;\n\t\t}\n\t\t.content-editor-sidebar-addfile\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 30px;\n\t\t\tborder: none;\n\t\t\tbackground: transparent;\n\t\t\tfont-size: 1.1rem;\n\t\t\tfont-weight: 400;\n\t\t\tcolor: #8A7F72;\n\t\t\tcursor: pointer;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tborder-bottom: 2px solid transparent;\n\t\t\ttransition: color 0.15s, background 0.15s;\n\t\t}\n\t\t.content-editor-sidebar-addfile:hover\n\t\t{\n\t\t\tcolor: #2E7D74;\n\t\t\tbackground: #EDE9E3;\n\t\t}\n\t\t/* Sidebar panes */\n\t\t.content-editor-sidebar-pane\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\toverflow-x: hidden;\n\t\t\tmin-width: 0;\n\t\t\tmin-height: 0;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container\n\t\t{\n\t\t\tbackground: #FAF8F4;\n\t\t}\n\t\t/* Collapsed state */\n\t\t.content-editor-sidebar-wrap.collapsed\n\t\t{\n\t\t\twidth: 0 !important;\n\t\t}\n\t\t.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner\n\t\t{\n\t\t\tvisibility: hidden;\n\t\t}\n\t\t.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t/* Collapse / expand toggle */\n\t\t.content-editor-sidebar-toggle\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 8px;\n\t\t\tright: -20px;\n\t\t\twidth: 20px;\n\t\t\theight: 28px;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tbackground: #FAF8F4;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-left: none;\n\t\t\tborder-radius: 0 4px 4px 0;\n\t\t\tcursor: pointer;\n\t\t\tz-index: 10;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 11px;\n\t\t\tline-height: 1;\n\t\t\ttransition: color 0.15s;\n\t\t}\n\t\t.content-editor-sidebar-toggle:hover\n\t\t{\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-toggle\n\t\t{\n\t\t\tright: -20px;\n\t\t}\n\t\t/* Resize handle */\n\t\t.content-editor-resize-handle\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 5px;\n\t\t\tcursor: col-resize;\n\t\t\tbackground: transparent;\n\t\t\tborder-right: 1px solid #DDD6CA;\n\t\t\ttransition: background 0.15s;\n\t\t}\n\t\t.content-editor-resize-handle:hover,\n\t\t.content-editor-resize-handle.dragging\n\t\t{\n\t\t\tbackground: #2E7D74;\n\t\t\tborder-right-color: #2E7D74;\n\t\t}\n\t\t/* File browser layout overrides for sidebar use */\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser\n\t\t{\n\t\t\tborder: none;\n\t\t\tborder-radius: 0;\n\t\t\tbackground: transparent;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser-browse-pane\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser-view-pane\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t/* Hide size/date columns \u2014 the sidebar is too narrow for them */\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-col-size,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-col-modified,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-size,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-modified\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t/* Hide the column header bar in sidebar mode */\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-header\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Editor-Container\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\tpadding: 44px 16px 16px 16px;\n\t\t}\n\t\t/* Code editor: fill the container and remove outer border */\n\t\t#ContentEditor-Editor-Container .pict-code-editor-wrap\n\t\t{\n\t\t\theight: calc(100% - 4px);\n\t\t\tborder: none;\n\t\t\tborder-radius: 0;\n\t\t}\n\t\t#ContentEditor-Editor-Container .pict-code-editor\n\t\t{\n\t\t\tmin-height: unset;\n\t\t\theight: 100%;\n\t\t\tbackground: #FAFAFA;\n\t\t}\n\t\t/* Binary file preview */\n\t\t.binary-preview-image-wrap\n\t\t{\n\t\t\tmargin-bottom: 20px;\n\t\t}\n\t\t.binary-preview-image\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tbackground: #FFF;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 6px;\n\t\t\tpadding: 24px;\n\t\t}\n\t\t.binary-preview-image img\n\t\t{\n\t\t\tdisplay: block;\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: 400px;\n\t\t\tobject-fit: contain;\n\t\t\tborder-radius: 4px;\n\t\t}\n\t\t.binary-preview-card\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 20px;\n\t\t\tbackground: #FFF;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 6px;\n\t\t\tpadding: 24px;\n\t\t\tmax-width: 600px;\n\t\t}\n\t\t.binary-preview-icon\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 64px;\n\t\t\theight: 64px;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder-radius: 8px;\n\t\t\tfont-size: 0.75rem;\n\t\t\tfont-weight: 700;\n\t\t\tcolor: #5E5549;\n\t\t\tletter-spacing: 0.5px;\n\t\t}\n\t\t.binary-preview-info\n\t\t{\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t}\n\t\t.binary-preview-name\n\t\t{\n\t\t\tfont-size: 1rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin-bottom: 6px;\n\t\t\tword-break: break-all;\n\t\t}\n\t\t.binary-preview-meta\n\t\t{\n\t\t\tfont-size: 0.8rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tline-height: 1.6;\n\t\t}\n\t\t.binary-preview-actions\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tgap: 8px;\n\t\t}\n\t\t.binary-preview-btn\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tpadding: 8px 16px;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.8rem;\n\t\t\tfont-weight: 600;\n\t\t\ttext-decoration: none;\n\t\t\ttext-align: center;\n\t\t\tcursor: pointer;\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t}\n\t\t.binary-preview-btn:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t.binary-preview-btn-secondary\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: #5E5549;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t}\n\t\t.binary-preview-btn-secondary:hover\n\t\t{\n\t\t\tborder-color: #8A7F72;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.binary-preview-btn-preview\n\t\t{\n\t\t\tpadding: 10px 20px;\n\t\t\tfont-size: 0.85rem;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tbackground: #FAF8F4;\n\t\t\tcolor: #3D3229;\n\t\t\tcursor: pointer;\n\t\t\tborder-radius: 6px;\n\t\t\ttransition: background 0.15s, border-color 0.15s;\n\t\t}\n\t\t.binary-preview-btn-preview:hover\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder-color: #8A7F72;\n\t\t}\n\t\t#ContentEditor-MediaPreviewPlaceholder\n\t\t{\n\t\t\tmargin-bottom: 20px;\n\t\t}\n\t\t.binary-preview-media-wrap\n\t\t{\n\t\t\tmargin-bottom: 20px;\n\t\t}\n\t\t.binary-preview-video\n\t\t{\n\t\t\tdisplay: block;\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: 500px;\n\t\t\tborder-radius: 6px;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tbackground: #000;\n\t\t}\n\t\t.binary-preview-audio\n\t\t{\n\t\t\tdisplay: block;\n\t\t\twidth: 100%;\n\t\t\tmax-width: 500px;\n\t\t}\n\t\t/* Image upload overlay */\n\t\t.content-editor-upload-overlay\n\t\t{\n\t\t\tdisplay: none;\n\t\t\tposition: fixed;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\tright: 0;\n\t\t\tbottom: 0;\n\t\t\tz-index: 1099;\n\t\t\tbackground: rgba(0, 0, 0, 0.35);\n\t\t}\n\t\t.content-editor-upload-overlay.open\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t}\n\t\t.content-editor-upload-panel\n\t\t{\n\t\t\tbackground: #FFF;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 10px;\n\t\t\tbox-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);\n\t\t\twidth: 420px;\n\t\t\tmax-width: 90vw;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.content-editor-upload-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 14px 18px;\n\t\t\tborder-bottom: 1px solid #EDE9E3;\n\t\t}\n\t\t.content-editor-upload-title\n\t\t{\n\t\t\tfont-size: 0.95rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.content-editor-upload-close\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tborder: none;\n\t\t\tfont-size: 1.2rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 2px 6px;\n\t\t\tline-height: 1;\n\t\t\tborder-radius: 4px;\n\t\t}\n\t\t.content-editor-upload-close:hover\n\t\t{\n\t\t\tcolor: #3D3229;\n\t\t\tbackground: #F0EDE8;\n\t\t}\n\t\t.content-editor-upload-body\n\t\t{\n\t\t\tpadding: 18px;\n\t\t}\n\t\t.content-editor-upload-dropzone\n\t\t{\n\t\t\tborder: 2px dashed #DDD6CA;\n\t\t\tborder-radius: 8px;\n\t\t\tpadding: 28px 16px;\n\t\t\ttext-align: center;\n\t\t\tcursor: pointer;\n\t\t\ttransition: border-color 0.15s, background 0.15s;\n\t\t\tbackground: #FAF8F4;\n\t\t}\n\t\t.content-editor-upload-dropzone:hover,\n\t\t.content-editor-upload-dropzone.dragover\n\t\t{\n\t\t\tborder-color: #2E7D74;\n\t\t\tbackground: #F0FAF8;\n\t\t}\n\t\t.content-editor-upload-dropzone-icon\n\t\t{\n\t\t\tfont-size: 2rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.content-editor-upload-dropzone-text\n\t\t{\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.content-editor-upload-dropzone-hint\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-top: 4px;\n\t\t}\n\t\t.content-editor-upload-file-input\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t.content-editor-upload-status\n\t\t{\n\t\t\tmargin-top: 12px;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #5E5549;\n\t\t\tmin-height: 20px;\n\t\t}\n\t\t.content-editor-upload-status-error\n\t\t{\n\t\t\tcolor: #D9534F;\n\t\t}\n\t\t.content-editor-upload-status-success\n\t\t{\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.content-editor-upload-result\n\t\t{\n\t\t\tmargin-top: 12px;\n\t\t\tpadding: 10px 12px;\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 6px;\n\t\t}\n\t\t.content-editor-upload-result-label\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-bottom: 4px;\n\t\t}\n\t\t.content-editor-upload-result-url\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 6px;\n\t\t}\n\t\t.content-editor-upload-result-text\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-family: monospace;\n\t\t\tfont-size: 0.78rem;\n\t\t\tcolor: #3D3229;\n\t\t\tword-break: break-all;\n\t\t}\n\t\t.content-editor-upload-result-copy\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t\tborder: none;\n\t\t\tborder-radius: 4px;\n\t\t\tpadding: 4px 10px;\n\t\t\tfont-size: 0.72rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.content-editor-upload-result-copy:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t.content-editor-upload-kbd\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tpadding: 1px 5px;\n\t\t\tfont-size: 0.68rem;\n\t\t\tfont-family: monospace;\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 3px;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.content-editor-upload-footer\n\t\t{\n\t\t\tpadding: 10px 18px;\n\t\t\tborder-top: 1px solid #EDE9E3;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\ttext-align: center;\n\t\t}\n\t",Templates:[{Hash:"ContentEditor-Layout-Shell-Template",Template:/*html*/"\n<div id=\"ContentEditor-TopBar-Container\"></div>\n<div class=\"content-editor-body\">\n\t<div class=\"content-editor-sidebar-wrap\" id=\"ContentEditor-SidebarWrap\" style=\"width:250px\">\n\t\t<div class=\"content-editor-sidebar-inner\">\n\t\t\t<div class=\"content-editor-sidebar-tabs\">\n\t\t\t\t<button class=\"content-editor-sidebar-tab active\" id=\"ContentEditor-SidebarTab-Files\"\n\t\t\t\t\tonclick=\"{~P~}.views['ContentEditor-Layout'].switchSidebarTab('files')\">Files</button>\n\t\t\t\t<button class=\"content-editor-sidebar-tab\" id=\"ContentEditor-SidebarTab-Reference\"\n\t\t\t\t\tonclick=\"{~P~}.views['ContentEditor-Layout'].switchSidebarTab('reference')\">Reference</button>\n\t\t\t\t<button class=\"content-editor-sidebar-tab\" id=\"ContentEditor-SidebarTab-Topics\"\n\t\t\t\t\tonclick=\"{~P~}.views['ContentEditor-Layout'].switchSidebarTab('topics')\">Topics</button>\n\t\t\t\t<button class=\"content-editor-sidebar-addfile\" title=\"New file\"\n\t\t\t\t\tonclick=\"{~P~}.PictApplication.promptNewFile()\">+</button>\n\t\t\t</div>\n\t\t\t<div id=\"ContentEditor-Sidebar-Container\" class=\"content-editor-sidebar-pane\"></div>\n\t\t\t<div id=\"ContentEditor-SidebarReference-Container\" class=\"content-editor-sidebar-pane\" style=\"display:none\"></div>\n\t\t\t<div id=\"ContentEditor-SidebarTopics-Container\" class=\"content-editor-sidebar-pane\" style=\"display:none\"></div>\n\t\t</div>\n\t\t<div class=\"content-editor-resize-handle\" id=\"ContentEditor-ResizeHandle\"></div>\n\t\t<div class=\"content-editor-sidebar-toggle\" id=\"ContentEditor-SidebarToggle\">&#x25C0;</div>\n\t</div>\n\t<div id=\"ContentEditor-Editor-Container\"></div>\n</div>\n<div class=\"content-editor-upload-overlay\" id=\"ContentEditor-UploadOverlay\"\n\tonclick=\"{~P~}.views['ContentEditor-Layout'].onUploadOverlayClick(event)\">\n\t<div class=\"content-editor-upload-panel\">\n\t\t<div class=\"content-editor-upload-header\">\n\t\t\t<span class=\"content-editor-upload-title\">Upload Image</span>\n\t\t\t<button class=\"content-editor-upload-close\"\n\t\t\t\tonclick=\"{~P~}.views['ContentEditor-Layout'].toggleUploadForm()\">&times;</button>\n\t\t</div>\n\t\t<div class=\"content-editor-upload-body\">\n\t\t\t<div class=\"content-editor-upload-dropzone\" id=\"ContentEditor-UploadDropzone\"\n\t\t\t\tonclick=\"document.getElementById('ContentEditor-UploadFileInput').click()\">\n\t\t\t\t<div class=\"content-editor-upload-dropzone-icon\">&#x1F4F7;</div>\n\t\t\t\t<div class=\"content-editor-upload-dropzone-text\">Drop an image here or click to browse</div>\n\t\t\t\t<div class=\"content-editor-upload-dropzone-hint\">PNG, JPG, GIF, WebP, SVG, BMP</div>\n\t\t\t</div>\n\t\t\t<input type=\"file\" class=\"content-editor-upload-file-input\" id=\"ContentEditor-UploadFileInput\"\n\t\t\t\taccept=\"image/png,image/jpeg,image/gif,image/webp,image/svg+xml,image/bmp\"\n\t\t\t\tonchange=\"{~P~}.views['ContentEditor-Layout'].onUploadFileSelected(this)\">\n\t\t\t<div class=\"content-editor-upload-status\" id=\"ContentEditor-UploadStatus\"></div>\n\t\t\t<div id=\"ContentEditor-UploadResult\"></div>\n\t\t</div>\n\t\t<div class=\"content-editor-upload-footer\">\n\t\t\t<span class=\"content-editor-upload-kbd\">F3</span> or\n\t\t\t<span class=\"content-editor-upload-kbd\">Ctrl+Shift+U</span> to toggle\n\t\t</div>\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"ContentEditor-Layout-Shell",TemplateHash:"ContentEditor-Layout-Shell-Template",DestinationAddress:"#ContentEditor-Application-Container",RenderMethod:"replace"}]};class ContentEditorLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._minSidebarWidth=140;this._maxSidebarWidth=600;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render child views
+	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":58}],100:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+		#ContentEditor-Application-Container
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			background: #F5F3EE;
+		}
+		#ContentEditor-TopBar-Container
+		{
+			flex-shrink: 0;
+		}
+		.content-editor-body
+		{
+			display: flex;
+			flex: 1;
+			min-height: 0;
+			overflow: hidden;
+		}
+		/* Sidebar wrapper holds the sidebar content + collapse toggle */
+		.content-editor-sidebar-wrap
+		{
+			display: flex;
+			flex-shrink: 0;
+			position: relative;
+			transition: width 0.2s ease;
+		}
+		/* Inner wrapper: vertical flex for tab bar + panes */
+		.content-editor-sidebar-inner
+		{
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+			min-height: 0;
+			overflow: hidden;
+		}
+		/* Sidebar tab bar */
+		.content-editor-sidebar-tabs
+		{
+			display: flex;
+			flex-shrink: 0;
+			border-bottom: 1px solid #DDD6CA;
+			background: #F5F0EA;
+		}
+		.content-editor-sidebar-tab
+		{
+			flex: 1;
+			padding: 7px 0;
+			border: none;
+			background: transparent;
+			font-size: 0.78rem;
+			font-weight: 600;
+			color: #8A7F72;
+			cursor: pointer;
+			border-bottom: 2px solid transparent;
+			transition: color 0.15s, border-color 0.15s;
+		}
+		.content-editor-sidebar-tab:hover
+		{
+			color: #3D3229;
+		}
+		.content-editor-sidebar-tab.active
+		{
+			color: #2E7D74;
+			border-bottom-color: #2E7D74;
+		}
+		.content-editor-sidebar-addfile
+		{
+			flex-shrink: 0;
+			width: 30px;
+			border: none;
+			background: transparent;
+			font-size: 1.1rem;
+			font-weight: 400;
+			color: #8A7F72;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-bottom: 2px solid transparent;
+			transition: color 0.15s, background 0.15s;
+		}
+		.content-editor-sidebar-addfile:hover
+		{
+			color: #2E7D74;
+			background: #EDE9E3;
+		}
+		/* Sidebar panes */
+		.content-editor-sidebar-pane
+		{
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+			min-width: 0;
+			min-height: 0;
+		}
+		#ContentEditor-Sidebar-Container
+		{
+			background: #FAF8F4;
+		}
+		/* Collapsed state */
+		.content-editor-sidebar-wrap.collapsed
+		{
+			width: 0 !important;
+		}
+		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner
+		{
+			visibility: hidden;
+		}
+		.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle
+		{
+			display: none;
+		}
+		/* Collapse / expand toggle */
+		.content-editor-sidebar-toggle
+		{
+			position: absolute;
+			top: 8px;
+			right: -20px;
+			width: 20px;
+			height: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #FAF8F4;
+			border: 1px solid #DDD6CA;
+			border-left: none;
+			border-radius: 0 4px 4px 0;
+			cursor: pointer;
+			z-index: 10;
+			color: #8A7F72;
+			font-size: 11px;
+			line-height: 1;
+			transition: color 0.15s;
+		}
+		.content-editor-sidebar-toggle:hover
+		{
+			color: #3D3229;
+		}
+		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-toggle
+		{
+			right: -20px;
+		}
+		/* Resize handle */
+		.content-editor-resize-handle
+		{
+			flex-shrink: 0;
+			width: 5px;
+			cursor: col-resize;
+			background: transparent;
+			border-right: 1px solid #DDD6CA;
+			transition: background 0.15s;
+		}
+		.content-editor-resize-handle:hover,
+		.content-editor-resize-handle.dragging
+		{
+			background: #2E7D74;
+			border-right-color: #2E7D74;
+		}
+		/* File browser layout overrides for sidebar use */
+		#ContentEditor-Sidebar-Container .pict-filebrowser
+		{
+			border: none;
+			border-radius: 0;
+			background: transparent;
+		}
+		#ContentEditor-Sidebar-Container .pict-filebrowser-browse-pane
+		{
+			display: none;
+		}
+		#ContentEditor-Sidebar-Container .pict-filebrowser-view-pane
+		{
+			display: none;
+		}
+		/* Hide size/date columns — the sidebar is too narrow for them */
+		#ContentEditor-Sidebar-Container .pict-fb-detail-col-size,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-col-modified,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-size,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-modified
+		{
+			display: none;
+		}
+		/* Hide the column header bar in sidebar mode */
+		#ContentEditor-Sidebar-Container .pict-fb-detail-header
+		{
+			display: none;
+		}
+		#ContentEditor-Editor-Container
+		{
+			flex: 1;
+			overflow-y: auto;
+			padding: 44px 16px 16px 16px;
+		}
+		/* Code editor: fill the container and remove outer border */
+		#ContentEditor-Editor-Container .pict-code-editor-wrap
+		{
+			height: calc(100% - 4px);
+			border: none;
+			border-radius: 0;
+		}
+		#ContentEditor-Editor-Container .pict-code-editor
+		{
+			min-height: unset;
+			height: 100%;
+			background: #FAFAFA;
+		}
+		/* Binary file preview */
+		.binary-preview-image-wrap
+		{
+			margin-bottom: 20px;
+		}
+		.binary-preview-image
+		{
+			display: inline-block;
+			background: #FFF;
+			border: 1px solid #DDD6CA;
+			border-radius: 6px;
+			padding: 24px;
+		}
+		.binary-preview-image img
+		{
+			display: block;
+			max-width: 100%;
+			max-height: 400px;
+			object-fit: contain;
+			border-radius: 4px;
+		}
+		.binary-preview-card
+		{
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			background: #FFF;
+			border: 1px solid #DDD6CA;
+			border-radius: 6px;
+			padding: 24px;
+			max-width: 600px;
+		}
+		.binary-preview-icon
+		{
+			flex-shrink: 0;
+			width: 64px;
+			height: 64px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #F0EDE8;
+			border-radius: 8px;
+			font-size: 0.75rem;
+			font-weight: 700;
+			color: #5E5549;
+			letter-spacing: 0.5px;
+		}
+		.binary-preview-info
+		{
+			flex: 1;
+			min-width: 0;
+		}
+		.binary-preview-name
+		{
+			font-size: 1rem;
+			font-weight: 600;
+			color: #3D3229;
+			margin-bottom: 6px;
+			word-break: break-all;
+		}
+		.binary-preview-meta
+		{
+			font-size: 0.8rem;
+			color: #8A7F72;
+			line-height: 1.6;
+		}
+		.binary-preview-actions
+		{
+			flex-shrink: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+		.binary-preview-btn
+		{
+			display: inline-block;
+			padding: 8px 16px;
+			border-radius: 4px;
+			font-size: 0.8rem;
+			font-weight: 600;
+			text-decoration: none;
+			text-align: center;
+			cursor: pointer;
+			background: #2E7D74;
+			color: #FFF;
+		}
+		.binary-preview-btn:hover
+		{
+			background: #3A9E92;
+		}
+		.binary-preview-btn-secondary
+		{
+			background: transparent;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+		}
+		.binary-preview-btn-secondary:hover
+		{
+			border-color: #8A7F72;
+			color: #3D3229;
+		}
+		.binary-preview-btn-preview
+		{
+			padding: 10px 20px;
+			font-size: 0.85rem;
+			border: 1px solid #DDD6CA;
+			background: #FAF8F4;
+			color: #3D3229;
+			cursor: pointer;
+			border-radius: 6px;
+			transition: background 0.15s, border-color 0.15s;
+		}
+		.binary-preview-btn-preview:hover
+		{
+			background: #F0EDE8;
+			border-color: #8A7F72;
+		}
+		#ContentEditor-MediaPreviewPlaceholder
+		{
+			margin-bottom: 20px;
+		}
+		.binary-preview-media-wrap
+		{
+			margin-bottom: 20px;
+		}
+		.binary-preview-video
+		{
+			display: block;
+			max-width: 100%;
+			max-height: 500px;
+			border-radius: 6px;
+			border: 1px solid #DDD6CA;
+			background: #000;
+		}
+		.binary-preview-audio
+		{
+			display: block;
+			width: 100%;
+			max-width: 500px;
+		}
+		/* Image upload overlay */
+		.content-editor-upload-overlay
+		{
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1099;
+			background: rgba(0, 0, 0, 0.35);
+		}
+		.content-editor-upload-overlay.open
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.content-editor-upload-panel
+		{
+			background: #FFF;
+			border: 1px solid #DDD6CA;
+			border-radius: 10px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+			width: 420px;
+			max-width: 90vw;
+			overflow: hidden;
+		}
+		.content-editor-upload-header
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 18px;
+			border-bottom: 1px solid #EDE9E3;
+		}
+		.content-editor-upload-title
+		{
+			font-size: 0.95rem;
+			font-weight: 600;
+			color: #3D3229;
+		}
+		.content-editor-upload-close
+		{
+			background: transparent;
+			border: none;
+			font-size: 1.2rem;
+			color: #8A7F72;
+			cursor: pointer;
+			padding: 2px 6px;
+			line-height: 1;
+			border-radius: 4px;
+		}
+		.content-editor-upload-close:hover
+		{
+			color: #3D3229;
+			background: #F0EDE8;
+		}
+		.content-editor-upload-body
+		{
+			padding: 18px;
+		}
+		.content-editor-upload-dropzone
+		{
+			border: 2px dashed #DDD6CA;
+			border-radius: 8px;
+			padding: 28px 16px;
+			text-align: center;
+			cursor: pointer;
+			transition: border-color 0.15s, background 0.15s;
+			background: #FAF8F4;
+		}
+		.content-editor-upload-dropzone:hover,
+		.content-editor-upload-dropzone.dragover
+		{
+			border-color: #2E7D74;
+			background: #F0FAF8;
+		}
+		.content-editor-upload-dropzone-icon
+		{
+			font-size: 2rem;
+			color: #8A7F72;
+			margin-bottom: 6px;
+		}
+		.content-editor-upload-dropzone-text
+		{
+			font-size: 0.82rem;
+			color: #5E5549;
+		}
+		.content-editor-upload-dropzone-hint
+		{
+			font-size: 0.72rem;
+			color: #8A7F72;
+			margin-top: 4px;
+		}
+		.content-editor-upload-file-input
+		{
+			display: none;
+		}
+		.content-editor-upload-status
+		{
+			margin-top: 12px;
+			font-size: 0.82rem;
+			color: #5E5549;
+			min-height: 20px;
+		}
+		.content-editor-upload-status-error
+		{
+			color: #D9534F;
+		}
+		.content-editor-upload-status-success
+		{
+			color: #2E7D74;
+		}
+		.content-editor-upload-result
+		{
+			margin-top: 12px;
+			padding: 10px 12px;
+			background: #F0EDE8;
+			border: 1px solid #DDD6CA;
+			border-radius: 6px;
+		}
+		.content-editor-upload-result-label
+		{
+			font-size: 0.72rem;
+			color: #8A7F72;
+			margin-bottom: 4px;
+		}
+		.content-editor-upload-result-url
+		{
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.content-editor-upload-result-text
+		{
+			flex: 1;
+			font-family: monospace;
+			font-size: 0.78rem;
+			color: #3D3229;
+			word-break: break-all;
+		}
+		.content-editor-upload-result-copy
+		{
+			flex-shrink: 0;
+			background: #2E7D74;
+			color: #FFF;
+			border: none;
+			border-radius: 4px;
+			padding: 4px 10px;
+			font-size: 0.72rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.content-editor-upload-result-copy:hover
+		{
+			background: #3A9E92;
+		}
+		.content-editor-upload-kbd
+		{
+			display: inline-block;
+			padding: 1px 5px;
+			font-size: 0.68rem;
+			font-family: monospace;
+			background: #F0EDE8;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			color: #5E5549;
+		}
+		.content-editor-upload-footer
+		{
+			padding: 10px 18px;
+			border-top: 1px solid #EDE9E3;
+			font-size: 0.72rem;
+			color: #8A7F72;
+			text-align: center;
+		}
+	`,Templates:[{Hash:"ContentEditor-Layout-Shell-Template",Template:/*html*/`
+<div id="ContentEditor-TopBar-Container"></div>
+<div class="content-editor-body">
+	<div class="content-editor-sidebar-wrap" id="ContentEditor-SidebarWrap" style="width:250px">
+		<div class="content-editor-sidebar-inner">
+			<div class="content-editor-sidebar-tabs">
+				<button class="content-editor-sidebar-tab active" id="ContentEditor-SidebarTab-Files"
+					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
+				<button class="content-editor-sidebar-tab" id="ContentEditor-SidebarTab-Reference"
+					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('reference')">Reference</button>
+				<button class="content-editor-sidebar-tab" id="ContentEditor-SidebarTab-Topics"
+					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('topics')">Topics</button>
+				<button class="content-editor-sidebar-addfile" title="New file"
+					onclick="{~P~}.PictApplication.promptNewFile()">+</button>
+			</div>
+			<div id="ContentEditor-Sidebar-Container" class="content-editor-sidebar-pane"></div>
+			<div id="ContentEditor-SidebarReference-Container" class="content-editor-sidebar-pane" style="display:none"></div>
+			<div id="ContentEditor-SidebarTopics-Container" class="content-editor-sidebar-pane" style="display:none"></div>
+		</div>
+		<div class="content-editor-resize-handle" id="ContentEditor-ResizeHandle"></div>
+		<div class="content-editor-sidebar-toggle" id="ContentEditor-SidebarToggle">&#x25C0;</div>
+	</div>
+	<div id="ContentEditor-Editor-Container"></div>
+</div>
+<div class="content-editor-upload-overlay" id="ContentEditor-UploadOverlay"
+	onclick="{~P~}.views['ContentEditor-Layout'].onUploadOverlayClick(event)">
+	<div class="content-editor-upload-panel">
+		<div class="content-editor-upload-header">
+			<span class="content-editor-upload-title">Upload Image</span>
+			<button class="content-editor-upload-close"
+				onclick="{~P~}.views['ContentEditor-Layout'].toggleUploadForm()">&times;</button>
+		</div>
+		<div class="content-editor-upload-body">
+			<div class="content-editor-upload-dropzone" id="ContentEditor-UploadDropzone"
+				onclick="document.getElementById('ContentEditor-UploadFileInput').click()">
+				<div class="content-editor-upload-dropzone-icon">&#x1F4F7;</div>
+				<div class="content-editor-upload-dropzone-text">Drop an image here or click to browse</div>
+				<div class="content-editor-upload-dropzone-hint">PNG, JPG, GIF, WebP, SVG, BMP</div>
+			</div>
+			<input type="file" class="content-editor-upload-file-input" id="ContentEditor-UploadFileInput"
+				accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,image/bmp"
+				onchange="{~P~}.views['ContentEditor-Layout'].onUploadFileSelected(this)">
+			<div class="content-editor-upload-status" id="ContentEditor-UploadStatus"></div>
+			<div id="ContentEditor-UploadResult"></div>
+		</div>
+		<div class="content-editor-upload-footer">
+			<span class="content-editor-upload-kbd">F3</span> or
+			<span class="content-editor-upload-kbd">Ctrl+Shift+U</span> to toggle
+		</div>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"ContentEditor-Layout-Shell",TemplateHash:"ContentEditor-Layout-Shell-Template",DestinationAddress:"#ContentEditor-Application-Container",RenderMethod:"replace"}]};class ContentEditorLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._minSidebarWidth=140;this._maxSidebarWidth=600;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render child views
 this.pict.views['ContentEditor-TopBar'].render();// Show welcome message in editor area if no file loaded
 let tmpEditorContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Editor-Container');if(tmpEditorContainer&&tmpEditorContainer[0]&&!this.pict.AppData.ContentEditor.CurrentFile){tmpEditorContainer[0].innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8A7F72;font-size:1.1em;">Select a file from the sidebar to begin editing</div>';}// Inject CSS
 this.pict.CSSMap.injectCSS();// Apply persisted sidebar state
@@ -4360,7 +6780,448 @@ tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict
  * Pre-rendered HTML covering GitHub-Flavored Markdown, KaTeX math,
  * and Mermaid diagrams.  All angle brackets and ampersands inside
  * code blocks are entity-encoded so they render as literal text.
- */const _MarkdownReferenceContent=/*html*/"\n<h2>Headings</h2>\n<p>Use <code>#</code> through <code>######</code> for heading levels 1&ndash;6.</p>\n<pre><code># Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Emphasis</h2>\n<p>Bold, italic, strikethrough, and combinations.</p>\n<pre><code>**bold text**\n*italic text*\n***bold and italic***\n~~strikethrough~~\n**bold and ~~strikethrough~~**</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Inline Code</h2>\n<p>Wrap text in backticks for inline code.</p>\n<pre><code>Use `console.log()` to debug.\nUse ``double backticks for `literal` backticks``.</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Links</h2>\n<p>Inline links, reference links, and autolinks.</p>\n<pre><code>[Link text](https://example.com)\n[Link with title](https://example.com \"Title text\")\n\n[Reference link][1]\n[1]: https://example.com\n\nAutolink: https://example.com\nEmail: user@example.com</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Images</h2>\n<pre><code>![Alt text](image.png)\n![Alt text](image.png \"Image title\")\n\n[![Linked image](image.png)](https://example.com)</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Unordered Lists</h2>\n<p>Use <code>-</code>, <code>*</code>, or <code>+</code> for bullet items.</p>\n<pre><code>- Item one\n- Item two\n  - Nested item\n  - Another nested\n    - Deeply nested\n- Item three</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Ordered Lists</h2>\n<pre><code>1. First item\n2. Second item\n3. Third item\n   1. Sub-item A\n   2. Sub-item B</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Task Lists</h2>\n<pre><code>- [x] Completed task\n- [ ] Incomplete task\n- [ ] Another task</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Blockquotes</h2>\n<pre><code>&gt; This is a blockquote.\n&gt;\n&gt; It can span multiple paragraphs.\n&gt;\n&gt;&gt; Nested blockquote.</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Code Blocks</h2>\n<p>Use triple backticks with an optional language identifier.</p>\n<pre><code>```javascript\nfunction hello()\n{\n    console.log(\"Hello, world!\");\n}\n```\n\n```python\ndef hello():\n    print(\"Hello, world!\")\n```\n\n```css\n.container {\n    display: flex;\n    gap: 16px;\n}\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Tables</h2>\n<p>Use pipes and hyphens. Colons control alignment.</p>\n<pre><code>| Left Align | Center Align | Right Align |\n|:-----------|:------------:|------------:|\n| Cell 1     | Cell 2       | Cell 3      |\n| Cell 4     | Cell 5       | Cell 6      |</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Horizontal Rules</h2>\n<p>Three or more hyphens, asterisks, or underscores.</p>\n<pre><code>---\n\n***\n\n___</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Footnotes</h2>\n<pre><code>Here is a footnote reference[^1] and another[^note].\n\n[^1]: This is the footnote content.\n[^note]: Footnotes can have any label.</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>HTML in Markdown</h2>\n<p>Raw HTML is allowed in GitHub-Flavored Markdown.</p>\n<pre><code>&lt;details&gt;\n&lt;summary&gt;Click to expand&lt;/summary&gt;\n\nHidden content here.\n\n&lt;/details&gt;\n\n&lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;S&lt;/kbd&gt; to save.\n\n&lt;mark&gt;Highlighted text&lt;/mark&gt;\n\n&lt;sup&gt;superscript&lt;/sup&gt; and &lt;sub&gt;subscript&lt;/sub&gt;</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Escaping Characters</h2>\n<p>Backslash-escape special markdown characters.</p>\n<pre><code>\\*not italic\\*\n\\# not a heading\n\\[not a link\\](url)\n\\`not code\\`</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Line Breaks</h2>\n<pre><code>End a line with two spaces\nto create a line break.\n\nOr use a blank line\n\nfor a new paragraph.</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>KaTeX &mdash; Inline Math</h2>\n<p>Wrap expressions with single dollar signs for inline math.</p>\n<pre><code>The equation $E = mc^2$ is famous.\n\nThe quadratic formula is $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.\n\nGreek letters: $\\alpha$, $\\beta$, $\\gamma$, $\\delta$, $\\theta$, $\\pi$.\n\nSubscripts and superscripts: $x_i^2$ and $a_{n+1}$.</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>KaTeX &mdash; Display Math</h2>\n<p>Use double dollar signs on their own lines for display (block) math.</p>\n\n<h3>Integral</h3>\n<pre><code>$$\n\\int_{-\\infty}^{\\infty} e^{-x^2} \\, dx = \\sqrt{\\pi}\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h3>Summation</h3>\n<pre><code>$$\n\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h3>Matrix</h3>\n<pre><code>$$\n\\begin{bmatrix}\na &amp; b \\\\\nc &amp; d\n\\end{bmatrix}\n\\begin{bmatrix}\nx \\\\\ny\n\\end{bmatrix}\n=\n\\begin{bmatrix}\nax + by \\\\\ncx + dy\n\\end{bmatrix}\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h3>Aligned Equations</h3>\n<pre><code>$$\n\\begin{aligned}\nf(x) &amp;= x^2 + 2x + 1 \\\\\n     &amp;= (x + 1)^2\n\\end{aligned}\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h3>Cases (Piecewise)</h3>\n<pre><code>$$\nf(x) = \\begin{cases}\nx^2  &amp; \\text{if } x \\geq 0 \\\\\n-x^2 &amp; \\text{if } x &lt; 0\n\\end{cases}\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h3>Fractions &amp; Limits</h3>\n<pre><code>$$\n\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1\n$$</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Mermaid &mdash; Flowchart</h2>\n<pre><code>```mermaid\ngraph TD\n    A[Start] --&gt; B{Decision}\n    B --&gt;|Yes| C[Do something]\n    B --&gt;|No| D[Do something else]\n    C --&gt; E[End]\n    D --&gt; E\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Mermaid &mdash; Sequence Diagram</h2>\n<pre><code>```mermaid\nsequenceDiagram\n    participant A as Alice\n    participant B as Bob\n    A-&gt;&gt;B: Hello Bob\n    B--&gt;&gt;A: Hi Alice\n    A-&gt;&gt;B: How are you?\n    B--&gt;&gt;A: Great!\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Mermaid &mdash; Gantt Chart</h2>\n<pre><code>```mermaid\ngantt\n    title Project Timeline\n    dateFormat  YYYY-MM-DD\n    section Phase 1\n    Research    :a1, 2024-01-01, 30d\n    Design      :a2, after a1, 20d\n    section Phase 2\n    Development :b1, after a2, 40d\n    Testing     :b2, after b1, 15d\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Mermaid &mdash; Class Diagram</h2>\n<pre><code>```mermaid\nclassDiagram\n    Animal &lt;|-- Duck\n    Animal &lt;|-- Fish\n    Animal : +int age\n    Animal : +String gender\n    Animal : +swim()\n    Duck : +String beakColor\n    Duck : +quack()\n    Fish : +int sizeInFeet\n    Fish : +canEat()\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n\n<h2>Mermaid &mdash; State Diagram</h2>\n<pre><code>```mermaid\nstateDiagram-v2\n    [*] --&gt; Idle\n    Idle --&gt; Processing : Start\n    Processing --&gt; Done : Complete\n    Processing --&gt; Error : Fail\n    Error --&gt; Idle : Reset\n    Done --&gt; [*]\n```</code><button class=\"md-ref-copy-btn\" onclick=\"pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)\">Copy</button></pre>\n";const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownReference",DefaultRenderable:"ContentEditor-MarkdownReference-Display",DefaultDestinationAddress:"#ContentEditor-SidebarReference-Container",AutoRender:false,CSS:/*css*/"\n\t\t.md-ref-container\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100%;\n\t\t\tbackground: #FAF8F4;\n\t\t}\n\t\t.md-ref-search-bar\n\t\t{\n\t\t\tposition: sticky;\n\t\t\ttop: 0;\n\t\t\tz-index: 5;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t\tpadding: 6px 8px;\n\t\t\tbackground: #F5F0EA;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.md-ref-search-input\n\t\t{\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t\tpadding: 5px 8px;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.8rem;\n\t\t\tbackground: #FFF;\n\t\t\tcolor: #3D3229;\n\t\t\toutline: none;\n\t\t}\n\t\t.md-ref-search-input:focus\n\t\t{\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.md-ref-search-nav\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\twidth: 26px;\n\t\t\theight: 26px;\n\t\t\tcursor: pointer;\n\t\t\tcolor: #5E5549;\n\t\t\tfont-size: 0.7rem;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.md-ref-search-nav:hover\n\t\t{\n\t\t\tbackground: #EDE9E3;\n\t\t}\n\t\t.md-ref-search-nav:disabled\n\t\t{\n\t\t\topacity: 0.3;\n\t\t\tcursor: not-allowed;\n\t\t}\n\t\t.md-ref-search-count\n\t\t{\n\t\t\tfont-size: 0.7rem;\n\t\t\tcolor: #8A7F72;\n\t\t\twhite-space: nowrap;\n\t\t\tmin-width: 32px;\n\t\t\ttext-align: center;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.md-ref-content\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\tpadding: 12px;\n\t\t\tfont-size: 0.82rem;\n\t\t\tline-height: 1.6;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.md-ref-content h2\n\t\t{\n\t\t\tfont-size: 0.95rem;\n\t\t\tmargin: 20px 0 8px 0;\n\t\t\tpadding-bottom: 4px;\n\t\t\tborder-bottom: 1px solid #EDE9E3;\n\t\t\tcolor: #2E7D74;\n\t\t}\n\t\t.md-ref-content h2:first-child\n\t\t{\n\t\t\tmargin-top: 0;\n\t\t}\n\t\t.md-ref-content h3\n\t\t{\n\t\t\tfont-size: 0.85rem;\n\t\t\tmargin: 14px 0 6px 0;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t\t.md-ref-content p\n\t\t{\n\t\t\tmargin: 6px 0;\n\t\t}\n\t\t.md-ref-content code\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t\tpadding: 1px 4px;\n\t\t\tborder-radius: 3px;\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-family: monospace;\n\t\t}\n\t\t.md-ref-content pre\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\tpadding: 8px 10px;\n\t\t\toverflow-x: auto;\n\t\t\tfont-size: 0.76rem;\n\t\t\tline-height: 1.5;\n\t\t\tmargin: 6px 0;\n\t\t\tposition: relative;\n\t\t}\n\t\t.md-ref-content pre code\n\t\t{\n\t\t\tbackground: none;\n\t\t\tpadding: 0;\n\t\t\tfont-size: inherit;\n\t\t}\n\t\t.md-ref-copy-btn\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 4px;\n\t\t\tright: 4px;\n\t\t\tbackground: #FAF8F4;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 3px;\n\t\t\tpadding: 2px 6px;\n\t\t\tfont-size: 0.65rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tcursor: pointer;\n\t\t\topacity: 0;\n\t\t\ttransition: opacity 0.15s;\n\t\t}\n\t\t.md-ref-content pre:hover .md-ref-copy-btn\n\t\t{\n\t\t\topacity: 1;\n\t\t}\n\t\t.md-ref-copy-btn:hover\n\t\t{\n\t\t\tbackground: #EDE9E3;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t/* Search highlight */\n\t\tmark.md-ref-highlight\n\t\t{\n\t\t\tbackground: #FFEAA7;\n\t\t\tcolor: inherit;\n\t\t\tpadding: 0;\n\t\t\tborder-radius: 2px;\n\t\t}\n\t\tmark.md-ref-highlight-active\n\t\t{\n\t\t\tbackground: #E8A94D;\n\t\t\tcolor: #FFF;\n\t\t}\n\t",Templates:[{Hash:"ContentEditor-MarkdownReference-Template",Template:/*html*/"\n<div class=\"md-ref-container\">\n\t<div class=\"md-ref-search-bar\">\n\t\t<input type=\"text\" class=\"md-ref-search-input\"\n\t\t\tid=\"ContentEditor-MdRef-SearchInput\"\n\t\t\tplaceholder=\"Search reference...\"\n\t\t\toninput=\"{~P~}.views['ContentEditor-MarkdownReference'].onSearchInput(this.value)\"\n\t\t\tonkeydown=\"{~P~}.views['ContentEditor-MarkdownReference'].onSearchKeydown(event)\">\n\t\t<span class=\"md-ref-search-count\" id=\"ContentEditor-MdRef-SearchCount\"></span>\n\t\t<button class=\"md-ref-search-nav\" id=\"ContentEditor-MdRef-SearchPrev\"\n\t\t\tonclick=\"{~P~}.views['ContentEditor-MarkdownReference'].navigateMatch(-1)\" disabled>&#x25B2;</button>\n\t\t<button class=\"md-ref-search-nav\" id=\"ContentEditor-MdRef-SearchNext\"\n\t\t\tonclick=\"{~P~}.views['ContentEditor-MarkdownReference'].navigateMatch(1)\" disabled>&#x25BC;</button>\n\t</div>\n\t<div class=\"md-ref-content\" id=\"ContentEditor-MdRef-Content\">\n"+_MarkdownReferenceContent+"\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"ContentEditor-MarkdownReference-Display",TemplateHash:"ContentEditor-MarkdownReference-Template",DestinationAddress:"#ContentEditor-SidebarReference-Container",RenderMethod:"replace"}]};/**
+ */const _MarkdownReferenceContent=/*html*/`
+<h2>Headings</h2>
+<p>Use <code>#</code> through <code>######</code> for heading levels 1&ndash;6.</p>
+<pre><code># Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Emphasis</h2>
+<p>Bold, italic, strikethrough, and combinations.</p>
+<pre><code>**bold text**
+*italic text*
+***bold and italic***
+~~strikethrough~~
+**bold and ~~strikethrough~~**</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Inline Code</h2>
+<p>Wrap text in backticks for inline code.</p>
+<pre><code>Use \`console.log()\` to debug.
+Use \`\`double backticks for \`literal\` backticks\`\`.</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Links</h2>
+<p>Inline links, reference links, and autolinks.</p>
+<pre><code>[Link text](https://example.com)
+[Link with title](https://example.com "Title text")
+
+[Reference link][1]
+[1]: https://example.com
+
+Autolink: https://example.com
+Email: user@example.com</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Images</h2>
+<pre><code>![Alt text](image.png)
+![Alt text](image.png "Image title")
+
+[![Linked image](image.png)](https://example.com)</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Unordered Lists</h2>
+<p>Use <code>-</code>, <code>*</code>, or <code>+</code> for bullet items.</p>
+<pre><code>- Item one
+- Item two
+  - Nested item
+  - Another nested
+    - Deeply nested
+- Item three</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Ordered Lists</h2>
+<pre><code>1. First item
+2. Second item
+3. Third item
+   1. Sub-item A
+   2. Sub-item B</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Task Lists</h2>
+<pre><code>- [x] Completed task
+- [ ] Incomplete task
+- [ ] Another task</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Blockquotes</h2>
+<pre><code>&gt; This is a blockquote.
+&gt;
+&gt; It can span multiple paragraphs.
+&gt;
+&gt;&gt; Nested blockquote.</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Code Blocks</h2>
+<p>Use triple backticks with an optional language identifier.</p>
+<pre><code>\`\`\`javascript
+function hello()
+{
+    console.log("Hello, world!");
+}
+\`\`\`
+
+\`\`\`python
+def hello():
+    print("Hello, world!")
+\`\`\`
+
+\`\`\`css
+.container {
+    display: flex;
+    gap: 16px;
+}
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Tables</h2>
+<p>Use pipes and hyphens. Colons control alignment.</p>
+<pre><code>| Left Align | Center Align | Right Align |
+|:-----------|:------------:|------------:|
+| Cell 1     | Cell 2       | Cell 3      |
+| Cell 4     | Cell 5       | Cell 6      |</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Horizontal Rules</h2>
+<p>Three or more hyphens, asterisks, or underscores.</p>
+<pre><code>---
+
+***
+
+___</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Footnotes</h2>
+<pre><code>Here is a footnote reference[^1] and another[^note].
+
+[^1]: This is the footnote content.
+[^note]: Footnotes can have any label.</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>HTML in Markdown</h2>
+<p>Raw HTML is allowed in GitHub-Flavored Markdown.</p>
+<pre><code>&lt;details&gt;
+&lt;summary&gt;Click to expand&lt;/summary&gt;
+
+Hidden content here.
+
+&lt;/details&gt;
+
+&lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;S&lt;/kbd&gt; to save.
+
+&lt;mark&gt;Highlighted text&lt;/mark&gt;
+
+&lt;sup&gt;superscript&lt;/sup&gt; and &lt;sub&gt;subscript&lt;/sub&gt;</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Escaping Characters</h2>
+<p>Backslash-escape special markdown characters.</p>
+<pre><code>\\*not italic\\*
+\\# not a heading
+\\[not a link\\](url)
+\\\`not code\\\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Line Breaks</h2>
+<pre><code>End a line with two spaces
+to create a line break.
+
+Or use a blank line
+
+for a new paragraph.</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>KaTeX &mdash; Inline Math</h2>
+<p>Wrap expressions with single dollar signs for inline math.</p>
+<pre><code>The equation $E = mc^2$ is famous.
+
+The quadratic formula is $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.
+
+Greek letters: $\\alpha$, $\\beta$, $\\gamma$, $\\delta$, $\\theta$, $\\pi$.
+
+Subscripts and superscripts: $x_i^2$ and $a_{n+1}$.</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>KaTeX &mdash; Display Math</h2>
+<p>Use double dollar signs on their own lines for display (block) math.</p>
+
+<h3>Integral</h3>
+<pre><code>$$
+\\int_{-\\infty}^{\\infty} e^{-x^2} \\, dx = \\sqrt{\\pi}
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h3>Summation</h3>
+<pre><code>$$
+\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h3>Matrix</h3>
+<pre><code>$$
+\\begin{bmatrix}
+a &amp; b \\\\
+c &amp; d
+\\end{bmatrix}
+\\begin{bmatrix}
+x \\\\
+y
+\\end{bmatrix}
+=
+\\begin{bmatrix}
+ax + by \\\\
+cx + dy
+\\end{bmatrix}
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h3>Aligned Equations</h3>
+<pre><code>$$
+\\begin{aligned}
+f(x) &amp;= x^2 + 2x + 1 \\\\
+     &amp;= (x + 1)^2
+\\end{aligned}
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h3>Cases (Piecewise)</h3>
+<pre><code>$$
+f(x) = \\begin{cases}
+x^2  &amp; \\text{if } x \\geq 0 \\\\
+-x^2 &amp; \\text{if } x &lt; 0
+\\end{cases}
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h3>Fractions &amp; Limits</h3>
+<pre><code>$$
+\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1
+$$</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Mermaid &mdash; Flowchart</h2>
+<pre><code>\`\`\`mermaid
+graph TD
+    A[Start] --&gt; B{Decision}
+    B --&gt;|Yes| C[Do something]
+    B --&gt;|No| D[Do something else]
+    C --&gt; E[End]
+    D --&gt; E
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Mermaid &mdash; Sequence Diagram</h2>
+<pre><code>\`\`\`mermaid
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    A-&gt;&gt;B: Hello Bob
+    B--&gt;&gt;A: Hi Alice
+    A-&gt;&gt;B: How are you?
+    B--&gt;&gt;A: Great!
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Mermaid &mdash; Gantt Chart</h2>
+<pre><code>\`\`\`mermaid
+gantt
+    title Project Timeline
+    dateFormat  YYYY-MM-DD
+    section Phase 1
+    Research    :a1, 2024-01-01, 30d
+    Design      :a2, after a1, 20d
+    section Phase 2
+    Development :b1, after a2, 40d
+    Testing     :b2, after b1, 15d
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Mermaid &mdash; Class Diagram</h2>
+<pre><code>\`\`\`mermaid
+classDiagram
+    Animal &lt;|-- Duck
+    Animal &lt;|-- Fish
+    Animal : +int age
+    Animal : +String gender
+    Animal : +swim()
+    Duck : +String beakColor
+    Duck : +quack()
+    Fish : +int sizeInFeet
+    Fish : +canEat()
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+
+<h2>Mermaid &mdash; State Diagram</h2>
+<pre><code>\`\`\`mermaid
+stateDiagram-v2
+    [*] --&gt; Idle
+    Idle --&gt; Processing : Start
+    Processing --&gt; Done : Complete
+    Processing --&gt; Error : Fail
+    Error --&gt; Idle : Reset
+    Done --&gt; [*]
+\`\`\`</code><button class="md-ref-copy-btn" onclick="pict.views['ContentEditor-MarkdownReference'].copyCodeBlock(this)">Copy</button></pre>
+`;const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownReference",DefaultRenderable:"ContentEditor-MarkdownReference-Display",DefaultDestinationAddress:"#ContentEditor-SidebarReference-Container",AutoRender:false,CSS:/*css*/`
+		.md-ref-container
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			background: #FAF8F4;
+		}
+		.md-ref-search-bar
+		{
+			position: sticky;
+			top: 0;
+			z-index: 5;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			padding: 6px 8px;
+			background: #F5F0EA;
+			border-bottom: 1px solid #DDD6CA;
+			flex-shrink: 0;
+		}
+		.md-ref-search-input
+		{
+			flex: 1;
+			min-width: 0;
+			padding: 5px 8px;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			font-size: 0.8rem;
+			background: #FFF;
+			color: #3D3229;
+			outline: none;
+		}
+		.md-ref-search-input:focus
+		{
+			border-color: #2E7D74;
+		}
+		.md-ref-search-nav
+		{
+			background: transparent;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			width: 26px;
+			height: 26px;
+			cursor: pointer;
+			color: #5E5549;
+			font-size: 0.7rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+		}
+		.md-ref-search-nav:hover
+		{
+			background: #EDE9E3;
+		}
+		.md-ref-search-nav:disabled
+		{
+			opacity: 0.3;
+			cursor: not-allowed;
+		}
+		.md-ref-search-count
+		{
+			font-size: 0.7rem;
+			color: #8A7F72;
+			white-space: nowrap;
+			min-width: 32px;
+			text-align: center;
+			flex-shrink: 0;
+		}
+		.md-ref-content
+		{
+			flex: 1;
+			overflow-y: auto;
+			padding: 12px;
+			font-size: 0.82rem;
+			line-height: 1.6;
+			color: #3D3229;
+		}
+		.md-ref-content h2
+		{
+			font-size: 0.95rem;
+			margin: 20px 0 8px 0;
+			padding-bottom: 4px;
+			border-bottom: 1px solid #EDE9E3;
+			color: #2E7D74;
+		}
+		.md-ref-content h2:first-child
+		{
+			margin-top: 0;
+		}
+		.md-ref-content h3
+		{
+			font-size: 0.85rem;
+			margin: 14px 0 6px 0;
+			color: #5E5549;
+		}
+		.md-ref-content p
+		{
+			margin: 6px 0;
+		}
+		.md-ref-content code
+		{
+			background: #F0EDE8;
+			padding: 1px 4px;
+			border-radius: 3px;
+			font-size: 0.78rem;
+			font-family: monospace;
+		}
+		.md-ref-content pre
+		{
+			background: #F0EDE8;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			padding: 8px 10px;
+			overflow-x: auto;
+			font-size: 0.76rem;
+			line-height: 1.5;
+			margin: 6px 0;
+			position: relative;
+		}
+		.md-ref-content pre code
+		{
+			background: none;
+			padding: 0;
+			font-size: inherit;
+		}
+		.md-ref-copy-btn
+		{
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			background: #FAF8F4;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			padding: 2px 6px;
+			font-size: 0.65rem;
+			color: #8A7F72;
+			cursor: pointer;
+			opacity: 0;
+			transition: opacity 0.15s;
+		}
+		.md-ref-content pre:hover .md-ref-copy-btn
+		{
+			opacity: 1;
+		}
+		.md-ref-copy-btn:hover
+		{
+			background: #EDE9E3;
+			color: #3D3229;
+		}
+		/* Search highlight */
+		mark.md-ref-highlight
+		{
+			background: #FFEAA7;
+			color: inherit;
+			padding: 0;
+			border-radius: 2px;
+		}
+		mark.md-ref-highlight-active
+		{
+			background: #E8A94D;
+			color: #FFF;
+		}
+	`,Templates:[{Hash:"ContentEditor-MarkdownReference-Template",Template:/*html*/`
+<div class="md-ref-container">
+	<div class="md-ref-search-bar">
+		<input type="text" class="md-ref-search-input"
+			id="ContentEditor-MdRef-SearchInput"
+			placeholder="Search reference..."
+			oninput="{~P~}.views['ContentEditor-MarkdownReference'].onSearchInput(this.value)"
+			onkeydown="{~P~}.views['ContentEditor-MarkdownReference'].onSearchKeydown(event)">
+		<span class="md-ref-search-count" id="ContentEditor-MdRef-SearchCount"></span>
+		<button class="md-ref-search-nav" id="ContentEditor-MdRef-SearchPrev"
+			onclick="{~P~}.views['ContentEditor-MarkdownReference'].navigateMatch(-1)" disabled>&#x25B2;</button>
+		<button class="md-ref-search-nav" id="ContentEditor-MdRef-SearchNext"
+			onclick="{~P~}.views['ContentEditor-MarkdownReference'].navigateMatch(1)" disabled>&#x25BC;</button>
+	</div>
+	<div class="md-ref-content" id="ContentEditor-MdRef-Content">
+`+_MarkdownReferenceContent+`
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"ContentEditor-MarkdownReference-Display",TemplateHash:"ContentEditor-MarkdownReference-Template",DestinationAddress:"#ContentEditor-SidebarReference-Container",RenderMethod:"replace"}]};/**
  * Markdown Reference View
  *
  * A built-in, read-only reference for GitHub-Flavored Markdown, KaTeX
@@ -4409,19 +7270,866 @@ if(tmpLastIndex<tmpText.length){tmpFragment.appendChild(document.createTextNode(
 	 * Enable/disable navigation buttons based on match count.
 	 */_updateNavButtons(){let tmpPrev=document.getElementById('ContentEditor-MdRef-SearchPrev');let tmpNext=document.getElementById('ContentEditor-MdRef-SearchNext');let tmpHasMatches=this._searchMatches.length>0;if(tmpPrev)tmpPrev.disabled=!tmpHasMatches;if(tmpNext)tmpNext.disabled=!tmpHasMatches;}/**
 	 * Clear search highlights and reset state.
-	 */_clearSearch(){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],103:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/"\n\t\t.content-editor-settings-wrap\n\t\t{\n\t\t\tposition: relative;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t}\n\t\t.content-editor-settings-gear\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tborder: none;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 6px;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tborder-radius: 4px;\n\t\t\tcolor: #B8AFA4;\n\t\t\ttransition: color 0.15s;\n\t\t}\n\t\t.content-editor-settings-gear:hover,\n\t\t.content-editor-settings-gear.active\n\t\t{\n\t\t\tcolor: #E8E0D4;\n\t\t}\n\t\t.content-editor-settings-gear svg\n\t\t{\n\t\t\twidth: 20px;\n\t\t\theight: 20px;\n\t\t\tfill: currentColor;\n\t\t}\n\t\t/* Flyout overlay \u2014 covers viewport to catch clicks outside */\n\t\t.content-editor-settings-overlay\n\t\t{\n\t\t\tdisplay: none;\n\t\t\tposition: fixed;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\tright: 0;\n\t\t\tbottom: 0;\n\t\t\tz-index: 999;\n\t\t}\n\t\t.content-editor-settings-overlay.open\n\t\t{\n\t\t\tdisplay: block;\n\t\t}\n\t\t/* Flyout panel */\n\t\t.content-editor-settings-flyout\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 44px;\n\t\t\tright: 0;\n\t\t\twidth: 270px;\n\t\t\tbackground: #FFF;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 8px;\n\t\t\tbox-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n\t\t\tz-index: 1000;\n\t\t\topacity: 0;\n\t\t\ttransform: translateY(-4px);\n\t\t\tpointer-events: none;\n\t\t\ttransition: opacity 0.15s ease, transform 0.15s ease;\n\t\t}\n\t\t.content-editor-settings-flyout.open\n\t\t{\n\t\t\topacity: 1;\n\t\t\ttransform: translateY(0);\n\t\t\tpointer-events: auto;\n\t\t}\n\t\t/* Speech bubble arrow */\n\t\t.content-editor-settings-flyout::before\n\t\t{\n\t\t\tcontent: '';\n\t\t\tposition: absolute;\n\t\t\ttop: -7px;\n\t\t\tright: 12px;\n\t\t\twidth: 12px;\n\t\t\theight: 12px;\n\t\t\tbackground: #FFF;\n\t\t\tborder-left: 1px solid #DDD6CA;\n\t\t\tborder-top: 1px solid #DDD6CA;\n\t\t\ttransform: rotate(45deg);\n\t\t}\n\t\t.content-editor-settings-flyout-body\n\t\t{\n\t\t\tpadding: 8px;\n\t\t}\n\t\t.content-editor-settings-flyout-link\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 8px;\n\t\t\tpadding: 10px 12px;\n\t\t\tborder-radius: 6px;\n\t\t\ttext-decoration: none;\n\t\t\tcolor: #3D3229;\n\t\t\tfont-size: 0.85rem;\n\t\t\tfont-weight: 500;\n\t\t\ttransition: background 0.1s;\n\t\t}\n\t\t.content-editor-settings-flyout-link:hover\n\t\t{\n\t\t\tbackground: #F5F3EE;\n\t\t}\n\t\t.content-editor-settings-flyout-link svg\n\t\t{\n\t\t\twidth: 16px;\n\t\t\theight: 16px;\n\t\t\tflex-shrink: 0;\n\t\t\tfill: #8A7F72;\n\t\t}\n\t\t.content-editor-settings-divider\n\t\t{\n\t\t\theight: 1px;\n\t\t\tbackground: #EDE9E3;\n\t\t\tmargin: 4px 8px;\n\t\t}\n\t\t/* Settings controls */\n\t\t.content-editor-settings-section\n\t\t{\n\t\t\tpadding: 8px 12px;\n\t\t}\n\t\t.content-editor-settings-label\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tfont-weight: 600;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.5px;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-bottom: 8px;\n\t\t}\n\t\t.content-editor-settings-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tgap: 8px;\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.content-editor-settings-row:last-child\n\t\t{\n\t\t\tmargin-bottom: 0;\n\t\t}\n\t\t.content-editor-settings-checkbox\n\t\t{\n\t\t\twidth: 16px;\n\t\t\theight: 16px;\n\t\t\taccent-color: #2E7D74;\n\t\t\tcursor: pointer;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.content-editor-settings-checkbox-label\n\t\t{\n\t\t\tfont: inherit;\n\t\t\tfont-size: 0.85rem;\n\t\t\tcolor: #3D3229;\n\t\t\tcursor: pointer;\n\t\t\tuser-select: none;\n\t\t}\n\t\t.content-editor-settings-select\n\t\t{\n\t\t\twidth: 140px;\n\t\t\tpadding: 5px 8px;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 4px;\n\t\t\tbackground: #FFF;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #3D3229;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.content-editor-settings-select:disabled\n\t\t{\n\t\t\topacity: 0.45;\n\t\t\tcursor: not-allowed;\n\t\t}\n\t\t.content-editor-settings-select-label\n\t\t{\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #5E5549;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t",Templates:[{Hash:"ContentEditor-SettingsPanel-Template",Template:/*html*/"\n<div class=\"content-editor-settings-wrap\">\n\t<button class=\"content-editor-settings-gear\" id=\"ContentEditor-SettingsGear\"\n\t\tonclick=\"{~P~}.views['ContentEditor-SettingsPanel'].togglePanel()\">\n\t\t<svg viewBox=\"0 0 24 24\"><path d=\"M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z\"/></svg>\n\t</button>\n\t<div class=\"content-editor-settings-overlay\" id=\"ContentEditor-SettingsOverlay\"\n\t\tonclick=\"{~P~}.views['ContentEditor-SettingsPanel'].closePanel()\"></div>\n\t<div class=\"content-editor-settings-flyout\" id=\"ContentEditor-SettingsFlyout\">\n\t\t<div class=\"content-editor-settings-flyout-body\">\n\t\t\t<a class=\"content-editor-settings-flyout-link\"\n\t\t\t\thref=\"/preview.html{~D:AppData.ContentEditor.ViewerHash~}\" target=\"_blank\">\n\t\t\t\t<svg viewBox=\"0 0 24 24\"><path d=\"M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z\"/></svg>\n\t\t\t\tDocuserve Preview\n\t\t\t</a>\n\t\t\t<div class=\"content-editor-settings-divider\"></div>\n\t\t\t<div class=\"content-editor-settings-section\">\n\t\t\t\t<div class=\"content-editor-settings-label\">Word Wrap</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-MarkdownWordWrap\">Markdown Word Wrap</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-MarkdownWordWrap\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onMarkdownWordWrapChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-CodeWordWrap\">Code Word Wrap</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-CodeWordWrap\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onCodeWordWrapChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"content-editor-settings-divider\"></div>\n\t\t\t<div class=\"content-editor-settings-section\">\n\t\t\t\t<div class=\"content-editor-settings-label\">Markdown Editor</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-EditingControls\">Editing Controls</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-EditingControls\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onEditingControlsChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-AutoPreview\">Auto Content Preview</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-AutoPreview\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-AutoSegment\">Auto Segment Markdown</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-AutoSegment\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onAutoSegmentChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<span class=\"content-editor-settings-select-label\">Segment Depth</span>\n\t\t\t\t\t<select class=\"content-editor-settings-select\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-SegmentDepth\"\n\t\t\t\t\t\tdisabled\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onSegmentDepthChanged(this.value)\">\n\t\t\t\t\t\t<option value=\"1\">Depth 1: Blocks</option>\n\t\t\t\t\t\t<option value=\"2\">Depth 2: ##</option>\n\t\t\t\t\t\t<option value=\"3\">Depth 3: ###</option>\n\t\t\t\t\t\t<option value=\"4\">Depth 4: ####</option>\n\t\t\t\t\t\t<option value=\"5\">Depth 5: #####</option>\n\t\t\t\t\t\t<option value=\"6\">Depth 6: ######</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"content-editor-settings-divider\"></div>\n\t\t\t<div class=\"content-editor-settings-section\">\n\t\t\t\t<div class=\"content-editor-settings-label\">Media Preview</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-AutoPreviewImages\">Auto-Preview Images</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-AutoPreviewImages\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewImagesChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-AutoPreviewVideo\">Auto-Preview Video</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-AutoPreviewVideo\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewVideoChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-AutoPreviewAudio\">Auto-Preview Audio</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-AutoPreviewAudio\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewAudioChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"content-editor-settings-divider\"></div>\n\t\t\t<div class=\"content-editor-settings-section\">\n\t\t\t\t<div class=\"content-editor-settings-label\">File Browser</div>\n\t\t\t\t<div class=\"content-editor-settings-row\">\n\t\t\t\t\t<label class=\"content-editor-settings-checkbox-label\"\n\t\t\t\t\t\tfor=\"ContentEditor-Setting-ShowHiddenFiles\">Show Hidden Files</label>\n\t\t\t\t\t<input type=\"checkbox\" class=\"content-editor-settings-checkbox\"\n\t\t\t\t\t\tid=\"ContentEditor-Setting-ShowHiddenFiles\"\n\t\t\t\t\t\tonchange=\"{~P~}.views['ContentEditor-SettingsPanel'].onShowHiddenFilesChanged(this.checked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"ContentEditor-SettingsPanel-Display",TemplateHash:"ContentEditor-SettingsPanel-Template",DestinationAddress:"#ContentEditor-SettingsPanel-Container",RenderMethod:"replace"}]};class ContentEditorSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._isOpen=false;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Sync the UI controls with current state
+	 */_clearSearch(){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],103:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
+		.content-editor-settings-wrap
+		{
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+		.content-editor-settings-gear
+		{
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			padding: 6px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			color: #B8AFA4;
+			transition: color 0.15s;
+		}
+		.content-editor-settings-gear:hover,
+		.content-editor-settings-gear.active
+		{
+			color: #E8E0D4;
+		}
+		.content-editor-settings-gear svg
+		{
+			width: 20px;
+			height: 20px;
+			fill: currentColor;
+		}
+		/* Flyout overlay — covers viewport to catch clicks outside */
+		.content-editor-settings-overlay
+		{
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 999;
+		}
+		.content-editor-settings-overlay.open
+		{
+			display: block;
+		}
+		/* Flyout panel */
+		.content-editor-settings-flyout
+		{
+			position: absolute;
+			top: 44px;
+			right: 0;
+			width: 270px;
+			background: #FFF;
+			border: 1px solid #DDD6CA;
+			border-radius: 8px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+			z-index: 1000;
+			opacity: 0;
+			transform: translateY(-4px);
+			pointer-events: none;
+			transition: opacity 0.15s ease, transform 0.15s ease;
+		}
+		.content-editor-settings-flyout.open
+		{
+			opacity: 1;
+			transform: translateY(0);
+			pointer-events: auto;
+		}
+		/* Speech bubble arrow */
+		.content-editor-settings-flyout::before
+		{
+			content: '';
+			position: absolute;
+			top: -7px;
+			right: 12px;
+			width: 12px;
+			height: 12px;
+			background: #FFF;
+			border-left: 1px solid #DDD6CA;
+			border-top: 1px solid #DDD6CA;
+			transform: rotate(45deg);
+		}
+		.content-editor-settings-flyout-body
+		{
+			padding: 8px;
+		}
+		.content-editor-settings-flyout-link
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 12px;
+			border-radius: 6px;
+			text-decoration: none;
+			color: #3D3229;
+			font-size: 0.85rem;
+			font-weight: 500;
+			transition: background 0.1s;
+		}
+		.content-editor-settings-flyout-link:hover
+		{
+			background: #F5F3EE;
+		}
+		.content-editor-settings-flyout-link svg
+		{
+			width: 16px;
+			height: 16px;
+			flex-shrink: 0;
+			fill: #8A7F72;
+		}
+		.content-editor-settings-divider
+		{
+			height: 1px;
+			background: #EDE9E3;
+			margin: 4px 8px;
+		}
+		/* Settings controls */
+		.content-editor-settings-section
+		{
+			padding: 8px 12px;
+		}
+		.content-editor-settings-label
+		{
+			font-size: 0.72rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			color: #8A7F72;
+			margin-bottom: 8px;
+		}
+		.content-editor-settings-row
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			margin-bottom: 6px;
+		}
+		.content-editor-settings-row:last-child
+		{
+			margin-bottom: 0;
+		}
+		.content-editor-settings-checkbox
+		{
+			width: 16px;
+			height: 16px;
+			accent-color: #2E7D74;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+		.content-editor-settings-checkbox-label
+		{
+			font: inherit;
+			font-size: 0.85rem;
+			color: #3D3229;
+			cursor: pointer;
+			user-select: none;
+		}
+		.content-editor-settings-select
+		{
+			width: 140px;
+			padding: 5px 8px;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			background: #FFF;
+			font-size: 0.82rem;
+			color: #3D3229;
+			cursor: pointer;
+		}
+		.content-editor-settings-select:disabled
+		{
+			opacity: 0.45;
+			cursor: not-allowed;
+		}
+		.content-editor-settings-select-label
+		{
+			font-size: 0.82rem;
+			color: #5E5549;
+			white-space: nowrap;
+		}
+	`,Templates:[{Hash:"ContentEditor-SettingsPanel-Template",Template:/*html*/`
+<div class="content-editor-settings-wrap">
+	<button class="content-editor-settings-gear" id="ContentEditor-SettingsGear"
+		onclick="{~P~}.views['ContentEditor-SettingsPanel'].togglePanel()">
+		<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+	</button>
+	<div class="content-editor-settings-overlay" id="ContentEditor-SettingsOverlay"
+		onclick="{~P~}.views['ContentEditor-SettingsPanel'].closePanel()"></div>
+	<div class="content-editor-settings-flyout" id="ContentEditor-SettingsFlyout">
+		<div class="content-editor-settings-flyout-body">
+			<a class="content-editor-settings-flyout-link"
+				href="/preview.html{~D:AppData.ContentEditor.ViewerHash~}" target="_blank">
+				<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+				Docuserve Preview
+			</a>
+			<div class="content-editor-settings-divider"></div>
+			<div class="content-editor-settings-section">
+				<div class="content-editor-settings-label">Word Wrap</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-MarkdownWordWrap">Markdown Word Wrap</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-MarkdownWordWrap"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onMarkdownWordWrapChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-CodeWordWrap">Code Word Wrap</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-CodeWordWrap"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onCodeWordWrapChanged(this.checked)">
+				</div>
+			</div>
+			<div class="content-editor-settings-divider"></div>
+			<div class="content-editor-settings-section">
+				<div class="content-editor-settings-label">Markdown Editor</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-EditingControls">Editing Controls</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-EditingControls"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onEditingControlsChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-AutoPreview">Auto Content Preview</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-AutoPreview"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-AutoSegment">Auto Segment Markdown</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-AutoSegment"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onAutoSegmentChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<span class="content-editor-settings-select-label">Segment Depth</span>
+					<select class="content-editor-settings-select"
+						id="ContentEditor-Setting-SegmentDepth"
+						disabled
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onSegmentDepthChanged(this.value)">
+						<option value="1">Depth 1: Blocks</option>
+						<option value="2">Depth 2: ##</option>
+						<option value="3">Depth 3: ###</option>
+						<option value="4">Depth 4: ####</option>
+						<option value="5">Depth 5: #####</option>
+						<option value="6">Depth 6: ######</option>
+					</select>
+				</div>
+			</div>
+			<div class="content-editor-settings-divider"></div>
+			<div class="content-editor-settings-section">
+				<div class="content-editor-settings-label">Media Preview</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-AutoPreviewImages">Auto-Preview Images</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-AutoPreviewImages"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewImagesChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-AutoPreviewVideo">Auto-Preview Video</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-AutoPreviewVideo"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewVideoChanged(this.checked)">
+				</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-AutoPreviewAudio">Auto-Preview Audio</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-AutoPreviewAudio"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onAutoPreviewAudioChanged(this.checked)">
+				</div>
+			</div>
+			<div class="content-editor-settings-divider"></div>
+			<div class="content-editor-settings-section">
+				<div class="content-editor-settings-label">File Browser</div>
+				<div class="content-editor-settings-row">
+					<label class="content-editor-settings-checkbox-label"
+						for="ContentEditor-Setting-ShowHiddenFiles">Show Hidden Files</label>
+					<input type="checkbox" class="content-editor-settings-checkbox"
+						id="ContentEditor-Setting-ShowHiddenFiles"
+						onchange="{~P~}.views['ContentEditor-SettingsPanel'].onShowHiddenFilesChanged(this.checked)">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"ContentEditor-SettingsPanel-Display",TemplateHash:"ContentEditor-SettingsPanel-Template",DestinationAddress:"#ContentEditor-SettingsPanel-Container",RenderMethod:"replace"}]};class ContentEditorSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._isOpen=false;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Sync the UI controls with current state
 let tmpSettings=this.pict.AppData.ContentEditor;let tmpMdWrapCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-MarkdownWordWrap');if(tmpMdWrapCheckbox&&tmpMdWrapCheckbox[0]){tmpMdWrapCheckbox[0].checked=tmpSettings.MarkdownWordWrap;}let tmpCodeWrapCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-CodeWordWrap');if(tmpCodeWrapCheckbox&&tmpCodeWrapCheckbox[0]){tmpCodeWrapCheckbox[0].checked=tmpSettings.CodeWordWrap;}let tmpControlsCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-EditingControls');if(tmpControlsCheckbox&&tmpControlsCheckbox[0]){tmpControlsCheckbox[0].checked=tmpSettings.MarkdownEditingControls;}let tmpPreviewCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-AutoPreview');if(tmpPreviewCheckbox&&tmpPreviewCheckbox[0]){tmpPreviewCheckbox[0].checked=tmpSettings.AutoContentPreview;}let tmpSegmentCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-AutoSegment');if(tmpSegmentCheckbox&&tmpSegmentCheckbox[0]){tmpSegmentCheckbox[0].checked=tmpSettings.AutoSegmentMarkdown;}let tmpSelect=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-SegmentDepth');if(tmpSelect&&tmpSelect[0]){tmpSelect[0].value=String(tmpSettings.AutoSegmentDepth);tmpSelect[0].disabled=!tmpSettings.AutoSegmentMarkdown;}let tmpImgCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-AutoPreviewImages');if(tmpImgCheckbox&&tmpImgCheckbox[0]){tmpImgCheckbox[0].checked=tmpSettings.AutoPreviewImages;}let tmpVideoCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-AutoPreviewVideo');if(tmpVideoCheckbox&&tmpVideoCheckbox[0]){tmpVideoCheckbox[0].checked=tmpSettings.AutoPreviewVideo;}let tmpAudioCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-AutoPreviewAudio');if(tmpAudioCheckbox&&tmpAudioCheckbox[0]){tmpAudioCheckbox[0].checked=tmpSettings.AutoPreviewAudio;}let tmpHiddenCheckbox=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-ShowHiddenFiles');if(tmpHiddenCheckbox&&tmpHiddenCheckbox[0]){tmpHiddenCheckbox[0].checked=tmpSettings.ShowHiddenFiles;}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}togglePanel(){if(this._isOpen){this.closePanel();}else{this.openPanel();}}openPanel(){this._isOpen=true;let tmpFlyout=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsFlyout');let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsOverlay');let tmpGear=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsGear');if(tmpFlyout&&tmpFlyout[0])tmpFlyout[0].classList.add('open');if(tmpOverlay&&tmpOverlay[0])tmpOverlay[0].classList.add('open');if(tmpGear&&tmpGear[0])tmpGear[0].classList.add('active');}closePanel(){this._isOpen=false;let tmpFlyout=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsFlyout');let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsOverlay');let tmpGear=this.pict.ContentAssignment.getElement('#ContentEditor-SettingsGear');if(tmpFlyout&&tmpFlyout[0])tmpFlyout[0].classList.remove('open');if(tmpOverlay&&tmpOverlay[0])tmpOverlay[0].classList.remove('open');if(tmpGear&&tmpGear[0])tmpGear[0].classList.remove('active');}onMarkdownWordWrapChanged(pChecked){this.pict.AppData.ContentEditor.MarkdownWordWrap=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to all CodeMirror segment editors if markdown is active
 let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'&&tmpEditorView._segmentEditors){for(let tmpKey in tmpEditorView._segmentEditors){let tmpEditor=tmpEditorView._segmentEditors[tmpKey];if(tmpEditor&&tmpEditor.contentDOM){if(pChecked){tmpEditor.contentDOM.classList.add('cm-lineWrapping');}else{tmpEditor.contentDOM.classList.remove('cm-lineWrapping');}}}}}onCodeWordWrapChanged(pChecked){this.pict.AppData.ContentEditor.CodeWordWrap=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to the code editor if it's currently active
 let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView._editorElement&&this.pict.AppData.ContentEditor.ActiveEditor==='code'){if(pChecked){tmpCodeEditorView._editorElement.style.whiteSpace='pre-wrap';tmpCodeEditorView._editorElement.style.overflowWrap='break-word';}else{tmpCodeEditorView._editorElement.style.whiteSpace='pre';tmpCodeEditorView._editorElement.style.overflowWrap='normal';}}}onEditingControlsChanged(pChecked){this.pict.AppData.ContentEditor.MarkdownEditingControls=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to the markdown editor if it's currently active
 let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.toggleControls(pChecked);}}onAutoPreviewChanged(pChecked){this.pict.AppData.ContentEditor.AutoContentPreview=pChecked;this.pict.PictApplication.saveSettings();}onAutoSegmentChanged(pChecked){this.pict.AppData.ContentEditor.AutoSegmentMarkdown=pChecked;this.pict.PictApplication.saveSettings();// Enable/disable the depth dropdown
 let tmpSelect=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-SegmentDepth');if(tmpSelect&&tmpSelect[0]){tmpSelect[0].disabled=!pChecked;}}onSegmentDepthChanged(pValue){this.pict.AppData.ContentEditor.AutoSegmentDepth=parseInt(pValue,10)||1;this.pict.PictApplication.saveSettings();}onAutoPreviewImagesChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewImages=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewVideoChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewVideo=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewAudioChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewAudio=pChecked;this.pict.PictApplication.saveSettings();}onShowHiddenFilesChanged(pChecked){this.pict.AppData.ContentEditor.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();// Tell the server to include/exclude hidden files, then refresh
-let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],104:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/"\n\t\t.content-editor-topbar\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tbackground: #3D3229;\n\t\t\tcolor: #E8E0D4;\n\t\t\tpadding: 0;\n\t\t\theight: 48px;\n\t\t\tborder-bottom: 3px solid #2E7D74;\n\t\t\tposition: relative;\n\t\t}\n\t\t.content-editor-topbar-brand\n\t\t{\n\t\t\tpadding: 0 16px;\n\t\t\tfont-size: 1rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #E8E0D4;\n\t\t\twhite-space: nowrap;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t/* Centered file name \u2014 absolutely positioned so it stays\n\t\t   centered in the full bar regardless of left/right content */\n\t\t.content-editor-topbar-file\n\t\t{\n\t\t\tposition: absolute;\n\t\t\tleft: 50%;\n\t\t\ttransform: translateX(-50%);\n\t\t\tmax-width: 50%;\n\t\t\ttext-align: center;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\tpointer-events: none;\n\t\t}\n\t\t.content-editor-topbar-filename\n\t\t{\n\t\t\tfont-size: 0.9rem;\n\t\t\tfont-weight: 500;\n\t\t\tcolor: #E8E0D4;\n\t\t\tletter-spacing: 0.2px;\n\t\t}\n\t\t.content-editor-topbar-file .content-editor-dirty-indicator\n\t\t{\n\t\t\tcolor: #E8A94D;\n\t\t\tfont-weight: bold;\n\t\t}\n\t\t/* Left spacer pushes actions to the right */\n\t\t.content-editor-topbar-spacer\n\t\t{\n\t\t\tflex: 1;\n\t\t}\n\t\t.content-editor-topbar-status\n\t\t{\n\t\t\tpadding: 0 12px;\n\t\t\tfont-size: 0.78rem;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.content-editor-status-saving\n\t\t{\n\t\t\tcolor: #E8A94D;\n\t\t}\n\t\t.content-editor-status-saved\n\t\t{\n\t\t\tcolor: #7BC47F;\n\t\t}\n\t\t.content-editor-status-error\n\t\t{\n\t\t\tcolor: #D9534F;\n\t\t}\n\t\t.content-editor-topbar-stats\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\twhite-space: nowrap;\n\t\t\tpadding: 0 8px;\n\t\t\tflex-shrink: 0;\n\t\t\tletter-spacing: 0.2px;\n\t\t}\n\t\t.content-editor-topbar-actions\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 8px;\n\t\t\tpadding: 0 12px;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.content-editor-topbar-btn\n\t\t{\n\t\t\tpadding: 6px 14px;\n\t\t\tborder: none;\n\t\t\tborder-radius: 4px;\n\t\t\tcursor: pointer;\n\t\t\tfont-size: 0.8rem;\n\t\t\tfont-weight: 600;\n\t\t}\n\t\t.content-editor-topbar-btn-save\n\t\t{\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t}\n\t\t.content-editor-topbar-btn-save:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t.content-editor-topbar-btn-save:disabled\n\t\t{\n\t\t\tbackground: #5E5549;\n\t\t\tcolor: #8A7F72;\n\t\t\tcursor: not-allowed;\n\t\t}\n\t\t.content-editor-topbar-btn-close\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: #B8AFA4;\n\t\t\tborder: 1px solid #5E5549;\n\t\t}\n\t\t.content-editor-topbar-btn-close:hover\n\t\t{\n\t\t\tcolor: #E8E0D4;\n\t\t\tborder-color: #8A7F72;\n\t\t\tbackground: rgba(255, 255, 255, 0.05);\n\t\t}\n\t\t/* Close-file confirmation overlay */\n\t\t.content-editor-confirm-overlay\n\t\t{\n\t\t\tdisplay: none;\n\t\t\tposition: fixed;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\tright: 0;\n\t\t\tbottom: 0;\n\t\t\tz-index: 1099;\n\t\t\tbackground: rgba(0, 0, 0, 0.35);\n\t\t}\n\t\t.content-editor-confirm-overlay.open\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t}\n\t\t.content-editor-confirm-panel\n\t\t{\n\t\t\tbackground: #FFF;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 10px;\n\t\t\tbox-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);\n\t\t\twidth: 360px;\n\t\t\tmax-width: 90vw;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.content-editor-confirm-body\n\t\t{\n\t\t\tpadding: 24px 22px 16px;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.content-editor-confirm-icon\n\t\t{\n\t\t\tfont-size: 2rem;\n\t\t\tmargin-bottom: 8px;\n\t\t\tcolor: #E8A94D;\n\t\t}\n\t\t.content-editor-confirm-title\n\t\t{\n\t\t\tfont-size: 0.95rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #3D3229;\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.content-editor-confirm-message\n\t\t{\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #5E5549;\n\t\t\tmargin-bottom: 16px;\n\t\t\tline-height: 1.5;\n\t\t}\n\t\t.content-editor-confirm-actions\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tgap: 10px;\n\t\t\tjustify-content: center;\n\t\t}\n\t\t.content-editor-confirm-btn\n\t\t{\n\t\t\tpadding: 8px 20px;\n\t\t\tborder: none;\n\t\t\tborder-radius: 5px;\n\t\t\tfont-size: 0.82rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.content-editor-confirm-btn-discard\n\t\t{\n\t\t\tbackground: #D9534F;\n\t\t\tcolor: #FFF;\n\t\t}\n\t\t.content-editor-confirm-btn-discard:hover\n\t\t{\n\t\t\tbackground: #C9302C;\n\t\t}\n\t\t.content-editor-confirm-btn-cancel\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: #5E5549;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t}\n\t\t.content-editor-confirm-btn-cancel:hover\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t}\n\t\t.content-editor-confirm-footer\n\t\t{\n\t\t\tpadding: 10px 22px;\n\t\t\tborder-top: 1px solid #EDE9E3;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.content-editor-confirm-kbd\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tpadding: 1px 5px;\n\t\t\tfont-size: 0.68rem;\n\t\t\tfont-family: monospace;\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 3px;\n\t\t\tcolor: #5E5549;\n\t\t}\n\t",Templates:[{Hash:"ContentEditor-TopBar-Template",Template:/*html*/"\n<div class=\"content-editor-topbar\">\n\t<div class=\"content-editor-topbar-brand\">Content Editor</div>\n\t<div class=\"content-editor-topbar-file\">\n\t\t<span class=\"content-editor-topbar-filename\">{~D:AppData.ContentEditor.CurrentFile~}</span>{~D:AppData.ContentEditor.DirtyIndicatorHTML~}\n\t</div>\n\t<div class=\"content-editor-topbar-spacer\"></div>\n\t<div class=\"content-editor-topbar-status {~D:AppData.ContentEditor.SaveStatusClass~}\">\n\t\t{~D:AppData.ContentEditor.SaveStatus~}\n\t</div>\n\t<span class=\"content-editor-topbar-stats\" id=\"ContentEditor-Stats\"></span>\n\t<div class=\"content-editor-topbar-actions\">\n\t\t<button class=\"content-editor-topbar-btn content-editor-topbar-btn-save\"\n\t\t\tonclick=\"{~P~}.PictApplication.saveCurrentFile()\"\n\t\t\t{~D:AppData.ContentEditor.SaveDisabledAttr~} {~D:AppData.ContentEditor.SaveVisibilityAttr~}>Save</button>\n\t\t<button class=\"content-editor-topbar-btn content-editor-topbar-btn-close\"\n\t\t\tonclick=\"{~P~}.PictApplication.closeCurrentFile()\"\n\t\t\t{~D:AppData.ContentEditor.CloseVisibilityAttr~}>Close</button>\n\t\t<div id=\"ContentEditor-SettingsPanel-Container\"></div>\n\t</div>\n</div>\n<div class=\"content-editor-confirm-overlay\" id=\"ContentEditor-ConfirmOverlay\"\n\tonclick=\"{~P~}.PictApplication.cancelCloseFile()\">\n\t<div class=\"content-editor-confirm-panel\" onclick=\"event.stopPropagation()\">\n\t\t<div class=\"content-editor-confirm-body\">\n\t\t\t<div class=\"content-editor-confirm-icon\">&#x26A0;</div>\n\t\t\t<div class=\"content-editor-confirm-title\">Unsaved Changes</div>\n\t\t\t<div class=\"content-editor-confirm-message\">\n\t\t\t\tThis file has unsaved changes.<br>Close without saving?\n\t\t\t</div>\n\t\t\t<div class=\"content-editor-confirm-actions\">\n\t\t\t\t<button class=\"content-editor-confirm-btn content-editor-confirm-btn-discard\"\n\t\t\t\t\tonclick=\"{~P~}.PictApplication.confirmCloseFile()\">Discard &amp; Close</button>\n\t\t\t\t<button class=\"content-editor-confirm-btn content-editor-confirm-btn-cancel\"\n\t\t\t\t\tonclick=\"{~P~}.PictApplication.cancelCloseFile()\">Cancel</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"content-editor-confirm-footer\">\n\t\t\t<span class=\"content-editor-confirm-kbd\">Y</span> to discard &middot;\n\t\t\t<span class=\"content-editor-confirm-kbd\">N</span> or\n\t\t\t<span class=\"content-editor-confirm-kbd\">Esc</span> to cancel\n\t\t</div>\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"ContentEditor-TopBar-Display",TemplateHash:"ContentEditor-TopBar-Template",DestinationAddress:"#ContentEditor-TopBar-Container",RenderMethod:"replace"}]};class ContentEditorTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord){let tmpEditor=this.pict.AppData.ContentEditor;// Dirty indicator
+let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],104:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+		.content-editor-topbar
+		{
+			display: flex;
+			align-items: center;
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 0;
+			height: 48px;
+			border-bottom: 3px solid #2E7D74;
+			position: relative;
+		}
+		.content-editor-topbar-brand
+		{
+			padding: 0 16px;
+			font-size: 1rem;
+			font-weight: 600;
+			color: #E8E0D4;
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+		/* Centered file name — absolutely positioned so it stays
+		   centered in the full bar regardless of left/right content */
+		.content-editor-topbar-file
+		{
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			max-width: 50%;
+			text-align: center;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			pointer-events: none;
+		}
+		.content-editor-topbar-filename
+		{
+			font-size: 0.9rem;
+			font-weight: 500;
+			color: #E8E0D4;
+			letter-spacing: 0.2px;
+		}
+		.content-editor-topbar-file .content-editor-dirty-indicator
+		{
+			color: #E8A94D;
+			font-weight: bold;
+		}
+		/* Left spacer pushes actions to the right */
+		.content-editor-topbar-spacer
+		{
+			flex: 1;
+		}
+		.content-editor-topbar-status
+		{
+			padding: 0 12px;
+			font-size: 0.78rem;
+			flex-shrink: 0;
+		}
+		.content-editor-status-saving
+		{
+			color: #E8A94D;
+		}
+		.content-editor-status-saved
+		{
+			color: #7BC47F;
+		}
+		.content-editor-status-error
+		{
+			color: #D9534F;
+		}
+		.content-editor-topbar-stats
+		{
+			font-size: 0.72rem;
+			color: #8A7F72;
+			white-space: nowrap;
+			padding: 0 8px;
+			flex-shrink: 0;
+			letter-spacing: 0.2px;
+		}
+		.content-editor-topbar-actions
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 0 12px;
+			flex-shrink: 0;
+		}
+		.content-editor-topbar-btn
+		{
+			padding: 6px 14px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 0.8rem;
+			font-weight: 600;
+		}
+		.content-editor-topbar-btn-save
+		{
+			background: #2E7D74;
+			color: #FFF;
+		}
+		.content-editor-topbar-btn-save:hover
+		{
+			background: #3A9E92;
+		}
+		.content-editor-topbar-btn-save:disabled
+		{
+			background: #5E5549;
+			color: #8A7F72;
+			cursor: not-allowed;
+		}
+		.content-editor-topbar-btn-close
+		{
+			background: transparent;
+			color: #B8AFA4;
+			border: 1px solid #5E5549;
+		}
+		.content-editor-topbar-btn-close:hover
+		{
+			color: #E8E0D4;
+			border-color: #8A7F72;
+			background: rgba(255, 255, 255, 0.05);
+		}
+		/* Close-file confirmation overlay */
+		.content-editor-confirm-overlay
+		{
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1099;
+			background: rgba(0, 0, 0, 0.35);
+		}
+		.content-editor-confirm-overlay.open
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.content-editor-confirm-panel
+		{
+			background: #FFF;
+			border: 1px solid #DDD6CA;
+			border-radius: 10px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+			width: 360px;
+			max-width: 90vw;
+			overflow: hidden;
+		}
+		.content-editor-confirm-body
+		{
+			padding: 24px 22px 16px;
+			text-align: center;
+		}
+		.content-editor-confirm-icon
+		{
+			font-size: 2rem;
+			margin-bottom: 8px;
+			color: #E8A94D;
+		}
+		.content-editor-confirm-title
+		{
+			font-size: 0.95rem;
+			font-weight: 600;
+			color: #3D3229;
+			margin-bottom: 6px;
+		}
+		.content-editor-confirm-message
+		{
+			font-size: 0.82rem;
+			color: #5E5549;
+			margin-bottom: 16px;
+			line-height: 1.5;
+		}
+		.content-editor-confirm-actions
+		{
+			display: flex;
+			gap: 10px;
+			justify-content: center;
+		}
+		.content-editor-confirm-btn
+		{
+			padding: 8px 20px;
+			border: none;
+			border-radius: 5px;
+			font-size: 0.82rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.content-editor-confirm-btn-discard
+		{
+			background: #D9534F;
+			color: #FFF;
+		}
+		.content-editor-confirm-btn-discard:hover
+		{
+			background: #C9302C;
+		}
+		.content-editor-confirm-btn-cancel
+		{
+			background: transparent;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+		}
+		.content-editor-confirm-btn-cancel:hover
+		{
+			background: #F0EDE8;
+		}
+		.content-editor-confirm-footer
+		{
+			padding: 10px 22px;
+			border-top: 1px solid #EDE9E3;
+			font-size: 0.72rem;
+			color: #8A7F72;
+			text-align: center;
+		}
+		.content-editor-confirm-kbd
+		{
+			display: inline-block;
+			padding: 1px 5px;
+			font-size: 0.68rem;
+			font-family: monospace;
+			background: #F0EDE8;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			color: #5E5549;
+		}
+	`,Templates:[{Hash:"ContentEditor-TopBar-Template",Template:/*html*/`
+<div class="content-editor-topbar">
+	<div class="content-editor-topbar-brand">Content Editor</div>
+	<div class="content-editor-topbar-file">
+		<span class="content-editor-topbar-filename">{~D:AppData.ContentEditor.CurrentFile~}</span>{~D:AppData.ContentEditor.DirtyIndicatorHTML~}
+	</div>
+	<div class="content-editor-topbar-spacer"></div>
+	<div class="content-editor-topbar-status {~D:AppData.ContentEditor.SaveStatusClass~}">
+		{~D:AppData.ContentEditor.SaveStatus~}
+	</div>
+	<span class="content-editor-topbar-stats" id="ContentEditor-Stats"></span>
+	<div class="content-editor-topbar-actions">
+		<button class="content-editor-topbar-btn content-editor-topbar-btn-save"
+			onclick="{~P~}.PictApplication.saveCurrentFile()"
+			{~D:AppData.ContentEditor.SaveDisabledAttr~} {~D:AppData.ContentEditor.SaveVisibilityAttr~}>Save</button>
+		<button class="content-editor-topbar-btn content-editor-topbar-btn-close"
+			onclick="{~P~}.PictApplication.closeCurrentFile()"
+			{~D:AppData.ContentEditor.CloseVisibilityAttr~}>Close</button>
+		<div id="ContentEditor-SettingsPanel-Container"></div>
+	</div>
+</div>
+<div class="content-editor-confirm-overlay" id="ContentEditor-ConfirmOverlay"
+	onclick="{~P~}.PictApplication.cancelCloseFile()">
+	<div class="content-editor-confirm-panel" onclick="event.stopPropagation()">
+		<div class="content-editor-confirm-body">
+			<div class="content-editor-confirm-icon">&#x26A0;</div>
+			<div class="content-editor-confirm-title">Unsaved Changes</div>
+			<div class="content-editor-confirm-message">
+				This file has unsaved changes.<br>Close without saving?
+			</div>
+			<div class="content-editor-confirm-actions">
+				<button class="content-editor-confirm-btn content-editor-confirm-btn-discard"
+					onclick="{~P~}.PictApplication.confirmCloseFile()">Discard &amp; Close</button>
+				<button class="content-editor-confirm-btn content-editor-confirm-btn-cancel"
+					onclick="{~P~}.PictApplication.cancelCloseFile()">Cancel</button>
+			</div>
+		</div>
+		<div class="content-editor-confirm-footer">
+			<span class="content-editor-confirm-kbd">Y</span> to discard &middot;
+			<span class="content-editor-confirm-kbd">N</span> or
+			<span class="content-editor-confirm-kbd">Esc</span> to cancel
+		</div>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"ContentEditor-TopBar-Display",TemplateHash:"ContentEditor-TopBar-Template",DestinationAddress:"#ContentEditor-TopBar-Container",RenderMethod:"replace"}]};class ContentEditorTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord){let tmpEditor=this.pict.AppData.ContentEditor;// Dirty indicator
 tmpEditor.DirtyIndicatorHTML=tmpEditor.IsDirty?' <span class="content-editor-dirty-indicator">*</span>':'';// Disable save button if no file or currently saving
 tmpEditor.SaveDisabledAttr=!tmpEditor.CurrentFile||tmpEditor.IsSaving?'disabled':'';// Hide save button entirely until the user makes an edit
 tmpEditor.SaveVisibilityAttr=tmpEditor.IsDirty||tmpEditor.IsSaving||tmpEditor.SaveStatus?'':'style="display:none"';// Hide close button when no file is open
 tmpEditor.CloseVisibilityAttr=tmpEditor.CurrentFile?'':'style="display:none"';// Build viewer hash link
 if(tmpEditor.CurrentFile){let tmpViewerPath=tmpEditor.CurrentFile.replace(/\.md$/,'');tmpEditor.ViewerHash='#/page/'+tmpViewerPath;}else{tmpEditor.ViewerHash='';}return super.onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render the settings panel inside our container
-let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],105:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/"\n\t\t.topics-container\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100%;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #3D3229;\n\t\t}\n\t\t.topics-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 6px;\n\t\t\tpadding: 8px 10px;\n\t\t\tborder-bottom: 1px solid #EDE9E3;\n\t\t\tbackground: #FAF8F4;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.topics-header-title\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 0.78rem;\n\t\t\tcolor: #5E5549;\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\t\t.topics-header-btn\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tborder: none;\n\t\t\tcursor: pointer;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tpadding: 2px 6px;\n\t\t\tborder-radius: 3px;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.topics-header-btn:hover\n\t\t{\n\t\t\tcolor: #3D3229;\n\t\t\tbackground: #EDE9E3;\n\t\t}\n\t\t.topics-list\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\toverflow-x: hidden;\n\t\t}\n\t\t.topics-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: flex-start;\n\t\t\tgap: 6px;\n\t\t\tpadding: 8px 10px;\n\t\t\tborder-bottom: 1px solid #F0EDE8;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.1s;\n\t\t}\n\t\t.topics-row:hover\n\t\t{\n\t\t\tbackground: #F5F0EA;\n\t\t}\n\t\t.topics-row-info\n\t\t{\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t}\n\t\t.topics-row-code\n\t\t{\n\t\t\tfont-weight: 600;\n\t\t\tfont-size: 0.78rem;\n\t\t\tcolor: #2E7D74;\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\t\t.topics-row-title\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #5E5549;\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\tmargin-top: 1px;\n\t\t}\n\t\t.topics-row-path\n\t\t{\n\t\t\tfont-size: 0.68rem;\n\t\t\tcolor: #8A7F72;\n\t\t\twhite-space: nowrap;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\tmargin-top: 1px;\n\t\t}\n\t\t.topics-row-actions\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tdisplay: flex;\n\t\t\tgap: 2px;\n\t\t\tpadding-top: 1px;\n\t\t}\n\t\t.topics-row-btn\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tborder: none;\n\t\t\tcursor: pointer;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: #8A7F72;\n\t\t\tpadding: 2px 4px;\n\t\t\tborder-radius: 3px;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.topics-row-btn:hover\n\t\t{\n\t\t\tcolor: #3D3229;\n\t\t\tbackground: #EDE9E3;\n\t\t}\n\t\t.topics-row-btn-delete:hover\n\t\t{\n\t\t\tcolor: #D9534F;\n\t\t\tbackground: #FDF0EF;\n\t\t}\n\t\t/* Inline edit form */\n\t\t.topics-edit\n\t\t{\n\t\t\tpadding: 8px 10px;\n\t\t\tborder-bottom: 1px solid #DDD6CA;\n\t\t\tbackground: #FFF9F0;\n\t\t}\n\t\t.topics-edit-field\n\t\t{\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.topics-edit-label\n\t\t{\n\t\t\tdisplay: block;\n\t\t\tfont-size: 0.68rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: #8A7F72;\n\t\t\tmargin-bottom: 2px;\n\t\t}\n\t\t.topics-edit-input\n\t\t{\n\t\t\tdisplay: block;\n\t\t\twidth: 100%;\n\t\t\tbox-sizing: border-box;\n\t\t\tpadding: 4px 6px;\n\t\t\tfont-size: 0.78rem;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: #FFF;\n\t\t\tcolor: #3D3229;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.topics-edit-input:focus\n\t\t{\n\t\t\toutline: none;\n\t\t\tborder-color: #2E7D74;\n\t\t}\n\t\t.topics-edit-actions\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tgap: 6px;\n\t\t\tmargin-top: 8px;\n\t\t}\n\t\t.topics-edit-save\n\t\t{\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t\tborder: none;\n\t\t\tborder-radius: 3px;\n\t\t\tpadding: 4px 12px;\n\t\t\tfont-size: 0.72rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.topics-edit-save:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t.topics-edit-cancel\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: #5E5549;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t\tborder-radius: 3px;\n\t\t\tpadding: 4px 12px;\n\t\t\tfont-size: 0.72rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.topics-edit-cancel:hover\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t}\n\t\t/* Footer add button */\n\t\t.topics-footer\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tpadding: 8px 10px;\n\t\t\tborder-top: 1px solid #EDE9E3;\n\t\t\tbackground: #FAF8F4;\n\t\t}\n\t\t.topics-add-btn\n\t\t{\n\t\t\tdisplay: block;\n\t\t\twidth: 100%;\n\t\t\tpadding: 6px 0;\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t\tborder: none;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.topics-add-btn:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t/* Empty state */\n\t\t.topics-empty\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 32px 16px;\n\t\t\ttext-align: center;\n\t\t\tcolor: #8A7F72;\n\t\t\tfont-size: 0.82rem;\n\t\t}\n\t\t.topics-empty-icon\n\t\t{\n\t\t\tfont-size: 2rem;\n\t\t\tcolor: #C4BDB3;\n\t\t}\n\t\t.topics-empty-btn\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tpadding: 6px 14px;\n\t\t\tbackground: #2E7D74;\n\t\t\tcolor: #FFF;\n\t\t\tborder: none;\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-weight: 600;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.topics-empty-btn:hover\n\t\t{\n\t\t\tbackground: #3A9E92;\n\t\t}\n\t\t.topics-empty-btn-secondary\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: #5E5549;\n\t\t\tborder: 1px solid #DDD6CA;\n\t\t}\n\t\t.topics-empty-btn-secondary:hover\n\t\t{\n\t\t\tbackground: #F0EDE8;\n\t\t\tborder-color: #8A7F72;\n\t\t}\n\t",Templates:[{Hash:"Topics-Container-Template",Template:/*html*/"\n<div class=\"topics-container\" id=\"ContentEditor-Topics-Container\">\n\t<div class=\"topics-header\">\n\t\t<span class=\"topics-header-title\" id=\"ContentEditor-Topics-HeaderTitle\">Topics</span>\n\t\t<button class=\"topics-header-btn\" title=\"Close topics file\"\n\t\t\tonclick=\"pict.views['ContentEditor-Topics'].closeTopicsFile()\">&times;</button>\n\t</div>\n\t<div class=\"topics-list\" id=\"ContentEditor-Topics-List\"></div>\n\t<div class=\"topics-footer\" id=\"ContentEditor-Topics-Footer\">\n\t\t<button class=\"topics-add-btn\"\n\t\t\tonclick=\"pict.views['ContentEditor-Topics'].addTopic()\">+ Add Topic</button>\n\t</div>\n</div>\n"}],Renderables:[{RenderableHash:"Topics-Wrap",TemplateHash:"Topics-Container-Template",DestinationAddress:"#ContentEditor-SidebarTopics-Container"}]};/**
+let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":85}],105:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
+		.topics-container
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			font-size: 0.82rem;
+			color: #3D3229;
+		}
+		.topics-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 8px 10px;
+			border-bottom: 1px solid #EDE9E3;
+			background: #FAF8F4;
+			flex-shrink: 0;
+		}
+		.topics-header-title
+		{
+			flex: 1;
+			font-weight: 600;
+			font-size: 0.78rem;
+			color: #5E5549;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.topics-header-btn
+		{
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			font-size: 0.82rem;
+			color: #8A7F72;
+			padding: 2px 6px;
+			border-radius: 3px;
+			line-height: 1;
+		}
+		.topics-header-btn:hover
+		{
+			color: #3D3229;
+			background: #EDE9E3;
+		}
+		.topics-list
+		{
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+		.topics-row
+		{
+			display: flex;
+			align-items: flex-start;
+			gap: 6px;
+			padding: 8px 10px;
+			border-bottom: 1px solid #F0EDE8;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.topics-row:hover
+		{
+			background: #F5F0EA;
+		}
+		.topics-row-info
+		{
+			flex: 1;
+			min-width: 0;
+		}
+		.topics-row-code
+		{
+			font-weight: 600;
+			font-size: 0.78rem;
+			color: #2E7D74;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.topics-row-title
+		{
+			font-size: 0.72rem;
+			color: #5E5549;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin-top: 1px;
+		}
+		.topics-row-path
+		{
+			font-size: 0.68rem;
+			color: #8A7F72;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin-top: 1px;
+		}
+		.topics-row-actions
+		{
+			flex-shrink: 0;
+			display: flex;
+			gap: 2px;
+			padding-top: 1px;
+		}
+		.topics-row-btn
+		{
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			font-size: 0.72rem;
+			color: #8A7F72;
+			padding: 2px 4px;
+			border-radius: 3px;
+			line-height: 1;
+		}
+		.topics-row-btn:hover
+		{
+			color: #3D3229;
+			background: #EDE9E3;
+		}
+		.topics-row-btn-delete:hover
+		{
+			color: #D9534F;
+			background: #FDF0EF;
+		}
+		/* Inline edit form */
+		.topics-edit
+		{
+			padding: 8px 10px;
+			border-bottom: 1px solid #DDD6CA;
+			background: #FFF9F0;
+		}
+		.topics-edit-field
+		{
+			margin-bottom: 6px;
+		}
+		.topics-edit-label
+		{
+			display: block;
+			font-size: 0.68rem;
+			font-weight: 600;
+			color: #8A7F72;
+			margin-bottom: 2px;
+		}
+		.topics-edit-input
+		{
+			display: block;
+			width: 100%;
+			box-sizing: border-box;
+			padding: 4px 6px;
+			font-size: 0.78rem;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			background: #FFF;
+			color: #3D3229;
+			font-family: inherit;
+		}
+		.topics-edit-input:focus
+		{
+			outline: none;
+			border-color: #2E7D74;
+		}
+		.topics-edit-actions
+		{
+			display: flex;
+			gap: 6px;
+			margin-top: 8px;
+		}
+		.topics-edit-save
+		{
+			background: #2E7D74;
+			color: #FFF;
+			border: none;
+			border-radius: 3px;
+			padding: 4px 12px;
+			font-size: 0.72rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.topics-edit-save:hover
+		{
+			background: #3A9E92;
+		}
+		.topics-edit-cancel
+		{
+			background: transparent;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			padding: 4px 12px;
+			font-size: 0.72rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.topics-edit-cancel:hover
+		{
+			background: #F0EDE8;
+		}
+		/* Footer add button */
+		.topics-footer
+		{
+			flex-shrink: 0;
+			padding: 8px 10px;
+			border-top: 1px solid #EDE9E3;
+			background: #FAF8F4;
+		}
+		.topics-add-btn
+		{
+			display: block;
+			width: 100%;
+			padding: 6px 0;
+			background: #2E7D74;
+			color: #FFF;
+			border: none;
+			border-radius: 4px;
+			font-size: 0.78rem;
+			font-weight: 600;
+			cursor: pointer;
+			text-align: center;
+		}
+		.topics-add-btn:hover
+		{
+			background: #3A9E92;
+		}
+		/* Empty state */
+		.topics-empty
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			padding: 32px 16px;
+			text-align: center;
+			color: #8A7F72;
+			font-size: 0.82rem;
+		}
+		.topics-empty-icon
+		{
+			font-size: 2rem;
+			color: #C4BDB3;
+		}
+		.topics-empty-btn
+		{
+			display: inline-block;
+			padding: 6px 14px;
+			background: #2E7D74;
+			color: #FFF;
+			border: none;
+			border-radius: 4px;
+			font-size: 0.78rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.topics-empty-btn:hover
+		{
+			background: #3A9E92;
+		}
+		.topics-empty-btn-secondary
+		{
+			background: transparent;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+		}
+		.topics-empty-btn-secondary:hover
+		{
+			background: #F0EDE8;
+			border-color: #8A7F72;
+		}
+	`,Templates:[{Hash:"Topics-Container-Template",Template:/*html*/`
+<div class="topics-container" id="ContentEditor-Topics-Container">
+	<div class="topics-header">
+		<span class="topics-header-title" id="ContentEditor-Topics-HeaderTitle">Topics</span>
+		<button class="topics-header-btn" title="Close topics file"
+			onclick="pict.views['ContentEditor-Topics'].closeTopicsFile()">&times;</button>
+	</div>
+	<div class="topics-list" id="ContentEditor-Topics-List"></div>
+	<div class="topics-footer" id="ContentEditor-Topics-Footer">
+		<button class="topics-add-btn"
+			onclick="pict.views['ContentEditor-Topics'].addTopic()">+ Add Topic</button>
+	</div>
+</div>
+`}],Renderables:[{RenderableHash:"Topics-Wrap",TemplateHash:"Topics-Container-Template",DestinationAddress:"#ContentEditor-SidebarTopics-Container"}]};/**
  * Content Editor Topics View
  *
  * Manages .pict_documentation_topics.json files — JSON manifests that
@@ -4538,21 +8246,21 @@ if(confirm('File not found. Create "'+tmpPath.trim()+'"?')){tmpSelf._topicsFileP
 * That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list.
 * By doing so, all the recently used nodes can be accessed relatively quickly.
 *//** @type {import('./list.d.ts').listGetNode} */// eslint-disable-next-line consistent-return
-var listGetNode=function listGetNode(list,key,isDelete){/** @type {typeof list | NonNullable<(typeof list)['next']>} */var prev=list;/** @type {(typeof list)['next']} */var curr;// eslint-disable-next-line eqeqeq
+var listGetNode=function(list,key,isDelete){/** @type {typeof list | NonNullable<(typeof list)['next']>} */var prev=list;/** @type {(typeof list)['next']} */var curr;// eslint-disable-next-line eqeqeq
 for(;(curr=prev.next)!=null;prev=curr){if(curr.key===key){prev.next=curr.next;if(!isDelete){// eslint-disable-next-line no-extra-parens
 curr.next=/** @type {NonNullable<typeof list.next>} */list.next;list.next=curr;// eslint-disable-line no-param-reassign
-}return curr;}}};/** @type {import('./list.d.ts').listGet} */var listGet=function listGet(objects,key){if(!objects){return void undefined;}var node=listGetNode(objects,key);return node&&node.value;};/** @type {import('./list.d.ts').listSet} */var listSet=function listSet(objects,key,value){var node=listGetNode(objects,key);if(node){node.value=value;}else{// Prepend the new node to the beginning of the list
+}return curr;}}};/** @type {import('./list.d.ts').listGet} */var listGet=function(objects,key){if(!objects){return void undefined;}var node=listGetNode(objects,key);return node&&node.value;};/** @type {import('./list.d.ts').listSet} */var listSet=function(objects,key,value){var node=listGetNode(objects,key);if(node){node.value=value;}else{// Prepend the new node to the beginning of the list
 objects.next=/** @type {import('./list.d.ts').ListNode<typeof value, typeof key>} */{// eslint-disable-line no-param-reassign, no-extra-parens
-key:key,next:objects.next,value:value};}};/** @type {import('./list.d.ts').listHas} */var listHas=function listHas(objects,key){if(!objects){return false;}return!!listGetNode(objects,key);};/** @type {import('./list.d.ts').listDelete} */// eslint-disable-next-line consistent-return
-var listDelete=function listDelete(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function assert(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function _delete(key){var root=$o&&$o.next;var deletedNode=listDelete($o,key);if(deletedNode&&root&&root===deletedNode){$o=void undefined;}return!!deletedNode;},get:function get(key){return listGet($o,key);},has:function has(key){return listHas($o,key);},set:function set(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
+key:key,next:objects.next,value:value};}};/** @type {import('./list.d.ts').listHas} */var listHas=function(objects,key){if(!objects){return false;}return!!listGetNode(objects,key);};/** @type {import('./list.d.ts').listDelete} */// eslint-disable-next-line consistent-return
+var listDelete=function(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){var root=$o&&$o.next;var deletedNode=listDelete($o,key);if(deletedNode&&root&&root===deletedNode){$o=void undefined;}return!!deletedNode;},get:function(key){return listGet($o,key);},has:function(key){return listHas($o,key);},set:function(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
 $o={next:void undefined};}// eslint-disable-next-line no-extra-parens
 listSet(/** @type {NonNullable<typeof $o>} */$o,key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41}],107:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function assert(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function _delete(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function get(key){// eslint-disable-line consistent-return
-if($m){return $mapGet($m,key);}},has:function has(key){if($m){return $mapHas($m,key);}return false;},set:function set(key,value){if(!$m){// @ts-expect-error TS can't handle narrowing a variable inside a closure
+return channel;};},{"es-errors/type":16,"object-inspect":41}],107:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
+if($m){return $mapGet($m,key);}},has:function(key){if($m){return $mapHas($m,key);}return false;},set:function(key,value){if(!$m){// @ts-expect-error TS can't handle narrowing a variable inside a closure
 $m=new $Map();}$mapSet($m,key,value);}};// @ts-expect-error TODO: figure out why TS is erroring here
-return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],108:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function assert(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function _delete(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function get(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function has(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function set(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
+return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],108:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
 /** @type {NonNullable<typeof $m>} */$m.set(key,value);}}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":107}],109:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function assert(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function _delete(key){return!!$channelData&&$channelData['delete'](key);},get:function get(key){return $channelData&&$channelData.get(key);},has:function has(key){return!!$channelData&&$channelData.has(key);},set:function set(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
+return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":107}],109:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
 return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":106,"side-channel-map":107,"side-channel-weakmap":108}],110:[function(require,module,exports){/*
  * Copyright Joyent, Inc. and other Node contributors.
  *
@@ -4814,7 +8522,7 @@ let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container'
 let tmpFilterSort=tmpSelf.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.applyFilterSort();}else{// Fallback if provider not ready
 tmpRemote.GalleryItems=pFileList||[];tmpRemote.GalleryCursorIndex=0;let tmpGalleryView=tmpSelf.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}// Update the hash (use hashed identifier when available)
 let tmpCurrentPath=tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpBrowseFragProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpBrowseFragId=tmpBrowseFragProvider&&tmpCurrentPath?tmpBrowseFragProvider.getFragmentIdentifier(tmpCurrentPath):tmpCurrentPath;window.location.hash=tmpBrowseFragId?'#/browse/'+tmpBrowseFragId:'#/browse/';// Fetch folder summary for topbar info (skip for archive paths — they are not filesystem directories)
-let tmpMediaProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpIsArchivePath=/\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz)(\/|$)/i.test(tmpCurrentPath);if(tmpMediaProvider&&!tmpIsArchivePath){tmpMediaProvider.fetchFolderSummary(tmpCurrentPath,(pError,pSummary)=>{if(!pError&&pSummary){tmpRemote.FolderSummary=pSummary;let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}});}else{let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}return tmpCallback();}).catch(pError=>{tmpSelf.log.error("Failed to load file list: ".concat(pError.message));return tmpCallback();});}/**
+let tmpMediaProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpIsArchivePath=/\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz)(\/|$)/i.test(tmpCurrentPath);if(tmpMediaProvider&&!tmpIsArchivePath){tmpMediaProvider.fetchFolderSummary(tmpCurrentPath,(pError,pSummary)=>{if(!pError&&pSummary){tmpRemote.FolderSummary=pSummary;let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}});}else{let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}return tmpCallback();}).catch(pError=>{tmpSelf.log.error(`Failed to load file list: ${pError.message}`);return tmpCallback();});}/**
 	 * Override resolveHash to handle gallery and viewer routes.
 	 */resolveHash(){let tmpHash=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''));if(!tmpHash){return;}let tmpParts=tmpHash.split('/');let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpParts[0]==='browse'){let tmpRawPath=tmpParts.slice(1).join('/');// Resolve hash token to actual path if needed
 let tmpPath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(tmpPath!==tmpCurrentPath){this.loadFileList(tmpPath);}}else if(tmpParts[0]==='view'&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');// Resolve hash token to actual path if needed
@@ -4968,7 +8676,7 @@ if(pIndex<tmpRows.length){tmpRows[pIndex].classList.add('sidebar-focused');tmpRo
 	 *
 	 * @param {number} pNewIndex - The new cursor position
 	 */moveCursor(pNewIndex){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpOldIndex=tmpRemote.GalleryCursorIndex||0;if(pNewIndex===tmpOldIndex){return;}tmpRemote.GalleryCursorIndex=pNewIndex;// Update CSS classes on the affected elements (tiles in grid mode, rows in list mode)
-let tmpOldTile=document.querySelector(".retold-remote-tile[data-index=\"".concat(tmpOldIndex,"\"], .retold-remote-list-row[data-index=\"").concat(tmpOldIndex,"\"]"));let tmpNewTile=document.querySelector(".retold-remote-tile[data-index=\"".concat(pNewIndex,"\"], .retold-remote-list-row[data-index=\"").concat(pNewIndex,"\"]"));if(tmpOldTile){tmpOldTile.classList.remove('selected');}if(tmpNewTile){tmpNewTile.classList.add('selected');// Scroll the tile into view if needed
+let tmpOldTile=document.querySelector(`.retold-remote-tile[data-index="${tmpOldIndex}"], .retold-remote-list-row[data-index="${tmpOldIndex}"]`);let tmpNewTile=document.querySelector(`.retold-remote-tile[data-index="${pNewIndex}"], .retold-remote-list-row[data-index="${pNewIndex}"]`);if(tmpOldTile){tmpOldTile.classList.remove('selected');}if(tmpNewTile){tmpNewTile.classList.add('selected');// Scroll the tile into view if needed
 tmpNewTile.scrollIntoView({block:'nearest',behavior:'smooth'});}}/**
 	 * Open the currently selected gallery item.
 	 */openCurrent(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpIndex>=tmpItems.length){return;}let tmpItem=tmpItems[tmpIndex];if(tmpItem.Type==='folder'||tmpItem.Type==='archive'){// Navigate into the folder or archive
@@ -5316,7 +9024,268 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pThemeKey
 	 * @returns {Object|null}
-	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"pict-provider":55}],119:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-aex\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100%;\n\t\t}\n\t\t.retold-remote-aex-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tz-index: 5;\n\t\t}\n\t\t.retold-remote-aex-nav-btn\n\t\t{\n\t\t\tpadding: 4px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.8rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-aex-nav-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-aex-title\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-aex-info\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 16px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tflex-wrap: wrap;\n\t\t}\n\t\t.retold-remote-aex-info-item\n\t\t{\n\t\t\tdisplay: inline-flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t}\n\t\t.retold-remote-aex-info-label\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-aex-info-value\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.retold-remote-aex-controls\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tflex-wrap: wrap;\n\t\t}\n\t\t.retold-remote-aex-controls label\n\t\t{\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-aex-controls select,\n\t\t.retold-remote-aex-controls input\n\t\t{\n\t\t\tfont-size: 0.75rem;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tpadding: 2px 6px;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-aex-btn\n\t\t{\n\t\t\tpadding: 3px 12px;\n\t\t\tborder: 1px solid var(--retold-accent);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-accent);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.15s, color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-aex-btn:hover\n\t\t{\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-primary);\n\t\t}\n\t\t.retold-remote-aex-btn:disabled\n\t\t{\n\t\t\topacity: 0.4;\n\t\t\tcursor: not-allowed;\n\t\t}\n\t\t.retold-remote-aex-btn:disabled:hover\n\t\t{\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-aex-body\n\t\t{\n\t\t\tflex: 1;\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\toverflow: hidden;\n\t\t\tposition: relative;\n\t\t}\n\t\t.retold-remote-aex-loading\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\theight: 100%;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.9rem;\n\t\t}\n\t\t.retold-remote-aex-loading-spinner\n\t\t{\n\t\t\twidth: 32px;\n\t\t\theight: 32px;\n\t\t\tborder: 3px solid var(--retold-border);\n\t\t\tborder-top-color: var(--retold-accent);\n\t\t\tborder-radius: 50%;\n\t\t\tanimation: retold-aex-spin 0.8s linear infinite;\n\t\t\tmargin-bottom: 16px;\n\t\t}\n\t\t@keyframes retold-aex-spin\n\t\t{\n\t\t\tto { transform: rotate(360deg); }\n\t\t}\n\t\t.retold-remote-aex-canvas-wrap\n\t\t{\n\t\t\tflex: 1;\n\t\t\tposition: relative;\n\t\t\tmin-height: 150px;\n\t\t\tcursor: crosshair;\n\t\t}\n\t\t.retold-remote-aex-canvas-wrap canvas\n\t\t{\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tdisplay: block;\n\t\t}\n\t\t.retold-remote-aex-overview-wrap\n\t\t{\n\t\t\theight: 48px;\n\t\t\tposition: relative;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.retold-remote-aex-overview-wrap canvas\n\t\t{\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tdisplay: block;\n\t\t}\n\t\t.retold-remote-aex-overview-viewport\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\theight: 100%;\n\t\t\tbackground: rgba(255, 255, 255, 0.08);\n\t\t\tborder-left: 2px solid var(--retold-accent);\n\t\t\tborder-right: 2px solid var(--retold-accent);\n\t\t\tpointer-events: none;\n\t\t}\n\t\t/* Time display bar */\n\t\t.retold-remote-aex-time-bar\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 6px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 0.75rem;\n\t\t\tfont-family: var(--retold-font-mono, monospace);\n\t\t}\n\t\t.retold-remote-aex-time-label\n\t\t{\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-aex-time-value\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.retold-remote-aex-time-selection\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t/* Playback bar */\n\t\t.retold-remote-aex-playback\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 10px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-aex-playback audio\n\t\t{\n\t\t\tflex: 1;\n\t\t\theight: 32px;\n\t\t\tmax-width: 400px;\n\t\t}\n\t\t.retold-remote-aex-playback-label\n\t\t{\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t/* Error state */\n\t\t.retold-remote-aex-error\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\theight: 100%;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.85rem;\n\t\t\ttext-align: center;\n\t\t\tpadding: 40px;\n\t\t}\n\t\t.retold-remote-aex-error-message\n\t\t{\n\t\t\tcolor: #e06c75;\n\t\t\tmargin-bottom: 16px;\n\t\t}\n\t"};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
+	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"pict-provider":55}],119:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-aex
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.retold-remote-aex-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			z-index: 5;
+		}
+		.retold-remote-aex-nav-btn
+		{
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.8rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-aex-nav-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-aex-title
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: center;
+		}
+		.retold-remote-aex-info
+		{
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 8px 16px;
+			background: var(--retold-bg-tertiary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+			flex-wrap: wrap;
+		}
+		.retold-remote-aex-info-item
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.retold-remote-aex-info-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-aex-info-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-aex-controls
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			flex-wrap: wrap;
+		}
+		.retold-remote-aex-controls label
+		{
+			font-size: 0.75rem;
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-aex-controls select,
+		.retold-remote-aex-controls input
+		{
+			font-size: 0.75rem;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			padding: 2px 6px;
+			font-family: inherit;
+		}
+		.retold-remote-aex-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-aex-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-aex-btn:disabled
+		{
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+		.retold-remote-aex-btn:disabled:hover
+		{
+			background: transparent;
+			color: var(--retold-accent);
+		}
+		.retold-remote-aex-body
+		{
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			position: relative;
+		}
+		.retold-remote-aex-loading
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.9rem;
+		}
+		.retold-remote-aex-loading-spinner
+		{
+			width: 32px;
+			height: 32px;
+			border: 3px solid var(--retold-border);
+			border-top-color: var(--retold-accent);
+			border-radius: 50%;
+			animation: retold-aex-spin 0.8s linear infinite;
+			margin-bottom: 16px;
+		}
+		@keyframes retold-aex-spin
+		{
+			to { transform: rotate(360deg); }
+		}
+		.retold-remote-aex-canvas-wrap
+		{
+			flex: 1;
+			position: relative;
+			min-height: 150px;
+			cursor: crosshair;
+		}
+		.retold-remote-aex-canvas-wrap canvas
+		{
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+		.retold-remote-aex-overview-wrap
+		{
+			height: 48px;
+			position: relative;
+			background: var(--retold-bg-tertiary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			cursor: pointer;
+		}
+		.retold-remote-aex-overview-wrap canvas
+		{
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+		.retold-remote-aex-overview-viewport
+		{
+			position: absolute;
+			top: 0;
+			height: 100%;
+			background: rgba(255, 255, 255, 0.08);
+			border-left: 2px solid var(--retold-accent);
+			border-right: 2px solid var(--retold-accent);
+			pointer-events: none;
+		}
+		/* Time display bar */
+		.retold-remote-aex-time-bar
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 6px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			font-family: var(--retold-font-mono, monospace);
+		}
+		.retold-remote-aex-time-label
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-aex-time-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-aex-time-selection
+		{
+			color: var(--retold-accent);
+		}
+		/* Playback bar */
+		.retold-remote-aex-playback
+		{
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-aex-playback audio
+		{
+			flex: 1;
+			height: 32px;
+			max-width: 400px;
+		}
+		.retold-remote-aex-playback-label
+		{
+			font-size: 0.72rem;
+			color: var(--retold-text-dim);
+		}
+		/* Error state */
+		.retold-remote-aex-error
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.85rem;
+			text-align: center;
+			padding: 40px;
+		}
+		.retold-remote-aex-error-message
+		{
+			color: #e06c75;
+			margin-bottom: 16px;
+		}
+	`};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
 this._viewStart=0;// Start of visible range (0..1)
 this._viewEnd=1;// End of visible range (0..1)
 this._minZoom=0.005;// Minimum visible range (0.5% of total)
@@ -5411,7 +9380,634 @@ if(this._resizeObserver){this._resizeObserver.disconnect();this._resizeObserver=
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}_formatTimestamp(pSeconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpMs=Math.floor(pSeconds%1*10);if(tmpHours>0){return"".concat(tmpHours,":").concat(String(tmpMinutes).padStart(2,'0'),":").concat(String(tmpSecs).padStart(2,'0'),".").concat(tmpMs);}return"".concat(tmpMinutes,":").concat(String(tmpSecs).padStart(2,'0'),".").concat(tmpMs);}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":85}],120:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-gallery-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 8px;\n\t\t\tmargin-bottom: 8px;\n\t\t\tflex-wrap: wrap;\n\t\t}\n\t\t.retold-remote-gallery-filter\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tgap: 4px;\n\t\t}\n\t\t.retold-remote-gallery-filter-btn\n\t\t{\n\t\t\tpadding: 3px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.72rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s, background 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-gallery-filter-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tborder-color: var(--retold-scrollbar-hover);\n\t\t}\n\t\t.retold-remote-gallery-filter-btn.active\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t\tborder-color: var(--retold-accent);\n\t\t\tbackground: rgba(128, 128, 128, 0.1);\n\t\t}\n\t\t.retold-remote-gallery-filter-toggle\n\t\t{\n\t\t\tposition: relative;\n\t\t}\n\t\t.retold-remote-gallery-filter-toggle.has-filters\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-gallery-filter-count\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tmin-width: 14px;\n\t\t\theight: 14px;\n\t\t\tline-height: 14px;\n\t\t\tpadding: 0 3px;\n\t\t\tborder-radius: 7px;\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-tertiary);\n\t\t\tfont-size: 0.58rem;\n\t\t\tfont-weight: 700;\n\t\t\ttext-align: center;\n\t\t\tmargin-left: 4px;\n\t\t}\n\t\t/* Sort dropdown */\n\t\t.retold-remote-gallery-sort\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t}\n\t\t.retold-remote-gallery-sort-select\n\t\t{\n\t\t\tpadding: 3px 6px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.72rem;\n\t\t\tcursor: pointer;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-gallery-sort-select:focus\n\t\t{\n\t\t\toutline: none;\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-gallery-search\n\t\t{\n\t\t\tflex: 1;\n\t\t\tmax-width: 300px;\n\t\t\tpadding: 4px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-gallery-search:focus\n\t\t{\n\t\t\toutline: none;\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-gallery-search::placeholder\n\t\t{\n\t\t\tcolor: var(--retold-text-placeholder);\n\t\t}\n\t\t.retold-remote-gallery-search-options\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 8px;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-gallery-search-option\n\t\t{\n\t\t\tdisplay: inline-flex;\n\t\t\talign-items: center;\n\t\t\tgap: 3px;\n\t\t\tfont-size: 0.68rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tcursor: pointer;\n\t\t\twhite-space: nowrap;\n\t\t\tuser-select: none;\n\t\t}\n\t\t.retold-remote-gallery-search-option:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-gallery-search-option input[type=\"checkbox\"]\n\t\t{\n\t\t\tmargin: 0;\n\t\t\tcursor: pointer;\n\t\t\taccent-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-gallery-search-option.active\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-gallery-search-regex-error\n\t\t{\n\t\t\tfont-size: 0.68rem;\n\t\t\tcolor: #e06c75;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t/* Filter chips */\n\t\t.retold-remote-filter-chips\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-wrap: wrap;\n\t\t\tgap: 6px;\n\t\t\tmargin-bottom: 8px;\n\t\t\talign-items: center;\n\t\t}\n\t\t.retold-remote-filter-chip\n\t\t{\n\t\t\tdisplay: inline-flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t\tpadding: 2px 8px;\n\t\t\tborder: 1px solid var(--retold-border-light);\n\t\t\tborder-radius: 12px;\n\t\t\tbackground: rgba(128, 128, 128, 0.08);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.68rem;\n\t\t}\n\t\t.retold-remote-filter-chip-remove\n\t\t{\n\t\t\tbackground: none;\n\t\t\tborder: none;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.82rem;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 0 2px;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.retold-remote-filter-chip-remove:hover\n\t\t{\n\t\t\tcolor: var(--retold-danger);\n\t\t}\n\t\t.retold-remote-filter-chip-clear\n\t\t{\n\t\t\tbackground: none;\n\t\t\tborder: none;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.68rem;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 2px 4px;\n\t\t}\n\t\t.retold-remote-filter-chip-clear:hover\n\t\t{\n\t\t\tcolor: var(--retold-danger);\n\t\t}\n\t\t/* Filter panel */\n\t\t.retold-remote-filter-panel\n\t\t{\n\t\t\tmargin-bottom: 12px;\n\t\t\tpadding: 12px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 6px;\n\t\t\tbackground: var(--retold-bg-panel);\n\t\t}\n\t\t.retold-remote-filter-panel-grid\n\t\t{\n\t\t\tdisplay: grid;\n\t\t\tgrid-template-columns: 1fr 1fr;\n\t\t\tgap: 12px 24px;\n\t\t}\n\t\t.retold-remote-filter-section\n\t\t{\n\t\t\tmargin-bottom: 0;\n\t\t}\n\t\t.retold-remote-filter-section-title\n\t\t{\n\t\t\tfont-size: 0.68rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.5px;\n\t\t\tmargin-bottom: 6px;\n\t\t}\n\t\t.retold-remote-filter-ext-list\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-wrap: wrap;\n\t\t\tgap: 2px 10px;\n\t\t}\n\t\t.retold-remote-filter-ext-item\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.retold-remote-filter-ext-item input\n\t\t{\n\t\t\taccent-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-filter-ext-count\n\t\t{\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.65rem;\n\t\t}\n\t\t.retold-remote-filter-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 6px;\n\t\t}\n\t\t.retold-remote-filter-input\n\t\t{\n\t\t\tpadding: 3px 6px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.72rem;\n\t\t\twidth: 100px;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-filter-input:focus\n\t\t{\n\t\t\toutline: none;\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-filter-label\n\t\t{\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.68rem;\n\t\t}\n\t\t.retold-remote-filter-actions\n\t\t{\n\t\t\tgrid-column: 1 / -1;\n\t\t\tdisplay: flex;\n\t\t\tgap: 8px;\n\t\t\talign-items: center;\n\t\t\tpadding-top: 8px;\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tmargin-top: 8px;\n\t\t}\n\t\t.retold-remote-filter-preset-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tgap: 6px;\n\t\t\talign-items: center;\n\t\t\tflex-wrap: wrap;\n\t\t}\n\t\t.retold-remote-filter-preset-select\n\t\t{\n\t\t\tpadding: 3px 6px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.72rem;\n\t\t\tmin-width: 100px;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-filter-preset-input\n\t\t{\n\t\t\tpadding: 3px 6px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.72rem;\n\t\t\twidth: 120px;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-filter-preset-input:focus\n\t\t{\n\t\t\toutline: none;\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-filter-btn-sm\n\t\t{\n\t\t\tpadding: 2px 8px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.68rem;\n\t\t\tcursor: pointer;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-filter-btn-sm:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tborder-color: var(--retold-scrollbar-hover);\n\t\t}\n\t\t/* Grid layout */\n\t\t.retold-remote-grid\n\t\t{\n\t\t\tdisplay: grid;\n\t\t\tgap: 12px;\n\t\t}\n\t\t.retold-remote-grid.size-small\n\t\t{\n\t\t\tgrid-template-columns: repeat(auto-fill, minmax(120px, 1fr));\n\t\t}\n\t\t.retold-remote-grid.size-medium\n\t\t{\n\t\t\tgrid-template-columns: repeat(auto-fill, minmax(200px, 1fr));\n\t\t}\n\t\t.retold-remote-grid.size-large\n\t\t{\n\t\t\tgrid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n\t\t}\n\t\t/* Tile */\n\t\t.retold-remote-tile\n\t\t{\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder: 2px solid transparent;\n\t\t\tborder-radius: 6px;\n\t\t\tcursor: pointer;\n\t\t\toverflow: hidden;\n\t\t\ttransition: border-color 0.15s, transform 0.1s;\n\t\t}\n\t\t.retold-remote-tile:hover\n\t\t{\n\t\t\tborder-color: var(--retold-border-light);\n\t\t}\n\t\t.retold-remote-tile.selected\n\t\t{\n\t\t\tborder-color: var(--retold-accent);\n\t\t\tbox-shadow: 0 0 0 1px rgba(128, 128, 128, 0.3);\n\t\t}\n\t\t.retold-remote-tile-thumb\n\t\t{\n\t\t\tposition: relative;\n\t\t\twidth: 100%;\n\t\t\tpadding-bottom: 75%; /* 4:3 aspect ratio */\n\t\t\tbackground: var(--retold-bg-thumb);\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.retold-remote-tile-thumb img\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tobject-fit: cover;\n\t\t}\n\t\t.retold-remote-tile-thumb-icon\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 50%;\n\t\t\tleft: 50%;\n\t\t\ttransform: translate(-50%, -50%);\n\t\t\tfont-size: 2rem;\n\t\t\tcolor: var(--retold-text-placeholder);\n\t\t}\n\t\t.retold-remote-tile-badge\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 6px;\n\t\t\tright: 6px;\n\t\t\tpadding: 1px 6px;\n\t\t\tborder-radius: 3px;\n\t\t\tfont-size: 0.6rem;\n\t\t\tfont-weight: 700;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.5px;\n\t\t}\n\t\t.retold-remote-tile-badge-image { background: rgba(102, 194, 184, 0.8); color: #fff; }\n\t\t.retold-remote-tile-badge-video { background: rgba(180, 102, 194, 0.8); color: #fff; }\n\t\t.retold-remote-tile-badge-audio { background: rgba(194, 160, 102, 0.8); color: #fff; }\n\t\t.retold-remote-tile-badge-document { background: rgba(194, 102, 102, 0.8); color: #fff; }\n\t\t.retold-remote-tile-badge-folder { background: rgba(102, 140, 194, 0.8); color: #fff; }\n\t\t.retold-remote-tile-duration\n\t\t{\n\t\t\tposition: absolute;\n\t\t\tbottom: 6px;\n\t\t\tright: 6px;\n\t\t\tpadding: 1px 6px;\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: rgba(0, 0, 0, 0.7);\n\t\t\tfont-size: 0.65rem;\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t.retold-remote-tile-label\n\t\t{\n\t\t\tpadding: 6px 8px 2px 8px;\n\t\t\tfont-size: 0.75rem;\n\t\t\tfont-weight: 500;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-tile-meta\n\t\t{\n\t\t\tpadding: 0 8px 6px 8px;\n\t\t\tfont-size: 0.65rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t/* List mode */\n\t\t.retold-remote-list\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tgap: 2px;\n\t\t}\n\t\t.retold-remote-list-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 6px 12px;\n\t\t\tborder-radius: 4px;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.1s;\n\t\t}\n\t\t.retold-remote-list-row:hover\n\t\t{\n\t\t\tbackground: var(--retold-bg-hover);\n\t\t}\n\t\t.retold-remote-list-row.selected\n\t\t{\n\t\t\tbackground: var(--retold-bg-selected);\n\t\t}\n\t\t.retold-remote-list-icon\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 24px;\n\t\t\ttext-align: center;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-list-name\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-list-size\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 80px;\n\t\t\ttext-align: right;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-list-date\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 140px;\n\t\t\ttext-align: right;\n\t\t\tfont-size: 0.72rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t/* Empty state */\n\t\t.retold-remote-empty\n\t\t{\n\t\t\ttext-align: center;\n\t\t\tpadding: 60px 20px;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-empty-icon\n\t\t{\n\t\t\tfont-size: 3rem;\n\t\t\tmargin-bottom: 12px;\n\t\t}\n\t\t/* Help panel flyout */\n\t\t#RetoldRemote-Help-Panel\n\t\t{\n\t\t\tposition: fixed;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tz-index: 9999;\n\t\t}\n\t\t.retold-remote-help-backdrop\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tbackground: rgba(0, 0, 0, 0.5);\n\t\t\tdisplay: flex;\n\t\t\talign-items: flex-start;\n\t\t\tjustify-content: flex-end;\n\t\t}\n\t\t.retold-remote-help-flyout\n\t\t{\n\t\t\twidth: 340px;\n\t\t\tmax-height: calc(100vh - 32px);\n\t\t\tmargin: 16px;\n\t\t\tbackground: var(--retold-bg-panel);\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 8px;\n\t\t\toverflow-y: auto;\n\t\t\tbox-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);\n\t\t\tanimation: retold-help-slide-in 0.15s ease-out;\n\t\t}\n\t\t@keyframes retold-help-slide-in\n\t\t{\n\t\t\tfrom { transform: translateX(20px); opacity: 0; }\n\t\t\tto { transform: translateX(0); opacity: 1; }\n\t\t}\n\t\t.retold-remote-help-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 14px 16px 10px 16px;\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t}\n\t\t.retold-remote-help-title\n\t\t{\n\t\t\tfont-size: 0.88rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t.retold-remote-help-close\n\t\t{\n\t\t\tbackground: none;\n\t\t\tborder: none;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 1.2rem;\n\t\t\tcursor: pointer;\n\t\t\tpadding: 0 4px;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.retold-remote-help-close:hover\n\t\t{\n\t\t\tcolor: var(--retold-danger);\n\t\t}\n\t\t.retold-remote-help-section\n\t\t{\n\t\t\tpadding: 12px 16px 8px 16px;\n\t\t}\n\t\t.retold-remote-help-section + .retold-remote-help-section\n\t\t{\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t}\n\t\t.retold-remote-help-section-title\n\t\t{\n\t\t\tfont-size: 0.65rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: var(--retold-accent);\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.8px;\n\t\t\tmargin-bottom: 8px;\n\t\t}\n\t\t.retold-remote-help-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 3px 0;\n\t\t}\n\t\t.retold-remote-help-key\n\t\t{\n\t\t\tdisplay: inline-block;\n\t\t\tmin-width: 72px;\n\t\t\tpadding: 2px 8px;\n\t\t\tborder: 1px solid var(--retold-border-light);\n\t\t\tborder-radius: 4px;\n\t\t\tbackground: rgba(255, 255, 255, 0.04);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-family: var(--retold-font-mono, monospace);\n\t\t\tfont-size: 0.72rem;\n\t\t\ttext-align: center;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-help-desc\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.74rem;\n\t\t}\n\t\t.retold-remote-help-footer\n\t\t{\n\t\t\tpadding: 10px 16px;\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tfont-size: 0.68rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-help-footer strong\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t",Templates:[],Renderables:[]};class RetoldRemoteGalleryView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._intersectionObserver=null;}// ──────────────────────────────────────────────
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this._escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}_formatTimestamp(pSeconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpMs=Math.floor(pSeconds%1*10);if(tmpHours>0){return`${tmpHours}:${String(tmpMinutes).padStart(2,'0')}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}return`${tmpMinutes}:${String(tmpSecs).padStart(2,'0')}.${tmpMs}`;}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":85}],120:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-gallery-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 8px;
+			flex-wrap: wrap;
+		}
+		.retold-remote-gallery-filter
+		{
+			display: flex;
+			gap: 4px;
+		}
+		.retold-remote-gallery-filter-btn
+		{
+			padding: 3px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.72rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-gallery-filter-btn:hover
+		{
+			color: var(--retold-text-secondary);
+			border-color: var(--retold-scrollbar-hover);
+		}
+		.retold-remote-gallery-filter-btn.active
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
+		}
+		.retold-remote-gallery-filter-toggle
+		{
+			position: relative;
+		}
+		.retold-remote-gallery-filter-toggle.has-filters
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-gallery-filter-count
+		{
+			display: inline-block;
+			min-width: 14px;
+			height: 14px;
+			line-height: 14px;
+			padding: 0 3px;
+			border-radius: 7px;
+			background: var(--retold-accent);
+			color: var(--retold-bg-tertiary);
+			font-size: 0.58rem;
+			font-weight: 700;
+			text-align: center;
+			margin-left: 4px;
+		}
+		/* Sort dropdown */
+		.retold-remote-gallery-sort
+		{
+			display: flex;
+			align-items: center;
+		}
+		.retold-remote-gallery-sort-select
+		{
+			padding: 3px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-muted);
+			font-size: 0.72rem;
+			cursor: pointer;
+			font-family: inherit;
+		}
+		.retold-remote-gallery-sort-select:focus
+		{
+			outline: none;
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search
+		{
+			flex: 1;
+			max-width: 300px;
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			font-size: 0.78rem;
+			font-family: inherit;
+		}
+		.retold-remote-gallery-search:focus
+		{
+			outline: none;
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search::placeholder
+		{
+			color: var(--retold-text-placeholder);
+		}
+		.retold-remote-gallery-search-options
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-shrink: 0;
+		}
+		.retold-remote-gallery-search-option
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			font-size: 0.68rem;
+			color: var(--retold-text-dim);
+			cursor: pointer;
+			white-space: nowrap;
+			user-select: none;
+		}
+		.retold-remote-gallery-search-option:hover
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-gallery-search-option input[type="checkbox"]
+		{
+			margin: 0;
+			cursor: pointer;
+			accent-color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search-option.active
+		{
+			color: var(--retold-accent);
+		}
+		.retold-remote-gallery-search-regex-error
+		{
+			font-size: 0.68rem;
+			color: #e06c75;
+			white-space: nowrap;
+		}
+		/* Filter chips */
+		.retold-remote-filter-chips
+		{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			margin-bottom: 8px;
+			align-items: center;
+		}
+		.retold-remote-filter-chip
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border-light);
+			border-radius: 12px;
+			background: rgba(128, 128, 128, 0.08);
+			color: var(--retold-text-secondary);
+			font-size: 0.68rem;
+		}
+		.retold-remote-filter-chip-remove
+		{
+			background: none;
+			border: none;
+			color: var(--retold-text-muted);
+			font-size: 0.82rem;
+			cursor: pointer;
+			padding: 0 2px;
+			line-height: 1;
+		}
+		.retold-remote-filter-chip-remove:hover
+		{
+			color: var(--retold-danger);
+		}
+		.retold-remote-filter-chip-clear
+		{
+			background: none;
+			border: none;
+			color: var(--retold-text-dim);
+			font-size: 0.68rem;
+			cursor: pointer;
+			padding: 2px 4px;
+		}
+		.retold-remote-filter-chip-clear:hover
+		{
+			color: var(--retold-danger);
+		}
+		/* Filter panel */
+		.retold-remote-filter-panel
+		{
+			margin-bottom: 12px;
+			padding: 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 6px;
+			background: var(--retold-bg-panel);
+		}
+		.retold-remote-filter-panel-grid
+		{
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px 24px;
+		}
+		.retold-remote-filter-section
+		{
+			margin-bottom: 0;
+		}
+		.retold-remote-filter-section-title
+		{
+			font-size: 0.68rem;
+			font-weight: 600;
+			color: var(--retold-text-muted);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			margin-bottom: 6px;
+		}
+		.retold-remote-filter-ext-list
+		{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 2px 10px;
+		}
+		.retold-remote-filter-ext-item
+		{
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 0.72rem;
+			color: var(--retold-text-secondary);
+			cursor: pointer;
+		}
+		.retold-remote-filter-ext-item input
+		{
+			accent-color: var(--retold-accent);
+		}
+		.retold-remote-filter-ext-count
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.65rem;
+		}
+		.retold-remote-filter-row
+		{
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.retold-remote-filter-input
+		{
+			padding: 3px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.72rem;
+			width: 100px;
+			font-family: inherit;
+		}
+		.retold-remote-filter-input:focus
+		{
+			outline: none;
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-filter-label
+		{
+			color: var(--retold-text-dim);
+			font-size: 0.68rem;
+		}
+		.retold-remote-filter-actions
+		{
+			grid-column: 1 / -1;
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			padding-top: 8px;
+			border-top: 1px solid var(--retold-border);
+			margin-top: 8px;
+		}
+		.retold-remote-filter-preset-row
+		{
+			display: flex;
+			gap: 6px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		.retold-remote-filter-preset-select
+		{
+			padding: 3px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.72rem;
+			min-width: 100px;
+			font-family: inherit;
+		}
+		.retold-remote-filter-preset-input
+		{
+			padding: 3px 6px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.72rem;
+			width: 120px;
+			font-family: inherit;
+		}
+		.retold-remote-filter-preset-input:focus
+		{
+			outline: none;
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-filter-btn-sm
+		{
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.68rem;
+			cursor: pointer;
+			font-family: inherit;
+		}
+		.retold-remote-filter-btn-sm:hover
+		{
+			color: var(--retold-text-secondary);
+			border-color: var(--retold-scrollbar-hover);
+		}
+		/* Grid layout */
+		.retold-remote-grid
+		{
+			display: grid;
+			gap: 12px;
+		}
+		.retold-remote-grid.size-small
+		{
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		}
+		.retold-remote-grid.size-medium
+		{
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		}
+		.retold-remote-grid.size-large
+		{
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		}
+		/* Tile */
+		.retold-remote-tile
+		{
+			background: var(--retold-bg-tertiary);
+			border: 2px solid transparent;
+			border-radius: 6px;
+			cursor: pointer;
+			overflow: hidden;
+			transition: border-color 0.15s, transform 0.1s;
+		}
+		.retold-remote-tile:hover
+		{
+			border-color: var(--retold-border-light);
+		}
+		.retold-remote-tile.selected
+		{
+			border-color: var(--retold-accent);
+			box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.3);
+		}
+		.retold-remote-tile-thumb
+		{
+			position: relative;
+			width: 100%;
+			padding-bottom: 75%; /* 4:3 aspect ratio */
+			background: var(--retold-bg-thumb);
+			overflow: hidden;
+		}
+		.retold-remote-tile-thumb img
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		.retold-remote-tile-thumb-icon
+		{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2rem;
+			color: var(--retold-text-placeholder);
+		}
+		.retold-remote-tile-badge
+		{
+			position: absolute;
+			top: 6px;
+			right: 6px;
+			padding: 1px 6px;
+			border-radius: 3px;
+			font-size: 0.6rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+		.retold-remote-tile-badge-image { background: rgba(102, 194, 184, 0.8); color: #fff; }
+		.retold-remote-tile-badge-video { background: rgba(180, 102, 194, 0.8); color: #fff; }
+		.retold-remote-tile-badge-audio { background: rgba(194, 160, 102, 0.8); color: #fff; }
+		.retold-remote-tile-badge-document { background: rgba(194, 102, 102, 0.8); color: #fff; }
+		.retold-remote-tile-badge-folder { background: rgba(102, 140, 194, 0.8); color: #fff; }
+		.retold-remote-tile-duration
+		{
+			position: absolute;
+			bottom: 6px;
+			right: 6px;
+			padding: 1px 6px;
+			border-radius: 3px;
+			background: rgba(0, 0, 0, 0.7);
+			font-size: 0.65rem;
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-tile-label
+		{
+			padding: 6px 8px 2px 8px;
+			font-size: 0.75rem;
+			font-weight: 500;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.retold-remote-tile-meta
+		{
+			padding: 0 8px 6px 8px;
+			font-size: 0.65rem;
+			color: var(--retold-text-dim);
+		}
+		/* List mode */
+		.retold-remote-list
+		{
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+		}
+		.retold-remote-list-row
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 6px 12px;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.retold-remote-list-row:hover
+		{
+			background: var(--retold-bg-hover);
+		}
+		.retold-remote-list-row.selected
+		{
+			background: var(--retold-bg-selected);
+		}
+		.retold-remote-list-icon
+		{
+			flex-shrink: 0;
+			width: 24px;
+			text-align: center;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-list-name
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.retold-remote-list-size
+		{
+			flex-shrink: 0;
+			width: 80px;
+			text-align: right;
+			font-size: 0.72rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-list-date
+		{
+			flex-shrink: 0;
+			width: 140px;
+			text-align: right;
+			font-size: 0.72rem;
+			color: var(--retold-text-dim);
+		}
+		/* Empty state */
+		.retold-remote-empty
+		{
+			text-align: center;
+			padding: 60px 20px;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-empty-icon
+		{
+			font-size: 3rem;
+			margin-bottom: 12px;
+		}
+		/* Help panel flyout */
+		#RetoldRemote-Help-Panel
+		{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+		}
+		.retold-remote-help-backdrop
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: flex-start;
+			justify-content: flex-end;
+		}
+		.retold-remote-help-flyout
+		{
+			width: 340px;
+			max-height: calc(100vh - 32px);
+			margin: 16px;
+			background: var(--retold-bg-panel);
+			border: 1px solid var(--retold-border);
+			border-radius: 8px;
+			overflow-y: auto;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+			animation: retold-help-slide-in 0.15s ease-out;
+		}
+		@keyframes retold-help-slide-in
+		{
+			from { transform: translateX(20px); opacity: 0; }
+			to { transform: translateX(0); opacity: 1; }
+		}
+		.retold-remote-help-header
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 16px 10px 16px;
+			border-bottom: 1px solid var(--retold-border);
+		}
+		.retold-remote-help-title
+		{
+			font-size: 0.88rem;
+			font-weight: 600;
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-help-close
+		{
+			background: none;
+			border: none;
+			color: var(--retold-text-dim);
+			font-size: 1.2rem;
+			cursor: pointer;
+			padding: 0 4px;
+			line-height: 1;
+		}
+		.retold-remote-help-close:hover
+		{
+			color: var(--retold-danger);
+		}
+		.retold-remote-help-section
+		{
+			padding: 12px 16px 8px 16px;
+		}
+		.retold-remote-help-section + .retold-remote-help-section
+		{
+			border-top: 1px solid var(--retold-border);
+		}
+		.retold-remote-help-section-title
+		{
+			font-size: 0.65rem;
+			font-weight: 600;
+			color: var(--retold-accent);
+			text-transform: uppercase;
+			letter-spacing: 0.8px;
+			margin-bottom: 8px;
+		}
+		.retold-remote-help-row
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 3px 0;
+		}
+		.retold-remote-help-key
+		{
+			display: inline-block;
+			min-width: 72px;
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border-light);
+			border-radius: 4px;
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--retold-text-secondary);
+			font-family: var(--retold-font-mono, monospace);
+			font-size: 0.72rem;
+			text-align: center;
+			white-space: nowrap;
+		}
+		.retold-remote-help-desc
+		{
+			color: var(--retold-text-muted);
+			font-size: 0.74rem;
+		}
+		.retold-remote-help-footer
+		{
+			padding: 10px 16px;
+			border-top: 1px solid var(--retold-border);
+			font-size: 0.68rem;
+			color: var(--retold-text-dim);
+			text-align: center;
+		}
+		.retold-remote-help-footer strong
+		{
+			color: var(--retold-accent);
+		}
+	`,Templates:[],Renderables:[]};class RetoldRemoteGalleryView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._intersectionObserver=null;}// ──────────────────────────────────────────────
 // Gallery rendering
 // ──────────────────────────────────────────────
 /**
@@ -5525,7 +10121,35 @@ if(tmpFilterState.Extensions.length===0&&tmpFilterSort){let tmpAll=tmpFilterSort
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":85}],121:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/"\n\t\t#RetoldRemote-ImageViewer-Img\n\t\t{\n\t\t\timage-orientation: from-image;\n\t\t\ttransition: width 0.15s ease, height 0.15s ease;\n\t\t\tdisplay: block;\n\t\t}\n\t\t.retold-remote-fit-indicator\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 50%;\n\t\t\tleft: 50%;\n\t\t\ttransform: translate(-50%, -50%);\n\t\t\tbackground: rgba(0, 0, 0, 0.7);\n\t\t\tcolor: #fff;\n\t\t\tpadding: 8px 18px;\n\t\t\tborder-radius: 6px;\n\t\t\tfont-size: 0.82rem;\n\t\t\tpointer-events: none;\n\t\t\tz-index: 20;\n\t\t\topacity: 0;\n\t\t\ttransition: opacity 0.3s ease;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-fit-indicator.visible\n\t\t{\n\t\t\topacity: 1;\n\t\t}\n\t"};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;this._indicatorTimeout=null;}/**
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":85}],121:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+		#RetoldRemote-ImageViewer-Img
+		{
+			image-orientation: from-image;
+			transition: width 0.15s ease, height 0.15s ease;
+			display: block;
+		}
+		.retold-remote-fit-indicator
+		{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(0, 0, 0, 0.7);
+			color: #fff;
+			padding: 8px 18px;
+			border-radius: 6px;
+			font-size: 0.82rem;
+			pointer-events: none;
+			z-index: 20;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			white-space: nowrap;
+		}
+		.retold-remote-fit-indicator.visible
+		{
+			opacity: 1;
+		}
+	`};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;this._indicatorTimeout=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
 	 */initImage(){let tmpImg=document.getElementById('RetoldRemote-ImageViewer-Img');if(!tmpImg){return;}this._naturalWidth=tmpImg.naturalWidth;this._naturalHeight=tmpImg.naturalHeight;this._zoomLevel=1;this._applyDisplay();// Recalculate on window resize
@@ -5564,7 +10188,225 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;// Create or reuse the indicator element
 let tmpIndicator=document.getElementById('RetoldRemote-FitIndicator');if(!tmpIndicator){tmpIndicator=document.createElement('div');tmpIndicator.id='RetoldRemote-FitIndicator';tmpIndicator.className='retold-remote-fit-indicator';let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpContainer){tmpContainer.appendChild(tmpIndicator);}}tmpIndicator.textContent=tmpLabel;tmpIndicator.classList.add('visible');if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);}this._indicatorTimeout=setTimeout(function(){tmpIndicator.classList.remove('visible');},1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);this._indicatorTimeout=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":85}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/"\n\t\t#ContentEditor-Application-Container\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100vh;\n\t\t\tbackground: var(--retold-bg-primary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tfont-family: var(--retold-font-family, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif);\n\t\t}\n\t\t#ContentEditor-TopBar-Container\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.content-editor-body\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex: 1;\n\t\t\tmin-height: 0;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t/* Sidebar */\n\t\t.content-editor-sidebar-wrap\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-shrink: 0;\n\t\t\tposition: relative;\n\t\t\ttransition: width 0.2s ease;\n\t\t}\n\t\t.content-editor-sidebar-inner\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tflex: 1;\n\t\t\tmin-width: 0;\n\t\t\tmin-height: 0;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.content-editor-sidebar-tabs\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-shrink: 0;\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t}\n\t\t.content-editor-sidebar-tab\n\t\t{\n\t\t\tflex: 1;\n\t\t\tpadding: 7px 0;\n\t\t\tborder: none;\n\t\t\tbackground: transparent;\n\t\t\tfont-size: 0.78rem;\n\t\t\tfont-weight: 600;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tcursor: pointer;\n\t\t\tborder-bottom: 2px solid transparent;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.content-editor-sidebar-tab:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.content-editor-sidebar-tab.active\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t\tborder-bottom-color: var(--retold-accent);\n\t\t}\n\t\t.content-editor-sidebar-pane\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\toverflow-x: hidden;\n\t\t\tmin-width: 0;\n\t\t\tmin-height: 0;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container\n\t\t{\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t}\n\t\t/* Collapsed state */\n\t\t.content-editor-sidebar-wrap.collapsed\n\t\t{\n\t\t\twidth: 0 !important;\n\t\t}\n\t\t.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner\n\t\t{\n\t\t\tvisibility: hidden;\n\t\t}\n\t\t.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t/* Resize handle */\n\t\t.content-editor-resize-handle\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\twidth: 5px;\n\t\t\tcursor: col-resize;\n\t\t\tbackground: transparent;\n\t\t\tborder-right: 1px solid var(--retold-border);\n\t\t\ttransition: background 0.15s;\n\t\t}\n\t\t.content-editor-resize-handle:hover,\n\t\t.content-editor-resize-handle.dragging\n\t\t{\n\t\t\tbackground: var(--retold-accent);\n\t\t\tborder-right-color: var(--retold-accent);\n\t\t}\n\t\t/* File browser overrides for sidebar */\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser\n\t\t{\n\t\t\tborder: none;\n\t\t\tborder-radius: 0;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser-browse-pane\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-filebrowser-view-pane\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-col-size,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-col-modified,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-size,\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-modified\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-header\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-row\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tborder-bottom-color: var(--retold-border);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-row:hover\n\t\t{\n\t\t\tbackground: var(--retold-bg-hover);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-row.selected\n\t\t{\n\t\t\tbackground: var(--retold-bg-selected);\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-detail-row.sidebar-focused\n\t\t{\n\t\t\toutline: 2px solid var(--retold-accent);\n\t\t\toutline-offset: -2px;\n\t\t\tbackground: var(--retold-bg-hover);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t.content-editor-sidebar-inner.keyboard-focused\n\t\t{\n\t\t\tbox-shadow: inset 0 0 0 1px var(--retold-accent);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom-color: var(--retold-border);\n\t\t}\n\t\t#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t/* Main content area */\n\t\t#RetoldRemote-Content-Container\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\tposition: relative;\n\t\t}\n\t\t#RetoldRemote-Gallery-Container\n\t\t{\n\t\t\tpadding: 12px;\n\t\t\tmin-height: 100%;\n\t\t}\n\t\t#RetoldRemote-Viewer-Container\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\tright: 0;\n\t\t\tbottom: 0;\n\t\t\tbackground: var(--retold-bg-viewer);\n\t\t\tdisplay: none;\n\t\t}\n\t\t/* Also hide the editor container from the parent */\n\t\t#ContentEditor-Editor-Container\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t",Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/"\n\t\t\t\t<div id=\"ContentEditor-TopBar-Container\"></div>\n\t\t\t\t<div class=\"content-editor-body\">\n\t\t\t\t\t<div class=\"content-editor-sidebar-wrap\" style=\"width: 250px;\">\n\t\t\t\t\t\t<div class=\"content-editor-sidebar-inner\">\n\t\t\t\t\t\t\t<div class=\"content-editor-sidebar-tabs\">\n\t\t\t\t\t\t\t\t<button class=\"content-editor-sidebar-tab active\" data-tab=\"files\" onclick=\"pict.views['ContentEditor-Layout'].switchSidebarTab('files')\">Files</button>\n\t\t\t\t\t\t\t\t<button class=\"content-editor-sidebar-tab\" data-tab=\"settings\" onclick=\"pict.views['ContentEditor-Layout'].switchSidebarTab('settings')\">Settings</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"content-editor-sidebar-pane\" data-pane=\"files\" id=\"ContentEditor-Sidebar-Container\"></div>\n\t\t\t\t\t\t\t<div class=\"content-editor-sidebar-pane\" data-pane=\"settings\" id=\"RetoldRemote-Settings-Container\" style=\"display:none\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"content-editor-resize-handle\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div id=\"RetoldRemote-Content-Container\">\n\t\t\t\t\t\t<div id=\"RetoldRemote-Gallery-Container\"></div>\n\t\t\t\t\t\t<div id=\"RetoldRemote-Viewer-Container\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t"}],Renderables:[{RenderableHash:"RetoldRemote-Layout-Shell",TemplateHash:"RetoldRemote-Layout-Shell",DestinationAddress:"#ContentEditor-Application-Container"}]};class RetoldRemoteLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._sidebarDragging=false;}onAfterRender(){super.onAfterRender();// Inject all view CSS into the page
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}if(this._indicatorTimeout){clearTimeout(this._indicatorTimeout);this._indicatorTimeout=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":85}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+		#ContentEditor-Application-Container
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			background: var(--retold-bg-primary);
+			color: var(--retold-text-primary);
+			font-family: var(--retold-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+		}
+		#ContentEditor-TopBar-Container
+		{
+			flex-shrink: 0;
+		}
+		.content-editor-body
+		{
+			display: flex;
+			flex: 1;
+			min-height: 0;
+			overflow: hidden;
+		}
+		/* Sidebar */
+		.content-editor-sidebar-wrap
+		{
+			display: flex;
+			flex-shrink: 0;
+			position: relative;
+			transition: width 0.2s ease;
+		}
+		.content-editor-sidebar-inner
+		{
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+			min-height: 0;
+			overflow: hidden;
+		}
+		.content-editor-sidebar-tabs
+		{
+			display: flex;
+			flex-shrink: 0;
+			border-bottom: 1px solid var(--retold-border);
+			background: var(--retold-bg-secondary);
+		}
+		.content-editor-sidebar-tab
+		{
+			flex: 1;
+			padding: 7px 0;
+			border: none;
+			background: transparent;
+			font-size: 0.78rem;
+			font-weight: 600;
+			color: var(--retold-text-muted);
+			cursor: pointer;
+			border-bottom: 2px solid transparent;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.content-editor-sidebar-tab:hover
+		{
+			color: var(--retold-text-secondary);
+		}
+		.content-editor-sidebar-tab.active
+		{
+			color: var(--retold-accent);
+			border-bottom-color: var(--retold-accent);
+		}
+		.content-editor-sidebar-pane
+		{
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+			min-width: 0;
+			min-height: 0;
+		}
+		#ContentEditor-Sidebar-Container
+		{
+			background: var(--retold-bg-tertiary);
+		}
+		/* Collapsed state */
+		.content-editor-sidebar-wrap.collapsed
+		{
+			width: 0 !important;
+		}
+		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner
+		{
+			visibility: hidden;
+		}
+		.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle
+		{
+			display: none;
+		}
+		/* Resize handle */
+		.content-editor-resize-handle
+		{
+			flex-shrink: 0;
+			width: 5px;
+			cursor: col-resize;
+			background: transparent;
+			border-right: 1px solid var(--retold-border);
+			transition: background 0.15s;
+		}
+		.content-editor-resize-handle:hover,
+		.content-editor-resize-handle.dragging
+		{
+			background: var(--retold-accent);
+			border-right-color: var(--retold-accent);
+		}
+		/* File browser overrides for sidebar */
+		#ContentEditor-Sidebar-Container .pict-filebrowser
+		{
+			border: none;
+			border-radius: 0;
+			background: transparent;
+			color: var(--retold-text-secondary);
+		}
+		#ContentEditor-Sidebar-Container .pict-filebrowser-browse-pane
+		{
+			display: none;
+		}
+		#ContentEditor-Sidebar-Container .pict-filebrowser-view-pane
+		{
+			display: none;
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-col-size,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-col-modified,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-size,
+		#ContentEditor-Sidebar-Container .pict-fb-detail-modified
+		{
+			display: none;
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-header
+		{
+			display: none;
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row
+		{
+			color: var(--retold-text-secondary);
+			border-bottom-color: var(--retold-border);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row:hover
+		{
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row.selected
+		{
+			background: var(--retold-bg-selected);
+			color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row.sidebar-focused
+		{
+			outline: 2px solid var(--retold-accent);
+			outline-offset: -2px;
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-primary);
+		}
+		.content-editor-sidebar-inner.keyboard-focused
+		{
+			box-shadow: inset 0 0 0 1px var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs
+		{
+			color: var(--retold-text-muted);
+			background: var(--retold-bg-secondary);
+			border-bottom-color: var(--retold-border);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link
+		{
+			color: var(--retold-accent);
+		}
+		/* Main content area */
+		#RetoldRemote-Content-Container
+		{
+			flex: 1;
+			overflow-y: auto;
+			position: relative;
+		}
+		#RetoldRemote-Gallery-Container
+		{
+			padding: 12px;
+			min-height: 100%;
+		}
+		#RetoldRemote-Viewer-Container
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: var(--retold-bg-viewer);
+			display: none;
+		}
+		/* Also hide the editor container from the parent */
+		#ContentEditor-Editor-Container
+		{
+			display: none;
+		}
+	`,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
+				<div id="ContentEditor-TopBar-Container"></div>
+				<div class="content-editor-body">
+					<div class="content-editor-sidebar-wrap" style="width: 250px;">
+						<div class="content-editor-sidebar-inner">
+							<div class="content-editor-sidebar-tabs">
+								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
+								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
+							</div>
+							<div class="content-editor-sidebar-pane" data-pane="files" id="ContentEditor-Sidebar-Container"></div>
+							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
+						</div>
+						<div class="content-editor-resize-handle"></div>
+					</div>
+					<div id="RetoldRemote-Content-Container">
+						<div id="RetoldRemote-Gallery-Container"></div>
+						<div id="RetoldRemote-Viewer-Container"></div>
+					</div>
+				</div>
+			`}],Renderables:[{RenderableHash:"RetoldRemote-Layout-Shell",TemplateHash:"RetoldRemote-Layout-Shell",DestinationAddress:"#ContentEditor-Application-Container"}]};class RetoldRemoteLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._sidebarDragging=false;}onAfterRender(){super.onAfterRender();// Inject all view CSS into the page
 this.pict.CSSMap.injectCSS();// Set up sidebar resize handle
 this._setupResizeHandle();// Restore sidebar state from settings
 let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote&&tmpRemote.SidebarCollapsed){let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(tmpWrap){tmpWrap.classList.add('collapsed');}}if(tmpRemote&&tmpRemote.SidebarWidth){let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(tmpWrap&&!tmpWrap.classList.contains('collapsed')){tmpWrap.style.width=tmpRemote.SidebarWidth+'px';}}// Listen for hash changes (browser back/forward)
@@ -5575,7 +10417,353 @@ let tmpPanes=document.querySelectorAll('.content-editor-sidebar-pane');tmpPanes.
 if(pTab==='settings'){let tmpSettingsView=this.pict.views['RetoldRemote-SettingsPanel'];if(tmpSettingsView){tmpSettingsView.render();}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartWidth=0;function onMouseDown(pEvent){tmpSelf._sidebarDragging=true;tmpStartX=pEvent.clientX;tmpStartWidth=tmpWrap.offsetWidth;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onMouseMove);document.addEventListener('mouseup',onMouseUp);pEvent.preventDefault();}function onMouseMove(pEvent){if(!tmpSelf._sidebarDragging)return;let tmpNewWidth=tmpStartWidth+(pEvent.clientX-tmpStartX);tmpNewWidth=Math.max(150,Math.min(tmpNewWidth,600));tmpWrap.style.width=tmpNewWidth+'px';}function onMouseUp(){tmpSelf._sidebarDragging=false;tmpHandle.classList.remove('dragging');document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);// Persist width
 let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict.PictApplication.saveSettings();// Recalculate gallery columns
 let tmpNavProvider=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNavProvider){tmpNavProvider.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onMouseDown);// Double-click on resize handle collapses the sidebar
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleSidebar();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":85}],123:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-viewer\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100%;\n\t\t}\n\t\t.retold-remote-viewer-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tz-index: 5;\n\t\t}\n\t\t.retold-remote-viewer-nav-btn\n\t\t{\n\t\t\tpadding: 4px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.8rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-viewer-nav-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-viewer-title\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-viewer-body\n\t\t{\n\t\t\tflex: 1;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\toverflow: auto;\n\t\t\tposition: relative;\n\t\t}\n\t\t/* File info overlay */\n\t\t.retold-remote-fileinfo-overlay\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 48px;\n\t\t\tright: 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 6px;\n\t\t\tpadding: 16px;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.78rem;\n\t\t\tz-index: 10;\n\t\t\tmin-width: 200px;\n\t\t\tdisplay: none;\n\t\t}\n\t\t.retold-remote-fileinfo-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 3px 0;\n\t\t}\n\t\t.retold-remote-fileinfo-label\n\t\t{\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-fileinfo-value\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t/* Code viewer container */\n\t\t.retold-remote-code-viewer-container\n\t\t{\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.retold-remote-code-viewer-loading\n\t\t{\n\t\t\tpadding: 16px 20px;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-style: italic;\n\t\t\tfont-size: 0.82rem;\n\t\t}\n\t\t/* pict-section-code dark theme overrides */\n\t\t.retold-remote-code-viewer-container .pict-code-editor-wrap\n\t\t{\n\t\t\tborder: none;\n\t\t\tborder-radius: 0;\n\t\t\theight: 100%;\n\t\t\tfont-family: var(--retold-font-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace);\n\t\t\tfont-size: 0.82rem;\n\t\t\tline-height: 1.6;\n\t\t}\n\t\t.retold-remote-code-viewer-container .pict-code-line-numbers\n\t\t{\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-right: 1px solid var(--retold-border);\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.78rem;\n\t\t\tline-height: 1.6;\n\t\t\tpadding: 10px 0;\n\t\t}\n\t\t.retold-remote-code-viewer-container .pict-code-editor\n\t\t{\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tpadding: 10px 10px 10px 12px;\n\t\t\ttab-size: 4;\n\t\t\t-moz-tab-size: 4;\n\t\t\tcaret-color: var(--retold-accent);\n\t\t\tborder-radius: 0;\n\t\t}\n\t\t/* Syntax highlighting colors for dark themes */\n\t\t.retold-remote-code-viewer-container .pict-code-editor .keyword { color: #C678DD; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .string { color: #98C379; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .number { color: #D19A66; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .comment { color: #5C6370; font-style: italic; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .operator { color: #56B6C2; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .punctuation { color: #ABB2BF; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .function-name { color: #61AFEF; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .property { color: #E06C75; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .tag { color: #E06C75; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .attr-name { color: #D19A66; }\n\t\t.retold-remote-code-viewer-container .pict-code-editor .attr-value { color: #98C379; }\n\t\t/* Video wrap with stats bar */\n\t\t.retold-remote-video-wrap\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: 100%;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t}\n\t\t.retold-remote-video-wrap video\n\t\t{\n\t\t\tflex: 1;\n\t\t\tmin-height: 0;\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: calc(100% - 40px);\n\t\t\tobject-fit: contain;\n\t\t}\n\t\t.retold-remote-video-stats\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 16px;\n\t\t\tpadding: 6px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\twidth: 100%;\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\twhite-space: nowrap;\n\t\t\toverflow-x: auto;\n\t\t}\n\t\t.retold-remote-video-stats span\n\t\t{\n\t\t\tdisplay: inline-flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t}\n\t\t.retold-remote-video-stats .retold-remote-video-stat-label\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-video-stats .retold-remote-video-stat-value\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.retold-remote-explore-btn\n\t\t{\n\t\t\tmargin-left: auto;\n\t\t\tpadding: 3px 12px;\n\t\t\tborder: 1px solid var(--retold-accent);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-accent);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.15s, color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-explore-btn:hover\n\t\t{\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-primary);\n\t\t}\n\t\t.retold-remote-vlc-btn\n\t\t{\n\t\t\tpadding: 3px 12px;\n\t\t\tborder: 1px solid var(--retold-accent);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-accent);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.15s, color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t.retold-remote-vlc-btn:hover\n\t\t{\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-primary);\n\t\t}\n\t\t/* Ebook reader */\n\t\t.retold-remote-ebook-wrap\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tposition: relative;\n\t\t}\n\t\t.retold-remote-ebook-toc\n\t\t{\n\t\t\twidth: 240px;\n\t\t\tflex-shrink: 0;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-right: 1px solid var(--retold-border);\n\t\t\toverflow-y: auto;\n\t\t\tfont-size: 0.78rem;\n\t\t\tpadding: 8px 0;\n\t\t}\n\t\t.retold-remote-ebook-toc.collapsed\n\t\t{\n\t\t\tdisplay: none;\n\t\t}\n\t\t.retold-remote-ebook-toc-item\n\t\t{\n\t\t\tdisplay: block;\n\t\t\tpadding: 6px 16px;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\ttext-decoration: none;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.1s, color 0.1s;\n\t\t\tborder: none;\n\t\t\tbackground: none;\n\t\t\twidth: 100%;\n\t\t\ttext-align: left;\n\t\t\tfont-family: inherit;\n\t\t\tfont-size: inherit;\n\t\t}\n\t\t.retold-remote-ebook-toc-item:hover\n\t\t{\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t}\n\t\t.retold-remote-ebook-toc-item.indent-1\n\t\t{\n\t\t\tpadding-left: 32px;\n\t\t}\n\t\t.retold-remote-ebook-toc-item.indent-2\n\t\t{\n\t\t\tpadding-left: 48px;\n\t\t}\n\t\t.retold-remote-ebook-reader\n\t\t{\n\t\t\tflex: 1;\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\tmin-width: 0;\n\t\t\tposition: relative;\n\t\t}\n\t\t.retold-remote-ebook-content\n\t\t{\n\t\t\tflex: 1;\n\t\t\tposition: relative;\n\t\t\toverflow: hidden;\n\t\t}\n\t\t.retold-remote-ebook-content iframe\n\t\t{\n\t\t\tborder: none;\n\t\t}\n\t\t.retold-remote-ebook-controls\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tgap: 16px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-ebook-page-btn\n\t\t{\n\t\t\tpadding: 6px 20px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.82rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-ebook-page-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-ebook-toc-btn\n\t\t{\n\t\t\tpadding: 6px 12px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-ebook-toc-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-ebook-loading\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\theight: 100%;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.85rem;\n\t\t}\n\t"};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleSidebar();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":85}],123:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-viewer
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.retold-remote-viewer-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			z-index: 5;
+		}
+		.retold-remote-viewer-nav-btn
+		{
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.8rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-viewer-nav-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-viewer-title
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: center;
+		}
+		.retold-remote-viewer-body
+		{
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: auto;
+			position: relative;
+		}
+		/* File info overlay */
+		.retold-remote-fileinfo-overlay
+		{
+			position: absolute;
+			top: 48px;
+			right: 16px;
+			background: var(--retold-bg-secondary);
+			border: 1px solid var(--retold-border);
+			border-radius: 6px;
+			padding: 16px;
+			color: var(--retold-text-secondary);
+			font-size: 0.78rem;
+			z-index: 10;
+			min-width: 200px;
+			display: none;
+		}
+		.retold-remote-fileinfo-row
+		{
+			display: flex;
+			justify-content: space-between;
+			padding: 3px 0;
+		}
+		.retold-remote-fileinfo-label
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-fileinfo-value
+		{
+			color: var(--retold-text-primary);
+		}
+		/* Code viewer container */
+		.retold-remote-code-viewer-container
+		{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		.retold-remote-code-viewer-loading
+		{
+			padding: 16px 20px;
+			color: var(--retold-text-dim);
+			font-style: italic;
+			font-size: 0.82rem;
+		}
+		/* pict-section-code dark theme overrides */
+		.retold-remote-code-viewer-container .pict-code-editor-wrap
+		{
+			border: none;
+			border-radius: 0;
+			height: 100%;
+			font-family: var(--retold-font-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace);
+			font-size: 0.82rem;
+			line-height: 1.6;
+		}
+		.retold-remote-code-viewer-container .pict-code-line-numbers
+		{
+			background: var(--retold-bg-secondary);
+			border-right: 1px solid var(--retold-border);
+			color: var(--retold-text-dim);
+			font-size: 0.78rem;
+			line-height: 1.6;
+			padding: 10px 0;
+		}
+		.retold-remote-code-viewer-container .pict-code-editor
+		{
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			padding: 10px 10px 10px 12px;
+			tab-size: 4;
+			-moz-tab-size: 4;
+			caret-color: var(--retold-accent);
+			border-radius: 0;
+		}
+		/* Syntax highlighting colors for dark themes */
+		.retold-remote-code-viewer-container .pict-code-editor .keyword { color: #C678DD; }
+		.retold-remote-code-viewer-container .pict-code-editor .string { color: #98C379; }
+		.retold-remote-code-viewer-container .pict-code-editor .number { color: #D19A66; }
+		.retold-remote-code-viewer-container .pict-code-editor .comment { color: #5C6370; font-style: italic; }
+		.retold-remote-code-viewer-container .pict-code-editor .operator { color: #56B6C2; }
+		.retold-remote-code-viewer-container .pict-code-editor .punctuation { color: #ABB2BF; }
+		.retold-remote-code-viewer-container .pict-code-editor .function-name { color: #61AFEF; }
+		.retold-remote-code-viewer-container .pict-code-editor .property { color: #E06C75; }
+		.retold-remote-code-viewer-container .pict-code-editor .tag { color: #E06C75; }
+		.retold-remote-code-viewer-container .pict-code-editor .attr-name { color: #D19A66; }
+		.retold-remote-code-viewer-container .pict-code-editor .attr-value { color: #98C379; }
+		/* Video wrap with stats bar */
+		.retold-remote-video-wrap
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			max-width: 100%;
+			max-height: 100%;
+			width: 100%;
+			height: 100%;
+		}
+		.retold-remote-video-wrap video
+		{
+			flex: 1;
+			min-height: 0;
+			max-width: 100%;
+			max-height: calc(100% - 40px);
+			object-fit: contain;
+		}
+		.retold-remote-video-stats
+		{
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 6px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			width: 100%;
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+			white-space: nowrap;
+			overflow-x: auto;
+		}
+		.retold-remote-video-stats span
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.retold-remote-video-stats .retold-remote-video-stat-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-video-stats .retold-remote-video-stat-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-explore-btn
+		{
+			margin-left: auto;
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-explore-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-vlc-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-vlc-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		/* Ebook reader */
+		.retold-remote-ebook-wrap
+		{
+			display: flex;
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.retold-remote-ebook-toc
+		{
+			width: 240px;
+			flex-shrink: 0;
+			background: var(--retold-bg-secondary);
+			border-right: 1px solid var(--retold-border);
+			overflow-y: auto;
+			font-size: 0.78rem;
+			padding: 8px 0;
+		}
+		.retold-remote-ebook-toc.collapsed
+		{
+			display: none;
+		}
+		.retold-remote-ebook-toc-item
+		{
+			display: block;
+			padding: 6px 16px;
+			color: var(--retold-text-secondary);
+			text-decoration: none;
+			cursor: pointer;
+			transition: background 0.1s, color 0.1s;
+			border: none;
+			background: none;
+			width: 100%;
+			text-align: left;
+			font-family: inherit;
+			font-size: inherit;
+		}
+		.retold-remote-ebook-toc-item:hover
+		{
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+		}
+		.retold-remote-ebook-toc-item.indent-1
+		{
+			padding-left: 32px;
+		}
+		.retold-remote-ebook-toc-item.indent-2
+		{
+			padding-left: 48px;
+		}
+		.retold-remote-ebook-reader
+		{
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			min-width: 0;
+			position: relative;
+		}
+		.retold-remote-ebook-content
+		{
+			flex: 1;
+			position: relative;
+			overflow: hidden;
+		}
+		.retold-remote-ebook-content iframe
+		{
+			border: none;
+		}
+		.retold-remote-ebook-controls
+		{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-ebook-page-btn
+		{
+			padding: 6px 20px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.82rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-ebook-page-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-ebook-toc-btn
+		{
+			padding: 6px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			font-family: inherit;
+		}
+		.retold-remote-ebook-toc-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-ebook-loading
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.85rem;
+		}
+	`};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
 	 * Show the media viewer for a given file.
 	 *
 	 * @param {string} pFilePath  - Relative file path
@@ -5644,7 +10832,7 @@ tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).ca
 	 * Render the table of contents for the ebook.
 	 *
 	 * @param {Array} pToc - epub.js navigation TOC array
-	 */_renderEbookTOC(pToc){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(!tmpTocEl||!pToc){return;}let tmpSelf=this;let tmpHTML='';let _tmpBuildItems=function tmpBuildItems(pItems,pDepth){for(let i=0;i<pItems.length;i++){let tmpItem=pItems[i];let tmpIndentClass=pDepth>0?' indent-'+Math.min(pDepth,2):'';tmpHTML+='<button class="retold-remote-ebook-toc-item'+tmpIndentClass+'" '+'data-href="'+tmpSelf._escapeHTML(tmpItem.href)+'" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'+tmpSelf._escapeHTML(tmpItem.label.trim())+'</button>';if(tmpItem.subitems&&tmpItem.subitems.length>0){_tmpBuildItems(tmpItem.subitems,pDepth+1);}}};_tmpBuildItems(pToc,0);tmpTocEl.innerHTML=tmpHTML;}/**
+	 */_renderEbookTOC(pToc){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(!tmpTocEl||!pToc){return;}let tmpSelf=this;let tmpHTML='';let tmpBuildItems=function(pItems,pDepth){for(let i=0;i<pItems.length;i++){let tmpItem=pItems[i];let tmpIndentClass=pDepth>0?' indent-'+Math.min(pDepth,2):'';tmpHTML+='<button class="retold-remote-ebook-toc-item'+tmpIndentClass+'" '+'data-href="'+tmpSelf._escapeHTML(tmpItem.href)+'" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'+tmpSelf._escapeHTML(tmpItem.label.trim())+'</button>';if(tmpItem.subitems&&tmpItem.subitems.length>0){tmpBuildItems(tmpItem.subitems,pDepth+1);}}};tmpBuildItems(pToc,0);tmpTocEl.innerHTML=tmpHTML;}/**
 	 * Navigate to a chapter in the ebook by href.
 	 *
 	 * @param {string} pHref - Chapter href from the TOC
@@ -5659,7 +10847,77 @@ tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).ca
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf._formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf._formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":58,"pict-view":85}],124:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-settings\n\t\t{\n\t\t\tpadding: 12px;\n\t\t}\n\t\t.retold-remote-settings-section\n\t\t{\n\t\t\tmargin-bottom: 16px;\n\t\t}\n\t\t.retold-remote-settings-section-title\n\t\t{\n\t\t\tfont-size: 0.7rem;\n\t\t\tfont-weight: 700;\n\t\t\ttext-transform: uppercase;\n\t\t\tletter-spacing: 0.5px;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tmargin-bottom: 8px;\n\t\t}\n\t\t.retold-remote-settings-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 4px 0;\n\t\t}\n\t\t.retold-remote-settings-label\n\t\t{\n\t\t\tfont-size: 0.78rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.retold-remote-settings-select\n\t\t{\n\t\t\tpadding: 3px 8px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-size: 0.75rem;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-settings-checkbox\n\t\t{\n\t\t\taccent-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-settings-capabilities\n\t\t{\n\t\t\tmargin-top: 12px;\n\t\t\tpadding: 8px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-radius: 4px;\n\t\t\tfont-size: 0.72rem;\n\t\t}\n\t\t.retold-remote-settings-cap-row\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 2px 0;\n\t\t}\n\t\t.retold-remote-settings-cap-label\n\t\t{\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-settings-cap-yes\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-settings-cap-no\n\t\t{\n\t\t\tcolor: var(--retold-danger-muted);\n\t\t}\n\t"};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}_formatFileSize(pBytes){if(!pBytes||pBytes===0)return'0 B';let tmpUnits=['B','KB','MB','GB','TB'];let tmpIndex=Math.floor(Math.log(pBytes)/Math.log(1024));if(tmpIndex>=tmpUnits.length)tmpIndex=tmpUnits.length-1;let tmpSize=pBytes/Math.pow(1024,tmpIndex);return tmpSize.toFixed(tmpIndex===0?0:1)+' '+tmpUnits[tmpIndex];}_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":58,"pict-view":85}],124:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-settings
+		{
+			padding: 12px;
+		}
+		.retold-remote-settings-section
+		{
+			margin-bottom: 16px;
+		}
+		.retold-remote-settings-section-title
+		{
+			font-size: 0.7rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			color: var(--retold-text-dim);
+			margin-bottom: 8px;
+		}
+		.retold-remote-settings-row
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 4px 0;
+		}
+		.retold-remote-settings-label
+		{
+			font-size: 0.78rem;
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-settings-select
+		{
+			padding: 3px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.75rem;
+			font-family: inherit;
+		}
+		.retold-remote-settings-checkbox
+		{
+			accent-color: var(--retold-accent);
+		}
+		.retold-remote-settings-capabilities
+		{
+			margin-top: 12px;
+			padding: 8px;
+			background: var(--retold-bg-secondary);
+			border-radius: 4px;
+			font-size: 0.72rem;
+		}
+		.retold-remote-settings-cap-row
+		{
+			display: flex;
+			justify-content: space-between;
+			padding: 2px 0;
+		}
+		.retold-remote-settings-cap-label
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-settings-cap-yes
+		{
+			color: var(--retold-accent);
+		}
+		.retold-remote-settings-cap-no
+		{
+			color: var(--retold-danger-muted);
+		}
+	`};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Gallery</div>';// Thumbnail size
@@ -5678,7 +10936,136 @@ tmpHTML+='</div>';// end settings
 tmpContainer.innerHTML=tmpHTML;}changeTheme(pThemeKey){let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){tmpThemeProvider.applyTheme(pThemeKey);this.pict.PictApplication.saveSettings();// Re-render settings to update dropdown selection
 this._renderSettingsContent();}}changeSetting(pKey,pValue){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pValue;this.pict.PictApplication.saveSettings();// Re-render gallery if visible
 if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}toggleHiddenFiles(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();this.pict.PictApplication.syncHiddenFilesSetting(()=>{this.pict.PictApplication.loadFileList();});}toggleAutoplay(pKey,pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote[pKey]=pChecked;this.pict.PictApplication.saveSettings();}toggleDistractionFreeNav(pChecked){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.DistractionFreeShowNav=pChecked;this.pict.PictApplication.saveSettings();// If currently in distraction-free mode, apply immediately
-if(tmpRemote._distractionFreeMode){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display=pChecked?'':'none';}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":85}],125:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-topbar\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\theight: 40px;\n\t\t\tpadding: 0 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tgap: 16px;\n\t\t}\n\t\t.retold-remote-topbar-brand\n\t\t{\n\t\t\tfont-size: 0.85rem;\n\t\t\tfont-weight: 700;\n\t\t\tcolor: var(--retold-accent);\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-topbar-location\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-topbar-location-crumb\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t\tcursor: pointer;\n\t\t\ttext-decoration: none;\n\t\t}\n\t\t.retold-remote-topbar-location-crumb:hover\n\t\t{\n\t\t\ttext-decoration: underline;\n\t\t}\n\t\t.retold-remote-topbar-sep\n\t\t{\n\t\t\tcolor: var(--retold-text-placeholder);\n\t\t\tmargin: 0 3px;\n\t\t}\n\t\t.retold-remote-topbar-info\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-topbar-actions\n\t\t{\n\t\t\tflex-shrink: 0;\n\t\t\tdisplay: flex;\n\t\t\tgap: 8px;\n\t\t}\n\t\t.retold-remote-topbar-btn\n\t\t{\n\t\t\tpadding: 4px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-topbar-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-topbar-filter-btn\n\t\t{\n\t\t\tposition: relative;\n\t\t\tpadding: 4px 8px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.82rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s, background 0.15s;\n\t\t\tfont-family: inherit;\n\t\t\tline-height: 1;\n\t\t}\n\t\t.retold-remote-topbar-filter-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-topbar-filter-btn.filter-active\n\t\t{\n\t\t\tcolor: var(--retold-accent);\n\t\t\tborder-color: var(--retold-accent);\n\t\t\tbackground: rgba(128, 128, 128, 0.1);\n\t\t}\n\t\t.retold-remote-topbar-filter-btn.filter-bar-open\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-text-muted);\n\t\t\tbackground: rgba(128, 128, 128, 0.06);\n\t\t}\n\t\t.retold-remote-topbar-filter-badge\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: -4px;\n\t\t\tright: -4px;\n\t\t\tmin-width: 14px;\n\t\t\theight: 14px;\n\t\t\tline-height: 14px;\n\t\t\tpadding: 0 3px;\n\t\t\tborder-radius: 7px;\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-tertiary);\n\t\t\tfont-size: 0.55rem;\n\t\t\tfont-weight: 700;\n\t\t\ttext-align: center;\n\t\t}\n\t",Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/"\n\t\t\t\t<div class=\"retold-remote-topbar\">\n\t\t\t\t\t<div class=\"retold-remote-topbar-brand\">Retold Remote</div>\n\t\t\t\t\t<div class=\"retold-remote-topbar-location\" id=\"RetoldRemote-TopBar-Location\"></div>\n\t\t\t\t\t<div class=\"retold-remote-topbar-info\" id=\"RetoldRemote-TopBar-Info\"></div>\n\t\t\t\t\t<div class=\"retold-remote-topbar-actions\">\n\t\t\t\t\t\t<button class=\"retold-remote-topbar-filter-btn\" id=\"RetoldRemote-TopBar-FilterBtn\" onclick=\"pict.views['ContentEditor-TopBar'].toggleFilterBar()\" title=\"Toggle filter bar (/)\">&#9698;</button>\n\t\t\t\t\t\t<button class=\"retold-remote-topbar-btn\" onclick=\"pict.views['ContentEditor-Layout'].toggleSidebar()\" title=\"Toggle Sidebar\">&#9776;</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t"}],Renderables:[{RenderableHash:"RetoldRemote-TopBar",TemplateHash:"RetoldRemote-TopBar",DestinationAddress:"#ContentEditor-TopBar-Container"}]};class RetoldRemoteTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this.updateLocation();this.updateInfo();}/**
+if(tmpRemote._distractionFreeMode){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display=pChecked?'':'none';}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":85}],125:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-topbar
+		{
+			display: flex;
+			align-items: center;
+			height: 40px;
+			padding: 0 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			gap: 16px;
+		}
+		.retold-remote-topbar-brand
+		{
+			font-size: 0.85rem;
+			font-weight: 700;
+			color: var(--retold-accent);
+			flex-shrink: 0;
+		}
+		.retold-remote-topbar-location
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-muted);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: center;
+		}
+		.retold-remote-topbar-location-crumb
+		{
+			color: var(--retold-accent);
+			cursor: pointer;
+			text-decoration: none;
+		}
+		.retold-remote-topbar-location-crumb:hover
+		{
+			text-decoration: underline;
+		}
+		.retold-remote-topbar-sep
+		{
+			color: var(--retold-text-placeholder);
+			margin: 0 3px;
+		}
+		.retold-remote-topbar-info
+		{
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-topbar-actions
+		{
+			flex-shrink: 0;
+			display: flex;
+			gap: 8px;
+		}
+		.retold-remote-topbar-btn
+		{
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-topbar-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-topbar-filter-btn
+		{
+			position: relative;
+			padding: 4px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.82rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+			font-family: inherit;
+			line-height: 1;
+		}
+		.retold-remote-topbar-filter-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-topbar-filter-btn.filter-active
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
+		}
+		.retold-remote-topbar-filter-btn.filter-bar-open
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-text-muted);
+			background: rgba(128, 128, 128, 0.06);
+		}
+		.retold-remote-topbar-filter-badge
+		{
+			position: absolute;
+			top: -4px;
+			right: -4px;
+			min-width: 14px;
+			height: 14px;
+			line-height: 14px;
+			padding: 0 3px;
+			border-radius: 7px;
+			background: var(--retold-accent);
+			color: var(--retold-bg-tertiary);
+			font-size: 0.55rem;
+			font-weight: 700;
+			text-align: center;
+		}
+	`,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
+				<div class="retold-remote-topbar">
+					<div class="retold-remote-topbar-brand">Retold Remote</div>
+					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
+					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
+					<div class="retold-remote-topbar-actions">
+						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
+						<button class="retold-remote-topbar-btn" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar">&#9776;</button>
+					</div>
+				</div>
+			`}],Renderables:[{RenderableHash:"RetoldRemote-TopBar",TemplateHash:"RetoldRemote-TopBar",DestinationAddress:"#ContentEditor-TopBar-Container"}]};class RetoldRemoteTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this.updateLocation();this.updateInfo();}/**
 	 * Update the breadcrumb location display.
 	 */updateLocation(){let tmpLocationEl=document.getElementById('RetoldRemote-TopBar-Location');if(!tmpLocationEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentLocation){tmpLocationEl.innerHTML='<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\'\')">/</span>';return;}let tmpParts=tmpCurrentLocation.split('/').filter(p=>p);let tmpHTML='<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\'\')">/</span>';for(let i=0;i<tmpParts.length;i++){let tmpPath=tmpParts.slice(0,i+1).join('/');tmpHTML+='<span class="retold-remote-topbar-sep">/</span>';tmpHTML+='<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\''+tmpPath+'\')">'+tmpParts[i]+'</span>';}tmpLocationEl.innerHTML=tmpHTML;}/**
 	 * Toggle the filter bar visibility.
@@ -5693,7 +11080,349 @@ tmpBtn.classList.add('filter-active');tmpBtn.innerHTML='&#9683;<span class="reto
 tmpBtn.classList.add('filter-bar-open');tmpBtn.innerHTML='&#9698;';tmpBtn.title='Hide filter bar (/)';}else{// Default: no filters, bar hidden
 tmpBtn.innerHTML='&#9698;';tmpBtn.title='Toggle filter bar (/)';}}/**
 	 * Update the info display with folder summary.
-	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":85}],126:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/"\n\t\t.retold-remote-vex\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\theight: 100%;\n\t\t}\n\t\t.retold-remote-vex-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tz-index: 5;\n\t\t}\n\t\t.retold-remote-vex-nav-btn\n\t\t{\n\t\t\tpadding: 4px 10px;\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t\tfont-size: 0.8rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: color 0.15s, border-color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-vex-nav-btn:hover\n\t\t{\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-vex-title\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t\twhite-space: nowrap;\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-vex-info\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 16px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-vex-info-item\n\t\t{\n\t\t\tdisplay: inline-flex;\n\t\t\talign-items: center;\n\t\t\tgap: 4px;\n\t\t}\n\t\t.retold-remote-vex-info-label\n\t\t{\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-vex-info-value\n\t\t{\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t}\n\t\t.retold-remote-vex-controls\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-bottom: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-vex-controls label\n\t\t{\n\t\t\tfont-size: 0.75rem;\n\t\t\tcolor: var(--retold-text-muted);\n\t\t}\n\t\t.retold-remote-vex-controls select,\n\t\t.retold-remote-vex-controls input[type=\"range\"]\n\t\t{\n\t\t\tfont-size: 0.75rem;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tcolor: var(--retold-text-primary);\n\t\t\tborder: 1px solid var(--retold-border);\n\t\t\tborder-radius: 3px;\n\t\t\tpadding: 2px 6px;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-vex-controls .retold-remote-vex-refresh-btn\n\t\t{\n\t\t\tpadding: 3px 12px;\n\t\t\tborder: 1px solid var(--retold-accent);\n\t\t\tborder-radius: 3px;\n\t\t\tbackground: transparent;\n\t\t\tcolor: var(--retold-accent);\n\t\t\tfont-size: 0.75rem;\n\t\t\tcursor: pointer;\n\t\t\ttransition: background 0.15s, color 0.15s;\n\t\t\tfont-family: inherit;\n\t\t}\n\t\t.retold-remote-vex-controls .retold-remote-vex-refresh-btn:hover\n\t\t{\n\t\t\tbackground: var(--retold-accent);\n\t\t\tcolor: var(--retold-bg-primary);\n\t\t}\n\t\t.retold-remote-vex-body\n\t\t{\n\t\t\tflex: 1;\n\t\t\toverflow-y: auto;\n\t\t\tpadding: 16px;\n\t\t}\n\t\t.retold-remote-vex-loading\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\theight: 100%;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.9rem;\n\t\t}\n\t\t.retold-remote-vex-loading-spinner\n\t\t{\n\t\t\twidth: 32px;\n\t\t\theight: 32px;\n\t\t\tborder: 3px solid var(--retold-border);\n\t\t\tborder-top-color: var(--retold-accent);\n\t\t\tborder-radius: 50%;\n\t\t\tanimation: retold-vex-spin 0.8s linear infinite;\n\t\t\tmargin-bottom: 16px;\n\t\t}\n\t\t@keyframes retold-vex-spin\n\t\t{\n\t\t\tto { transform: rotate(360deg); }\n\t\t}\n\t\t.retold-remote-vex-grid\n\t\t{\n\t\t\tdisplay: grid;\n\t\t\tgrid-template-columns: repeat(auto-fill, minmax(280px, 1fr));\n\t\t\tgap: 12px;\n\t\t}\n\t\t.retold-remote-vex-frame\n\t\t{\n\t\t\tposition: relative;\n\t\t\tborder-radius: 6px;\n\t\t\toverflow: hidden;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder: 2px solid transparent;\n\t\t\tcursor: pointer;\n\t\t\ttransition: border-color 0.15s, transform 0.1s;\n\t\t}\n\t\t.retold-remote-vex-frame:hover\n\t\t{\n\t\t\tborder-color: var(--retold-accent);\n\t\t\ttransform: translateY(-1px);\n\t\t}\n\t\t.retold-remote-vex-frame.selected\n\t\t{\n\t\t\tborder-color: var(--retold-accent);\n\t\t}\n\t\t.retold-remote-vex-frame img\n\t\t{\n\t\t\twidth: 100%;\n\t\t\tdisplay: block;\n\t\t\taspect-ratio: 16 / 9;\n\t\t\tobject-fit: contain;\n\t\t\tbackground: #000;\n\t\t}\n\t\t.retold-remote-vex-frame-info\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: space-between;\n\t\t\tpadding: 6px 10px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t}\n\t\t.retold-remote-vex-frame-timestamp\n\t\t{\n\t\t\tfont-size: 0.78rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\tfont-family: var(--retold-font-mono, monospace);\n\t\t}\n\t\t.retold-remote-vex-frame-index\n\t\t{\n\t\t\tfont-size: 0.7rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t}\n\t\t.retold-remote-vex-frame.custom-frame\n\t\t{\n\t\t\tborder-color: var(--retold-accent);\n\t\t\tborder-style: dashed;\n\t\t}\n\t\t.retold-remote-vex-frame.custom-frame .retold-remote-vex-frame-info\n\t\t{\n\t\t\tbackground: color-mix(in srgb, var(--retold-accent) 12%, var(--retold-bg-secondary));\n\t\t}\n\t\t.retold-remote-vex-frame-loading\n\t\t{\n\t\t\twidth: 100%;\n\t\t\taspect-ratio: 16 / 9;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\tbackground: #000;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.8rem;\n\t\t}\n\t\t.retold-remote-vex-timeline-marker.custom\n\t\t{\n\t\t\tbackground: var(--retold-text-primary);\n\t\t\topacity: 0.9;\n\t\t\twidth: 2px;\n\t\t\tborder: 1px dashed var(--retold-accent);\n\t\t}\n\t\t/* Timeline bar at bottom */\n\t\t.retold-remote-vex-timeline\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 8px;\n\t\t\tpadding: 8px 16px;\n\t\t\tbackground: var(--retold-bg-secondary);\n\t\t\tborder-top: 1px solid var(--retold-border);\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-vex-timeline-bar\n\t\t{\n\t\t\tflex: 1;\n\t\t\theight: 24px;\n\t\t\tbackground: var(--retold-bg-tertiary);\n\t\t\tborder-radius: 4px;\n\t\t\tposition: relative;\n\t\t\toverflow: hidden;\n\t\t\tcursor: pointer;\n\t\t}\n\t\t.retold-remote-vex-timeline-marker\n\t\t{\n\t\t\tposition: absolute;\n\t\t\ttop: 0;\n\t\t\twidth: 3px;\n\t\t\theight: 100%;\n\t\t\tbackground: var(--retold-accent);\n\t\t\topacity: 0.7;\n\t\t\ttransition: opacity 0.15s;\n\t\t}\n\t\t.retold-remote-vex-timeline-marker:hover\n\t\t{\n\t\t\topacity: 1;\n\t\t}\n\t\t.retold-remote-vex-timeline-marker.selected\n\t\t{\n\t\t\topacity: 1;\n\t\t\tbackground: var(--retold-text-primary);\n\t\t}\n\t\t.retold-remote-vex-timeline-label\n\t\t{\n\t\t\tfont-size: 0.7rem;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\twhite-space: nowrap;\n\t\t}\n\t\t/* Frame preview overlay */\n\t\t.retold-remote-vex-preview-backdrop\n\t\t{\n\t\t\tposition: fixed;\n\t\t\ttop: 0;\n\t\t\tleft: 0;\n\t\t\twidth: 100%;\n\t\t\theight: 100%;\n\t\t\tbackground: rgba(0, 0, 0, 0.85);\n\t\t\tz-index: 100;\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t}\n\t\t.retold-remote-vex-preview-header\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tgap: 12px;\n\t\t\tpadding: 8px 16px;\n\t\t\twidth: 100%;\n\t\t\tmax-width: 95vw;\n\t\t\tflex-shrink: 0;\n\t\t}\n\t\t.retold-remote-vex-preview-header .retold-remote-vex-nav-btn\n\t\t{\n\t\t\tbackground: rgba(40, 44, 52, 0.8);\n\t\t}\n\t\t.retold-remote-vex-preview-title\n\t\t{\n\t\t\tflex: 1;\n\t\t\tfont-size: 0.82rem;\n\t\t\tcolor: var(--retold-text-secondary);\n\t\t\ttext-align: center;\n\t\t}\n\t\t.retold-remote-vex-preview-body\n\t\t{\n\t\t\tflex: 1;\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\toverflow: auto;\n\t\t\tpadding: 8px;\n\t\t\tmax-width: 95vw;\n\t\t\tmax-height: calc(100vh - 60px);\n\t\t}\n\t\t.retold-remote-vex-preview-body img\n\t\t{\n\t\t\tmax-width: 100%;\n\t\t\tmax-height: 100%;\n\t\t\tobject-fit: contain;\n\t\t\tborder-radius: 4px;\n\t\t\tbox-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);\n\t\t}\n\t\t/* Error state */\n\t\t.retold-remote-vex-error\n\t\t{\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: column;\n\t\t\talign-items: center;\n\t\t\tjustify-content: center;\n\t\t\theight: 100%;\n\t\t\tcolor: var(--retold-text-dim);\n\t\t\tfont-size: 0.85rem;\n\t\t\ttext-align: center;\n\t\t\tpadding: 40px;\n\t\t}\n\t\t.retold-remote-vex-error-message\n\t\t{\n\t\t\tcolor: #e06c75;\n\t\t\tmargin-bottom: 16px;\n\t\t}\n\t"};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=false;this._customFrames=[];}/**
+	 */updateInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){tmpInfoEl.textContent=tmpItem.Name;}return;}if(!tmpSummary){tmpInfoEl.textContent='';return;}let tmpParts=[];if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":85}],126:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-vex
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.retold-remote-vex-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			z-index: 5;
+		}
+		.retold-remote-vex-nav-btn
+		{
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.8rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-nav-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-vex-title
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: center;
+		}
+		.retold-remote-vex-info
+		{
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 8px 16px;
+			background: var(--retold-bg-tertiary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-vex-info-item
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.retold-remote-vex-info-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-vex-info-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-vex-controls
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-vex-controls label
+		{
+			font-size: 0.75rem;
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-vex-controls select,
+		.retold-remote-vex-controls input[type="range"]
+		{
+			font-size: 0.75rem;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			padding: 2px 6px;
+			font-family: inherit;
+		}
+		.retold-remote-vex-controls .retold-remote-vex-refresh-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-controls .retold-remote-vex-refresh-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-vex-body
+		{
+			flex: 1;
+			overflow-y: auto;
+			padding: 16px;
+		}
+		.retold-remote-vex-loading
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.9rem;
+		}
+		.retold-remote-vex-loading-spinner
+		{
+			width: 32px;
+			height: 32px;
+			border: 3px solid var(--retold-border);
+			border-top-color: var(--retold-accent);
+			border-radius: 50%;
+			animation: retold-vex-spin 0.8s linear infinite;
+			margin-bottom: 16px;
+		}
+		@keyframes retold-vex-spin
+		{
+			to { transform: rotate(360deg); }
+		}
+		.retold-remote-vex-grid
+		{
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 12px;
+		}
+		.retold-remote-vex-frame
+		{
+			position: relative;
+			border-radius: 6px;
+			overflow: hidden;
+			background: var(--retold-bg-tertiary);
+			border: 2px solid transparent;
+			cursor: pointer;
+			transition: border-color 0.15s, transform 0.1s;
+		}
+		.retold-remote-vex-frame:hover
+		{
+			border-color: var(--retold-accent);
+			transform: translateY(-1px);
+		}
+		.retold-remote-vex-frame.selected
+		{
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-vex-frame img
+		{
+			width: 100%;
+			display: block;
+			aspect-ratio: 16 / 9;
+			object-fit: contain;
+			background: #000;
+		}
+		.retold-remote-vex-frame-info
+		{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 6px 10px;
+			background: var(--retold-bg-secondary);
+		}
+		.retold-remote-vex-frame-timestamp
+		{
+			font-size: 0.78rem;
+			color: var(--retold-text-secondary);
+			font-family: var(--retold-font-mono, monospace);
+		}
+		.retold-remote-vex-frame-index
+		{
+			font-size: 0.7rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-vex-frame.custom-frame
+		{
+			border-color: var(--retold-accent);
+			border-style: dashed;
+		}
+		.retold-remote-vex-frame.custom-frame .retold-remote-vex-frame-info
+		{
+			background: color-mix(in srgb, var(--retold-accent) 12%, var(--retold-bg-secondary));
+		}
+		.retold-remote-vex-frame-loading
+		{
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #000;
+			color: var(--retold-text-dim);
+			font-size: 0.8rem;
+		}
+		.retold-remote-vex-timeline-marker.custom
+		{
+			background: var(--retold-text-primary);
+			opacity: 0.9;
+			width: 2px;
+			border: 1px dashed var(--retold-accent);
+		}
+		/* Timeline bar at bottom */
+		.retold-remote-vex-timeline
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+		}
+		.retold-remote-vex-timeline-bar
+		{
+			flex: 1;
+			height: 24px;
+			background: var(--retold-bg-tertiary);
+			border-radius: 4px;
+			position: relative;
+			overflow: hidden;
+			cursor: pointer;
+		}
+		.retold-remote-vex-timeline-marker
+		{
+			position: absolute;
+			top: 0;
+			width: 3px;
+			height: 100%;
+			background: var(--retold-accent);
+			opacity: 0.7;
+			transition: opacity 0.15s;
+		}
+		.retold-remote-vex-timeline-marker:hover
+		{
+			opacity: 1;
+		}
+		.retold-remote-vex-timeline-marker.selected
+		{
+			opacity: 1;
+			background: var(--retold-text-primary);
+		}
+		.retold-remote-vex-timeline-label
+		{
+			font-size: 0.7rem;
+			color: var(--retold-text-dim);
+			white-space: nowrap;
+		}
+		/* Frame preview overlay */
+		.retold-remote-vex-preview-backdrop
+		{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.85);
+			z-index: 100;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		.retold-remote-vex-preview-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			width: 100%;
+			max-width: 95vw;
+			flex-shrink: 0;
+		}
+		.retold-remote-vex-preview-header .retold-remote-vex-nav-btn
+		{
+			background: rgba(40, 44, 52, 0.8);
+		}
+		.retold-remote-vex-preview-title
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			text-align: center;
+		}
+		.retold-remote-vex-preview-body
+		{
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: auto;
+			padding: 8px;
+			max-width: 95vw;
+			max-height: calc(100vh - 60px);
+		}
+		.retold-remote-vex-preview-body img
+		{
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+			border-radius: 4px;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+		}
+		/* Error state */
+		.retold-remote-vex-error
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.85rem;
+			text-align: center;
+			padding: 40px;
+		}
+		.retold-remote-vex-error-message
+		{
+			color: #e06c75;
+			margin-bottom: 16px;
+		}
+	`};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=false;this._customFrames=[];}/**
 	 * Show the video explorer for a given video file.
 	 *
 	 * @param {string} pFilePath - Relative file path
