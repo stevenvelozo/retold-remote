@@ -8865,7 +8865,10 @@ let tmpCapabilities=tmpRemote.ServerCapabilities||{};if(!tmpCapabilities.vlc){re
 this._showToast('Opening in VLC...');// POST to the server to open the file
 fetch('/api/media/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:tmpFilePath})}).then(pResponse=>{return pResponse.json();}).then(pData=>{if(!pData.Success){this._showToast('Failed to open: '+(pData.Error||'Unknown error'));}}).catch(pError=>{this._showToast('Failed to open: '+pError.message);});}/**
 	 * Stream the current media file to VLC on the client device via vlc:// protocol link.
-	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;this._showToast('Opening VLC...');window.location.href='vlc://'+tmpStreamURL;}/**
+	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;// Encode the inner URL so the browser doesn't parse its :// as URL structure
+let tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);this._showToast('Opening VLC...');// Use a temporary anchor element to trigger the protocol handler
+// without navigating the current page away
+let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}/**
 	 * Show a brief toast notification in the viewer.
 	 *
 	 * @param {string} pMessage - Text to display

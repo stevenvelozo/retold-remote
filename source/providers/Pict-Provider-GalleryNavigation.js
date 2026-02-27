@@ -1371,9 +1371,19 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpContentPath = tmpProvider ? tmpProvider.getContentURL(tmpFilePath) : ('/content/' + encodeURIComponent(tmpFilePath));
 		let tmpStreamURL = window.location.origin + tmpContentPath;
+		// Encode the inner URL so the browser doesn't parse its :// as URL structure
+		let tmpVLCURL = 'vlc://' + encodeURIComponent(tmpStreamURL);
 
 		this._showToast('Opening VLC...');
-		window.location.href = 'vlc://' + tmpStreamURL;
+
+		// Use a temporary anchor element to trigger the protocol handler
+		// without navigating the current page away
+		let tmpLink = document.createElement('a');
+		tmpLink.href = tmpVLCURL;
+		tmpLink.style.display = 'none';
+		document.body.appendChild(tmpLink);
+		tmpLink.click();
+		document.body.removeChild(tmpLink);
 	}
 
 	/**
