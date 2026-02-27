@@ -5,5 +5,12 @@
 		"LibraryOutputFolder": "{~Data:AppData.CWD~}/web-application/",
 		"LibraryUniminifiedFileName": "retold-remote.{~Data:Record.BuildFileLabel~}js",
 		"LibraryMinifiedFileName": "retold-remote.{~Data:Record.BuildFileLabel~}min.js"
-	}
+	},
+	"GulpExecutions": [
+	{
+		"Hash": "default",
+		"Name": "Default standard build.",
+		"BuildFileLabel": "",
+		"BrowsersListRC": "since 2022"
+	}]
 }
