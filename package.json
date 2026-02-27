@@ -1,6 +1,6 @@
 {
 	"name": "retold-remote",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
 	"main": "source/Pict-RetoldRemote-Bundle.js",
 	"bin": {
@@ -30,18 +30,18 @@
 		"fable-serviceproviderbase": "^3.0.19",
 		"orator": "^6.0.3",
 		"orator-serviceserver-restify": "^2.0.9",
-		"pict": "^1.0.355",
+		"pict": "^1.0.356",
 		"pict-application": "^1.0.33",
 		"pict-provider": "^1.0.12",
 		"pict-section-code": "^1.0.3",
 		"pict-section-filebrowser": "^0.0.2",
 		"pict-service-commandlineutility": "^1.0.19",
 		"pict-view": "^1.0.67",
-		"retold-content-system": "^1.0.2",
+		"retold-content-system": "^1.0.4",
 		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {
-		"sharp": "^0.33.0"
+		"sharp": "^0.34.5"
 	},
 	"devDependencies": {
 		"quackage": "^1.0.59"
