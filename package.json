@@ -37,7 +37,7 @@
 		"pict-section-filebrowser": "^0.0.2",
 		"pict-service-commandlineutility": "^1.0.19",
 		"pict-view": "^1.0.67",
-		"retold-content-system": "^1.0.4",
+		"retold-content-system": "^1.0.8",
 		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {
