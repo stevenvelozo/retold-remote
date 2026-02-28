@@ -1142,6 +1142,14 @@ class GalleryNavigationProvider extends libPictProvider
 		}
 		tmpHTML += '</div>';
 
+		// Documentation link
+		tmpHTML += '<div class="retold-remote-help-section">';
+		tmpHTML += '<div class="retold-remote-help-row" style="justify-content: center; padding: 8px 0;">';
+		tmpHTML += '<a href="docs.html" target="_blank" style="color: var(--retold-accent, #569cd6); text-decoration: none; font-size: 0.9rem; cursor: pointer;">';
+		tmpHTML += 'View Documentation &#x2197;</a>';
+		tmpHTML += '</div>';
+		tmpHTML += '</div>';
+
 		// Active mode indicator
 		tmpHTML += '<div class="retold-remote-help-footer">';
 		let tmpModeLabel = 'Gallery';

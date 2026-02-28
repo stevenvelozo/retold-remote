@@ -12,6 +12,7 @@
 		"web-application/",
 		"html/",
 		"css/",
+		"docs/",
 		"server.js",
 		"README.md",
 		"LICENSE"
@@ -37,6 +38,7 @@
 		"pict-section-filebrowser": "^0.0.2",
 		"pict-service-commandlineutility": "^1.0.19",
 		"pict-view": "^1.0.67",
+		"pict-docuserve": "^0.0.30",
 		"retold-content-system": "^1.0.8",
 		"yauzl": "^3.2.0"
 	},
@@ -69,6 +71,18 @@
 		{
 			"from": "./node_modules/epubjs/dist/epub.min.js",
 			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict-docuserve/dist/pict-docuserve.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict-docuserve/css/docuserve.css",
+			"to": "./web-application/css/"
+		},
+		{
+			"from": "./docs/*.md",
+			"to": "./web-application/docs/"
 		}
 	]
 }

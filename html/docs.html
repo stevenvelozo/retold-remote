@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="Retold Remote Documentation">
+
+		<title>Retold Remote - Documentation</title>
+
+		<!-- Docuserve base stylesheet -->
+		<link href="css/docuserve.css" rel="stylesheet">
+		<!-- PICT Dynamic View CSS Container -->
+		<style id="PICT-CSS"></style>
+
+		<!-- Load the PICT library -->
+		<script src="js/pict.min.js" type="text/javascript"></script>
+		<!-- Bootstrap the Application -->
+		<script type="text/javascript">
+			Pict.safeOnDocumentReady(function()
+			{
+				// Intercept AppData.Docuserve creation to inject DocsBaseURL
+				// before pict-docuserve starts fetching markdown files.
+				var _origInit = PictDocuserve.prototype.onAfterInitializeAsync;
+				PictDocuserve.prototype.onAfterInitializeAsync = function(fCallback)
+				{
+					var _appData = this.pict.AppData;
+					// One-shot setter: when onAfterInitializeAsync assigns
+					// AppData.Docuserve, modify DocsBaseURL before loadCatalog runs.
+					Object.defineProperty(_appData, 'Docuserve',
+					{
+						configurable: true,
+						enumerable: true,
+						set: function(pValue)
+						{
+							pValue.DocsBaseURL = 'docs/';
+							Object.defineProperty(_appData, 'Docuserve',
+							{
+								configurable: true,
+								enumerable: true,
+								writable: true,
+								value: pValue
+							});
+						}
+					});
+					return _origInit.call(this, fCallback);
+				};
+				Pict.safeLoadPictApplication(PictDocuserve, 2);
+			});
+		</script>
+	</head>
+	<body>
+		<!-- The root container for the Pict application -->
+		<div id="Docuserve-Application-Container"></div>
+
+		<!-- Load the Docuserve PICT Application Bundle -->
+		<script src="js/pict-docuserve.min.js" type="text/javascript"></script>
+	</body>
+</html>
