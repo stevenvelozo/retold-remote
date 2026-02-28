@@ -319,6 +319,7 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		[
 			{ key: '\u2190 \u2191 \u2192 \u2193', desc: 'Navigate items' },
 			{ key: 'Enter', desc: 'Open item' },
+			{ key: '1  2  3  4', desc: 'Open as image / video / audio / text' },
 			{ key: 'Esc', desc: 'Go up one folder' },
 			{ key: 'Home', desc: 'Jump to first item' },
 			{ key: 'End', desc: 'Jump to last item' },
@@ -344,6 +345,7 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			{ key: 'Esc', desc: 'Back to gallery' },
 			{ key: '\u2192  j', desc: 'Next file' },
 			{ key: '\u2190  k', desc: 'Previous file' },
+			{ key: '1  2  3  4', desc: 'View as image / video / audio / text' },
 			{ key: 'Space', desc: 'Play / pause' },
 			{ key: 'f', desc: 'Fullscreen' },
 			{ key: 'i', desc: 'File info overlay' },

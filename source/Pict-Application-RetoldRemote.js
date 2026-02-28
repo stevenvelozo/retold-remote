@@ -360,6 +360,44 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	}
 
 	/**
+	 * Navigate to a file with an explicit media type override, bypassing
+	 * extension-based detection.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 * @param {string} pMediaType - 'image', 'video', 'audio', or 'text'
+	 */
+	navigateToFileAs(pFilePath, pMediaType)
+	{
+		if (!pFilePath)
+		{
+			return;
+		}
+
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// Update the hash
+		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpFragId = tmpFragProvider ? tmpFragProvider.getFragmentIdentifier(pFilePath) : pFilePath;
+		window.location.hash = '#/view/' + tmpFragId;
+
+		// Update parent state for compatibility
+		this.pict.AppData.ContentEditor.CurrentFile = pFilePath;
+		this.pict.AppData.ContentEditor.ActiveEditor = 'binary';
+
+		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpViewer)
+		{
+			tmpViewer.showMedia(pFilePath, pMediaType);
+		}
+
+		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+		if (tmpTopBar)
+		{
+			tmpTopBar.updateInfo();
+		}
+	}
+
+	/**
 	 * Override loadFileList to also populate the gallery and fetch folder summary.
 	 */
 	loadFileList(pPath, fCallback)

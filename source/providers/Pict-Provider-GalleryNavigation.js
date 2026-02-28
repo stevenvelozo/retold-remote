@@ -234,6 +234,26 @@ class GalleryNavigationProvider extends libPictProvider
 				this.moveCursor(tmpItems.length - 1);
 				break;
 
+			case '1':
+				pEvent.preventDefault();
+				this.openCurrentAs('image');
+				break;
+
+			case '2':
+				pEvent.preventDefault();
+				this.openCurrentAs('video');
+				break;
+
+			case '3':
+				pEvent.preventDefault();
+				this.openCurrentAs('audio');
+				break;
+
+			case '4':
+				pEvent.preventDefault();
+				this.openCurrentAs('text');
+				break;
+
 			case 'f':
 				pEvent.preventDefault();
 				{
@@ -544,6 +564,26 @@ class GalleryNavigationProvider extends libPictProvider
 				pEvent.preventDefault();
 				this._toggleDistractionFree();
 				break;
+
+			case '1':
+				pEvent.preventDefault();
+				this.switchViewerType('image');
+				break;
+
+			case '2':
+				pEvent.preventDefault();
+				this.switchViewerType('video');
+				break;
+
+			case '3':
+				pEvent.preventDefault();
+				this.switchViewerType('audio');
+				break;
+
+			case '4':
+				pEvent.preventDefault();
+				this.switchViewerType('text');
+				break;
 		}
 	}
 
@@ -685,6 +725,59 @@ class GalleryNavigationProvider extends libPictProvider
 			{
 				tmpApp.navigateToFile(tmpItem.Path);
 			}
+		}
+	}
+
+	/**
+	 * Open the currently selected gallery item, forcing a specific media type
+	 * regardless of its file extension.
+	 *
+	 * @param {string} pMediaType - 'image', 'video', 'audio', or 'text'
+	 */
+	openCurrentAs(pMediaType)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpItems = tmpRemote.GalleryItems || [];
+		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
+
+		if (tmpIndex >= tmpItems.length)
+		{
+			return;
+		}
+
+		let tmpItem = tmpItems[tmpIndex];
+
+		if (tmpItem.Type === 'folder' || tmpItem.Type === 'archive')
+		{
+			return;
+		}
+
+		let tmpApp = this.pict.PictApplication;
+		if (tmpApp && tmpApp.navigateToFileAs)
+		{
+			tmpApp.navigateToFileAs(tmpItem.Path, pMediaType);
+		}
+	}
+
+	/**
+	 * Re-open the currently viewed file with a different media type.
+	 *
+	 * @param {string} pMediaType - 'image', 'video', 'audio', or 'text'
+	 */
+	switchViewerType(pMediaType)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilePath = tmpRemote.CurrentViewerFile;
+
+		if (!tmpFilePath)
+		{
+			return;
+		}
+
+		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpViewer)
+		{
+			tmpViewer.showMedia(tmpFilePath, pMediaType);
 		}
 	}
 
