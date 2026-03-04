@@ -433,6 +433,69 @@ const _ViewConfiguration =
 			color: var(--retold-text-dim);
 			font-size: 0.85rem;
 		}
+		/* Distraction-free toggle */
+		.retold-remote-df-toggle
+		{
+			position: absolute;
+			top: 8px;
+			left: 8px;
+			z-index: 15;
+			padding: 4px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: rgba(0, 0, 0, 0.5);
+			color: var(--retold-text-muted);
+			font-size: 0.72rem;
+			cursor: pointer;
+			opacity: 0;
+			transition: opacity 0.2s ease, color 0.15s, border-color 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-viewer-body:hover .retold-remote-df-toggle,
+		.retold-remote-df-toggle:focus
+		{
+			opacity: 1;
+		}
+		.retold-remote-df-toggle:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-df-toggle.active
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+		}
+		/* Distraction-free exit hotspot (top-left corner) */
+		.retold-remote-df-exit-hotspot
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 80px;
+			height: 80px;
+			z-index: 16;
+			cursor: pointer;
+			display: none;
+		}
+		.retold-remote-df-exit-hotspot::after
+		{
+			content: '';
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: var(--retold-accent);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+		.retold-remote-df-exit-hotspot:hover::after
+		{
+			opacity: 0.6;
+		}
 	`
 };
 
@@ -441,6 +504,12 @@ class RetoldRemoteMediaViewerView extends libPictView
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
+
+		this._swipeStartX = 0;
+		this._swipeStartY = 0;
+		this._swipeTouchCount = 0;
+		this._swipeHandlers = null;
+		this._dfExitHandlers = null;
 	}
 
 	/**
@@ -483,6 +552,14 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 		// Body with media content
 		tmpHTML += '<div class="retold-remote-viewer-body">';
+
+		// Distraction-free toggle (top-left corner)
+		let tmpDFActive = tmpRemote._distractionFreeMode ? ' active' : '';
+		tmpHTML += '<button class="retold-remote-df-toggle' + tmpDFActive + '" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';
+
+		// Exit hotspot for distraction-free mode (double-click/tap top-left to exit)
+		let tmpDFHotspotDisplay = tmpRemote._distractionFreeMode ? '' : ' style="display:none"';
+		tmpHTML += '<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"' + tmpDFHotspotDisplay + '></div>';
 
 		switch (pMediaType)
 		{
@@ -538,11 +615,232 @@ class RetoldRemoteMediaViewerView extends libPictView
 			}
 		}
 
+		// Set up swipe navigation for touch devices
+		this._setupSwipeNavigation();
+
+		// Set up distraction-free exit hotspot (double-click/tap top-left)
+		this._setupDFExitHotspot();
+
 		// Update topbar
 		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
 		if (tmpTopBar)
 		{
 			tmpTopBar.updateInfo();
+		}
+	}
+
+	/**
+	 * Attach touch event listeners to the viewer body for swipe-based
+	 * prev/next navigation.  Only single-finger horizontal swipes are
+	 * recognised; pinch gestures and vertical scrolling are ignored.
+	 * Swipes are also suppressed when the image is zoomed and the
+	 * container is scrollable, so the user can pan freely.
+	 */
+	_setupSwipeNavigation()
+	{
+		// Clean up any previous listeners
+		this._cleanupSwipe();
+
+		let tmpBody = document.querySelector('.retold-remote-viewer-body');
+		if (!tmpBody)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+		let tmpSwipeThreshold = 50; // minimum px to count as a swipe
+
+		let tmpOnTouchStart = function (pEvent)
+		{
+			tmpSelf._swipeTouchCount = pEvent.touches.length;
+			if (pEvent.touches.length !== 1)
+			{
+				return;
+			}
+			tmpSelf._swipeStartX = pEvent.touches[0].clientX;
+			tmpSelf._swipeStartY = pEvent.touches[0].clientY;
+		};
+
+		let tmpOnTouchEnd = function (pEvent)
+		{
+			// Ignore multi-touch (pinch zoom, etc.)
+			if (tmpSelf._swipeTouchCount !== 1)
+			{
+				return;
+			}
+
+			let tmpEndX = pEvent.changedTouches[0].clientX;
+			let tmpEndY = pEvent.changedTouches[0].clientY;
+			let tmpDeltaX = tmpEndX - tmpSelf._swipeStartX;
+			let tmpDeltaY = tmpEndY - tmpSelf._swipeStartY;
+
+			// Must be primarily horizontal
+			if (Math.abs(tmpDeltaX) < tmpSwipeThreshold || Math.abs(tmpDeltaY) > Math.abs(tmpDeltaX))
+			{
+				return;
+			}
+
+			// If the viewer body is scrollable (zoomed image), don't
+			// swipe — let the user pan instead.
+			let tmpContainer = document.querySelector('.retold-remote-viewer-body');
+			if (tmpContainer && (tmpContainer.scrollWidth > tmpContainer.clientWidth + 2))
+			{
+				return;
+			}
+
+			let tmpNav = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
+			if (!tmpNav)
+			{
+				return;
+			}
+
+			if (tmpDeltaX < 0)
+			{
+				tmpNav.nextFile();
+			}
+			else
+			{
+				tmpNav.prevFile();
+			}
+		};
+
+		tmpBody.addEventListener('touchstart', tmpOnTouchStart, { passive: true });
+		tmpBody.addEventListener('touchend', tmpOnTouchEnd, { passive: true });
+
+		this._swipeHandlers =
+		{
+			element: tmpBody,
+			touchstart: tmpOnTouchStart,
+			touchend: tmpOnTouchEnd
+		};
+	}
+
+	/**
+	 * Remove swipe touch listeners from the viewer body.
+	 */
+	_cleanupSwipe()
+	{
+		if (this._swipeHandlers)
+		{
+			this._swipeHandlers.element.removeEventListener('touchstart', this._swipeHandlers.touchstart);
+			this._swipeHandlers.element.removeEventListener('touchend', this._swipeHandlers.touchend);
+			this._swipeHandlers = null;
+		}
+	}
+
+	/**
+	 * Toggle distraction-free mode from the viewer overlay button.
+	 * Delegates to the gallery navigation provider, then updates
+	 * the toggle button and exit hotspot state.
+	 */
+	toggleDistractionFree()
+	{
+		let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
+		if (tmpNav)
+		{
+			tmpNav._toggleDistractionFree();
+		}
+		this._updateDFControls();
+	}
+
+	/**
+	 * Sync the distraction-free toggle button and exit hotspot
+	 * with the current mode state.
+	 */
+	_updateDFControls()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpActive = tmpRemote._distractionFreeMode || false;
+
+		let tmpToggle = document.getElementById('RetoldRemote-DF-Toggle');
+		if (tmpToggle)
+		{
+			if (tmpActive)
+			{
+				tmpToggle.classList.add('active');
+			}
+			else
+			{
+				tmpToggle.classList.remove('active');
+			}
+		}
+
+		let tmpHotspot = document.getElementById('RetoldRemote-DF-ExitHotspot');
+		if (tmpHotspot)
+		{
+			tmpHotspot.style.display = tmpActive ? '' : 'none';
+		}
+	}
+
+	/**
+	 * Set up the double-click / double-tap handler on the
+	 * exit hotspot so the user can leave distraction-free mode
+	 * from the top-left corner of the viewer.
+	 */
+	_setupDFExitHotspot()
+	{
+		this._cleanupDFExitHotspot();
+
+		let tmpHotspot = document.getElementById('RetoldRemote-DF-ExitHotspot');
+		if (!tmpHotspot)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+
+		// Double-click for mouse
+		let tmpOnDblClick = function ()
+		{
+			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
+			if (tmpRemote._distractionFreeMode)
+			{
+				tmpSelf.toggleDistractionFree();
+			}
+		};
+
+		// Double-tap for touch: detect two taps within 300ms
+		let tmpLastTap = 0;
+		let tmpOnTouchEnd = function (pEvent)
+		{
+			let tmpNow = Date.now();
+			if (tmpNow - tmpLastTap < 300)
+			{
+				pEvent.preventDefault();
+				let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
+				if (tmpRemote._distractionFreeMode)
+				{
+					tmpSelf.toggleDistractionFree();
+				}
+				tmpLastTap = 0;
+			}
+			else
+			{
+				tmpLastTap = tmpNow;
+			}
+		};
+
+		tmpHotspot.addEventListener('dblclick', tmpOnDblClick);
+		tmpHotspot.addEventListener('touchend', tmpOnTouchEnd);
+
+		this._dfExitHandlers =
+		{
+			element: tmpHotspot,
+			dblclick: tmpOnDblClick,
+			touchend: tmpOnTouchEnd
+		};
+	}
+
+	/**
+	 * Remove exit hotspot event listeners.
+	 */
+	_cleanupDFExitHotspot()
+	{
+		if (this._dfExitHandlers)
+		{
+			this._dfExitHandlers.element.removeEventListener('dblclick', this._dfExitHandlers.dblclick);
+			this._dfExitHandlers.element.removeEventListener('touchend', this._dfExitHandlers.touchend);
+			this._dfExitHandlers = null;
 		}
 	}
 

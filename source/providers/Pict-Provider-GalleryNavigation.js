@@ -821,6 +821,20 @@ class GalleryNavigationProvider extends libPictProvider
 		if (tmpGalleryContainer) tmpGalleryContainer.style.display = '';
 		if (tmpViewerContainer) tmpViewerContainer.style.display = 'none';
 
+		// Clean up swipe and DF exit listeners
+		let tmpMediaViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpMediaViewer)
+		{
+			if (tmpMediaViewer._cleanupSwipe)
+			{
+				tmpMediaViewer._cleanupSwipe();
+			}
+			if (tmpMediaViewer._cleanupDFExitHotspot)
+			{
+				tmpMediaViewer._cleanupDFExitHotspot();
+			}
+		}
+
 		// Restore the hash to the browse route (use hashed identifier when available)
 		let tmpCurrentLocation = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
 		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
@@ -1299,6 +1313,13 @@ class GalleryNavigationProvider extends libPictProvider
 					tmpViewerHeader.style.display = 'none';
 				}
 			}
+		}
+
+		// Sync DF toggle/hotspot in the media viewer
+		let tmpMediaViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpMediaViewer && tmpMediaViewer._updateDFControls)
+		{
+			tmpMediaViewer._updateDFControls();
 		}
 
 		// Recalculate gallery columns after layout change

@@ -97,44 +97,6 @@ const _ViewConfiguration =
 			background: var(--retold-bg-hover);
 			color: var(--retold-text-primary);
 		}
-		.retold-remote-settings-shortcut-group
-		{
-			margin-bottom: 10px;
-		}
-		.retold-remote-settings-shortcut-group-title
-		{
-			font-size: 0.68rem;
-			font-weight: 600;
-			color: var(--retold-text-muted);
-			margin-bottom: 4px;
-			padding-bottom: 2px;
-			border-bottom: 1px solid var(--retold-border);
-		}
-		.retold-remote-settings-shortcut-row
-		{
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 2px 0;
-		}
-		.retold-remote-settings-shortcut-desc
-		{
-			color: var(--retold-text-dim);
-			font-size: 0.72rem;
-		}
-		.retold-remote-settings-shortcut-key
-		{
-			display: inline-block;
-			padding: 1px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-primary);
-			color: var(--retold-accent);
-			font-size: 0.68rem;
-			font-family: var(--retold-font-mono, monospace);
-			min-width: 18px;
-			text-align: center;
-		}
 	`
 };
 
@@ -209,6 +171,15 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '<div class="retold-remote-settings-section">';
 		tmpHTML += '<div class="retold-remote-settings-section-title">Gallery</div>';
 
+		// View mode
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">View mode</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeSetting(\'ViewMode\', this.value)">';
+		tmpHTML += '<option value="gallery"' + (tmpRemote.ViewMode === 'gallery' ? ' selected' : '') + '>Grid</option>';
+		tmpHTML += '<option value="list"' + (tmpRemote.ViewMode === 'list' ? ' selected' : '') + '>List</option>';
+		tmpHTML += '</select>';
+		tmpHTML += '</div>';
+
 		// Thumbnail size
 		tmpHTML += '<div class="retold-remote-settings-row">';
 		tmpHTML += '<span class="retold-remote-settings-label">Thumbnail size</span>';
@@ -219,12 +190,36 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '</select>';
 		tmpHTML += '</div>';
 
-		// Default view mode
+		// Sort field
 		tmpHTML += '<div class="retold-remote-settings-row">';
-		tmpHTML += '<span class="retold-remote-settings-label">Default view</span>';
-		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeSetting(\'ViewMode\', this.value)">';
-		tmpHTML += '<option value="gallery"' + (tmpRemote.ViewMode === 'gallery' ? ' selected' : '') + '>Gallery</option>';
-		tmpHTML += '<option value="list"' + (tmpRemote.ViewMode === 'list' ? ' selected' : '') + '>List</option>';
+		tmpHTML += '<span class="retold-remote-settings-label">Sort by</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeSortField(this.value)">';
+		tmpHTML += '<option value="folder-first"' + (tmpRemote.SortField === 'folder-first' ? ' selected' : '') + '>Folders first</option>';
+		tmpHTML += '<option value="name"' + (tmpRemote.SortField === 'name' ? ' selected' : '') + '>Name</option>';
+		tmpHTML += '<option value="modified"' + (tmpRemote.SortField === 'modified' ? ' selected' : '') + '>Modified</option>';
+		tmpHTML += '<option value="created"' + (tmpRemote.SortField === 'created' ? ' selected' : '') + '>Created</option>';
+		tmpHTML += '</select>';
+		tmpHTML += '</div>';
+
+		// Sort direction
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Sort direction</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeSortDirection(this.value)">';
+		tmpHTML += '<option value="asc"' + (tmpRemote.SortDirection === 'asc' ? ' selected' : '') + '>Ascending</option>';
+		tmpHTML += '<option value="desc"' + (tmpRemote.SortDirection === 'desc' ? ' selected' : '') + '>Descending</option>';
+		tmpHTML += '</select>';
+		tmpHTML += '</div>';
+
+		// Default media filter
+		let tmpFilterMediaType = (tmpRemote.FilterState && tmpRemote.FilterState.MediaType) || 'all';
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Media filter</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeMediaFilter(this.value)">';
+		tmpHTML += '<option value="all"' + (tmpFilterMediaType === 'all' ? ' selected' : '') + '>All files</option>';
+		tmpHTML += '<option value="images"' + (tmpFilterMediaType === 'images' ? ' selected' : '') + '>Images</option>';
+		tmpHTML += '<option value="video"' + (tmpFilterMediaType === 'video' ? ' selected' : '') + '>Video</option>';
+		tmpHTML += '<option value="audio"' + (tmpFilterMediaType === 'audio' ? ' selected' : '') + '>Audio</option>';
+		tmpHTML += '<option value="documents"' + (tmpFilterMediaType === 'documents' ? ' selected' : '') + '>Documents</option>';
 		tmpHTML += '</select>';
 		tmpHTML += '</div>';
 
@@ -236,12 +231,20 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleHiddenFiles(this.checked)">';
 		tmpHTML += '</div>';
 
-		// Navigation bar in distraction-free
+		tmpHTML += '</div>'; // end gallery section
+
+		// Viewer section
+		tmpHTML += '<div class="retold-remote-settings-section">';
+		tmpHTML += '<div class="retold-remote-settings-section-title">Viewer</div>';
+
+		// Image fit mode
 		tmpHTML += '<div class="retold-remote-settings-row">';
-		tmpHTML += '<span class="retold-remote-settings-label">Nav bar in distraction-free</span>';
-		tmpHTML += '<input type="checkbox" class="retold-remote-settings-checkbox"'
-			+ (tmpRemote.DistractionFreeShowNav ? ' checked' : '')
-			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleDistractionFreeNav(this.checked)">';
+		tmpHTML += '<span class="retold-remote-settings-label">Image fit mode</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeImageFitMode(this.value)">';
+		tmpHTML += '<option value="fit"' + (tmpRemote.ImageFitMode === 'fit' ? ' selected' : '') + '>Fit to window</option>';
+		tmpHTML += '<option value="auto"' + (tmpRemote.ImageFitMode === 'auto' ? ' selected' : '') + '>Original if smaller</option>';
+		tmpHTML += '<option value="original"' + (tmpRemote.ImageFitMode === 'original' ? ' selected' : '') + '>Original size</option>';
+		tmpHTML += '</select>';
 		tmpHTML += '</div>';
 
 		// Autoplay video
@@ -260,7 +263,15 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleAutoplay(\'AutoplayAudio\', this.checked)">';
 		tmpHTML += '</div>';
 
-		tmpHTML += '</div>'; // end gallery section
+		// Navigation bar in distraction-free
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Nav bar in distraction-free</span>';
+		tmpHTML += '<input type="checkbox" class="retold-remote-settings-checkbox"'
+			+ (tmpRemote.DistractionFreeShowNav ? ' checked' : '')
+			+ ' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleDistractionFreeNav(this.checked)">';
+		tmpHTML += '</div>';
+
+		tmpHTML += '</div>'; // end viewer section
 
 		// Server capabilities
 		tmpHTML += '<div class="retold-remote-settings-section">';
@@ -303,107 +314,17 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '</button>';
 		tmpHTML += '</div>';
 
-		// Keyboard shortcuts
+		// Help button
 		tmpHTML += '<div class="retold-remote-settings-section">';
-		tmpHTML += '<div class="retold-remote-settings-section-title">Keyboard Shortcuts</div>';
-
-		tmpHTML += this._buildShortcutGroup('Global',
-		[
-			{ key: 'F1', desc: 'Help panel' },
-			{ key: 'F9', desc: 'Focus sidebar' },
-			{ key: '/', desc: 'Search / filter bar' },
-			{ key: 'Esc', desc: 'Close overlay / back' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Gallery',
-		[
-			{ key: '\u2190 \u2191 \u2192 \u2193', desc: 'Navigate items' },
-			{ key: 'Enter', desc: 'Open item' },
-			{ key: '1  2  3  4', desc: 'Open as image / video / audio / text' },
-			{ key: 'Esc', desc: 'Go up one folder' },
-			{ key: 'Home', desc: 'Jump to first item' },
-			{ key: 'End', desc: 'Jump to last item' },
-			{ key: 'g', desc: 'Toggle grid / list' },
-			{ key: 'f', desc: 'Advanced filter panel' },
-			{ key: 's', desc: 'Focus sort dropdown' },
-			{ key: 'x', desc: 'Clear all filters' },
-			{ key: 'c', desc: 'Settings panel' },
-			{ key: 'd', desc: 'Distraction-free mode' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Sidebar (F9)',
-		[
-			{ key: '\u2191 \u2193', desc: 'Navigate file list' },
-			{ key: 'Home', desc: 'Jump to first' },
-			{ key: 'End', desc: 'Jump to last' },
-			{ key: 'Enter', desc: 'Open item' },
-			{ key: 'Esc', desc: 'Return to gallery' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Media Viewer',
-		[
-			{ key: 'Esc', desc: 'Back to gallery' },
-			{ key: '\u2192  j', desc: 'Next file' },
-			{ key: '\u2190  k', desc: 'Previous file' },
-			{ key: '1  2  3  4', desc: 'View as image / video / audio / text' },
-			{ key: 'Space', desc: 'Play / pause' },
-			{ key: 'f', desc: 'Fullscreen' },
-			{ key: 'i', desc: 'File info overlay' },
-			{ key: 'v', desc: 'Stream with VLC' },
-			{ key: '+  -', desc: 'Zoom in / out' },
-			{ key: '0', desc: 'Reset zoom' },
-			{ key: 'z', desc: 'Cycle fit mode' },
-			{ key: 'd', desc: 'Distraction-free mode' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Video Menu',
-		[
-			{ key: 'Space', desc: 'Play in browser' },
-			{ key: 'Enter', desc: 'Play in browser' },
-			{ key: 'e', desc: 'Explore video frames' },
-			{ key: 't', desc: 'Extract thumbnail' },
-			{ key: 'v', desc: 'Stream with VLC' },
-			{ key: '\u2192  j', desc: 'Next file' },
-			{ key: '\u2190  k', desc: 'Previous file' },
-			{ key: 'Esc', desc: 'Back to gallery' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Video Explorer',
-		[
-			{ key: 'Esc', desc: 'Back' }
-		]);
-
-		tmpHTML += this._buildShortcutGroup('Audio Explorer',
-		[
-			{ key: 'Space', desc: 'Play selection' },
-			{ key: '+  -', desc: 'Zoom in / out' },
-			{ key: '0', desc: 'Zoom to fit' },
-			{ key: 'z', desc: 'Zoom to selection' },
-			{ key: 'Esc', desc: 'Clear selection / back' }
-		]);
-
-		tmpHTML += '</div>'; // end shortcuts section
+		tmpHTML += '<div class="retold-remote-settings-section-title">Help</div>';
+		tmpHTML += '<button class="retold-remote-settings-vlc-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleHelpPanel()">';
+		tmpHTML += 'Help (F1)';
+		tmpHTML += '</button>';
+		tmpHTML += '</div>';
 
 		tmpHTML += '</div>'; // end settings
 
 		tmpContainer.innerHTML = tmpHTML;
-	}
-
-	_buildShortcutGroup(pTitle, pShortcuts)
-	{
-		let tmpHTML = '<div class="retold-remote-settings-shortcut-group">';
-		tmpHTML += '<div class="retold-remote-settings-shortcut-group-title">' + pTitle + '</div>';
-
-		for (let i = 0; i < pShortcuts.length; i++)
-		{
-			tmpHTML += '<div class="retold-remote-settings-shortcut-row">';
-			tmpHTML += '<span class="retold-remote-settings-shortcut-desc">' + pShortcuts[i].desc + '</span>';
-			tmpHTML += '<span class="retold-remote-settings-shortcut-key">' + pShortcuts[i].key + '</span>';
-			tmpHTML += '</div>';
-		}
-
-		tmpHTML += '</div>';
-		return tmpHTML;
 	}
 
 	changeTheme(pThemeKey)
@@ -467,6 +388,71 @@ class RetoldRemoteSettingsPanelView extends libPictView
 			if (tmpViewerHeader)
 			{
 				tmpViewerHeader.style.display = pChecked ? '' : 'none';
+			}
+		}
+	}
+
+	changeImageFitMode(pMode)
+	{
+		let tmpImageViewer = this.pict.views['RetoldRemote-ImageViewer'];
+		if (tmpImageViewer)
+		{
+			tmpImageViewer.setFitMode(pMode);
+		}
+		else
+		{
+			let tmpRemote = this.pict.AppData.RetoldRemote;
+			tmpRemote.ImageFitMode = pMode;
+			this.pict.PictApplication.saveSettings();
+		}
+	}
+
+	changeSortField(pValue)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.SortField = pValue;
+		this.pict.PictApplication.saveSettings();
+		this._refilterGallery();
+	}
+
+	changeSortDirection(pValue)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.SortDirection = pValue;
+		this.pict.PictApplication.saveSettings();
+		this._refilterGallery();
+	}
+
+	changeMediaFilter(pValue)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.GalleryFilter = pValue;
+		if (tmpRemote.FilterState)
+		{
+			tmpRemote.FilterState.MediaType = pValue;
+		}
+		this.pict.PictApplication.saveSettings();
+		this._refilterGallery();
+	}
+
+	/**
+	 * Re-run the filter/sort pipeline and refresh the gallery.
+	 */
+	_refilterGallery()
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpFilterSort = this.pict.providers['RetoldRemote-GalleryFilterSort'];
+		if (tmpFilterSort)
+		{
+			tmpFilterSort.runFilterPipeline();
+		}
+
+		if (tmpRemote.ActiveMode === 'gallery')
+		{
+			let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
+			if (tmpGalleryView)
+			{
+				tmpGalleryView.renderGallery();
 			}
 		}
 	}
