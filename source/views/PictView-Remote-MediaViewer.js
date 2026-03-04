@@ -544,7 +544,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpHTML += '<div class="retold-remote-viewer-header">';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';
-		tmpHTML += '<div class="retold-remote-viewer-title">' + this._escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-viewer-title">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';
@@ -846,7 +846,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 	_buildImageHTML(pURL, pFileName)
 	{
-		return '<img src="' + pURL + '" alt="' + this._escapeHTML(pFileName) + '" '
+		return '<img src="' + pURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '" '
 			+ 'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '
 			+ 'id="RetoldRemote-ImageViewer-Img" '
 			+ 'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '
@@ -861,7 +861,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 		// Build the action menu (shown by default instead of the player)
 		let tmpHTML = '<div class="retold-remote-video-action-menu" id="RetoldRemote-VideoActionMenu">';
-		tmpHTML += '<div class="retold-remote-video-action-menu-title">' + this._escapeHTML(pFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-video-action-menu-title">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '</div>';
 
 		// Frame preview container (loaded on demand via t key or automatically)
 		if (tmpCapabilities.ffmpeg)
@@ -1001,7 +1001,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 					let tmpFrame = pData.Frames[0];
 					let tmpFrameURL = '/api/media/video-frame/' + pData.CacheKey + '/' + tmpFrame.Filename;
 					tmpWrap.innerHTML = '<img src="' + tmpFrameURL + '" '
-						+ 'alt="' + this._escapeHTML(tmpFilePath.replace(/^.*\//, '')) + '" '
+						+ 'alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFilePath.replace(/^.*\//, '')) + '" '
 						+ 'onerror="this.parentNode.innerHTML=\'\'">';
 				}
 				else
@@ -1023,7 +1023,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 		let tmpHTML = '<div style="text-align: center; padding: 40px;">'
 			+ '<div style="margin-bottom: 24px;">' + tmpIconHTML + '</div>'
-			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this._escapeHTML(pFileName) + '</div>'
+			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '</div>'
 			+ '<audio controls' + (this.pict.AppData.RetoldRemote.AutoplayAudio ? ' autoplay' : '') + ' preload="metadata" id="RetoldRemote-AudioPlayer" style="width: 100%; max-width: 500px;">'
 			+ '<source src="' + pURL + '">'
 			+ 'Your browser does not support the audio tag.'
@@ -1077,7 +1077,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		let tmpDocIconHTML = tmpIconProvider ? '<span class="retold-remote-icon retold-remote-icon-lg">' + tmpIconProvider.getIcon('document-large', 64) + '</span>' : '&#128196;';
 		return '<div style="text-align: center; padding: 40px;">'
 			+ '<div style="margin-bottom: 24px;">' + tmpDocIconHTML + '</div>'
-			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this._escapeHTML(pFileName) + '</div>'
+			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '</div>'
 			+ '<a href="' + pURL + '" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Open in new tab</a>'
 			+ '</div>';
 	}
@@ -1296,7 +1296,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 					if (tmpEl)
 					{
 						tmpEl.innerHTML = '<div class="retold-remote-ebook-loading">Failed to convert: '
-							+ tmpSelf._escapeHTML(pError.message)
+							+ tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)
 							+ '<br><a href="' + pContentURL + '" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'
 							+ '</div>';
 					}
@@ -1400,7 +1400,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 				if (tmpContentEl)
 				{
 					tmpContentEl.innerHTML = '<div class="retold-remote-ebook-loading">Failed to load ebook: '
-						+ tmpSelf._escapeHTML(pError.message) + '</div>';
+						+ tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message) + '</div>';
 				}
 			});
 	}
@@ -1428,9 +1428,9 @@ class RetoldRemoteMediaViewerView extends libPictView
 				let tmpItem = pItems[i];
 				let tmpIndentClass = pDepth > 0 ? ' indent-' + Math.min(pDepth, 2) : '';
 				tmpHTML += '<button class="retold-remote-ebook-toc-item' + tmpIndentClass + '" '
-					+ 'data-href="' + tmpSelf._escapeHTML(tmpItem.href) + '" '
+					+ 'data-href="' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.href) + '" '
 					+ 'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'
-					+ tmpSelf._escapeHTML(tmpItem.label.trim())
+					+ tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.label.trim())
 					+ '</button>';
 
 				if (tmpItem.subitems && tmpItem.subitems.length > 0)
@@ -1497,7 +1497,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		let tmpFallbackIconHTML = tmpIconProvider ? '<span class="retold-remote-icon retold-remote-icon-lg">' + tmpIconProvider.getIcon('document-large', 64) + '</span>' : '&#128196;';
 		return '<div style="text-align: center; padding: 40px;">'
 			+ '<div style="margin-bottom: 24px;">' + tmpFallbackIconHTML + '</div>'
-			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this._escapeHTML(pFileName) + '</div>'
+			+ '<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '</div>'
 			+ '<a href="' + pURL + '" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Download / Open in new tab</a>'
 			+ '</div>';
 	}
@@ -1530,7 +1530,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 					if (pData.Size !== undefined)
 					{
-						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">' + tmpSelf._formatFileSize(pData.Size) + '</span></div>';
+						tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size) + '</span></div>';
 					}
 					if (pData.Width && pData.Height)
 					{
@@ -1602,7 +1602,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 					}
 					if (pData.Size !== undefined)
 					{
-						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">' + tmpSelf._formatFileSize(pData.Size) + '</span></span>';
+						tmpStatsHTML += '<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size) + '</span></span>';
 					}
 
 					// Preserve the Explore and VLC buttons if they exist
@@ -1616,21 +1616,6 @@ class RetoldRemoteMediaViewerView extends libPictView
 			});
 	}
 
-	_formatFileSize(pBytes)
-	{
-		if (!pBytes || pBytes === 0) return '0 B';
-		let tmpUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let tmpIndex = Math.floor(Math.log(pBytes) / Math.log(1024));
-		if (tmpIndex >= tmpUnits.length) tmpIndex = tmpUnits.length - 1;
-		let tmpSize = pBytes / Math.pow(1024, tmpIndex);
-		return tmpSize.toFixed(tmpIndex === 0 ? 0 : 1) + ' ' + tmpUnits[tmpIndex];
-	}
-
-	_escapeHTML(pText)
-	{
-		if (!pText) return '';
-		return pText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-	}
 }
 
 RetoldRemoteMediaViewerView.default_configuration = _ViewConfiguration;

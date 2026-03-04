@@ -8,6 +8,8 @@ const libProviderGalleryNavigation = require('./providers/Pict-Provider-GalleryN
 const libProviderGalleryFilterSort = require('./providers/Pict-Provider-GalleryFilterSort.js');
 const libProviderRetoldRemoteIcons = require('./providers/Pict-Provider-RetoldRemoteIcons.js');
 const libProviderRetoldRemoteTheme = require('./providers/Pict-Provider-RetoldRemoteTheme.js');
+const libProviderFormattingUtilities = require('./providers/Pict-Provider-FormattingUtilities.js');
+const libProviderToastNotification = require('./providers/Pict-Provider-ToastNotification.js');
 
 // Views (replace parent views)
 const libViewLayout = require('./views/PictView-Remote-Layout.js');
@@ -60,6 +62,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addProvider('RetoldRemote-GalleryFilterSort', libProviderGalleryFilterSort.default_configuration, libProviderGalleryFilterSort);
 		this.pict.addProvider('RetoldRemote-Icons', libProviderRetoldRemoteIcons.default_configuration, libProviderRetoldRemoteIcons);
 		this.pict.addProvider('RetoldRemote-Theme', libProviderRetoldRemoteTheme.default_configuration, libProviderRetoldRemoteTheme);
+		this.pict.addProvider('RetoldRemote-FormattingUtilities', libProviderFormattingUtilities.default_configuration, libProviderFormattingUtilities);
+		this.pict.addProvider('RetoldRemote-ToastNotification', libProviderToastNotification.default_configuration, libProviderToastNotification);
 	}
 
 	onAfterInitializeAsync(fCallback)
@@ -97,6 +101,11 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			SidebarWidth: 250,
 			AutoplayVideo: false,
 			AutoplayAudio: false,
+
+			// List column visibility
+			ListShowExtension: true,
+			ListShowSize: true,
+			ListShowDate: true,
 
 			// Filter state
 			FilterState:
@@ -473,6 +482,9 @@ class RetoldRemoteApplication extends libContentEditorApplication
 					tmpListDetailView.render();
 				}
 
+				// Inject the add-folder button at the bottom of the sidebar file list
+				tmpSelf._injectSidebarAddFolderButton();
+
 				// Populate raw file list and run filter pipeline
 				let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
 				tmpRemote.RawFileList = pFileList || [];
@@ -628,6 +640,38 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	}
 
 	/**
+	 * Inject a subtle "Add Folder" button at the bottom of the sidebar file list.
+	 * Replaces the bright white "+" button from the breadcrumb bar.
+	 */
+	_injectSidebarAddFolderButton()
+	{
+		let tmpDetailRows = document.getElementById('Pict-FileBrowser-DetailRows');
+		if (!tmpDetailRows)
+		{
+			return;
+		}
+
+		// Remove any existing injected button so we don't duplicate
+		let tmpExisting = tmpDetailRows.parentElement.querySelector('.retold-remote-sidebar-addfolder');
+		if (tmpExisting)
+		{
+			tmpExisting.parentElement.removeChild(tmpExisting);
+		}
+
+		let tmpBtn = document.createElement('button');
+		tmpBtn.className = 'retold-remote-sidebar-addfolder';
+		tmpBtn.textContent = '+ New Folder';
+		tmpBtn.title = 'Create a new folder here';
+		tmpBtn.onclick = function()
+		{
+			pict.PictApplication.promptNewFolder();
+		};
+
+		// Insert after the detail rows container
+		tmpDetailRows.parentElement.appendChild(tmpBtn);
+	}
+
+	/**
 	 * Save RetoldRemote settings to localStorage.
 	 */
 	saveSettings()
@@ -651,7 +695,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				FilterPresets: tmpRemote.FilterPresets,
 				FilterPanelOpen: tmpRemote.FilterPanelOpen,
 				AutoplayVideo: tmpRemote.AutoplayVideo,
-				AutoplayAudio: tmpRemote.AutoplayAudio
+				AutoplayAudio: tmpRemote.AutoplayAudio,
+				ListShowExtension: tmpRemote.ListShowExtension,
+				ListShowSize: tmpRemote.ListShowSize,
+				ListShowDate: tmpRemote.ListShowDate
 			};
 			localStorage.setItem('retold-remote-settings', JSON.stringify(tmpSettings));
 		}
@@ -693,6 +740,9 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.FilterPanelOpen) === 'boolean') tmpRemote.FilterPanelOpen = tmpSettings.FilterPanelOpen;
 				if (typeof (tmpSettings.AutoplayVideo) === 'boolean') tmpRemote.AutoplayVideo = tmpSettings.AutoplayVideo;
 				if (typeof (tmpSettings.AutoplayAudio) === 'boolean') tmpRemote.AutoplayAudio = tmpSettings.AutoplayAudio;
+				if (typeof (tmpSettings.ListShowExtension) === 'boolean') tmpRemote.ListShowExtension = tmpSettings.ListShowExtension;
+				if (typeof (tmpSettings.ListShowSize) === 'boolean') tmpRemote.ListShowSize = tmpSettings.ListShowSize;
+				if (typeof (tmpSettings.ListShowDate) === 'boolean') tmpRemote.ListShowDate = tmpSettings.ListShowDate;
 			}
 		}
 		catch (pError)

@@ -145,6 +145,34 @@ const _ViewConfiguration =
 		{
 			display: none;
 		}
+		/* Hide the ugly white + button from the breadcrumb bar */
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-addfolder
+		{
+			display: none;
+		}
+		/* Subtle add-folder button at bottom of file list */
+		.retold-remote-sidebar-addfolder
+		{
+			display: block;
+			width: 100%;
+			padding: 8px 12px;
+			margin-top: 4px;
+			border: 1px dashed var(--retold-border);
+			border-radius: 4px;
+			background: transparent;
+			color: var(--retold-text-dim);
+			font-size: 0.72rem;
+			font-family: inherit;
+			cursor: pointer;
+			text-align: center;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+		}
+		.retold-remote-sidebar-addfolder:hover
+		{
+			color: var(--retold-text-muted);
+			border-color: var(--retold-text-dim);
+			background: rgba(128, 128, 128, 0.06);
+		}
 		#ContentEditor-Sidebar-Container .pict-fb-detail-row
 		{
 			color: var(--retold-text-secondary);
@@ -171,15 +199,41 @@ const _ViewConfiguration =
 		{
 			box-shadow: inset 0 0 0 1px var(--retold-accent);
 		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-bar
+		{
+			background: var(--retold-bg-secondary);
+			border-bottom-color: var(--retold-border);
+		}
 		#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs
 		{
 			color: var(--retold-text-muted);
-			background: var(--retold-bg-secondary);
-			border-bottom-color: var(--retold-border);
+			background: transparent;
+			border-bottom: none;
 		}
 		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link
 		{
 			color: var(--retold-accent);
+		}
+		/* Insert button: hidden by default, visible on row hover for ALL files */
+		#ContentEditor-Sidebar-Container .pict-fb-insert-btn
+		{
+			display: none;
+			background: var(--retold-bg-hover);
+			color: var(--retold-text-muted);
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			font-size: 0.72rem;
+			padding: 1px 6px;
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-insert-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+			border-color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-detail-row:hover .pict-fb-insert-btn
+		{
+			display: inline-block;
 		}
 		/* Main content area */
 		#RetoldRemote-Content-Container
@@ -207,6 +261,77 @@ const _ViewConfiguration =
 		#ContentEditor-Editor-Container
 		{
 			display: none;
+		}
+
+		/* ============================================================
+		   MOBILE: Sidebar becomes a top drawer
+		   ============================================================ */
+		@media (max-width: 600px)
+		{
+			.content-editor-body
+			{
+				flex-direction: column;
+			}
+
+			/* Sidebar becomes a top section with a height instead of width */
+			.content-editor-sidebar-wrap
+			{
+				width: 100% !important;
+				height: 33vh;
+				transition: height 0.2s ease;
+				flex-direction: column;
+			}
+
+			.content-editor-sidebar-wrap.collapsed
+			{
+				width: 100% !important;
+				height: 0 !important;
+			}
+
+			/* Resize handle becomes horizontal bar at the bottom of the drawer */
+			.content-editor-resize-handle
+			{
+				width: 100%;
+				height: 8px;
+				cursor: row-resize;
+				border-right: none;
+				border-bottom: 1px solid var(--retold-border);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.content-editor-resize-handle::after
+			{
+				content: '';
+				display: block;
+				width: 36px;
+				height: 3px;
+				border-radius: 2px;
+				background: var(--retold-text-placeholder);
+				opacity: 0.5;
+			}
+
+			.content-editor-resize-handle:hover::after,
+			.content-editor-resize-handle.dragging::after
+			{
+				background: var(--retold-accent);
+				opacity: 1;
+			}
+
+			/* Sidebar inner fills the drawer */
+			.content-editor-sidebar-inner
+			{
+				flex: 1;
+				min-height: 0;
+			}
+
+			/* Content takes remaining space */
+			#RetoldRemote-Content-Container
+			{
+				flex: 1;
+				min-height: 0;
+			}
 		}
 	`,
 
@@ -276,12 +401,20 @@ class RetoldRemoteLayoutView extends libPictView
 				tmpWrap.classList.add('collapsed');
 			}
 		}
-		if (tmpRemote && tmpRemote.SidebarWidth)
+		if (!this.isMobileDrawer() && tmpRemote && tmpRemote.SidebarWidth)
 		{
 			let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
 			if (tmpWrap && !tmpWrap.classList.contains('collapsed'))
 			{
 				tmpWrap.style.width = tmpRemote.SidebarWidth + 'px';
+			}
+		}
+		if (this.isMobileDrawer() && tmpRemote && tmpRemote.SidebarDrawerHeight)
+		{
+			let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
+			if (tmpWrap && !tmpWrap.classList.contains('collapsed'))
+			{
+				tmpWrap.style.height = tmpRemote.SidebarDrawerHeight + 'px';
 			}
 		}
 
@@ -291,6 +424,14 @@ class RetoldRemoteLayoutView extends libPictView
 		{
 			tmpSelf.pict.PictApplication.resolveHash();
 		});
+	}
+
+	/**
+	 * Detect if we are in mobile drawer mode (narrow viewport).
+	 */
+	isMobileDrawer()
+	{
+		return window.innerWidth <= 600;
 	}
 
 	toggleSidebar()
@@ -304,7 +445,23 @@ class RetoldRemoteLayoutView extends libPictView
 		tmpWrap.classList.toggle('collapsed');
 
 		let tmpRemote = this.pict.AppData.RetoldRemote;
-		tmpRemote.SidebarCollapsed = tmpWrap.classList.contains('collapsed');
+		let tmpIsCollapsed = tmpWrap.classList.contains('collapsed');
+		tmpRemote.SidebarCollapsed = tmpIsCollapsed;
+
+		// Restore saved dimensions when opening
+		if (!tmpIsCollapsed)
+		{
+			if (this.isMobileDrawer())
+			{
+				let tmpHeight = tmpRemote.SidebarDrawerHeight || Math.round(window.innerHeight * 0.33);
+				tmpWrap.style.height = tmpHeight + 'px';
+			}
+			else if (tmpRemote.SidebarWidth)
+			{
+				tmpWrap.style.width = tmpRemote.SidebarWidth + 'px';
+			}
+		}
+
 		this.pict.PictApplication.saveSettings();
 
 		// Recalculate gallery columns after sidebar resize
@@ -355,37 +512,84 @@ class RetoldRemoteLayoutView extends libPictView
 		}
 
 		let tmpStartX = 0;
+		let tmpStartY = 0;
 		let tmpStartWidth = 0;
+		let tmpStartHeight = 0;
 
-		function onMouseDown(pEvent)
+		function getClientPos(pEvent)
+		{
+			if (pEvent.touches && pEvent.touches.length > 0)
+			{
+				return { x: pEvent.touches[0].clientX, y: pEvent.touches[0].clientY };
+			}
+			return { x: pEvent.clientX, y: pEvent.clientY };
+		}
+
+		function onDragStart(pEvent)
 		{
 			tmpSelf._sidebarDragging = true;
-			tmpStartX = pEvent.clientX;
+			let tmpPos = getClientPos(pEvent);
+			tmpStartX = tmpPos.x;
+			tmpStartY = tmpPos.y;
 			tmpStartWidth = tmpWrap.offsetWidth;
+			tmpStartHeight = tmpWrap.offsetHeight;
 			tmpHandle.classList.add('dragging');
-			document.addEventListener('mousemove', onMouseMove);
-			document.addEventListener('mouseup', onMouseUp);
+
+			document.addEventListener('mousemove', onDragMove);
+			document.addEventListener('mouseup', onDragEnd);
+			document.addEventListener('touchmove', onDragMove, { passive: false });
+			document.addEventListener('touchend', onDragEnd);
 			pEvent.preventDefault();
 		}
 
-		function onMouseMove(pEvent)
+		function onDragMove(pEvent)
 		{
-			if (!tmpSelf._sidebarDragging) return;
-			let tmpNewWidth = tmpStartWidth + (pEvent.clientX - tmpStartX);
-			tmpNewWidth = Math.max(150, Math.min(tmpNewWidth, 600));
-			tmpWrap.style.width = tmpNewWidth + 'px';
+			if (!tmpSelf._sidebarDragging)
+			{
+				return;
+			}
+
+			let tmpPos = getClientPos(pEvent);
+
+			if (tmpSelf.isMobileDrawer())
+			{
+				// Vertical resize (top drawer)
+				let tmpNewHeight = tmpStartHeight + (tmpPos.y - tmpStartY);
+				let tmpMaxHeight = Math.round(window.innerHeight * 0.7);
+				tmpNewHeight = Math.max(80, Math.min(tmpNewHeight, tmpMaxHeight));
+				tmpWrap.style.height = tmpNewHeight + 'px';
+			}
+			else
+			{
+				// Horizontal resize (sidebar)
+				let tmpNewWidth = tmpStartWidth + (tmpPos.x - tmpStartX);
+				tmpNewWidth = Math.max(150, Math.min(tmpNewWidth, 600));
+				tmpWrap.style.width = tmpNewWidth + 'px';
+			}
+
+			pEvent.preventDefault();
 		}
 
-		function onMouseUp()
+		function onDragEnd()
 		{
 			tmpSelf._sidebarDragging = false;
 			tmpHandle.classList.remove('dragging');
-			document.removeEventListener('mousemove', onMouseMove);
-			document.removeEventListener('mouseup', onMouseUp);
 
-			// Persist width
+			document.removeEventListener('mousemove', onDragMove);
+			document.removeEventListener('mouseup', onDragEnd);
+			document.removeEventListener('touchmove', onDragMove);
+			document.removeEventListener('touchend', onDragEnd);
+
+			// Persist dimensions
 			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
-			tmpRemote.SidebarWidth = tmpWrap.offsetWidth;
+			if (tmpSelf.isMobileDrawer())
+			{
+				tmpRemote.SidebarDrawerHeight = tmpWrap.offsetHeight;
+			}
+			else
+			{
+				tmpRemote.SidebarWidth = tmpWrap.offsetWidth;
+			}
 			tmpSelf.pict.PictApplication.saveSettings();
 
 			// Recalculate gallery columns
@@ -396,9 +600,10 @@ class RetoldRemoteLayoutView extends libPictView
 			}
 		}
 
-		tmpHandle.addEventListener('mousedown', onMouseDown);
+		tmpHandle.addEventListener('mousedown', onDragStart);
+		tmpHandle.addEventListener('touchstart', onDragStart, { passive: false });
 
-		// Double-click on resize handle collapses the sidebar
+		// Double-click/tap on resize handle collapses the sidebar
 		tmpHandle.addEventListener('dblclick', function (pEvent)
 		{
 			pEvent.preventDefault();

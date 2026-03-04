@@ -1,9 +1,5 @@
 const libPictProvider = require('pict-provider');
-
-const _ImageExtensions = { 'png': true, 'jpg': true, 'jpeg': true, 'gif': true, 'webp': true, 'svg': true, 'bmp': true, 'ico': true, 'avif': true, 'tiff': true, 'tif': true };
-const _VideoExtensions = { 'mp4': true, 'webm': true, 'mov': true, 'mkv': true, 'avi': true, 'wmv': true, 'flv': true, 'm4v': true, 'ogv': true, 'mpg': true, 'mpeg': true, 'mpe': true, 'mpv': true, 'm2v': true, 'ts': true, 'mts': true, 'm2ts': true, 'vob': true, '3gp': true, '3g2': true, 'f4v': true, 'rm': true, 'rmvb': true, 'divx': true, 'asf': true, 'mxf': true, 'dv': true, 'nsv': true, 'nuv': true, 'y4m': true, 'wtv': true, 'swf': true, 'dat': true };
-const _AudioExtensions = { 'mp3': true, 'wav': true, 'ogg': true, 'flac': true, 'aac': true, 'm4a': true, 'wma': true };
-const _DocumentExtensions = { 'pdf': true, 'epub': true, 'mobi': true };
+const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
 const _DefaultProviderConfiguration =
 {
@@ -340,12 +336,7 @@ class GalleryFilterSortProvider extends libPictProvider
 	 */
 	getCategory(pExtension)
 	{
-		let tmpExt = (pExtension || '').replace(/^\./, '').toLowerCase();
-		if (_ImageExtensions[tmpExt]) return 'image';
-		if (_VideoExtensions[tmpExt]) return 'video';
-		if (_AudioExtensions[tmpExt]) return 'audio';
-		if (_DocumentExtensions[tmpExt]) return 'document';
-		return 'other';
+		return libExtensionMaps.getCategory(pExtension);
 	}
 
 	// ──────────────────────────────────────────────

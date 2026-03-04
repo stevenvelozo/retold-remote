@@ -400,7 +400,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		// Header
 		tmpHTML += '<div class="retold-remote-vex-header">';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';
-		tmpHTML += '<div class="retold-remote-vex-title">Video Explorer &mdash; ' + this._escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-vex-title">Video Explorer &mdash; ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar (populated after frames load)
@@ -503,18 +503,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		if (tmpInfoBar)
 		{
 			let tmpInfoHTML = '';
-			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">' + this._escapeHTML(tmpData.DurationFormatted) + '</span></span>';
+			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted) + '</span></span>';
 			if (tmpData.VideoWidth && tmpData.VideoHeight)
 			{
 				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Resolution</span> <span class="retold-remote-vex-info-value">' + tmpData.VideoWidth + '&times;' + tmpData.VideoHeight + '</span></span>';
 			}
 			if (tmpData.Codec)
 			{
-				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">' + this._escapeHTML(tmpData.Codec) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.Codec) + '</span></span>';
 			}
 			if (tmpData.FileSize)
 			{
-				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">' + this._formatFileSize(tmpData.FileSize) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpData.FileSize) + '</span></span>';
 			}
 			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Frames</span> <span class="retold-remote-vex-info-value">' + tmpData.FrameCount + '</span></span>';
 
@@ -541,9 +541,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpFrameURL = '/api/media/video-frame/' + tmpData.CacheKey + '/' + tmpFrame.Filename;
 
 				tmpGridHTML += '<div class="retold-remote-vex-frame" id="retold-vex-frame-' + i + '" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame(' + i + ')" ondblclick="pict.views[\'RetoldRemote-VideoExplorer\'].openFrameFullsize(' + i + ')">';
-				tmpGridHTML += '<img src="' + tmpFrameURL + '" alt="Frame at ' + this._escapeHTML(tmpFrame.TimestampFormatted) + '" loading="lazy">';
+				tmpGridHTML += '<img src="' + tmpFrameURL + '" alt="Frame at ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '" loading="lazy">';
 				tmpGridHTML += '<div class="retold-remote-vex-frame-info">';
-				tmpGridHTML += '<span class="retold-remote-vex-frame-timestamp">' + this._escapeHTML(tmpFrame.TimestampFormatted) + '</span>';
+				tmpGridHTML += '<span class="retold-remote-vex-frame-timestamp">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '</span>';
 				tmpGridHTML += '<span class="retold-remote-vex-frame-index">#' + (tmpFrame.Index + 1) + '</span>';
 				tmpGridHTML += '</div>';
 				tmpGridHTML += '</div>';
@@ -586,7 +586,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			let tmpSelectedClass = (i === this._selectedFrameIndex) ? ' selected' : '';
 			tmpHTML += '<div class="retold-remote-vex-timeline-marker' + tmpSelectedClass + '" '
 				+ 'style="left:' + tmpPercent.toFixed(2) + '%;" '
-				+ 'title="' + this._escapeHTML(tmpFrame.TimestampFormatted) + '" '
+				+ 'title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '" '
 				+ 'onclick="event.stopPropagation(); pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame(' + i + ')">'
 				+ '</div>';
 		}
@@ -600,13 +600,13 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpPercent = (tmpCustom.Timestamp / tmpData.Duration) * 100;
 				tmpHTML += '<div class="retold-remote-vex-timeline-marker custom" '
 					+ 'style="left:' + tmpPercent.toFixed(2) + '%;" '
-					+ 'title="' + this._escapeHTML(tmpCustom.TimestampFormatted) + '">'
+					+ 'title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpCustom.TimestampFormatted) + '">'
 					+ '</div>';
 			}
 		}
 
 		tmpHTML += '</div>';
-		tmpHTML += '<span class="retold-remote-vex-timeline-label">' + this._escapeHTML(tmpData.DurationFormatted) + '</span>';
+		tmpHTML += '<span class="retold-remote-vex-timeline-label">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted) + '</span>';
 
 		tmpTimeline.innerHTML = tmpHTML;
 		tmpTimeline.style.display = '';
@@ -729,13 +729,13 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				if (tmpPlaceholder)
 				{
 					let tmpFrameURL = '/api/media/video-frame/' + tmpData.CacheKey + '/' + pResult.Filename;
-					let tmpEscFilename = tmpSelf._escapeHTML(pResult.Filename).replace(/'/g, "\\'");
-					let tmpEscTimestamp = tmpSelf._escapeHTML(pResult.TimestampFormatted).replace(/'/g, "\\'");
+					let tmpEscFilename = tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.Filename).replace(/'/g, "\\'");
+					let tmpEscTimestamp = tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted).replace(/'/g, "\\'");
 					tmpPlaceholder.ondblclick = function() { pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename, tmpEscTimestamp); };
 					tmpPlaceholder.style.cursor = 'pointer';
-					tmpPlaceholder.innerHTML = '<img src="' + tmpFrameURL + '" alt="Frame at ' + tmpSelf._escapeHTML(pResult.TimestampFormatted) + '" loading="lazy">'
+					tmpPlaceholder.innerHTML = '<img src="' + tmpFrameURL + '" alt="Frame at ' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted) + '" loading="lazy">'
 						+ '<div class="retold-remote-vex-frame-info">'
-						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._escapeHTML(pResult.TimestampFormatted) + '</span>'
+						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted) + '</span>'
 						+ '<span class="retold-remote-vex-frame-index">custom</span>'
 						+ '</div>';
 				}
@@ -748,9 +748,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpPlaceholder = document.getElementById(tmpPlaceholderId);
 				if (tmpPlaceholder)
 				{
-					tmpPlaceholder.innerHTML = '<div class="retold-remote-vex-frame-loading">Failed: ' + tmpSelf._escapeHTML(pError.message) + '</div>'
+					tmpPlaceholder.innerHTML = '<div class="retold-remote-vex-frame-loading">Failed: ' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message) + '</div>'
 						+ '<div class="retold-remote-vex-frame-info">'
-						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._formatTimestamp(tmpTimestamp) + '</span>'
+						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpTimestamp) + '</span>'
 						+ '<span class="retold-remote-vex-frame-index">error</span>'
 						+ '</div>';
 				}
@@ -780,7 +780,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpEl.id = pPlaceholderId;
 		tmpEl.innerHTML = '<div class="retold-remote-vex-frame-loading">Extracting...</div>'
 			+ '<div class="retold-remote-vex-frame-info">'
-			+ '<span class="retold-remote-vex-frame-timestamp">' + this._formatTimestamp(pTimestamp) + '</span>'
+			+ '<span class="retold-remote-vex-frame-timestamp">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(pTimestamp) + '</span>'
 			+ '<span class="retold-remote-vex-frame-index">custom</span>'
 			+ '</div>';
 
@@ -838,25 +838,6 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			return parseInt(tmpParts[0], 10) * 60 + parseInt(tmpParts[1], 10);
 		}
 		return parseFloat(pText) || 0;
-	}
-
-	/**
-	 * Format a timestamp in seconds to a human-readable string.
-	 *
-	 * @param {number} pSeconds - Timestamp in seconds
-	 * @returns {string} Formatted string like "1:23" or "1:02:34"
-	 */
-	_formatTimestamp(pSeconds)
-	{
-		let tmpHours = Math.floor(pSeconds / 3600);
-		let tmpMinutes = Math.floor((pSeconds % 3600) / 60);
-		let tmpSecs = Math.floor(pSeconds % 60);
-
-		if (tmpHours > 0)
-		{
-			return tmpHours + ':' + String(tmpMinutes).padStart(2, '0') + ':' + String(tmpSecs).padStart(2, '0');
-		}
-		return tmpMinutes + ':' + String(tmpSecs).padStart(2, '0');
 	}
 
 	/**
@@ -1000,11 +981,11 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpHTML += '<div class="retold-remote-vex-preview-header">';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';
-		tmpHTML += '<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">' + this._escapeHTML(pLabel) + '</div>';
+		tmpHTML += '<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel) + '</div>';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';
 		tmpHTML += '</div>';
 		tmpHTML += '<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';
-		tmpHTML += '<img src="' + pURL + '" alt="' + this._escapeHTML(pLabel) + '">';
+		tmpHTML += '<img src="' + pURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel) + '">';
 		tmpHTML += '</div>';
 
 		tmpBackdrop.innerHTML = tmpHTML;
@@ -1099,7 +1080,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		let tmpBody = document.getElementById('RetoldRemote-VEX-PreviewBody');
 		if (tmpBody)
 		{
-			tmpBody.innerHTML = '<img src="' + tmpURL + '" alt="' + this._escapeHTML(tmpFrame.Label) + '">';
+			tmpBody.innerHTML = '<img src="' + tmpURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.Label) + '">';
 		}
 
 		let tmpTitle = document.getElementById('RetoldRemote-VEX-PreviewTitle');
@@ -1201,27 +1182,12 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		if (tmpBody)
 		{
 			tmpBody.innerHTML = '<div class="retold-remote-vex-error">'
-				+ '<div class="retold-remote-vex-error-message">' + this._escapeHTML(pMessage || 'An error occurred.') + '</div>'
+				+ '<div class="retold-remote-vex-error-message">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage || 'An error occurred.') + '</div>'
 				+ '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'
 				+ '</div>';
 		}
 	}
 
-	_escapeHTML(pText)
-	{
-		if (!pText) return '';
-		return pText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-	}
-
-	_formatFileSize(pBytes)
-	{
-		if (!pBytes || pBytes === 0) return '0 B';
-		let tmpUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let tmpIndex = Math.floor(Math.log(pBytes) / Math.log(1024));
-		if (tmpIndex >= tmpUnits.length) tmpIndex = tmpUnits.length - 1;
-		let tmpSize = pBytes / Math.pow(1024, tmpIndex);
-		return tmpSize.toFixed(tmpIndex === 0 ? 0 : 1) + ' ' + tmpUnits[tmpIndex];
-	}
 }
 
 RetoldRemoteVideoExplorerView.default_configuration = _ViewConfiguration;

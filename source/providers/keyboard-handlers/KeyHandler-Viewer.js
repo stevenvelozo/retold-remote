@@ -1,0 +1,161 @@
+/**
+ * Viewer mode keyboard handler.
+ *
+ * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
+ * @param {KeyboardEvent} pEvent - The keyboard event
+ */
+function handleViewerKey(pGalleryNav, pEvent)
+{
+	let tmpRemote = pGalleryNav.pict.AppData.RetoldRemote;
+
+	// Video action menu mode — intercept keys for menu options
+	if (tmpRemote.VideoMenuActive && tmpRemote.CurrentViewerMediaType === 'video')
+	{
+		switch (pEvent.key)
+		{
+			case 'Escape':
+				pEvent.preventDefault();
+				pGalleryNav.closeViewer();
+				return;
+
+			case 'ArrowRight':
+			case 'j':
+				pEvent.preventDefault();
+				pGalleryNav.nextFile();
+				return;
+
+			case 'ArrowLeft':
+			case 'k':
+				pEvent.preventDefault();
+				pGalleryNav.prevFile();
+				return;
+
+			case 'e':
+				pEvent.preventDefault();
+				let tmpVEX = pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];
+				if (tmpVEX)
+				{
+					tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);
+				}
+				return;
+
+			case ' ':
+			case 'Enter':
+				pEvent.preventDefault();
+				let tmpViewer = pGalleryNav.pict.views['RetoldRemote-MediaViewer'];
+				if (tmpViewer)
+				{
+					tmpViewer.playVideo();
+				}
+				return;
+
+			case 't':
+				pEvent.preventDefault();
+				let tmpMediaViewer = pGalleryNav.pict.views['RetoldRemote-MediaViewer'];
+				if (tmpMediaViewer)
+				{
+					tmpMediaViewer.loadVideoMenuFrame();
+				}
+				return;
+
+			case 'v':
+				pEvent.preventDefault();
+				pGalleryNav._streamWithVLC();
+				return;
+		}
+		return;
+	}
+
+	switch (pEvent.key)
+	{
+		case 'Escape':
+			pEvent.preventDefault();
+			pGalleryNav.closeViewer();
+			break;
+
+		case 'ArrowRight':
+		case 'j':
+			pEvent.preventDefault();
+			pGalleryNav.nextFile();
+			break;
+
+		case 'ArrowLeft':
+		case 'k':
+			pEvent.preventDefault();
+			pGalleryNav.prevFile();
+			break;
+
+		case 'f':
+			pEvent.preventDefault();
+			pGalleryNav._toggleFullscreen();
+			break;
+
+		case 'i':
+			pEvent.preventDefault();
+			pGalleryNav._toggleFileInfo();
+			break;
+
+		case ' ':
+			pEvent.preventDefault();
+			pGalleryNav._togglePlayPause();
+			break;
+
+		case '+':
+		case '=':
+			pEvent.preventDefault();
+			pGalleryNav._zoomIn();
+			break;
+
+		case '-':
+			pEvent.preventDefault();
+			pGalleryNav._zoomOut();
+			break;
+
+		case '0':
+			pEvent.preventDefault();
+			pGalleryNav._zoomReset();
+			break;
+
+		case 'z':
+			pEvent.preventDefault();
+			pGalleryNav._cycleFitMode();
+			break;
+
+		case 'Enter':
+			pEvent.preventDefault();
+			pGalleryNav._streamWithVLC();
+			break;
+
+		case 'v':
+			pEvent.preventDefault();
+			pGalleryNav._streamWithVLC();
+			break;
+
+		case 'd':
+			pEvent.preventDefault();
+			pGalleryNav._toggleDistractionFree();
+			break;
+
+		case '1':
+			pEvent.preventDefault();
+			pGalleryNav.switchViewerType('image');
+			break;
+
+		case '2':
+			pEvent.preventDefault();
+			pGalleryNav.switchViewerType('video');
+			break;
+
+		case '3':
+			pEvent.preventDefault();
+			pGalleryNav.switchViewerType('audio');
+			break;
+
+		case '4':
+			pEvent.preventDefault();
+			pGalleryNav.switchViewerType('text');
+			break;
+	}
+}
+
+module.exports = handleViewerKey;

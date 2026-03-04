@@ -15,7 +15,7 @@ const libSetupServer = require('./source/cli/RetoldRemote-Server-Setup.js');
 
 let tmpContentPath = process.argv[2]
 	? libPath.resolve(process.argv[2])
-	: libPath.join(__dirname, 'content');
+	: libPath.join(__dirname, 'test', 'content');
 
 let tmpPort = parseInt(process.env.PORT, 10) || 8086;
 let tmpHashedFilenames = (process.env.RETOLD_HASHED_FILENAMES === 'true');

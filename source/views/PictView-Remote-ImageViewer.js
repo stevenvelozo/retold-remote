@@ -48,7 +48,6 @@ class RetoldRemoteImageViewerView extends libPictView
 		this._naturalWidth = 0;
 		this._naturalHeight = 0;
 		this._resizeHandler = null;
-		this._indicatorTimeout = null;
 	}
 
 	/**
@@ -310,33 +309,7 @@ class RetoldRemoteImageViewerView extends libPictView
 
 		let tmpLabel = tmpLabels[pMode] || pMode;
 
-		// Create or reuse the indicator element
-		let tmpIndicator = document.getElementById('RetoldRemote-FitIndicator');
-		if (!tmpIndicator)
-		{
-			tmpIndicator = document.createElement('div');
-			tmpIndicator.id = 'RetoldRemote-FitIndicator';
-			tmpIndicator.className = 'retold-remote-fit-indicator';
-
-			let tmpContainer = document.querySelector('.retold-remote-viewer-body');
-			if (tmpContainer)
-			{
-				tmpContainer.appendChild(tmpIndicator);
-			}
-		}
-
-		tmpIndicator.textContent = tmpLabel;
-		tmpIndicator.classList.add('visible');
-
-		if (this._indicatorTimeout)
-		{
-			clearTimeout(this._indicatorTimeout);
-		}
-
-		this._indicatorTimeout = setTimeout(function ()
-		{
-			tmpIndicator.classList.remove('visible');
-		}, 1200);
+		this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator(tmpLabel, 1200);
 	}
 
 	/**
@@ -348,12 +321,6 @@ class RetoldRemoteImageViewerView extends libPictView
 		{
 			window.removeEventListener('resize', this._resizeHandler);
 			this._resizeHandler = null;
-		}
-
-		if (this._indicatorTimeout)
-		{
-			clearTimeout(this._indicatorTimeout);
-			this._indicatorTimeout = null;
 		}
 	}
 }

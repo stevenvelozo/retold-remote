@@ -342,7 +342,7 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		// Header
 		tmpHTML += '<div class="retold-remote-aex-header">';
 		tmpHTML += '<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()" title="Back to audio (Esc)">&larr; Back</button>';
-		tmpHTML += '<div class="retold-remote-aex-title">Audio Explorer &mdash; ' + this._escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-aex-title">Audio Explorer &mdash; ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar (populated after waveform loads)
@@ -449,18 +449,18 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		if (tmpInfoBar)
 		{
 			let tmpInfoHTML = '';
-			tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Duration</span> <span class="retold-remote-aex-info-value">' + this._escapeHTML(tmpData.DurationFormatted) + '</span></span>';
+			tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Duration</span> <span class="retold-remote-aex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted) + '</span></span>';
 			if (tmpData.SampleRate)
 			{
 				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Sample Rate</span> <span class="retold-remote-aex-info-value">' + (tmpData.SampleRate / 1000).toFixed(1) + ' kHz</span></span>';
 			}
 			if (tmpData.Channels)
 			{
-				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Channels</span> <span class="retold-remote-aex-info-value">' + tmpData.Channels + (tmpData.ChannelLayout ? ' (' + this._escapeHTML(tmpData.ChannelLayout) + ')' : '') + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Channels</span> <span class="retold-remote-aex-info-value">' + tmpData.Channels + (tmpData.ChannelLayout ? ' (' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.ChannelLayout) + ')' : '') + '</span></span>';
 			}
 			if (tmpData.Codec)
 			{
-				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Codec</span> <span class="retold-remote-aex-info-value">' + this._escapeHTML(tmpData.Codec) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Codec</span> <span class="retold-remote-aex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.Codec) + '</span></span>';
 			}
 			if (tmpData.Bitrate)
 			{
@@ -468,9 +468,9 @@ class RetoldRemoteAudioExplorerView extends libPictView
 			}
 			if (tmpData.FileSize)
 			{
-				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Size</span> <span class="retold-remote-aex-info-value">' + this._formatFileSize(tmpData.FileSize) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Size</span> <span class="retold-remote-aex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpData.FileSize) + '</span></span>';
 			}
-			tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Peaks</span> <span class="retold-remote-aex-info-value">' + tmpData.PeakCount + ' (' + this._escapeHTML(tmpData.Method) + ')</span></span>';
+			tmpInfoHTML += '<span class="retold-remote-aex-info-item"><span class="retold-remote-aex-info-label">Peaks</span> <span class="retold-remote-aex-info-value">' + tmpData.PeakCount + ' (' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.Method) + ')</span></span>';
 
 			tmpInfoBar.innerHTML = tmpInfoHTML;
 			tmpInfoBar.style.display = '';
@@ -964,7 +964,7 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		{
 			let tmpViewStartTime = this._viewStart * tmpDuration;
 			let tmpViewEndTime = this._viewEnd * tmpDuration;
-			tmpViewRangeEl.textContent = this._formatTimestamp(tmpViewStartTime) + ' - ' + this._formatTimestamp(tmpViewEndTime);
+			tmpViewRangeEl.textContent = this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpViewStartTime, true) + ' - ' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpViewEndTime, true);
 		}
 
 		// Selection
@@ -976,7 +976,7 @@ class RetoldRemoteAudioExplorerView extends libPictView
 				let tmpSelMin = Math.min(this._selectionStart, this._selectionEnd) * tmpDuration;
 				let tmpSelMax = Math.max(this._selectionStart, this._selectionEnd) * tmpDuration;
 				let tmpSelDur = tmpSelMax - tmpSelMin;
-				tmpSelRangeEl.textContent = this._formatTimestamp(tmpSelMin) + ' - ' + this._formatTimestamp(tmpSelMax) + ' (' + this._formatTimestamp(tmpSelDur) + ')';
+				tmpSelRangeEl.textContent = this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelMin, true) + ' - ' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelMax, true) + ' (' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelDur, true) + ')';
 			}
 			else
 			{
@@ -994,7 +994,7 @@ class RetoldRemoteAudioExplorerView extends libPictView
 				if (tmpWrap)
 				{
 					let tmpNorm = this._viewStart + (this._cursorX / tmpWrap.clientWidth) * (this._viewEnd - this._viewStart);
-					tmpCursorEl.textContent = this._formatTimestamp(tmpNorm * tmpDuration);
+					tmpCursorEl.textContent = this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpNorm * tmpDuration, true);
 				}
 			}
 			else
@@ -1167,45 +1167,12 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		if (tmpBody)
 		{
 			tmpBody.innerHTML = '<div class="retold-remote-aex-error">'
-				+ '<div class="retold-remote-aex-error-message">' + this._escapeHTML(pMessage || 'An error occurred.') + '</div>'
+				+ '<div class="retold-remote-aex-error-message">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage || 'An error occurred.') + '</div>'
 				+ '<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'
 				+ '</div>';
 		}
 	}
 
-	_formatTimestamp(pSeconds)
-	{
-		if (pSeconds === null || pSeconds === undefined || isNaN(pSeconds))
-		{
-			return '--';
-		}
-		let tmpHours = Math.floor(pSeconds / 3600);
-		let tmpMinutes = Math.floor((pSeconds % 3600) / 60);
-		let tmpSecs = Math.floor(pSeconds % 60);
-		let tmpMs = Math.floor((pSeconds % 1) * 10);
-
-		if (tmpHours > 0)
-		{
-			return `${tmpHours}:${String(tmpMinutes).padStart(2, '0')}:${String(tmpSecs).padStart(2, '0')}.${tmpMs}`;
-		}
-		return `${tmpMinutes}:${String(tmpSecs).padStart(2, '0')}.${tmpMs}`;
-	}
-
-	_escapeHTML(pText)
-	{
-		if (!pText) return '';
-		return pText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-	}
-
-	_formatFileSize(pBytes)
-	{
-		if (!pBytes || pBytes === 0) return '0 B';
-		let tmpUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let tmpIndex = Math.floor(Math.log(pBytes) / Math.log(1024));
-		if (tmpIndex >= tmpUnits.length) tmpIndex = tmpUnits.length - 1;
-		let tmpSize = pBytes / Math.pow(1024, tmpIndex);
-		return tmpSize.toFixed(tmpIndex === 0 ? 0 : 1) + ' ' + tmpUnits[tmpIndex];
-	}
 }
 
 RetoldRemoteAudioExplorerView.default_configuration = _ViewConfiguration;

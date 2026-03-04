@@ -456,8 +456,8 @@ const _ViewConfiguration =
 		{
 			display: flex;
 			align-items: center;
-			gap: 12px;
-			padding: 6px 12px;
+			gap: 8px;
+			padding: 6px 10px;
 			border-radius: 4px;
 			cursor: pointer;
 			transition: background 0.1s;
@@ -486,21 +486,85 @@ const _ViewConfiguration =
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
+		.retold-remote-list-ext
+		{
+			flex-shrink: 0;
+			width: 42px;
+			text-align: right;
+			font-size: 0.65rem;
+			color: var(--retold-text-dim);
+			text-transform: uppercase;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 		.retold-remote-list-size
 		{
 			flex-shrink: 0;
-			width: 80px;
+			width: 56px;
 			text-align: right;
-			font-size: 0.72rem;
+			font-size: 0.68rem;
 			color: var(--retold-text-dim);
+			white-space: nowrap;
 		}
 		.retold-remote-list-date
 		{
 			flex-shrink: 0;
-			width: 140px;
+			width: 72px;
 			text-align: right;
-			font-size: 0.72rem;
+			font-size: 0.68rem;
 			color: var(--retold-text-dim);
+			white-space: nowrap;
+		}
+		/* Long-press tooltip */
+		.retold-remote-longpress-tooltip
+		{
+			position: fixed;
+			z-index: 10000;
+			max-width: 80vw;
+			padding: 6px 12px;
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			border: 1px solid var(--retold-border);
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+			color: var(--retold-text-primary);
+			font-size: 0.78rem;
+			word-break: break-all;
+			pointer-events: none;
+		}
+		/* Column toggle buttons in filter panel */
+		.retold-remote-filter-col-toggles
+		{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+		.retold-remote-filter-col-toggle
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			padding: 3px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.72rem;
+			cursor: pointer;
+			font-family: inherit;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+			user-select: none;
+		}
+		.retold-remote-filter-col-toggle:hover
+		{
+			color: var(--retold-text-secondary);
+			border-color: var(--retold-scrollbar-hover);
+		}
+		.retold-remote-filter-col-toggle.active
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
 		}
 		/* Empty state */
 		.retold-remote-empty
@@ -833,7 +897,7 @@ class RetoldRemoteGalleryView extends libPictView
 		let tmpSearchValue = tmpRemote.SearchQuery || '';
 		tmpHTML += '<input type="text" class="retold-remote-gallery-search" id="RetoldRemote-Gallery-Search" '
 			+ 'placeholder="Search files... (/)" '
-			+ 'value="' + this._escapeHTML(tmpSearchValue) + '" '
+			+ 'value="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpSearchValue) + '" '
 			+ 'oninput="pict.views[\'RetoldRemote-Gallery\'].onSearchInput(this.value)">';
 
 		// Case sensitivity and regex checkboxes
@@ -850,7 +914,7 @@ class RetoldRemoteGalleryView extends libPictView
 			+ '.*</label>';
 		if (tmpRemote._searchRegexError)
 		{
-			tmpHTML += '<span class="retold-remote-gallery-search-regex-error" title="' + this._escapeHTML(tmpRemote._searchRegexError) + '">invalid regex</span>';
+			tmpHTML += '<span class="retold-remote-gallery-search-regex-error" title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRemote._searchRegexError) + '">invalid regex</span>';
 		}
 		tmpHTML += '</div>';
 		tmpHTML += '</div>';
@@ -930,6 +994,25 @@ class RetoldRemoteGalleryView extends libPictView
 		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
+		// List columns visibility (only relevant in list mode)
+		tmpHTML += '<div class="retold-remote-filter-section">';
+		tmpHTML += '<div class="retold-remote-filter-section-title">List Columns</div>';
+		tmpHTML += '<div class="retold-remote-filter-col-toggles">';
+		let tmpShowExt = tmpRemote.ListShowExtension !== false;
+		let tmpShowSize = tmpRemote.ListShowSize !== false;
+		let tmpShowDate = tmpRemote.ListShowDate !== false;
+		tmpHTML += '<button class="retold-remote-filter-col-toggle' + (tmpShowExt ? ' active' : '') + '" '
+			+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].toggleListColumn(\'ListShowExtension\')">'
+			+ 'Ext</button>';
+		tmpHTML += '<button class="retold-remote-filter-col-toggle' + (tmpShowSize ? ' active' : '') + '" '
+			+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].toggleListColumn(\'ListShowSize\')">'
+			+ 'Size</button>';
+		tmpHTML += '<button class="retold-remote-filter-col-toggle' + (tmpShowDate ? ' active' : '') + '" '
+			+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].toggleListColumn(\'ListShowDate\')">'
+			+ 'Date</button>';
+		tmpHTML += '</div>';
+		tmpHTML += '</div>';
+
 		// Presets
 		tmpHTML += '<div class="retold-remote-filter-section">';
 		tmpHTML += '<div class="retold-remote-filter-section-title">Presets</div>';
@@ -965,7 +1048,7 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '<option value="">Load preset...</option>';
 			for (let i = 0; i < tmpPresets.length; i++)
 			{
-				tmpHTML += '<option value="' + i + '">' + this._escapeHTML(tmpPresets[i].Name) + '</option>';
+				tmpHTML += '<option value="' + i + '">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpPresets[i].Name) + '</option>';
 			}
 			tmpHTML += '</select>';
 			tmpHTML += '<button class="retold-remote-filter-btn-sm" onclick="pict.views[\'RetoldRemote-Gallery\'].deleteSelectedPreset()">\u2715</button>';
@@ -1006,9 +1089,9 @@ class RetoldRemoteGalleryView extends libPictView
 		{
 			let tmpChip = tmpChips[i];
 			tmpHTML += '<span class="retold-remote-filter-chip">'
-				+ this._escapeHTML(tmpChip.label)
+				+ this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpChip.label)
 				+ ' <button class="retold-remote-filter-chip-remove" '
-				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].removeFilterChip(\'' + this._escapeHTML(tmpChip.key) + '\')">&times;</button>'
+				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].removeFilterChip(\'' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpChip.key) + '\')">&times;</button>'
 				+ '</span>';
 		}
 		tmpHTML += '<button class="retold-remote-filter-chip-clear" onclick="pict.views[\'RetoldRemote-Gallery\'].clearAllFilters()">Clear all</button>';
@@ -1059,7 +1142,7 @@ class RetoldRemoteGalleryView extends libPictView
 				let tmpThumbURL = tmpProvider.getThumbnailURL(tmpItem.Path, 400, 300);
 				if (tmpThumbURL)
 				{
-					tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this._escapeHTML(tmpItem.Name) + '" loading="lazy">';
+					tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '" loading="lazy">';
 				}
 				else
 				{
@@ -1074,7 +1157,7 @@ class RetoldRemoteGalleryView extends libPictView
 					let tmpThumbURL = tmpProvider.getThumbnailURL(tmpItem.Path, 400, 300);
 					if (tmpThumbURL)
 					{
-						tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this._escapeHTML(tmpItem.Name) + '" loading="lazy">';
+						tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '" loading="lazy">';
 					}
 					else
 					{
@@ -1105,12 +1188,12 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '</div>'; // end thumb
 
 			// Label
-			tmpHTML += '<div class="retold-remote-tile-label" title="' + this._escapeHTML(tmpItem.Name) + '">' + this._escapeHTML(tmpItem.Name) + '</div>';
+			tmpHTML += '<div class="retold-remote-tile-label" title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '</div>';
 
 			// Meta
 			if (tmpItem.Type === 'file' && tmpItem.Size !== undefined)
 			{
-				tmpHTML += '<div class="retold-remote-tile-meta">' + this._formatFileSize(tmpItem.Size) + '</div>';
+				tmpHTML += '<div class="retold-remote-tile-meta">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) + '</div>';
 			}
 			else if (tmpItem.Type === 'folder')
 			{
@@ -1118,7 +1201,7 @@ class RetoldRemoteGalleryView extends libPictView
 			}
 			else if (tmpItem.Type === 'archive')
 			{
-				tmpHTML += '<div class="retold-remote-tile-meta">Archive' + (tmpItem.Size ? ' · ' + this._formatFileSize(tmpItem.Size) : '') + '</div>';
+				tmpHTML += '<div class="retold-remote-tile-meta">Archive' + (tmpItem.Size ? ' · ' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) : '') + '</div>';
 			}
 
 			tmpHTML += '</div>'; // end tile
@@ -1134,6 +1217,11 @@ class RetoldRemoteGalleryView extends libPictView
 	 */
 	_buildListHTML(pItems, pCursorIndex)
 	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpShowExt = tmpRemote.ListShowExtension !== false;
+		let tmpShowSize = tmpRemote.ListShowSize !== false;
+		let tmpShowDate = tmpRemote.ListShowDate !== false;
+
 		let tmpHTML = '<div class="retold-remote-list">';
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
 
@@ -1153,24 +1241,51 @@ class RetoldRemoteGalleryView extends libPictView
 				+ 'ondblclick="pict.views[\'RetoldRemote-Gallery\'].onTileDoubleClick(' + i + ')">';
 
 			tmpHTML += '<div class="retold-remote-list-icon">' + tmpIcon + '</div>';
-			tmpHTML += '<div class="retold-remote-list-name">' + this._escapeHTML(tmpItem.Name) + '</div>';
+			tmpHTML += '<div class="retold-remote-list-name" title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '"'
+				+ ' ontouchstart="pict.views[\'RetoldRemote-Gallery\']._onNameTouchStart(event, \'' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name).replace(/'/g, '\\&#39;') + '\')"'
+				+ ' ontouchend="pict.views[\'RetoldRemote-Gallery\']._onNameTouchEnd(event)"'
+				+ ' ontouchcancel="pict.views[\'RetoldRemote-Gallery\']._onNameTouchEnd(event)"'
+				+ '>' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '</div>';
 
-			if ((tmpItem.Type === 'file' || tmpItem.Type === 'archive') && tmpItem.Size !== undefined)
+			// Extension column
+			if (tmpShowExt)
 			{
-				tmpHTML += '<div class="retold-remote-list-size">' + this._formatFileSize(tmpItem.Size) + '</div>';
-			}
-			else
-			{
-				tmpHTML += '<div class="retold-remote-list-size"></div>';
+				let tmpExt = '';
+				if (tmpItem.Type === 'file' || tmpItem.Type === 'archive')
+				{
+					tmpExt = (tmpItem.Extension || '').replace(/^\./, '').toLowerCase();
+				}
+				else if (tmpItem.Type === 'folder')
+				{
+					tmpExt = '';
+				}
+				tmpHTML += '<div class="retold-remote-list-ext">' + tmpExt + '</div>';
 			}
 
-			if (tmpItem.Modified)
+			// Size column
+			if (tmpShowSize)
 			{
-				tmpHTML += '<div class="retold-remote-list-date">' + new Date(tmpItem.Modified).toLocaleDateString() + '</div>';
+				if ((tmpItem.Type === 'file' || tmpItem.Type === 'archive') && tmpItem.Size !== undefined)
+				{
+					tmpHTML += '<div class="retold-remote-list-size">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) + '</div>';
+				}
+				else
+				{
+					tmpHTML += '<div class="retold-remote-list-size"></div>';
+				}
 			}
-			else
+
+			// Date column
+			if (tmpShowDate)
 			{
-				tmpHTML += '<div class="retold-remote-list-date"></div>';
+				if (tmpItem.Modified)
+				{
+					tmpHTML += '<div class="retold-remote-list-date">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatShortDate(tmpItem.Modified) + '</div>';
+				}
+				else
+				{
+					tmpHTML += '<div class="retold-remote-list-date"></div>';
+				}
 			}
 
 			tmpHTML += '</div>';
@@ -1529,6 +1644,100 @@ class RetoldRemoteGalleryView extends libPictView
 	}
 
 	// ──────────────────────────────────────────────
+	// List column visibility
+	// ──────────────────────────────────────────────
+
+	/**
+	 * Toggle a list column on or off.
+	 */
+	toggleListColumn(pColumnKey)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpCurrent = tmpRemote[pColumnKey];
+		// Default is true (shown), so undefined/true -> false, false -> true
+		tmpRemote[pColumnKey] = (tmpCurrent === false) ? true : false;
+
+		this.renderGallery();
+
+		if (this.pict.PictApplication && this.pict.PictApplication.saveSettings)
+		{
+			this.pict.PictApplication.saveSettings();
+		}
+	}
+
+	// ──────────────────────────────────────────────
+	// Long-press tooltip for file names
+	// ──────────────────────────────────────────────
+
+	/**
+	 * Handle touch start on a file name for long-press tooltip.
+	 */
+	_onNameTouchStart(pEvent, pName)
+	{
+		let tmpSelf = this;
+		// Clear any existing timer
+		this._clearLongPressTimer();
+
+		this._longPressTimer = setTimeout(function()
+		{
+			tmpSelf._showLongPressTooltip(pEvent, pName);
+		}, 500);
+	}
+
+	/**
+	 * Handle touch end / cancel — dismiss tooltip and timer.
+	 */
+	_onNameTouchEnd(pEvent)
+	{
+		this._clearLongPressTimer();
+		this._hideLongPressTooltip();
+	}
+
+	_clearLongPressTimer()
+	{
+		if (this._longPressTimer)
+		{
+			clearTimeout(this._longPressTimer);
+			this._longPressTimer = null;
+		}
+	}
+
+	_showLongPressTooltip(pEvent, pName)
+	{
+		this._hideLongPressTooltip();
+
+		let tmpTooltip = document.createElement('div');
+		tmpTooltip.className = 'retold-remote-longpress-tooltip';
+		tmpTooltip.textContent = pName;
+
+		// Position near the touch point
+		let tmpTouch = pEvent.touches && pEvent.touches[0];
+		if (tmpTouch)
+		{
+			tmpTooltip.style.left = Math.min(tmpTouch.clientX, window.innerWidth - 20) + 'px';
+			tmpTooltip.style.top = (tmpTouch.clientY - 50) + 'px';
+		}
+
+		document.body.appendChild(tmpTooltip);
+		this._longPressTooltipEl = tmpTooltip;
+
+		// Prevent the default context menu
+		pEvent.preventDefault();
+	}
+
+	_hideLongPressTooltip()
+	{
+		if (this._longPressTooltipEl)
+		{
+			if (this._longPressTooltipEl.parentNode)
+			{
+				this._longPressTooltipEl.parentNode.removeChild(this._longPressTooltipEl);
+			}
+			this._longPressTooltipEl = null;
+		}
+	}
+
+	// ──────────────────────────────────────────────
 	// Utilities
 	// ──────────────────────────────────────────────
 
@@ -1552,22 +1761,6 @@ class RetoldRemoteGalleryView extends libPictView
 		if (tmpExt === 'mp3' || tmpExt === 'wav' || tmpExt === 'ogg') return 'audio';
 		if (tmpExt === 'pdf') return 'document';
 		return 'other';
-	}
-
-	_formatFileSize(pBytes)
-	{
-		if (!pBytes || pBytes === 0) return '0 B';
-		let tmpUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let tmpIndex = Math.floor(Math.log(pBytes) / Math.log(1024));
-		if (tmpIndex >= tmpUnits.length) tmpIndex = tmpUnits.length - 1;
-		let tmpSize = pBytes / Math.pow(1024, tmpIndex);
-		return tmpSize.toFixed(tmpIndex === 0 ? 0 : 1) + ' ' + tmpUnits[tmpIndex];
-	}
-
-	_escapeHTML(pText)
-	{
-		if (!pText) return '';
-		return pText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 }
 

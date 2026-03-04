@@ -233,7 +233,7 @@ const _ViewConfiguration =
 			font-style: italic;
 			margin-top: 4px;
 		}
-		.retold-remote-vlc-setup-toast
+		.retold-remote-toast
 		{
 			position: fixed;
 			bottom: 20px;
@@ -445,7 +445,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '</div>';
 
 		let tmpScript = this._getMacSetupScript();
-		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this._escapeHTML(tmpScript) + '</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript) + '</div>';
 		tmpHTML += '<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';
 		tmpHTML += '</div>';
 
@@ -509,7 +509,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '</div>';
 
 		let tmpRegFile = this._getWindowsRegFile();
-		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this._escapeHTML(tmpRegFile) + '</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRegFile) + '</div>';
 		tmpHTML += '<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';
 		tmpHTML += '</div>';
 
@@ -521,7 +521,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '</div>';
 
 		let tmpBatchScript = this._getWindowsBatchScript();
-		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this._escapeHTML(tmpBatchScript) + '</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpBatchScript) + '</div>';
 		tmpHTML += '<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';
 		tmpHTML += '</div>';
 
@@ -546,7 +546,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';
 
 		let tmpScript = this._getLinuxSetupScript();
-		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this._escapeHTML(tmpScript) + '</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-code">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript) + '</div>';
 		tmpHTML += '<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';
 		tmpHTML += '</div>';
 
@@ -687,22 +687,13 @@ class RetoldRemoteVLCSetupView extends libPictView
 		].join('\n');
 	}
 
-	_escapeHTML(pStr)
-	{
-		return pStr
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;');
-	}
-
 	_copyToClipboard(pText, pLabel)
 	{
 		if (navigator.clipboard && navigator.clipboard.writeText)
 		{
 			navigator.clipboard.writeText(pText).then(() =>
 			{
-				this._showToast(pLabel + ' copied to clipboard');
+				this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel + ' copied to clipboard');
 			}).catch(() =>
 			{
 				this._fallbackCopy(pText, pLabel);
@@ -725,35 +716,13 @@ class RetoldRemoteVLCSetupView extends libPictView
 		try
 		{
 			document.execCommand('copy');
-			this._showToast(pLabel + ' copied to clipboard');
+			this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel + ' copied to clipboard');
 		}
 		catch (pErr)
 		{
-			this._showToast('Failed to copy - please select and copy manually');
+			this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');
 		}
 		document.body.removeChild(tmpTextarea);
-	}
-
-	_showToast(pMessage)
-	{
-		let tmpExisting = document.querySelector('.retold-remote-vlc-setup-toast');
-		if (tmpExisting)
-		{
-			tmpExisting.remove();
-		}
-
-		let tmpToast = document.createElement('div');
-		tmpToast.className = 'retold-remote-vlc-setup-toast';
-		tmpToast.textContent = pMessage;
-		document.body.appendChild(tmpToast);
-
-		setTimeout(() =>
-		{
-			if (tmpToast.parentNode)
-			{
-				tmpToast.remove();
-			}
-		}, 2000);
 	}
 
 	copyMacSetup()

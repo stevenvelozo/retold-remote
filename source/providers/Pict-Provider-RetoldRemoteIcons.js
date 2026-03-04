@@ -381,6 +381,18 @@ class RetoldRemoteIconProvider extends libPictProvider
 					+ '</svg>';
 			},
 
+			'sidebar': (pSize) =>
+			{
+				let c = tmpSelf._colors;
+				return '<svg width="' + pSize + '" height="' + pSize + '" viewBox="0 0 24 24" fill="none">'
+					+ '<rect x="3" y="3" width="18" height="18" rx="2" stroke="' + c.Primary + '" stroke-width="1.8" fill="none" />'
+					+ '<line x1="9" y1="3" x2="9" y2="21" stroke="' + c.Primary + '" stroke-width="1.8" />'
+					+ '<line x1="5" y1="7.5" x2="7.5" y2="7.5" stroke="' + c.Muted + '" stroke-width="1.2" stroke-linecap="round" />'
+					+ '<line x1="5" y1="10.5" x2="7.5" y2="10.5" stroke="' + c.Muted + '" stroke-width="1.2" stroke-linecap="round" />'
+					+ '<line x1="5" y1="13.5" x2="7.5" y2="13.5" stroke="' + c.Muted + '" stroke-width="1.2" stroke-linecap="round" />'
+					+ '</svg>';
+			},
+
 			// ====================================================================
 			// NEW MEDIA-SPECIFIC ICONS
 			// Not in the filebrowser set — standalone shapes for viewer fallbacks.

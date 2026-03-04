@@ -18,10 +18,7 @@ const libUrl = require('url');
 const libToolDetector = require('./RetoldRemote-ToolDetector.js');
 const libThumbnailCache = require('./RetoldRemote-ThumbnailCache.js');
 
-const _ImageExtensions = { 'png': true, 'jpg': true, 'jpeg': true, 'gif': true, 'webp': true, 'svg': true, 'bmp': true, 'ico': true, 'avif': true, 'tiff': true, 'tif': true, 'heic': true, 'heif': true };
-const _VideoExtensions = { 'mp4': true, 'webm': true, 'mov': true, 'mkv': true, 'avi': true, 'wmv': true, 'flv': true, 'm4v': true, 'ogv': true, 'mpg': true, 'mpeg': true, 'mpe': true, 'mpv': true, 'm2v': true, 'ts': true, 'mts': true, 'm2ts': true, 'vob': true, '3gp': true, '3g2': true, 'f4v': true, 'rm': true, 'rmvb': true, 'divx': true, 'asf': true, 'mxf': true, 'dv': true, 'nsv': true, 'nuv': true, 'y4m': true, 'wtv': true, 'swf': true, 'dat': true };
-const _AudioExtensions = { 'mp3': true, 'wav': true, 'ogg': true, 'flac': true, 'aac': true, 'm4a': true, 'wma': true, 'oga': true };
-const _DocumentExtensions = { 'pdf': true, 'epub': true, 'mobi': true, 'doc': true, 'docx': true };
+const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
 const _DefaultServiceConfiguration =
 {
@@ -95,11 +92,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	 */
 	_getMediaCategory(pExtension)
 	{
-		if (_ImageExtensions[pExtension]) return 'image';
-		if (_VideoExtensions[pExtension]) return 'video';
-		if (_AudioExtensions[pExtension]) return 'audio';
-		if (_DocumentExtensions[pExtension]) return 'document';
-		return 'other';
+		return libExtensionMaps.getCategory(pExtension);
 	}
 
 	/**

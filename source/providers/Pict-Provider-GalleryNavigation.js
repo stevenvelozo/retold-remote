@@ -1,5 +1,11 @@
 const libPictProvider = require('pict-provider');
 
+const libHandleGalleryKey = require('./keyboard-handlers/KeyHandler-Gallery.js');
+const libHandleViewerKey = require('./keyboard-handlers/KeyHandler-Viewer.js');
+const libHandleSidebarKey = require('./keyboard-handlers/KeyHandler-Sidebar.js');
+const libHandleVideoExplorerKey = require('./keyboard-handlers/KeyHandler-VideoExplorer.js');
+const libHandleAudioExplorerKey = require('./keyboard-handlers/KeyHandler-AudioExplorer.js');
+
 const _DefaultProviderConfiguration =
 {
 	ProviderIdentifier: 'RetoldRemote-GalleryNavigation',
@@ -171,6 +177,85 @@ class GalleryNavigationProvider extends libPictProvider
 
 		document.addEventListener('keydown', this._keydownHandler);
 		this._keydownBound = true;
+
+		// Set up edge-swipe gestures for distraction-free mode on touch devices
+		this._setupDFSwipeGestures();
+	}
+
+	/**
+	 * Set up touch swipe gestures near the top edge for toggling
+	 * distraction-free mode.
+	 *
+	 * - Swipe UP starting within the top 60px of the viewport → enter DF
+	 * - Swipe DOWN starting within the top 40px of the viewport → exit DF
+	 *
+	 * Only single-finger vertical swipes that exceed the threshold are
+	 * recognised.  Horizontal movement greater than vertical is ignored.
+	 */
+	_setupDFSwipeGestures()
+	{
+		if (this._dfSwipeBound)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+		let tmpSwipeThreshold = 60;
+		let tmpEdgeEnter = 60;
+		let tmpEdgeExit = 40;
+		let tmpStartY = 0;
+		let tmpStartX = 0;
+		let tmpStartClientY = 0;
+		let tmpTouchCount = 0;
+
+		this._dfSwipeTouchStart = function (pEvent)
+		{
+			tmpTouchCount = pEvent.touches.length;
+			if (tmpTouchCount !== 1)
+			{
+				return;
+			}
+			tmpStartX = pEvent.touches[0].clientX;
+			tmpStartY = pEvent.touches[0].clientY;
+			tmpStartClientY = tmpStartY;
+		};
+
+		this._dfSwipeTouchEnd = function (pEvent)
+		{
+			if (tmpTouchCount !== 1)
+			{
+				return;
+			}
+
+			let tmpEndX = pEvent.changedTouches[0].clientX;
+			let tmpEndY = pEvent.changedTouches[0].clientY;
+			let tmpDeltaX = tmpEndX - tmpStartX;
+			let tmpDeltaY = tmpEndY - tmpStartY;
+
+			// Must be primarily vertical
+			if (Math.abs(tmpDeltaY) < tmpSwipeThreshold || Math.abs(tmpDeltaX) > Math.abs(tmpDeltaY))
+			{
+				return;
+			}
+
+			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
+			let tmpIsDF = tmpRemote._distractionFreeMode || false;
+
+			if (!tmpIsDF && tmpDeltaY < 0 && tmpStartClientY <= tmpEdgeEnter)
+			{
+				// Swipe up from top edge → enter DF
+				tmpSelf._toggleDistractionFree();
+			}
+			else if (tmpIsDF && tmpDeltaY > 0 && tmpStartClientY <= tmpEdgeExit)
+			{
+				// Swipe down from top edge → exit DF
+				tmpSelf._toggleDistractionFree();
+			}
+		};
+
+		document.addEventListener('touchstart', this._dfSwipeTouchStart, { passive: true });
+		document.addEventListener('touchend', this._dfSwipeTouchEnd, { passive: true });
+		this._dfSwipeBound = true;
 	}
 
 	/**
@@ -178,122 +263,7 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleGalleryKey(pEvent)
 	{
-		let tmpRemote = this.pict.AppData.RetoldRemote;
-		let tmpItems = tmpRemote.GalleryItems || [];
-		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
-
-		switch (pEvent.key)
-		{
-			case 'ArrowRight':
-				pEvent.preventDefault();
-				this.moveCursor(Math.min(tmpIndex + 1, tmpItems.length - 1));
-				break;
-
-			case 'ArrowLeft':
-				pEvent.preventDefault();
-				this.moveCursor(Math.max(tmpIndex - 1, 0));
-				break;
-
-			case 'ArrowDown':
-				pEvent.preventDefault();
-				this.moveCursor(Math.min(tmpIndex + this._columnsPerRow, tmpItems.length - 1));
-				break;
-
-			case 'ArrowUp':
-				pEvent.preventDefault();
-				this.moveCursor(Math.max(tmpIndex - this._columnsPerRow, 0));
-				break;
-
-			case 'Enter':
-				pEvent.preventDefault();
-				this.openCurrent();
-				break;
-
-			case 'Escape':
-				pEvent.preventDefault();
-				this.navigateUp();
-				break;
-
-			case 'g':
-				pEvent.preventDefault();
-				this._toggleViewMode();
-				break;
-
-			case 'x':
-				pEvent.preventDefault();
-				this._clearAllFilters();
-				break;
-
-			case 'Home':
-				pEvent.preventDefault();
-				this.moveCursor(0);
-				break;
-
-			case 'End':
-				pEvent.preventDefault();
-				this.moveCursor(tmpItems.length - 1);
-				break;
-
-			case '1':
-				pEvent.preventDefault();
-				this.openCurrentAs('image');
-				break;
-
-			case '2':
-				pEvent.preventDefault();
-				this.openCurrentAs('video');
-				break;
-
-			case '3':
-				pEvent.preventDefault();
-				this.openCurrentAs('audio');
-				break;
-
-			case '4':
-				pEvent.preventDefault();
-				this.openCurrentAs('text');
-				break;
-
-			case 'f':
-				pEvent.preventDefault();
-				{
-					// Ensure the filter bar is visible first
-					this._showFilterBar();
-					let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
-					if (tmpGalleryView)
-					{
-						tmpGalleryView.toggleFilterPanel();
-					}
-				}
-				break;
-
-			case 's':
-				pEvent.preventDefault();
-				{
-					// Ensure the filter bar is visible first
-					this._showFilterBar();
-					setTimeout(() =>
-					{
-						let tmpSortSelect = document.getElementById('RetoldRemote-Gallery-Sort');
-						if (tmpSortSelect)
-						{
-							tmpSortSelect.focus();
-						}
-					}, 50);
-				}
-				break;
-
-			case 'c':
-				pEvent.preventDefault();
-				this._toggleSettingsPanel();
-				break;
-
-			case 'd':
-				pEvent.preventDefault();
-				this._toggleDistractionFree();
-				break;
-
-			}
+		libHandleGalleryKey(this, pEvent);
 	}
 
 	/**
@@ -301,60 +271,7 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleSidebarKey(pEvent)
 	{
-		let tmpRows = document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');
-		let tmpCount = tmpRows.length;
-
-		if (tmpCount === 0)
-		{
-			// Nothing in the sidebar, bail back to gallery
-			this._blurSidebar();
-			return;
-		}
-
-		switch (pEvent.key)
-		{
-			case 'ArrowDown':
-				pEvent.preventDefault();
-				this._moveSidebarCursor(Math.min(this._sidebarCursorIndex + 1, tmpCount - 1));
-				break;
-
-			case 'ArrowUp':
-				pEvent.preventDefault();
-				this._moveSidebarCursor(Math.max(this._sidebarCursorIndex - 1, 0));
-				break;
-
-			case 'Home':
-				pEvent.preventDefault();
-				this._moveSidebarCursor(0);
-				break;
-
-			case 'End':
-				pEvent.preventDefault();
-				this._moveSidebarCursor(tmpCount - 1);
-				break;
-
-			case 'Enter':
-				pEvent.preventDefault();
-				{
-					// Click the focused row to open it (folder or file)
-					let tmpRow = tmpRows[this._sidebarCursorIndex];
-					if (tmpRow)
-					{
-						// Fire the dblclick handler which opens folders / selects files
-						let tmpDblClickHandler = tmpRow.getAttribute('ondblclick');
-						if (tmpDblClickHandler)
-						{
-							new Function(tmpDblClickHandler).call(tmpRow);
-						}
-					}
-				}
-				break;
-
-			case 'Escape':
-				pEvent.preventDefault();
-				this._blurSidebar();
-				break;
-		}
+		libHandleSidebarKey(this, pEvent);
 	}
 
 	/**
@@ -435,156 +352,7 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleViewerKey(pEvent)
 	{
-		let tmpRemote = this.pict.AppData.RetoldRemote;
-
-		// Video action menu mode — intercept keys for menu options
-		if (tmpRemote.VideoMenuActive && tmpRemote.CurrentViewerMediaType === 'video')
-		{
-			switch (pEvent.key)
-			{
-				case 'Escape':
-					pEvent.preventDefault();
-					this.closeViewer();
-					return;
-
-				case 'ArrowRight':
-				case 'j':
-					pEvent.preventDefault();
-					this.nextFile();
-					return;
-
-				case 'ArrowLeft':
-				case 'k':
-					pEvent.preventDefault();
-					this.prevFile();
-					return;
-
-				case 'e':
-					pEvent.preventDefault();
-					let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
-					if (tmpVEX)
-					{
-						tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);
-					}
-					return;
-
-				case ' ':
-				case 'Enter':
-					pEvent.preventDefault();
-					let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
-					if (tmpViewer)
-					{
-						tmpViewer.playVideo();
-					}
-					return;
-
-				case 't':
-					pEvent.preventDefault();
-					let tmpMediaViewer = this.pict.views['RetoldRemote-MediaViewer'];
-					if (tmpMediaViewer)
-					{
-						tmpMediaViewer.loadVideoMenuFrame();
-					}
-					return;
-
-				case 'v':
-					pEvent.preventDefault();
-					this._streamWithVLC();
-					return;
-			}
-			return;
-		}
-
-		switch (pEvent.key)
-		{
-			case 'Escape':
-				pEvent.preventDefault();
-				this.closeViewer();
-				break;
-
-			case 'ArrowRight':
-			case 'j':
-				pEvent.preventDefault();
-				this.nextFile();
-				break;
-
-			case 'ArrowLeft':
-			case 'k':
-				pEvent.preventDefault();
-				this.prevFile();
-				break;
-
-			case 'f':
-				pEvent.preventDefault();
-				this._toggleFullscreen();
-				break;
-
-			case 'i':
-				pEvent.preventDefault();
-				this._toggleFileInfo();
-				break;
-
-			case ' ':
-				pEvent.preventDefault();
-				this._togglePlayPause();
-				break;
-
-			case '+':
-			case '=':
-				pEvent.preventDefault();
-				this._zoomIn();
-				break;
-
-			case '-':
-				pEvent.preventDefault();
-				this._zoomOut();
-				break;
-
-			case '0':
-				pEvent.preventDefault();
-				this._zoomReset();
-				break;
-
-			case 'z':
-				pEvent.preventDefault();
-				this._cycleFitMode();
-				break;
-
-			case 'Enter':
-				pEvent.preventDefault();
-				this._streamWithVLC();
-				break;
-
-			case 'v':
-				pEvent.preventDefault();
-				this._streamWithVLC();
-				break;
-
-			case 'd':
-				pEvent.preventDefault();
-				this._toggleDistractionFree();
-				break;
-
-			case '1':
-				pEvent.preventDefault();
-				this.switchViewerType('image');
-				break;
-
-			case '2':
-				pEvent.preventDefault();
-				this.switchViewerType('video');
-				break;
-
-			case '3':
-				pEvent.preventDefault();
-				this.switchViewerType('audio');
-				break;
-
-			case '4':
-				pEvent.preventDefault();
-				this.switchViewerType('text');
-				break;
-		}
+		libHandleViewerKey(this, pEvent);
 	}
 
 	/**
@@ -592,17 +360,7 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleVideoExplorerKey(pEvent)
 	{
-		switch (pEvent.key)
-		{
-			case 'Escape':
-				pEvent.preventDefault();
-				let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
-				if (tmpVEX)
-				{
-					tmpVEX.goBack();
-				}
-				break;
-		}
+		libHandleVideoExplorerKey(this, pEvent);
 	}
 
 	/**
@@ -610,49 +368,7 @@ class GalleryNavigationProvider extends libPictProvider
 	 */
 	_handleAudioExplorerKey(pEvent)
 	{
-		let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
-		if (!tmpAEX)
-		{
-			return;
-		}
-
-		switch (pEvent.key)
-		{
-			case 'Escape':
-				pEvent.preventDefault();
-				if (tmpAEX._selectionStart >= 0)
-				{
-					tmpAEX.clearSelection();
-				}
-				else
-				{
-					tmpAEX.goBack();
-				}
-				break;
-			case '+':
-			case '=':
-				pEvent.preventDefault();
-				tmpAEX.zoomIn();
-				break;
-			case '-':
-			case '_':
-				pEvent.preventDefault();
-				tmpAEX.zoomOut();
-				break;
-			case '0':
-				pEvent.preventDefault();
-				tmpAEX.zoomToFit();
-				break;
-			case 'z':
-			case 'Z':
-				pEvent.preventDefault();
-				tmpAEX.zoomToSelection();
-				break;
-			case ' ':
-				pEvent.preventDefault();
-				tmpAEX.playSelection();
-				break;
-		}
+		libHandleAudioExplorerKey(this, pEvent);
 	}
 
 	/**
@@ -685,6 +401,13 @@ class GalleryNavigationProvider extends libPictProvider
 			tmpNewTile.classList.add('selected');
 			// Scroll the tile into view if needed
 			tmpNewTile.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+		}
+
+		// Update the top bar info to reflect the new cursor position
+		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+		if (tmpTopBar)
+		{
+			tmpTopBar.updateInfo();
 		}
 	}
 
@@ -994,6 +717,7 @@ class GalleryNavigationProvider extends libPictProvider
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.FilterBarVisible = false;
+		tmpRemote.FilterPanelOpen = false;
 
 		let tmpGalleryView = this.pict.views['RetoldRemote-Gallery'];
 		if (tmpGalleryView)
@@ -1013,7 +737,7 @@ class GalleryNavigationProvider extends libPictProvider
 			tmpGalleryView.clearAllFilters();
 		}
 
-		this._showToast('Filters cleared');
+		this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Filters cleared');
 	}
 
 	// ──────────────────────────────────────────────
@@ -1079,7 +803,8 @@ class GalleryNavigationProvider extends libPictProvider
 			['s', 'Focus sort dropdown'],
 			['x', 'Clear all filters'],
 			['c', 'Settings / config panel'],
-			['d', 'Distraction-free mode']
+			['d', 'Distraction-free mode'],
+			['e', 'Video explorer (on video files)']
 		];
 		for (let i = 0; i < tmpGalleryShortcuts.length; i++)
 		{
@@ -1359,7 +1084,8 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpInfoOverlay = document.getElementById('RetoldRemote-FileInfo-Overlay');
 		if (tmpInfoOverlay)
 		{
-			tmpInfoOverlay.style.display = (tmpInfoOverlay.style.display === 'none') ? '' : 'none';
+			let tmpIsHidden = window.getComputedStyle(tmpInfoOverlay).display === 'none';
+			tmpInfoOverlay.style.display = tmpIsHidden ? 'block' : 'none';
 		}
 	}
 
@@ -1445,7 +1171,7 @@ class GalleryNavigationProvider extends libPictProvider
 		}
 
 		// Show a brief toast
-		this._showToast('Opening in VLC...');
+		this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening in VLC...');
 
 		// POST to the server to open the file
 		fetch('/api/media/open',
@@ -1462,12 +1188,12 @@ class GalleryNavigationProvider extends libPictProvider
 		{
 			if (!pData.Success)
 			{
-				this._showToast('Failed to open: ' + (pData.Error || 'Unknown error'));
+				this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Failed to open: ' + (pData.Error || 'Unknown error'));
 			}
 		})
 		.catch((pError) =>
 		{
-			this._showToast('Failed to open: ' + pError.message);
+			this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Failed to open: ' + pError.message);
 		});
 	}
 
@@ -1500,7 +1226,7 @@ class GalleryNavigationProvider extends libPictProvider
 			? ('vlc://' + tmpStreamURL)
 			: ('vlc://' + encodeURIComponent(tmpStreamURL));
 
-		this._showToast('Opening VLC...');
+		this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');
 
 		// Use a temporary anchor element to trigger the protocol handler
 		// without navigating the current page away
@@ -1512,41 +1238,6 @@ class GalleryNavigationProvider extends libPictProvider
 		document.body.removeChild(tmpLink);
 	}
 
-	/**
-	 * Show a brief toast notification in the viewer.
-	 *
-	 * @param {string} pMessage - Text to display
-	 */
-	_showToast(pMessage)
-	{
-		let tmpIndicator = document.getElementById('RetoldRemote-FitIndicator');
-		if (!tmpIndicator)
-		{
-			tmpIndicator = document.createElement('div');
-			tmpIndicator.id = 'RetoldRemote-FitIndicator';
-			tmpIndicator.className = 'retold-remote-fit-indicator';
-
-			let tmpContainer = document.querySelector('.retold-remote-viewer-body');
-			if (tmpContainer)
-			{
-				tmpContainer.appendChild(tmpIndicator);
-			}
-		}
-
-		tmpIndicator.textContent = pMessage;
-		tmpIndicator.classList.add('visible');
-
-		if (this._toastTimeout)
-		{
-			clearTimeout(this._toastTimeout);
-		}
-
-		let tmpSelf = this;
-		this._toastTimeout = setTimeout(function ()
-		{
-			tmpIndicator.classList.remove('visible');
-		}, 1500);
-	}
 }
 
 GalleryNavigationProvider.default_configuration = _DefaultProviderConfiguration;
