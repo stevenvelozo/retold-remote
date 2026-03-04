@@ -2,6 +2,7 @@ package-lock.json
 
 # Test Environment
 debug/testenv
+test/content/
 
 # Quackage takes care of these for me!
 .babelrc
