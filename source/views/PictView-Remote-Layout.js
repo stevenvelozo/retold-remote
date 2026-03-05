@@ -205,7 +205,7 @@ const _ViewConfiguration =
 			background: var(--retold-bg-secondary);
 			border-bottom-color: var(--retold-border);
 		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb
 		{
 			color: var(--retold-text-muted);
 			background: transparent;
@@ -214,6 +214,22 @@ const _ViewConfiguration =
 		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link
 		{
 			color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment
+		{
+			color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment:hover
+		{
+			background: var(--retold-bg-hover);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-separator
+		{
+			color: var(--retold-text-dim);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-current
+		{
+			color: var(--retold-text-primary);
 		}
 		/* Insert button: hidden by default, visible on row hover for ALL files */
 		#ContentEditor-Sidebar-Container .pict-fb-insert-btn

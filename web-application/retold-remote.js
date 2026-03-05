@@ -12115,7 +12115,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 			background: var(--retold-bg-secondary);
 			border-bottom-color: var(--retold-border);
 		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumbs
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb
 		{
 			color: var(--retold-text-muted);
 			background: transparent;
@@ -12124,6 +12124,22 @@ return{width:tmpNW,height:tmpNH};}}}/**
 		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link
 		{
 			color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment
+		{
+			color: var(--retold-accent);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment:hover
+		{
+			background: var(--retold-bg-hover);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-separator
+		{
+			color: var(--retold-text-dim);
+		}
+		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-current
+		{
+			color: var(--retold-text-primary);
 		}
 		/* Insert button: hidden by default, visible on row hover for ALL files */
 		#ContentEditor-Sidebar-Container .pict-fb-insert-btn
@@ -13461,6 +13477,32 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
+		.retold-remote-topbar-info-sep
+		{
+			margin: 0 2px;
+		}
+		/* Progressive info degradation on small screens */
+		@media (max-width: 500px)
+		{
+			.retold-remote-topbar-info-priority-3
+			{
+				display: none;
+			}
+		}
+		@media (max-width: 420px)
+		{
+			.retold-remote-topbar-info-priority-2
+			{
+				display: none;
+			}
+		}
+		@media (max-width: 360px)
+		{
+			.retold-remote-topbar-info-priority-1
+			{
+				display: none;
+			}
+		}
 		.retold-remote-topbar-actions
 		{
 			flex-shrink: 0;
@@ -13627,12 +13669,27 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 		{
 			.retold-remote-topbar
 			{
-				padding: 0 8px;
-				gap: 6px;
+				padding: 0 4px;
+				gap: 4px;
+				height: 36px;
 			}
 			.retold-remote-topbar-actions
 			{
-				gap: 4px;
+				gap: 3px;
+			}
+			.retold-remote-topbar-btn
+			{
+				padding: 3px 7px;
+			}
+			.retold-remote-topbar-sidebar-toggle,
+			.retold-remote-topbar-df-toggle
+			{
+				width: 28px;
+				height: 28px;
+			}
+			.retold-remote-topbar-filter-btn
+			{
+				padding: 3px 6px;
 			}
 		}
 	`,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
@@ -13695,7 +13752,21 @@ tmpBtn.classList.add('filter-bar-open');tmpBtn.innerHTML='&#9698;';tmpBtn.title=
 tmpBtn.innerHTML='&#9698;';tmpBtn.title='Toggle filter bar (/)';}}/**
 	 * Update the info display with folder summary.
 	 * Also updates the AI Sort button visibility.
-	 */updateInfo(){this.updateAISortButton();let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){let tmpPos=tmpIndex+1+'/'+tmpItems.length;tmpInfoEl.textContent=tmpPos+' \u00b7 '+tmpItem.Name;}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpCursorText='';if(tmpItems.length>0){tmpCursorText=tmpIndex+1+'/'+tmpItems.length;}if(!tmpSummary){tmpInfoEl.textContent=tmpCursorText;return;}let tmpParts=[];if(tmpCursorText)tmpParts.push(tmpCursorText);if(tmpSummary.Folders>0)tmpParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Images>0)tmpParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpParts.push(tmpSummary.Audio+' audio');if(tmpSummary.Documents>0)tmpParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpParts.push(tmpSummary.Other+' other');tmpInfoEl.textContent=tmpParts.join(' \u00b7 ');}// -- AI Sort ----------------------------------------------------------
+	 *
+	 * On narrow screens, summary segments degrade progressively:
+	 *   Priority 3 (hidden first): folder/file type counts (folders, docs, other)
+	 *   Priority 2 (hidden next): primary media counts (images, videos, audio)
+	 *   Priority 1 (hidden last): folder name from breadcrumb location
+	 *   Always visible: cursor position (e.g. "3/6")
+	 */updateInfo(){this.updateAISortButton();let tmpInfoEl=document.getElementById('RetoldRemote-TopBar-Info');if(!tmpInfoEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpSummary=tmpRemote.FolderSummary;if(tmpRemote.ActiveMode==='viewer'){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpItem=tmpItems[tmpIndex];if(tmpItem){let tmpPos=tmpIndex+1+'/'+tmpItems.length;tmpInfoEl.innerHTML='<span>'+tmpPos+'</span>'+'<span class="retold-remote-topbar-info-sep retold-remote-topbar-info-priority-1"> \u00b7 </span>'+'<span class="retold-remote-topbar-info-priority-1">'+this._escapeHTML(tmpItem.Name)+'</span>';}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;let tmpCursorText='';if(tmpItems.length>0){tmpCursorText=tmpIndex+1+'/'+tmpItems.length;}if(!tmpSummary){tmpInfoEl.textContent=tmpCursorText;return;}// Build segments with priority levels for progressive hiding
+// Priority 2: primary media counts (hidden at medium squish)
+let tmpMediaParts=[];if(tmpSummary.Images>0)tmpMediaParts.push(tmpSummary.Images+' images');if(tmpSummary.Videos>0)tmpMediaParts.push(tmpSummary.Videos+' videos');if(tmpSummary.Audio>0)tmpMediaParts.push(tmpSummary.Audio+' audio');// Priority 3: secondary counts (hidden first)
+let tmpExtraParts=[];if(tmpSummary.Folders>0)tmpExtraParts.push(tmpSummary.Folders+' folders');if(tmpSummary.Documents>0)tmpExtraParts.push(tmpSummary.Documents+' docs');if(tmpSummary.Other>0)tmpExtraParts.push(tmpSummary.Other+' other');let tmpHTML='';// Always-visible: cursor position
+if(tmpCursorText){tmpHTML+='<span>'+tmpCursorText+'</span>';}// Priority 3: folder/secondary counts (hidden first on narrow screens)
+if(tmpExtraParts.length>0){let tmpSep=tmpHTML?'<span class="retold-remote-topbar-info-sep retold-remote-topbar-info-priority-3"> \u00b7 </span>':'';tmpHTML+=tmpSep+'<span class="retold-remote-topbar-info-priority-3">'+tmpExtraParts.join(' \u00b7 ')+'</span>';}// Priority 2: primary media counts (hidden next)
+if(tmpMediaParts.length>0){let tmpSep=tmpHTML?'<span class="retold-remote-topbar-info-sep retold-remote-topbar-info-priority-2"> \u00b7 </span>':'';tmpHTML+=tmpSep+'<span class="retold-remote-topbar-info-priority-2">'+tmpMediaParts.join(' \u00b7 ')+'</span>';}tmpInfoEl.innerHTML=tmpHTML||'';}/**
+	 * Minimal HTML escaping for display text.
+	 */_escapeHTML(pText){if(!pText)return'';return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}// -- AI Sort ----------------------------------------------------------
 /**
 	 * Trigger AI sort for the current folder.
 	 */triggerAISort(){let tmpAISortManager=this.pict.providers['RetoldRemote-AISortManager'];if(!tmpAISortManager){return;}let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';// Show generating state
