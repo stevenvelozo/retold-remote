@@ -10,6 +10,7 @@ const libProviderRetoldRemoteIcons = require('./providers/Pict-Provider-RetoldRe
 const libProviderRetoldRemoteTheme = require('./providers/Pict-Provider-RetoldRemoteTheme.js');
 const libProviderFormattingUtilities = require('./providers/Pict-Provider-FormattingUtilities.js');
 const libProviderToastNotification = require('./providers/Pict-Provider-ToastNotification.js');
+const libProviderCollectionManager = require('./providers/Pict-Provider-CollectionManager.js');
 
 // Views (replace parent views)
 const libViewLayout = require('./views/PictView-Remote-Layout.js');
@@ -23,6 +24,7 @@ const libViewImageViewer = require('./views/PictView-Remote-ImageViewer.js');
 const libViewVideoExplorer = require('./views/PictView-Remote-VideoExplorer.js');
 const libViewAudioExplorer = require('./views/PictView-Remote-AudioExplorer.js');
 const libViewVLCSetup = require('./views/PictView-Remote-VLCSetup.js');
+const libViewCollectionsPanel = require('./views/PictView-Remote-CollectionsPanel.js');
 
 // Application configuration
 const _DefaultConfiguration = require('./Pict-Application-RetoldRemote-Configuration.json');
@@ -55,6 +57,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addView('RetoldRemote-VideoExplorer', libViewVideoExplorer.default_configuration, libViewVideoExplorer);
 		this.pict.addView('RetoldRemote-AudioExplorer', libViewAudioExplorer.default_configuration, libViewAudioExplorer);
 		this.pict.addView('RetoldRemote-VLCSetup', libViewVLCSetup.default_configuration, libViewVLCSetup);
+		this.pict.addView('RetoldRemote-CollectionsPanel', libViewCollectionsPanel.default_configuration, libViewCollectionsPanel);
 
 		// Add new providers
 		this.pict.addProvider('RetoldRemote-Provider', libProviderRetoldRemote.default_configuration, libProviderRetoldRemote);
@@ -64,6 +67,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addProvider('RetoldRemote-Theme', libProviderRetoldRemoteTheme.default_configuration, libProviderRetoldRemoteTheme);
 		this.pict.addProvider('RetoldRemote-FormattingUtilities', libProviderFormattingUtilities.default_configuration, libProviderFormattingUtilities);
 		this.pict.addProvider('RetoldRemote-ToastNotification', libProviderToastNotification.default_configuration, libProviderToastNotification);
+		this.pict.addProvider('RetoldRemote-CollectionManager', libProviderCollectionManager.default_configuration, libProviderCollectionManager);
 	}
 
 	onAfterInitializeAsync(fCallback)
@@ -129,7 +133,19 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			FilterPanelOpen: false,
 
 			// Saved filter presets
-			FilterPresets: []               // [{ Name, FilterState, SortField, SortDirection }]
+			FilterPresets: [],              // [{ Name, FilterState, SortField, SortDirection }]
+
+			// Collections state
+			Collections: [],                // Array of collection summaries
+			CollectionsPanelOpen: false,
+			CollectionsPanelWidth: 300,
+			CollectionsPanelMode: 'list',   // 'list' | 'detail' | 'edit'
+			ActiveCollectionGUID: null,
+			ActiveCollection: null,
+			CollectionSearchQuery: '',
+			LastUsedCollectionGUID: null,
+			BrowsingCollection: false,		// true when viewer is navigating collection items
+			BrowsingCollectionIndex: -1		// index into ActiveCollection.Items
 		};
 
 		// Load persisted settings
@@ -175,6 +191,23 @@ class RetoldRemoteApplication extends libContentEditorApplication
 
 		// Render the topbar
 		this.pict.views['ContentEditor-TopBar'].render();
+
+		// Render the collections panel (starts collapsed)
+		this.pict.views['RetoldRemote-CollectionsPanel'].render();
+
+		// Fetch collections list
+		let tmpCollManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpCollManager)
+		{
+			tmpCollManager.fetchCollections();
+		}
+
+		// Update the collections button icon
+		let tmpTopBarView = this.pict.views['ContentEditor-TopBar'];
+		if (tmpTopBarView && typeof tmpTopBarView.updateCollectionsIcon === 'function')
+		{
+			tmpTopBarView.updateCollectionsIcon();
+		}
 
 		let tmpSelf = this;
 
@@ -631,6 +664,18 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				tmpAEX.showExplorer(tmpFilePath);
 			}
 		}
+		else if (tmpParts[0] === 'collection' && tmpParts.length >= 2)
+		{
+			let tmpCollectionGUID = tmpParts[1];
+			let tmpCollManager = this.pict.providers['RetoldRemote-CollectionManager'];
+			if (tmpCollManager)
+			{
+				let tmpRemote = this.pict.AppData.RetoldRemote;
+				tmpRemote.CollectionsPanelMode = 'detail';
+				tmpCollManager.openPanel();
+				tmpCollManager.fetchCollection(tmpCollectionGUID);
+			}
+		}
 		else if (tmpParts[0] === 'edit' && tmpParts.length >= 2)
 		{
 			let tmpRawPath = tmpParts.slice(1).join('/');
@@ -698,7 +743,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				AutoplayAudio: tmpRemote.AutoplayAudio,
 				ListShowExtension: tmpRemote.ListShowExtension,
 				ListShowSize: tmpRemote.ListShowSize,
-				ListShowDate: tmpRemote.ListShowDate
+				ListShowDate: tmpRemote.ListShowDate,
+				CollectionsPanelOpen: tmpRemote.CollectionsPanelOpen,
+				CollectionsPanelWidth: tmpRemote.CollectionsPanelWidth,
+				LastUsedCollectionGUID: tmpRemote.LastUsedCollectionGUID
 			};
 			localStorage.setItem('retold-remote-settings', JSON.stringify(tmpSettings));
 		}
@@ -743,6 +791,9 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.ListShowExtension) === 'boolean') tmpRemote.ListShowExtension = tmpSettings.ListShowExtension;
 				if (typeof (tmpSettings.ListShowSize) === 'boolean') tmpRemote.ListShowSize = tmpSettings.ListShowSize;
 				if (typeof (tmpSettings.ListShowDate) === 'boolean') tmpRemote.ListShowDate = tmpSettings.ListShowDate;
+				if (typeof (tmpSettings.CollectionsPanelOpen) === 'boolean') tmpRemote.CollectionsPanelOpen = tmpSettings.CollectionsPanelOpen;
+				if (tmpSettings.CollectionsPanelWidth) tmpRemote.CollectionsPanelWidth = tmpSettings.CollectionsPanelWidth;
+				if (tmpSettings.LastUsedCollectionGUID) tmpRemote.LastUsedCollectionGUID = tmpSettings.LastUsedCollectionGUID;
 			}
 		}
 		catch (pError)

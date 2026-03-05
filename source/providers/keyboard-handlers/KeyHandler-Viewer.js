@@ -131,6 +131,42 @@ function handleViewerKey(pGalleryNav, pEvent)
 			pGalleryNav._streamWithVLC();
 			break;
 
+		case 'a':
+			pEvent.preventDefault();
+			{
+				let tmpCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollMgr)
+				{
+					let tmpRemote = pGalleryNav.pict.AppData.RetoldRemote;
+					if (tmpRemote.LastUsedCollectionGUID)
+					{
+						// Quick-add the currently viewed file
+						tmpCollMgr.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);
+					}
+					else
+					{
+						// No last-used collection — open the picker
+						let tmpTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
+						if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
+						{
+							tmpTopBar.showAddToCollectionDropdown();
+						}
+					}
+				}
+			}
+			break;
+
+		case 'b':
+			pEvent.preventDefault();
+			{
+				let tmpCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollManager)
+				{
+					tmpCollManager.togglePanel();
+				}
+			}
+			break;
+
 		case 'd':
 			pEvent.preventDefault();
 			pGalleryNav._toggleDistractionFree();

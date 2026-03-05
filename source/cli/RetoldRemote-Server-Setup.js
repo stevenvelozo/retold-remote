@@ -42,6 +42,7 @@ const libRetoldRemoteArchiveService = require('../server/RetoldRemote-ArchiveSer
 const libRetoldRemoteVideoFrameService = require('../server/RetoldRemote-VideoFrameService.js');
 const libRetoldRemoteAudioWaveformService = require('../server/RetoldRemote-AudioWaveformService.js');
 const libRetoldRemoteEbookService = require('../server/RetoldRemote-EbookService.js');
+const libRetoldRemoteCollectionService = require('../server/RetoldRemote-CollectionService.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -149,6 +150,9 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			{
 				ContentPath: tmpContentPath
 			});
+
+			// Set up the collection service
+			let tmpCollectionService = new libRetoldRemoteCollectionService(tmpFable, {});
 
 			// Set up the media service
 			let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
@@ -328,6 +332,9 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Connect media service API routes
 			tmpMediaService.connectRoutes(tmpServiceServer);
+
+			// Connect collection service API routes
+			tmpCollectionService.connectRoutes(tmpServiceServer);
 
 			// --- GET /api/media/video-frames ---
 			// Extract evenly-spaced frames from a video for the Video Explorer.

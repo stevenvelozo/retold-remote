@@ -48,6 +48,40 @@ function handleAudioExplorerKey(pGalleryNav, pEvent)
 			pEvent.preventDefault();
 			tmpAEX.playSelection();
 			break;
+
+		case 'a':
+			pEvent.preventDefault();
+			{
+				let tmpRemote = pGalleryNav.pict.AppData.RetoldRemote;
+				let tmpCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollMgr)
+				{
+					if (tmpRemote.LastUsedCollectionGUID)
+					{
+						tmpCollMgr.addAudioSnippetToCollection(tmpRemote.LastUsedCollectionGUID);
+					}
+					else
+					{
+						let tmpTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
+						if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
+						{
+							tmpTopBar.showAddToCollectionDropdown();
+						}
+					}
+				}
+			}
+			break;
+
+		case 'b':
+			pEvent.preventDefault();
+			{
+				let tmpCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollManager)
+				{
+					tmpCollManager.togglePanel();
+				}
+			}
+			break;
 	}
 }
 

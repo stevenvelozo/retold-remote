@@ -116,6 +116,49 @@ function handleGalleryKey(pGalleryNav, pEvent)
 			pGalleryNav._toggleSettingsPanel();
 			break;
 
+		case 'a':
+			pEvent.preventDefault();
+			{
+				let tmpCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollMgr)
+				{
+					let tmpCursorItem = tmpItems[tmpIndex];
+					if (tmpCursorItem && tmpRemote.LastUsedCollectionGUID)
+					{
+						// Quick-add the highlighted gallery item to the last-used collection
+						let tmpAddItem =
+						{
+							Type: (tmpCursorItem.Type === 'folder' || tmpCursorItem.Type === 'archive') ? 'folder' : 'file',
+							Path: tmpCursorItem.Path || '',
+							Hash: tmpCursorItem.Hash || '',
+							Label: ''
+						};
+						tmpCollMgr.addItemsToCollection(tmpRemote.LastUsedCollectionGUID, [tmpAddItem]);
+					}
+					else
+					{
+						// No last-used collection or no item — open the topbar dropdown
+						let tmpTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
+						if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
+						{
+							tmpTopBar.showAddToCollectionDropdown();
+						}
+					}
+				}
+			}
+			break;
+
+		case 'b':
+			pEvent.preventDefault();
+			{
+				let tmpCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpCollManager)
+				{
+					tmpCollManager.togglePanel();
+				}
+			}
+			break;
+
 		case 'd':
 			pEvent.preventDefault();
 			pGalleryNav._toggleDistractionFree();

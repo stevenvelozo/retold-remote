@@ -244,6 +244,64 @@ const _ViewConfiguration =
 			color: var(--retold-text-primary);
 			border-color: var(--retold-accent);
 		}
+		.retold-remote-topbar-addcoll-btn
+		{
+			font-size: 0.72rem;
+		}
+		.retold-remote-topbar-collections-btn.panel-open
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
+		}
+		/* Add-to-collection dropdown */
+		.retold-remote-addcoll-dropdown
+		{
+			position: absolute;
+			top: 100%;
+			right: 0;
+			margin-top: 4px;
+			min-width: 220px;
+			max-width: 320px;
+			max-height: 300px;
+			overflow-y: auto;
+			background: var(--retold-bg-secondary);
+			border: 1px solid var(--retold-border);
+			border-radius: 6px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+			z-index: 1000;
+		}
+		.retold-remote-addcoll-dropdown-item
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			width: 100%;
+			padding: 10px 14px;
+			border: none;
+			border-bottom: 1px solid var(--retold-border);
+			background: transparent;
+			color: var(--retold-text-primary);
+			font-size: 0.82rem;
+			text-align: left;
+			cursor: pointer;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		.retold-remote-addcoll-dropdown-item:last-child
+		{
+			border-bottom: none;
+		}
+		.retold-remote-addcoll-dropdown-item:hover
+		{
+			background: rgba(128, 128, 128, 0.12);
+			color: var(--retold-accent);
+		}
+		.retold-remote-addcoll-dropdown-new
+		{
+			color: var(--retold-accent);
+			font-weight: 500;
+		}
 		.retold-remote-topbar-filter-btn
 		{
 			position: relative;
@@ -304,6 +362,8 @@ const _ViewConfiguration =
 					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
+						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">+&#9733;</button>
+						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
 						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
 					</div>
 				</div>
@@ -684,6 +744,182 @@ class RetoldRemoteTopBarView extends libPictView
 		if (tmpSummary.Other > 0) tmpParts.push(tmpSummary.Other + ' other');
 
 		tmpInfoEl.textContent = tmpParts.join(' \u00b7 ');
+	}
+
+	// -- Collections Panel ------------------------------------------------
+
+	/**
+	 * Toggle the collections panel.
+	 */
+	toggleCollections()
+	{
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpManager)
+		{
+			tmpManager.togglePanel();
+		}
+	}
+
+	/**
+	 * Update the collections toggle button icon/state.
+	 */
+	updateCollectionsIcon()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-CollectionsBtn');
+		if (!tmpBtn)
+		{
+			return;
+		}
+
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
+
+		if (tmpRemote.CollectionsPanelOpen)
+		{
+			tmpBtn.classList.add('panel-open');
+			if (tmpIconProvider && typeof tmpIconProvider.getIcon === 'function')
+			{
+				tmpBtn.innerHTML = tmpIconProvider.getIcon('bookmark-filled', 16);
+			}
+		}
+		else
+		{
+			tmpBtn.classList.remove('panel-open');
+			if (tmpIconProvider && typeof tmpIconProvider.getIcon === 'function')
+			{
+				tmpBtn.innerHTML = tmpIconProvider.getIcon('bookmark', 16);
+			}
+		}
+	}
+
+	/**
+	 * Add current file/folder to a collection.
+	 * Quick-add: single click adds to last-used collection.
+	 * If no last-used collection, opens the picker dropdown.
+	 *
+	 * @param {Event} pEvent - Click event
+	 */
+	addToCollection(pEvent)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (!tmpManager)
+		{
+			return;
+		}
+
+		// Quick-add: if we have a last-used collection, add directly
+		if (tmpRemote.LastUsedCollectionGUID)
+		{
+			let tmpAdded = tmpManager.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);
+			if (tmpAdded)
+			{
+				return;
+			}
+		}
+
+		// Fall through to picker dropdown
+		this.showAddToCollectionDropdown(pEvent);
+	}
+
+	/**
+	 * Show the add-to-collection picker dropdown.
+	 *
+	 * @param {Event} [pEvent] - Optional click event for positioning
+	 */
+	showAddToCollectionDropdown(pEvent)
+	{
+		let tmpSelf = this;
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+
+		// Remove any existing dropdown
+		this._closeAddToCollectionDropdown();
+
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn');
+		if (!tmpBtn)
+		{
+			return;
+		}
+
+		// Ensure we have the latest collections
+		tmpManager.fetchCollections(() =>
+		{
+			let tmpCollections = tmpRemote.Collections || [];
+
+			let tmpDropdown = document.createElement('div');
+			tmpDropdown.className = 'retold-remote-addcoll-dropdown';
+			tmpDropdown.id = 'RetoldRemote-AddToCollection-Dropdown';
+
+			// "New Collection" option
+			let tmpNewItem = document.createElement('button');
+			tmpNewItem.className = 'retold-remote-addcoll-dropdown-item retold-remote-addcoll-dropdown-new';
+			tmpNewItem.textContent = '+ New Collection...';
+			tmpNewItem.onclick = () =>
+			{
+				tmpSelf._closeAddToCollectionDropdown();
+				let tmpName = prompt('Collection name:');
+				if (tmpName && tmpName.trim())
+				{
+					tmpManager.createCollection(tmpName.trim(), (pError, pCollection) =>
+					{
+						if (!pError && pCollection)
+						{
+							tmpManager.addCurrentFileToCollection(pCollection.GUID);
+						}
+					});
+				}
+			};
+			tmpDropdown.appendChild(tmpNewItem);
+
+			// Existing collections
+			for (let i = 0; i < tmpCollections.length; i++)
+			{
+				let tmpCollection = tmpCollections[i];
+				let tmpItem = document.createElement('button');
+				tmpItem.className = 'retold-remote-addcoll-dropdown-item';
+				tmpItem.textContent = tmpCollection.Name || 'Untitled';
+				tmpItem.onclick = () =>
+				{
+					tmpSelf._closeAddToCollectionDropdown();
+					tmpManager.addCurrentFileToCollection(tmpCollection.GUID);
+				};
+				tmpDropdown.appendChild(tmpItem);
+			}
+
+			// Position relative to the button
+			tmpBtn.style.position = 'relative';
+			tmpBtn.appendChild(tmpDropdown);
+
+			// Close on outside click
+			setTimeout(() =>
+			{
+				document.addEventListener('click', tmpSelf._boundCloseDropdown = (pClickEvent) =>
+				{
+					if (!tmpDropdown.contains(pClickEvent.target) && pClickEvent.target !== tmpBtn)
+					{
+						tmpSelf._closeAddToCollectionDropdown();
+					}
+				});
+			}, 10);
+		});
+	}
+
+	/**
+	 * Close the add-to-collection dropdown.
+	 */
+	_closeAddToCollectionDropdown()
+	{
+		let tmpDropdown = document.getElementById('RetoldRemote-AddToCollection-Dropdown');
+		if (tmpDropdown)
+		{
+			tmpDropdown.remove();
+		}
+		if (this._boundCloseDropdown)
+		{
+			document.removeEventListener('click', this._boundCloseDropdown);
+			this._boundCloseDropdown = null;
+		}
 	}
 }
 

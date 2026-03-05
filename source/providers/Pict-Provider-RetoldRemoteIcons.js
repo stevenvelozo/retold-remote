@@ -441,6 +441,46 @@ class RetoldRemoteIconProvider extends libPictProvider
 					+ '<line x1="8.1" y1="16" x2="15.9" y2="16" stroke="' + c.Muted + '" stroke-width="1.2" stroke-linecap="round" />'
 					+ '<line x1="8.1" y1="19" x2="12" y2="19" stroke="' + c.Muted + '" stroke-width="1.2" stroke-linecap="round" />'
 					+ '</svg>';
+			},
+
+			// ---- Collection icons ----
+			'bookmark': (pSize) =>
+			{
+				let c = tmpSelf._colors;
+				return '<svg width="' + pSize + '" height="' + pSize + '" viewBox="0 0 24 24" fill="none">'
+					+ '<path d="M6 4C6 3.45 6.45 3 7 3H17C17.55 3 18 3.45 18 4V21L12 17L6 21V4Z" stroke="' + c.Primary + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />'
+					+ '</svg>';
+			},
+
+			'bookmark-filled': (pSize) =>
+			{
+				let c = tmpSelf._colors;
+				return '<svg width="' + pSize + '" height="' + pSize + '" viewBox="0 0 24 24" fill="none">'
+					+ '<path d="M6 4C6 3.45 6.45 3 7 3H17C17.55 3 18 3.45 18 4V21L12 17L6 21V4Z" stroke="' + c.Primary + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="' + c.Accent + '" />'
+					+ '</svg>';
+			},
+
+			'collection': (pSize) =>
+			{
+				let c = tmpSelf._colors;
+				return '<svg width="' + pSize + '" height="' + pSize + '" viewBox="0 0 24 24" fill="none">'
+					+ '<rect x="4" y="8" width="16" height="12" rx="2" stroke="' + c.Primary + '" stroke-width="1.8" fill="' + c.Light + '" />'
+					+ '<path d="M7 8V6C7 5.45 7.45 5 8 5H16C16.55 5 17 5.45 17 6V8" stroke="' + c.Primary + '" stroke-width="1.5" fill="none" />'
+					+ '<path d="M9 5V3.5C9 3.22 9.22 3 9.5 3H14.5C14.78 3 15 3.22 15 3.5V5" stroke="' + c.Muted + '" stroke-width="1.2" fill="none" />'
+					+ '</svg>';
+			},
+
+			'drag-handle': (pSize) =>
+			{
+				let c = tmpSelf._colors;
+				return '<svg width="' + pSize + '" height="' + pSize + '" viewBox="0 0 24 24" fill="none">'
+					+ '<circle cx="9" cy="7" r="1.5" fill="' + c.Muted + '" />'
+					+ '<circle cx="15" cy="7" r="1.5" fill="' + c.Muted + '" />'
+					+ '<circle cx="9" cy="12" r="1.5" fill="' + c.Muted + '" />'
+					+ '<circle cx="15" cy="12" r="1.5" fill="' + c.Muted + '" />'
+					+ '<circle cx="9" cy="17" r="1.5" fill="' + c.Muted + '" />'
+					+ '<circle cx="15" cy="17" r="1.5" fill="' + c.Muted + '" />'
+					+ '</svg>';
 			}
 		};
 	}

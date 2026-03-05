@@ -332,6 +332,63 @@ const _ViewConfiguration =
 				flex: 1;
 				min-height: 0;
 			}
+
+			/* Collections panel: hide in mobile */
+			.retold-remote-collections-wrap
+			{
+				display: none;
+			}
+		}
+
+		/* ---- Right-side Collections Panel ---- */
+		.retold-remote-collections-wrap
+		{
+			display: flex;
+			flex-shrink: 0;
+			position: relative;
+			transition: width 0.2s ease;
+			border-left: 1px solid var(--retold-border);
+		}
+		.retold-remote-collections-wrap.collapsed
+		{
+			width: 0 !important;
+			border-left: none;
+		}
+		.retold-remote-collections-wrap.collapsed .retold-remote-collections-inner
+		{
+			visibility: hidden;
+		}
+		.retold-remote-collections-wrap.collapsed .retold-remote-collections-resize-handle
+		{
+			display: none;
+		}
+		.retold-remote-collections-inner
+		{
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+			min-height: 0;
+			overflow: hidden;
+			background: var(--retold-bg-primary);
+		}
+		.retold-remote-collections-resize-handle
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 5px;
+			cursor: col-resize;
+			z-index: 10;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.retold-remote-collections-resize-handle:hover
+		{
+			background: var(--retold-accent);
+			opacity: 0.3;
 		}
 	`,
 
@@ -357,6 +414,12 @@ const _ViewConfiguration =
 						<div id="RetoldRemote-Gallery-Container"></div>
 						<div id="RetoldRemote-Viewer-Container"></div>
 					</div>
+					<div class="retold-remote-collections-wrap collapsed" id="RetoldRemote-Collections-Wrap" style="width: 300px;">
+						<div class="retold-remote-collections-resize-handle"></div>
+						<div class="retold-remote-collections-inner">
+							<div id="RetoldRemote-Collections-Container"></div>
+						</div>
+					</div>
 				</div>
 			`
 		}
@@ -379,6 +442,7 @@ class RetoldRemoteLayoutView extends libPictView
 		super(pFable, pOptions, pServiceHash);
 
 		this._sidebarDragging = false;
+		this._collectionsDragging = false;
 	}
 
 	onAfterRender()
@@ -417,6 +481,23 @@ class RetoldRemoteLayoutView extends libPictView
 				tmpWrap.style.height = tmpRemote.SidebarDrawerHeight + 'px';
 			}
 		}
+
+		// Restore collections panel state from settings
+		if (tmpRemote && tmpRemote.CollectionsPanelOpen)
+		{
+			let tmpCollWrap = document.getElementById('RetoldRemote-Collections-Wrap');
+			if (tmpCollWrap)
+			{
+				tmpCollWrap.classList.remove('collapsed');
+				if (tmpRemote.CollectionsPanelWidth)
+				{
+					tmpCollWrap.style.width = tmpRemote.CollectionsPanelWidth + 'px';
+				}
+			}
+		}
+
+		// Set up collections panel resize handle
+		this._setupCollectionsResizeHandle();
 
 		// Listen for hash changes (browser back/forward)
 		let tmpSelf = this;
@@ -608,6 +689,109 @@ class RetoldRemoteLayoutView extends libPictView
 		{
 			pEvent.preventDefault();
 			tmpSelf.toggleSidebar();
+		});
+	}
+
+	/**
+	 * Toggle the right-side collections panel open/closed.
+	 */
+	toggleCollectionsPanel()
+	{
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpManager)
+		{
+			tmpManager.togglePanel();
+		}
+	}
+
+	/**
+	 * Set up the resize handle for the collections panel (right side).
+	 * Dragging LEFT increases width, dragging RIGHT decreases width.
+	 */
+	_setupCollectionsResizeHandle()
+	{
+		let tmpHandle = document.querySelector('.retold-remote-collections-resize-handle');
+		let tmpWrap = document.getElementById('RetoldRemote-Collections-Wrap');
+		if (!tmpHandle || !tmpWrap)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+		let tmpStartX = 0;
+		let tmpStartWidth = 0;
+
+		function onDragStart(pEvent)
+		{
+			if (tmpWrap.classList.contains('collapsed'))
+			{
+				return;
+			}
+
+			pEvent.preventDefault();
+			tmpSelf._collectionsDragging = true;
+			tmpHandle.classList.add('dragging');
+
+			let tmpClientX = pEvent.touches ? pEvent.touches[0].clientX : pEvent.clientX;
+			tmpStartX = tmpClientX;
+			tmpStartWidth = tmpWrap.getBoundingClientRect().width;
+
+			document.addEventListener('mousemove', onDragMove);
+			document.addEventListener('mouseup', onDragEnd);
+			document.addEventListener('touchmove', onDragMove, { passive: false });
+			document.addEventListener('touchend', onDragEnd);
+		}
+
+		function onDragMove(pEvent)
+		{
+			if (!tmpSelf._collectionsDragging)
+			{
+				return;
+			}
+			pEvent.preventDefault();
+
+			let tmpClientX = pEvent.touches ? pEvent.touches[0].clientX : pEvent.clientX;
+			// Dragging left (negative deltaX) increases width
+			let tmpDelta = tmpStartX - tmpClientX;
+			let tmpNewWidth = Math.max(150, Math.min(600, tmpStartWidth + tmpDelta));
+			tmpWrap.style.width = tmpNewWidth + 'px';
+		}
+
+		function onDragEnd()
+		{
+			if (!tmpSelf._collectionsDragging)
+			{
+				return;
+			}
+
+			tmpSelf._collectionsDragging = false;
+			tmpHandle.classList.remove('dragging');
+
+			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
+			tmpRemote.CollectionsPanelWidth = tmpWrap.getBoundingClientRect().width;
+			tmpSelf.pict.PictApplication.saveSettings();
+
+			document.removeEventListener('mousemove', onDragMove);
+			document.removeEventListener('mouseup', onDragEnd);
+			document.removeEventListener('touchmove', onDragMove);
+			document.removeEventListener('touchend', onDragEnd);
+
+			// Recalculate gallery columns
+			let tmpGalleryNav = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
+			if (tmpGalleryNav && typeof tmpGalleryNav.recalculateColumns === 'function')
+			{
+				tmpGalleryNav.recalculateColumns();
+			}
+		}
+
+		tmpHandle.addEventListener('mousedown', onDragStart);
+		tmpHandle.addEventListener('touchstart', onDragStart, { passive: false });
+
+		// Double-click collapses the collections panel
+		tmpHandle.addEventListener('dblclick', function (pEvent)
+		{
+			pEvent.preventDefault();
+			tmpSelf.toggleCollectionsPanel();
 		});
 	}
 }

@@ -538,6 +538,10 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'gallery';
 
+		// Exit collection browsing mode
+		tmpRemote.BrowsingCollection = false;
+		tmpRemote.BrowsingCollectionIndex = -1;
+
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
 		let tmpViewerContainer = document.getElementById('RetoldRemote-Viewer-Container');
 
@@ -574,10 +578,37 @@ class GalleryNavigationProvider extends libPictProvider
 
 	/**
 	 * Navigate to the next file in the gallery list.
+	 * When browsing a collection, navigates through collection items instead.
 	 */
 	nextFile()
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// Collection browsing mode — navigate through ActiveCollection.Items
+		if (tmpRemote.BrowsingCollection && tmpRemote.ActiveCollection)
+		{
+			let tmpCollItems = tmpRemote.ActiveCollection.Items || [];
+			let tmpCollIndex = tmpRemote.BrowsingCollectionIndex;
+
+			for (let i = tmpCollIndex + 1; i < tmpCollItems.length; i++)
+			{
+				let tmpItem = tmpCollItems[i];
+				if (tmpItem.Type === 'file' || tmpItem.Type === 'subfile' ||
+					tmpItem.Type === 'image-crop' || tmpItem.Type === 'video-clip' ||
+					tmpItem.Type === 'video-frame')
+				{
+					tmpRemote.BrowsingCollectionIndex = i;
+					let tmpApp = this.pict.PictApplication;
+					if (tmpApp && tmpApp.navigateToFile)
+					{
+						tmpApp.navigateToFile(tmpItem.Path);
+					}
+					return;
+				}
+			}
+			return;
+		}
+
 		let tmpItems = tmpRemote.GalleryItems || [];
 		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
 
@@ -599,10 +630,37 @@ class GalleryNavigationProvider extends libPictProvider
 
 	/**
 	 * Navigate to the previous file in the gallery list.
+	 * When browsing a collection, navigates through collection items instead.
 	 */
 	prevFile()
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
+
+		// Collection browsing mode — navigate through ActiveCollection.Items
+		if (tmpRemote.BrowsingCollection && tmpRemote.ActiveCollection)
+		{
+			let tmpCollItems = tmpRemote.ActiveCollection.Items || [];
+			let tmpCollIndex = tmpRemote.BrowsingCollectionIndex;
+
+			for (let i = tmpCollIndex - 1; i >= 0; i--)
+			{
+				let tmpItem = tmpCollItems[i];
+				if (tmpItem.Type === 'file' || tmpItem.Type === 'subfile' ||
+					tmpItem.Type === 'image-crop' || tmpItem.Type === 'video-clip' ||
+					tmpItem.Type === 'video-frame')
+				{
+					tmpRemote.BrowsingCollectionIndex = i;
+					let tmpApp = this.pict.PictApplication;
+					if (tmpApp && tmpApp.navigateToFile)
+					{
+						tmpApp.navigateToFile(tmpItem.Path);
+					}
+					return;
+				}
+			}
+			return;
+		}
+
 		let tmpItems = tmpRemote.GalleryItems || [];
 		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
 
