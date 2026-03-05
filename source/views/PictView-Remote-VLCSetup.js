@@ -265,6 +265,14 @@ class RetoldRemoteVLCSetupView extends libPictView
 	_detectPlatform()
 	{
 		let tmpUA = (typeof navigator !== 'undefined') ? navigator.userAgent : '';
+		if (/iPhone|iPad|iPod/i.test(tmpUA))
+		{
+			return 'ios';
+		}
+		if (/Android/i.test(tmpUA))
+		{
+			return 'android';
+		}
 		if (/Macintosh|Mac OS X/.test(tmpUA))
 		{
 			return 'macos';
@@ -385,12 +393,16 @@ class RetoldRemoteVLCSetupView extends libPictView
 
 		// Platform tabs
 		tmpHTML += '<div class="retold-remote-vlc-setup-platform-tabs">';
+		tmpHTML += this._buildPlatformTab('ios', 'iOS', tmpPlatform);
+		tmpHTML += this._buildPlatformTab('android', 'Android', tmpPlatform);
 		tmpHTML += this._buildPlatformTab('macos', 'macOS', tmpPlatform);
 		tmpHTML += this._buildPlatformTab('windows', 'Windows', tmpPlatform);
 		tmpHTML += this._buildPlatformTab('linux', 'Linux', tmpPlatform);
 		tmpHTML += '</div>';
 
 		// Platform-specific content
+		tmpHTML += this._buildIOSContent(tmpPlatform);
+		tmpHTML += this._buildAndroidContent(tmpPlatform);
 		tmpHTML += this._buildMacOSContent(tmpPlatform);
 		tmpHTML += this._buildWindowsContent(tmpPlatform);
 		tmpHTML += this._buildLinuxContent(tmpPlatform);
@@ -419,9 +431,75 @@ class RetoldRemoteVLCSetupView extends libPictView
 
 	_getPlatformLabel(pKey)
 	{
+		if (pKey === 'ios') return 'iOS';
+		if (pKey === 'android') return 'Android';
 		if (pKey === 'macos') return 'macOS';
 		if (pKey === 'windows') return 'Windows';
 		return 'Linux';
+	}
+
+	_buildIOSContent(pActive)
+	{
+		let tmpClass = 'retold-remote-vlc-setup-platform' + (pActive === 'ios' ? ' active' : '');
+		let tmpHTML = '<div class="' + tmpClass + '" data-platform="ios">';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-section">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Setup (iOS)</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-desc">';
+		tmpHTML += 'VLC for iOS registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';
+		tmpHTML += '</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-section">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Installation</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-step">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-num">1</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Mobile</b> from the App Store if you haven\'t already.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-step">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-num">2</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Safari will ask to open VLC — tap <b>Open</b>.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-note">If Safari shows "Cannot Open Page", VLC may not be installed or may need to be updated.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '</div>';
+		return tmpHTML;
+	}
+
+	_buildAndroidContent(pActive)
+	{
+		let tmpClass = 'retold-remote-vlc-setup-platform' + (pActive === 'android' ? ' active' : '');
+		let tmpHTML = '<div class="' + tmpClass + '" data-platform="android">';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-section">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Setup (Android)</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-desc">';
+		tmpHTML += 'VLC for Android registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';
+		tmpHTML += '</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-section">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Installation</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-step">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-num">1</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Android</b> from the Google Play Store if you haven\'t already.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-step">';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-num">2</div>';
+		tmpHTML += '<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Your browser will ask to open VLC — tap <b>Open</b>.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '<div class="retold-remote-vlc-setup-note">If your browser shows an error, VLC may not be installed or may need to be updated.</div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '</div>';
+		return tmpHTML;
 	}
 
 	_buildMacOSContent(pActive)
@@ -748,8 +826,9 @@ class RetoldRemoteVLCSetupView extends libPictView
 	testProtocol()
 	{
 		let tmpIsWindows = /Windows/.test(navigator.userAgent);
+		let tmpIsMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 		let tmpSampleURL = 'https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';
-		let tmpTestURL = tmpIsWindows
+		let tmpTestURL = (tmpIsWindows || tmpIsMobile)
 			? ('vlc://' + tmpSampleURL)
 			: ('vlc://' + encodeURIComponent(tmpSampleURL));
 		let tmpLink = document.createElement('a');

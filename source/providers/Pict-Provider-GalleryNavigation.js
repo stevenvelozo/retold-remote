@@ -1277,10 +1277,11 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpContentPath = tmpProvider ? tmpProvider.getContentURL(tmpFilePath) : ('/content/' + encodeURIComponent(tmpFilePath));
 		let tmpStreamURL = window.location.origin + tmpContentPath;
-		// On Windows, VLC's native handler expects the raw URL.
+		// On Windows and mobile (iOS/Android), VLC handles the raw URL natively.
 		// On macOS/Linux our custom handlers URL-decode, so we encode.
 		let tmpIsWindows = /Windows/.test(navigator.userAgent);
-		let tmpVLCURL = tmpIsWindows
+		let tmpIsMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+		let tmpVLCURL = (tmpIsWindows || tmpIsMobile)
 			? ('vlc://' + tmpStreamURL)
 			: ('vlc://' + encodeURIComponent(tmpStreamURL));
 
