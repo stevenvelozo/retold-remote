@@ -246,6 +246,7 @@ const _ViewConfiguration =
 		#RetoldRemote-Gallery-Container
 		{
 			padding: 12px;
+			padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
 			min-height: 100%;
 		}
 		#RetoldRemote-Viewer-Container

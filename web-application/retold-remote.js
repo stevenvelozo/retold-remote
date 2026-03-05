@@ -12101,6 +12101,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 		#RetoldRemote-Gallery-Container
 		{
 			padding: 12px;
+			padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
 			min-height: 100%;
 		}
 		#RetoldRemote-Viewer-Container
@@ -13169,7 +13170,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			overflow: visible;
+			overflow: hidden;
 			min-width: 0;
 		}
 		.retold-remote-topbar-location-inner
@@ -13304,9 +13305,13 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 		}
 		.retold-remote-topbar-info
 		{
-			flex-shrink: 0;
+			flex-shrink: 1;
+			min-width: 0;
 			font-size: 0.75rem;
 			color: var(--retold-text-dim);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 		.retold-remote-topbar-actions
 		{
@@ -13461,6 +13466,18 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			font-weight: 700;
 			text-align: center;
 		}
+		@media (max-width: 600px)
+		{
+			.retold-remote-topbar
+			{
+				padding: 0 8px;
+				gap: 6px;
+			}
+			.retold-remote-topbar-actions
+			{
+				gap: 4px;
+			}
+		}
 	`,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
 				<div class="retold-remote-topbar">
 					<button class="retold-remote-topbar-sidebar-toggle" id="RetoldRemote-TopBar-SidebarToggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar"></button>
@@ -13468,8 +13485,8 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
-						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">AI Sort</button>
-						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">+&#9733;</button>
+						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">Ai</button>
+						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">&#9733;</button>
 						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
 						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
 					</div>
@@ -13524,8 +13541,8 @@ tmpBtn.innerHTML='&#9698;';tmpBtn.title='Toggle filter bar (/)';}}/**
 /**
 	 * Trigger AI sort for the current folder.
 	 */triggerAISort(){let tmpAISortManager=this.pict.providers['RetoldRemote-AISortManager'];if(!tmpAISortManager){return;}let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';// Show generating state
-let tmpBtn=document.getElementById('RetoldRemote-TopBar-AISortBtn');if(tmpBtn){tmpBtn.classList.add('generating');tmpBtn.textContent='Sorting...';}tmpAISortManager.generateSortPlan(tmpCurrentPath,(pError,pResult)=>{// Reset button state
-if(tmpBtn){tmpBtn.classList.remove('generating');tmpBtn.textContent='AI Sort';}});}/**
+let tmpBtn=document.getElementById('RetoldRemote-TopBar-AISortBtn');if(tmpBtn){tmpBtn.classList.add('generating');tmpBtn.textContent='...';}tmpAISortManager.generateSortPlan(tmpCurrentPath,(pError,pResult)=>{// Reset button state
+if(tmpBtn){tmpBtn.classList.remove('generating');tmpBtn.textContent='Ai';}});}/**
 	 * Update the AI Sort button visibility.
 	 * Shows only when browsing a folder (gallery mode).
 	 */updateAISortButton(){let tmpBtn=document.getElementById('RetoldRemote-TopBar-AISortBtn');if(!tmpBtn){return;}let tmpAISortManager=this.pict.providers['RetoldRemote-AISortManager'];if(tmpAISortManager&&tmpAISortManager.isAvailable()){tmpBtn.style.display='';}else{tmpBtn.style.display='none';}}// -- Collections Panel ------------------------------------------------

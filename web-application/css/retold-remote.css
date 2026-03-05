@@ -21,8 +21,6 @@ html, body
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	/* Safe area insets for notched devices */
-	padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Scrollbar styling */

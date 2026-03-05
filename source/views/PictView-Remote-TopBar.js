@@ -82,7 +82,7 @@ const _ViewConfiguration =
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			overflow: visible;
+			overflow: hidden;
 			min-width: 0;
 		}
 		.retold-remote-topbar-location-inner
@@ -217,9 +217,13 @@ const _ViewConfiguration =
 		}
 		.retold-remote-topbar-info
 		{
-			flex-shrink: 0;
+			flex-shrink: 1;
+			min-width: 0;
 			font-size: 0.75rem;
 			color: var(--retold-text-dim);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 		.retold-remote-topbar-actions
 		{
@@ -374,6 +378,18 @@ const _ViewConfiguration =
 			font-weight: 700;
 			text-align: center;
 		}
+		@media (max-width: 600px)
+		{
+			.retold-remote-topbar
+			{
+				padding: 0 8px;
+				gap: 6px;
+			}
+			.retold-remote-topbar-actions
+			{
+				gap: 4px;
+			}
+		}
 	`,
 
 	Templates:
@@ -387,8 +403,8 @@ const _ViewConfiguration =
 					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
-						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">AI Sort</button>
-						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">+&#9733;</button>
+						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">Ai</button>
+						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">&#9733;</button>
 						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
 						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
 					</div>
@@ -794,7 +810,7 @@ class RetoldRemoteTopBarView extends libPictView
 		if (tmpBtn)
 		{
 			tmpBtn.classList.add('generating');
-			tmpBtn.textContent = 'Sorting...';
+			tmpBtn.textContent = '...';
 		}
 
 		tmpAISortManager.generateSortPlan(tmpCurrentPath,
@@ -804,7 +820,7 @@ class RetoldRemoteTopBarView extends libPictView
 				if (tmpBtn)
 				{
 					tmpBtn.classList.remove('generating');
-					tmpBtn.textContent = 'AI Sort';
+					tmpBtn.textContent = 'Ai';
 				}
 			});
 	}
