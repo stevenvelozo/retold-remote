@@ -82,7 +82,7 @@ const _ViewConfiguration =
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			overflow: hidden;
+			overflow: visible;
 			min-width: 0;
 		}
 		.retold-remote-topbar-location-inner
@@ -876,7 +876,16 @@ class RetoldRemoteTopBarView extends libPictView
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
 
-		if (tmpRemote.CollectionsPanelOpen)
+		// On mobile, "open" means the collections sidebar tab is active
+		let tmpIsOpen = tmpRemote.CollectionsPanelOpen;
+		let tmpLayoutView = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayoutView && tmpLayoutView.isMobileDrawer())
+		{
+			let tmpActiveTab = document.querySelector('.content-editor-sidebar-tab.active');
+			tmpIsOpen = tmpActiveTab && tmpActiveTab.getAttribute('data-tab') === 'collections';
+		}
+
+		if (tmpIsOpen)
 		{
 			tmpBtn.classList.add('panel-open');
 			if (tmpIconProvider && typeof tmpIconProvider.getIcon === 'function')

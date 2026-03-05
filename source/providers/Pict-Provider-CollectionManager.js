@@ -463,6 +463,39 @@ class CollectionManagerProvider extends libPictProvider
 	togglePanel()
 	{
 		let tmpRemote = this._getRemote();
+
+		// On mobile, delegate to the sidebar collections tab instead of the right-side panel
+		let tmpLayoutView = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayoutView && tmpLayoutView.isMobileDrawer())
+		{
+			// Check if collections tab is already active
+			let tmpActiveTab = document.querySelector('.content-editor-sidebar-tab.active');
+			let tmpIsCollectionsActive = tmpActiveTab && tmpActiveTab.getAttribute('data-tab') === 'collections';
+
+			if (tmpIsCollectionsActive)
+			{
+				// Switch back to files tab
+				tmpLayoutView.switchSidebarTab('files');
+			}
+			else
+			{
+				// Open sidebar if collapsed, then switch to collections tab
+				if (tmpRemote.SidebarCollapsed)
+				{
+					tmpLayoutView.toggleSidebar();
+				}
+				tmpLayoutView.switchSidebarTab('collections');
+			}
+
+			// Update topbar button state
+			let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+			if (tmpTopBar && typeof tmpTopBar.updateCollectionsIcon === 'function')
+			{
+				tmpTopBar.updateCollectionsIcon();
+			}
+			return;
+		}
+
 		tmpRemote.CollectionsPanelOpen = !tmpRemote.CollectionsPanelOpen;
 
 		let tmpWrap = document.getElementById('RetoldRemote-Collections-Wrap');

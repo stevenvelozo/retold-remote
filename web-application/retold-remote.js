@@ -9332,7 +9332,12 @@ tmpSelf.fetchCollections();let tmpPanel=tmpSelf._getPanelView();if(tmpPanel&&tmp
 tmpSelf.fetchCollections();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.show('Copied '+pItemIDs.length+' item'+(pItemIDs.length>1?'s':''));}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to copy items: '+pError.message);return tmpCallback(pError);});}// -- Panel State Methods ----------------------------------------------
 /**
 	 * Toggle the collections panel open/closed.
-	 */togglePanel(){let tmpRemote=this._getRemote();tmpRemote.CollectionsPanelOpen=!tmpRemote.CollectionsPanelOpen;let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(tmpWrap){if(tmpRemote.CollectionsPanelOpen){tmpWrap.classList.remove('collapsed');// Restore saved width
+	 */togglePanel(){let tmpRemote=this._getRemote();// On mobile, delegate to the sidebar collections tab instead of the right-side panel
+let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&tmpLayoutView.isMobileDrawer()){// Check if collections tab is already active
+let tmpActiveTab=document.querySelector('.content-editor-sidebar-tab.active');let tmpIsCollectionsActive=tmpActiveTab&&tmpActiveTab.getAttribute('data-tab')==='collections';if(tmpIsCollectionsActive){// Switch back to files tab
+tmpLayoutView.switchSidebarTab('files');}else{// Open sidebar if collapsed, then switch to collections tab
+if(tmpRemote.SidebarCollapsed){tmpLayoutView.toggleSidebar();}tmpLayoutView.switchSidebarTab('collections');}// Update topbar button state
+let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateCollectionsIcon==='function'){tmpTopBar.updateCollectionsIcon();}return;}tmpRemote.CollectionsPanelOpen=!tmpRemote.CollectionsPanelOpen;let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(tmpWrap){if(tmpRemote.CollectionsPanelOpen){tmpWrap.classList.remove('collapsed');// Restore saved width
 if(tmpRemote.CollectionsPanelWidth){tmpWrap.style.width=tmpRemote.CollectionsPanelWidth+'px';}// Fetch latest collections when opening
 this.fetchCollections();}else{tmpWrap.classList.add('collapsed');}}// Update topbar button state
 let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateCollectionsIcon==='function'){tmpTopBar.updateCollectionsIcon();}// Persist setting
@@ -12251,7 +12256,13 @@ return{width:tmpNW,height:tmpNH};}}}/**
 				min-height: auto;
 			}
 
-			/* Collections panel: fully hidden on mobile */
+			/* Show collections tab on mobile */
+			.content-editor-sidebar-tab-collections
+			{
+				display: block !important;
+			}
+
+			/* Collections right-side panel: hidden on mobile (content moves to sidebar tab) */
 			.retold-remote-collections-wrap,
 			.retold-remote-collections-wrap.collapsed
 			{
@@ -12267,9 +12278,11 @@ return{width:tmpNW,height:tmpNH};}}}/**
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
+								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
 							<div class="content-editor-sidebar-pane" data-pane="files" id="ContentEditor-Sidebar-Container"></div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
+							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
 						<div class="content-editor-resize-handle"></div>
 					</div>
@@ -12297,7 +12310,10 @@ if(!tmpIsCollapsed){if(this.isMobileDrawer()){let tmpHeight=tmpRemote.SidebarDra
 let tmpNavProvider=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNavProvider){setTimeout(()=>tmpNavProvider.recalculateColumns(),250);}}switchSidebarTab(pTab){// Update tab buttons
 let tmpTabs=document.querySelectorAll('.content-editor-sidebar-tab');tmpTabs.forEach(pEl=>{pEl.classList.toggle('active',pEl.getAttribute('data-tab')===pTab);});// Update panes
 let tmpPanes=document.querySelectorAll('.content-editor-sidebar-pane');tmpPanes.forEach(pEl=>{pEl.style.display=pEl.getAttribute('data-pane')===pTab?'':'none';});// Render settings panel on demand
-if(pTab==='settings'){let tmpSettingsView=this.pict.views['RetoldRemote-SettingsPanel'];if(tmpSettingsView){tmpSettingsView.render();}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartY=0;let tmpStartWidth=0;let tmpStartHeight=0;function getClientPos(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return{x:pEvent.touches[0].clientX,y:pEvent.touches[0].clientY};}return{x:pEvent.clientX,y:pEvent.clientY};}function onDragStart(pEvent){tmpSelf._sidebarDragging=true;let tmpPos=getClientPos(pEvent);tmpStartX=tmpPos.x;tmpStartY=tmpPos.y;tmpStartWidth=tmpWrap.offsetWidth;tmpStartHeight=tmpWrap.offsetHeight;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);pEvent.preventDefault();}function onDragMove(pEvent){if(!tmpSelf._sidebarDragging){return;}let tmpPos=getClientPos(pEvent);if(tmpSelf.isMobileDrawer()){// Vertical resize (top drawer)
+if(pTab==='settings'){let tmpSettingsView=this.pict.views['RetoldRemote-SettingsPanel'];if(tmpSettingsView){tmpSettingsView.render();}}// Collections tab: move the collections container into the mobile pane
+if(pTab==='collections'){let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpMobilePane=document.getElementById('RetoldRemote-Collections-MobilePane');if(tmpCollContainer&&tmpMobilePane&&!tmpMobilePane.contains(tmpCollContainer)){tmpMobilePane.appendChild(tmpCollContainer);}// Render and fetch collections
+let tmpCollView=this.pict.views['RetoldRemote-CollectionsPanel'];if(tmpCollView){tmpCollView.render();}let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.fetchCollections();}}else{// Return collections container to its original home when leaving collections tab
+let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpOrigParent=document.querySelector('.retold-remote-collections-inner');if(tmpCollContainer&&tmpOrigParent&&!tmpOrigParent.contains(tmpCollContainer)){tmpOrigParent.appendChild(tmpCollContainer);}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartY=0;let tmpStartWidth=0;let tmpStartHeight=0;function getClientPos(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return{x:pEvent.touches[0].clientX,y:pEvent.touches[0].clientY};}return{x:pEvent.clientX,y:pEvent.clientY};}function onDragStart(pEvent){tmpSelf._sidebarDragging=true;let tmpPos=getClientPos(pEvent);tmpStartX=tmpPos.x;tmpStartY=tmpPos.y;tmpStartWidth=tmpWrap.offsetWidth;tmpStartHeight=tmpWrap.offsetHeight;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);pEvent.preventDefault();}function onDragMove(pEvent){if(!tmpSelf._sidebarDragging){return;}let tmpPos=getClientPos(pEvent);if(tmpSelf.isMobileDrawer()){// Vertical resize (top drawer)
 let tmpNewHeight=tmpStartHeight+(tmpPos.y-tmpStartY);let tmpMaxHeight=Math.round(window.innerHeight*0.7);tmpNewHeight=Math.max(80,Math.min(tmpNewHeight,tmpMaxHeight));tmpWrap.style.height=tmpNewHeight+'px';}else{// Horizontal resize (sidebar)
 let tmpNewWidth=tmpStartWidth+(tmpPos.x-tmpStartX);tmpNewWidth=Math.max(150,Math.min(tmpNewWidth,600));tmpWrap.style.width=tmpNewWidth+'px';}pEvent.preventDefault();}function onDragEnd(){tmpSelf._sidebarDragging=false;tmpHandle.classList.remove('dragging');document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Persist dimensions
 let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;if(tmpSelf.isMobileDrawer()){tmpRemote.SidebarDrawerHeight=tmpWrap.offsetHeight;}else{tmpRemote.SidebarWidth=tmpWrap.offsetWidth;}tmpSelf.pict.PictApplication.saveSettings();// Recalculate gallery columns
@@ -13181,7 +13197,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			overflow: hidden;
+			overflow: visible;
 			min-width: 0;
 		}
 		.retold-remote-topbar-location-inner
@@ -13561,7 +13577,8 @@ if(tmpBtn){tmpBtn.classList.remove('generating');tmpBtn.textContent='Ai';}});}/*
 	 * Toggle the collections panel.
 	 */toggleCollections(){let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.togglePanel();}}/**
 	 * Update the collections toggle button icon/state.
-	 */updateCollectionsIcon(){let tmpBtn=document.getElementById('RetoldRemote-TopBar-CollectionsBtn');if(!tmpBtn){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];if(tmpRemote.CollectionsPanelOpen){tmpBtn.classList.add('panel-open');if(tmpIconProvider&&typeof tmpIconProvider.getIcon==='function'){tmpBtn.innerHTML=tmpIconProvider.getIcon('bookmark-filled',16);}}else{tmpBtn.classList.remove('panel-open');if(tmpIconProvider&&typeof tmpIconProvider.getIcon==='function'){tmpBtn.innerHTML=tmpIconProvider.getIcon('bookmark',16);}}}/**
+	 */updateCollectionsIcon(){let tmpBtn=document.getElementById('RetoldRemote-TopBar-CollectionsBtn');if(!tmpBtn){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];// On mobile, "open" means the collections sidebar tab is active
+let tmpIsOpen=tmpRemote.CollectionsPanelOpen;let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&tmpLayoutView.isMobileDrawer()){let tmpActiveTab=document.querySelector('.content-editor-sidebar-tab.active');tmpIsOpen=tmpActiveTab&&tmpActiveTab.getAttribute('data-tab')==='collections';}if(tmpIsOpen){tmpBtn.classList.add('panel-open');if(tmpIconProvider&&typeof tmpIconProvider.getIcon==='function'){tmpBtn.innerHTML=tmpIconProvider.getIcon('bookmark-filled',16);}}else{tmpBtn.classList.remove('panel-open');if(tmpIconProvider&&typeof tmpIconProvider.getIcon==='function'){tmpBtn.innerHTML=tmpIconProvider.getIcon('bookmark',16);}}}/**
 	 * Add current file/folder to a collection.
 	 * Quick-add: single click adds to last-used collection.
 	 * If no last-used collection, opens the picker dropdown.

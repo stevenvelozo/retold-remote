@@ -393,7 +393,13 @@ const _ViewConfiguration =
 				min-height: auto;
 			}
 
-			/* Collections panel: fully hidden on mobile */
+			/* Show collections tab on mobile */
+			.content-editor-sidebar-tab-collections
+			{
+				display: block !important;
+			}
+
+			/* Collections right-side panel: hidden on mobile (content moves to sidebar tab) */
 			.retold-remote-collections-wrap,
 			.retold-remote-collections-wrap.collapsed
 			{
@@ -415,9 +421,11 @@ const _ViewConfiguration =
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
+								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
 							<div class="content-editor-sidebar-pane" data-pane="files" id="ContentEditor-Sidebar-Container"></div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
+							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
 						<div class="content-editor-resize-handle"></div>
 					</div>
@@ -587,6 +595,38 @@ class RetoldRemoteLayoutView extends libPictView
 			if (tmpSettingsView)
 			{
 				tmpSettingsView.render();
+			}
+		}
+
+		// Collections tab: move the collections container into the mobile pane
+		if (pTab === 'collections')
+		{
+			let tmpCollContainer = document.getElementById('RetoldRemote-Collections-Container');
+			let tmpMobilePane = document.getElementById('RetoldRemote-Collections-MobilePane');
+			if (tmpCollContainer && tmpMobilePane && !tmpMobilePane.contains(tmpCollContainer))
+			{
+				tmpMobilePane.appendChild(tmpCollContainer);
+			}
+			// Render and fetch collections
+			let tmpCollView = this.pict.views['RetoldRemote-CollectionsPanel'];
+			if (tmpCollView)
+			{
+				tmpCollView.render();
+			}
+			let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+			if (tmpManager)
+			{
+				tmpManager.fetchCollections();
+			}
+		}
+		else
+		{
+			// Return collections container to its original home when leaving collections tab
+			let tmpCollContainer = document.getElementById('RetoldRemote-Collections-Container');
+			let tmpOrigParent = document.querySelector('.retold-remote-collections-inner');
+			if (tmpCollContainer && tmpOrigParent && !tmpOrigParent.contains(tmpCollContainer))
+			{
+				tmpOrigParent.appendChild(tmpCollContainer);
 			}
 		}
 
