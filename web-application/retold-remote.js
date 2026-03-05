@@ -12120,6 +12120,57 @@ return{width:tmpNW,height:tmpNH};}}}/**
 			display: none;
 		}
 
+		/* ---- Right-side Collections Panel ---- */
+		.retold-remote-collections-wrap
+		{
+			display: flex;
+			flex-shrink: 0;
+			position: relative;
+			transition: width 0.2s ease;
+			border-left: 1px solid var(--retold-border);
+		}
+		.retold-remote-collections-wrap.collapsed
+		{
+			width: 0 !important;
+			border-left: none;
+		}
+		.retold-remote-collections-wrap.collapsed .retold-remote-collections-inner
+		{
+			visibility: hidden;
+		}
+		.retold-remote-collections-wrap.collapsed .retold-remote-collections-resize-handle
+		{
+			display: none;
+		}
+		.retold-remote-collections-inner
+		{
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+			min-height: 0;
+			overflow: hidden;
+			background: var(--retold-bg-primary);
+		}
+		.retold-remote-collections-resize-handle
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 5px;
+			cursor: col-resize;
+			z-index: 10;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.retold-remote-collections-resize-handle:hover
+		{
+			background: var(--retold-accent);
+			opacity: 0.3;
+		}
+
 		/* ============================================================
 		   MOBILE: Sidebar becomes a top drawer
 		   ============================================================ */
@@ -12191,62 +12242,19 @@ return{width:tmpNW,height:tmpNH};}}}/**
 				min-height: 0;
 			}
 
-			/* Collections panel: hide in mobile */
-			.retold-remote-collections-wrap
+			/* Gallery: don't force min-height on small screens */
+			#RetoldRemote-Gallery-Container
 			{
-				display: none;
+				min-height: auto;
 			}
-		}
 
-		/* ---- Right-side Collections Panel ---- */
-		.retold-remote-collections-wrap
-		{
-			display: flex;
-			flex-shrink: 0;
-			position: relative;
-			transition: width 0.2s ease;
-			border-left: 1px solid var(--retold-border);
-		}
-		.retold-remote-collections-wrap.collapsed
-		{
-			width: 0 !important;
-			border-left: none;
-		}
-		.retold-remote-collections-wrap.collapsed .retold-remote-collections-inner
-		{
-			visibility: hidden;
-		}
-		.retold-remote-collections-wrap.collapsed .retold-remote-collections-resize-handle
-		{
-			display: none;
-		}
-		.retold-remote-collections-inner
-		{
-			display: flex;
-			flex-direction: column;
-			flex: 1;
-			min-width: 0;
-			min-height: 0;
-			overflow: hidden;
-			background: var(--retold-bg-primary);
-		}
-		.retold-remote-collections-resize-handle
-		{
-			position: absolute;
-			left: 0;
-			top: 0;
-			bottom: 0;
-			width: 5px;
-			cursor: col-resize;
-			z-index: 10;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.retold-remote-collections-resize-handle:hover
-		{
-			background: var(--retold-accent);
-			opacity: 0.3;
+			/* Collections panel: fully hidden on mobile */
+			.retold-remote-collections-wrap,
+			.retold-remote-collections-wrap.collapsed
+			{
+				display: none !important;
+				height: 0 !important;
+			}
 		}
 	`,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
 				<div id="ContentEditor-TopBar-Container"></div>
