@@ -265,6 +265,71 @@ const _ViewConfiguration =
 			display: none;
 		}
 
+		/* ---- Favorites Pane ---- */
+		.retold-remote-favorites-item
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 12px;
+			border-bottom: 1px solid var(--retold-border);
+			cursor: pointer;
+			transition: background 0.15s;
+			min-height: 36px;
+		}
+		.retold-remote-favorites-item:hover
+		{
+			background: var(--retold-bg-hover);
+		}
+		.retold-remote-favorites-item-icon
+		{
+			flex-shrink: 0;
+			display: inline-flex;
+			align-items: center;
+		}
+		.retold-remote-favorites-item-name
+		{
+			flex: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-favorites-item-remove
+		{
+			flex-shrink: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 24px;
+			height: 24px;
+			border: none;
+			border-radius: 4px;
+			background: transparent;
+			color: var(--retold-text-dim);
+			font-size: 0.82rem;
+			cursor: pointer;
+			opacity: 0;
+			transition: opacity 0.15s, color 0.15s, background 0.15s;
+		}
+		.retold-remote-favorites-item:hover .retold-remote-favorites-item-remove
+		{
+			opacity: 1;
+		}
+		.retold-remote-favorites-item-remove:hover
+		{
+			color: #e74c3c;
+			background: rgba(231, 76, 60, 0.15);
+		}
+		.retold-remote-favorites-empty
+		{
+			padding: 24px 16px;
+			text-align: center;
+			color: var(--retold-text-dim);
+			font-size: 0.82rem;
+		}
+
 		/* ---- Right-side Collections Panel ---- */
 		.retold-remote-collections-wrap
 		{
@@ -420,10 +485,14 @@ const _ViewConfiguration =
 						<div class="content-editor-sidebar-inner">
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
+								<button class="content-editor-sidebar-tab" data-tab="favorites" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('favorites')">Favorites</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
 								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
 							<div class="content-editor-sidebar-pane" data-pane="files" id="ContentEditor-Sidebar-Container"></div>
+							<div class="content-editor-sidebar-pane" data-pane="favorites" id="RetoldRemote-Favorites-Container" style="display:none">
+								<div id="RetoldRemote-Favorites-Body"></div>
+							</div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
@@ -598,6 +667,12 @@ class RetoldRemoteLayoutView extends libPictView
 			}
 		}
 
+		// Favorites tab: render the favorites list
+		if (pTab === 'favorites')
+		{
+			this.renderFavoritesList();
+		}
+
 		// Collections tab: move the collections container into the mobile pane
 		if (pTab === 'collections')
 		{
@@ -753,6 +828,60 @@ class RetoldRemoteLayoutView extends libPictView
 		{
 			tmpManager.togglePanel();
 		}
+	}
+
+	/**
+	 * Render the favorites list into the Favorites sidebar pane.
+	 */
+	renderFavoritesList()
+	{
+		let tmpBody = document.getElementById('RetoldRemote-Favorites-Body');
+		if (!tmpBody)
+		{
+			return;
+		}
+
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpCollection = tmpRemote.FavoritesCollection;
+		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
+		let tmpSelf = this;
+
+		if (!tmpCollection || !Array.isArray(tmpCollection.Items) || tmpCollection.Items.length === 0)
+		{
+			tmpBody.innerHTML = '<div class="retold-remote-favorites-empty">'
+				+ '<div style="font-size:1.5rem; margin-bottom:8px; opacity:0.4;">\u2661</div>'
+				+ 'No favorites yet.<br>Tap \u2661 or press <b>h</b> to favorite files.'
+				+ '</div>';
+			return;
+		}
+
+		let tmpHTML = '';
+
+		for (let i = 0; i < tmpCollection.Items.length; i++)
+		{
+			let tmpItem = tmpCollection.Items[i];
+			let tmpPath = tmpItem.Path || '';
+			let tmpName = tmpPath.split('/').pop() || tmpPath;
+			let tmpExt = tmpName.lastIndexOf('.') >= 0 ? tmpName.substring(tmpName.lastIndexOf('.')) : '';
+
+			// Get icon for the file
+			let tmpIcon = '';
+			if (tmpIconProvider)
+			{
+				tmpIcon = tmpIconProvider.getIconForEntry({ Type: tmpItem.Type === 'folder' ? 'folder' : 'file', Extension: tmpExt }, 16);
+			}
+
+			// Escape single quotes in path for onclick handlers
+			let tmpEscapedPath = tmpPath.replace(/'/g, "\\'");
+
+			tmpHTML += '<div class="retold-remote-favorites-item" onclick="pict.PictApplication.navigateToFile(\'' + tmpEscapedPath + '\')">';
+			tmpHTML += '<span class="retold-remote-favorites-item-icon">' + tmpIcon + '</span>';
+			tmpHTML += '<span class="retold-remote-favorites-item-name" title="' + tmpPath + '">' + tmpName + '</span>';
+			tmpHTML += '<button class="retold-remote-favorites-item-remove" onclick="event.stopPropagation(); pict.providers[\'RetoldRemote-CollectionManager\'].toggleFavorite(\'' + tmpEscapedPath + '\')" title="Remove from favorites">\u00d7</button>';
+			tmpHTML += '</div>';
+		}
+
+		tmpBody.innerHTML = tmpHTML;
 	}
 
 	/**

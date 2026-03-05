@@ -13,6 +13,8 @@ const libProviderToastNotification = require('./providers/Pict-Provider-ToastNot
 const libProviderCollectionManager = require('./providers/Pict-Provider-CollectionManager.js');
 const libProviderAISortManager = require('./providers/Pict-Provider-AISortManager.js');
 
+const libExtensionMaps = require('./RetoldRemote-ExtensionMaps.js');
+
 // Views (replace parent views)
 const libViewLayout = require('./views/PictView-Remote-Layout.js');
 const libViewTopBar = require('./views/PictView-Remote-TopBar.js');
@@ -149,6 +151,11 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			BrowsingCollection: false,		// true when viewer is navigating collection items
 			BrowsingCollectionIndex: -1,	// index into ActiveCollection.Items
 
+			// Favorites
+			FavoritesGUID: null,
+			FavoritesCollection: null,
+			FavoritesPathSet: {},			// path → itemID for O(1) favorited-state checks
+
 			// AI Sort settings
 			AISortSettings:
 			{
@@ -206,11 +213,14 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		// Render the collections panel (starts collapsed)
 		this.pict.views['RetoldRemote-CollectionsPanel'].render();
 
-		// Fetch collections list
+		// Fetch collections list and ensure favorites collection exists
 		let tmpCollManager = this.pict.providers['RetoldRemote-CollectionManager'];
 		if (tmpCollManager)
 		{
-			tmpCollManager.fetchCollections();
+			tmpCollManager.fetchCollections(() =>
+			{
+				tmpCollManager.ensureFavoritesCollection();
+			});
 		}
 
 		// Update the collections button icon
@@ -306,19 +316,17 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	}
 
 	/**
-	 * Override _getMediaType to add document category.
+	 * Override _getMediaType to use comprehensive extension maps.
+	 *
+	 * The parent class has a hardcoded subset of video/audio/image extensions.
+	 * We use RetoldRemote-ExtensionMaps which covers many more formats
+	 * (mpg, mpeg, ts, mts, 3gp, heic, etc.).
 	 *
 	 * @param {string} pExtension - Lowercase extension without dot
-	 * @returns {string} 'image', 'video', 'audio', 'document', or 'other'
+	 * @returns {string} 'image', 'video', 'audio', 'document', 'text', or 'other'
 	 */
 	_getMediaType(pExtension)
 	{
-		let tmpDocumentExtensions = { 'pdf': true, 'epub': true, 'mobi': true };
-		if (tmpDocumentExtensions[pExtension])
-		{
-			return 'document';
-		}
-
 		let tmpTextExtensions =
 		{
 			'js': true, 'mjs': true, 'cjs': true, 'ts': true, 'tsx': true, 'jsx': true,
@@ -338,7 +346,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			return 'text';
 		}
 
-		return super._getMediaType(pExtension);
+		// Use the comprehensive extension maps (covers mpg, mpeg, ts, heic, etc.)
+		return libExtensionMaps.getCategory(pExtension);
 	}
 
 	/**
@@ -409,6 +418,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		if (tmpTopBar)
 		{
 			tmpTopBar.updateInfo();
+			if (typeof tmpTopBar.updateFavoritesIcon === 'function')
+			{
+				tmpTopBar.updateFavoritesIcon();
+			}
 		}
 	}
 
@@ -447,6 +460,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		if (tmpTopBar)
 		{
 			tmpTopBar.updateInfo();
+			if (typeof tmpTopBar.updateFavoritesIcon === 'function')
+			{
+				tmpTopBar.updateFavoritesIcon();
+			}
 		}
 	}
 
@@ -758,6 +775,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				CollectionsPanelOpen: tmpRemote.CollectionsPanelOpen,
 				CollectionsPanelWidth: tmpRemote.CollectionsPanelWidth,
 				LastUsedCollectionGUID: tmpRemote.LastUsedCollectionGUID,
+				FavoritesGUID: tmpRemote.FavoritesGUID,
 				AISortSettings: tmpRemote.AISortSettings
 			};
 			localStorage.setItem('retold-remote-settings', JSON.stringify(tmpSettings));
@@ -806,6 +824,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.CollectionsPanelOpen) === 'boolean') tmpRemote.CollectionsPanelOpen = tmpSettings.CollectionsPanelOpen;
 				if (tmpSettings.CollectionsPanelWidth) tmpRemote.CollectionsPanelWidth = tmpSettings.CollectionsPanelWidth;
 				if (tmpSettings.LastUsedCollectionGUID) tmpRemote.LastUsedCollectionGUID = tmpSettings.LastUsedCollectionGUID;
+				if (tmpSettings.FavoritesGUID) tmpRemote.FavoritesGUID = tmpSettings.FavoritesGUID;
 				if (tmpSettings.AISortSettings && typeof tmpSettings.AISortSettings === 'object')
 				{
 					if (tmpSettings.AISortSettings.AIEndpoint) tmpRemote.AISortSettings.AIEndpoint = tmpSettings.AISortSettings.AIEndpoint;

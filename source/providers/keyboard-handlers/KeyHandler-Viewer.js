@@ -191,6 +191,17 @@ function handleViewerKey(pGalleryNav, pEvent)
 			pEvent.preventDefault();
 			pGalleryNav.switchViewerType('text');
 			break;
+
+		case 'h':
+			pEvent.preventDefault();
+			{
+				let tmpFavCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpFavCollManager)
+				{
+					tmpFavCollManager.toggleFavorite();
+				}
+			}
+			break;
 	}
 }
 

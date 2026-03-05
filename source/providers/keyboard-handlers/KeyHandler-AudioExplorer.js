@@ -82,6 +82,17 @@ function handleAudioExplorerKey(pGalleryNav, pEvent)
 				}
 			}
 			break;
+
+		case 'h':
+			pEvent.preventDefault();
+			{
+				let tmpFavCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+				if (tmpFavCollManager)
+				{
+					tmpFavCollManager.toggleFavorite();
+				}
+			}
+			break;
 	}
 }
 

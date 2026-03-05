@@ -252,6 +252,15 @@ const _ViewConfiguration =
 		{
 			font-size: 0.72rem;
 		}
+		.retold-remote-topbar-favorites-btn
+		{
+			font-size: 0.82rem;
+		}
+		.retold-remote-topbar-favorites-btn.is-favorited
+		{
+			color: #e74c3c;
+			border-color: #e74c3c;
+		}
 		.retold-remote-topbar-collections-btn.panel-open
 		{
 			color: var(--retold-accent);
@@ -405,6 +414,7 @@ const _ViewConfiguration =
 					<div class="retold-remote-topbar-actions">
 						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">Ai</button>
 						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">&#9733;</button>
+						<button class="retold-remote-topbar-btn retold-remote-topbar-favorites-btn" id="RetoldRemote-TopBar-FavoritesBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFavorite()" title="Toggle favorite (h)">&#9825;</button>
 						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
 						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
 					</div>
@@ -437,6 +447,7 @@ class RetoldRemoteTopBarView extends libPictView
 		this.updateDFToggleIcon();
 		this.updateLocation();
 		this.updateInfo();
+		this.updateFavoritesIcon();
 	}
 
 	/**
@@ -900,6 +911,46 @@ class RetoldRemoteTopBarView extends libPictView
 			{
 				tmpBtn.innerHTML = tmpIconProvider.getIcon('bookmark', 16);
 			}
+		}
+	}
+
+	// -- Favorites --------------------------------------------------------
+
+	/**
+	 * Toggle the current file in/out of favorites.
+	 */
+	toggleFavorite()
+	{
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpManager)
+		{
+			tmpManager.toggleFavorite();
+		}
+	}
+
+	/**
+	 * Update the favorites heart button to reflect current favorited state.
+	 */
+	updateFavoritesIcon()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-FavoritesBtn');
+		if (!tmpBtn)
+		{
+			return;
+		}
+
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpManager && tmpManager.isFavorited())
+		{
+			tmpBtn.classList.add('is-favorited');
+			tmpBtn.innerHTML = '\u2665'; // ♥ filled heart
+			tmpBtn.title = 'Remove from favorites (h)';
+		}
+		else
+		{
+			tmpBtn.classList.remove('is-favorited');
+			tmpBtn.innerHTML = '\u2661'; // ♡ outline heart
+			tmpBtn.title = 'Add to favorites (h)';
 		}
 	}
 

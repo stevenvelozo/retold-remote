@@ -158,7 +158,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Collection created: ' + (pData.Name || pName));
+					tmpToast.showToast('Collection created: ' + (pData.Name || pName));
 				}
 
 				return tmpCallback(null, pData);
@@ -255,7 +255,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Collection deleted');
+					tmpToast.showToast('Collection deleted');
 				}
 
 				return tmpCallback(null);
@@ -310,7 +310,7 @@ class CollectionManagerProvider extends libPictProvider
 				if (tmpToast)
 				{
 					let tmpCollectionName = pData.Name || 'collection';
-					tmpToast.show('Added ' + pItems.length + ' item' + (pItems.length > 1 ? 's' : '') + ' to ' + tmpCollectionName);
+					tmpToast.showToast('Added ' + pItems.length + ' item' + (pItems.length > 1 ? 's' : '') + ' to ' + tmpCollectionName);
 				}
 
 				return tmpCallback(null, pData);
@@ -443,7 +443,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Copied ' + pItemIDs.length + ' item' + (pItemIDs.length > 1 ? 's' : ''));
+					tmpToast.showToast('Copied ' + pItemIDs.length + ' item' + (pItemIDs.length > 1 ? 's' : ''));
 				}
 
 				return tmpCallback(null, pData);
@@ -561,6 +561,264 @@ class CollectionManagerProvider extends libPictProvider
 		if (tmpRemote.CollectionsPanelOpen)
 		{
 			this.togglePanel();
+		}
+	}
+
+	// -- Favorites Methods ------------------------------------------------
+
+	/**
+	 * Ensure the favorites collection exists.
+	 * If FavoritesGUID is set, loads it.  Otherwise searches existing
+	 * collections for CollectionType === 'favorites'.  If not found,
+	 * creates one with a well-known GUID.
+	 *
+	 * @param {Function} [fCallback] - Optional callback(pError)
+	 */
+	ensureFavoritesCollection(fCallback)
+	{
+		let tmpSelf = this;
+		let tmpCallback = (typeof fCallback === 'function') ? fCallback : () => {};
+		let tmpRemote = this._getRemote();
+
+		// If we already have a GUID, just load it
+		if (tmpRemote.FavoritesGUID)
+		{
+			return this._loadFavoritesCollection(tmpRemote.FavoritesGUID, tmpCallback);
+		}
+
+		// Search existing collections for a favorites-type collection
+		let tmpCollections = tmpRemote.Collections || [];
+		for (let i = 0; i < tmpCollections.length; i++)
+		{
+			if (tmpCollections[i].CollectionType === 'favorites')
+			{
+				tmpRemote.FavoritesGUID = tmpCollections[i].GUID;
+				this.pict.PictApplication.saveSettings();
+				return this._loadFavoritesCollection(tmpCollections[i].GUID, tmpCallback);
+			}
+		}
+
+		// Not found — create one
+		let tmpGUID = 'favorites-default';
+
+		fetch('/api/collections/' + encodeURIComponent(tmpGUID),
+		{
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ Name: 'Favorites', CollectionType: 'favorites', Icon: 'heart' })
+		})
+			.then((pResponse) => pResponse.json())
+			.then((pData) =>
+			{
+				tmpRemote.FavoritesGUID = tmpGUID;
+				tmpSelf.pict.PictApplication.saveSettings();
+				tmpSelf._loadFavoritesCollection(tmpGUID, tmpCallback);
+			})
+			.catch((pError) =>
+			{
+				tmpSelf.log.error('Failed to create favorites collection: ' + pError.message);
+				return tmpCallback(pError);
+			});
+	}
+
+	/**
+	 * Load the favorites collection and rebuild the path set.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {Function} [fCallback] - Optional callback(pError)
+	 */
+	_loadFavoritesCollection(pGUID, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpCallback = (typeof fCallback === 'function') ? fCallback : () => {};
+
+		fetch('/api/collections/' + encodeURIComponent(pGUID))
+			.then((pResponse) =>
+			{
+				if (!pResponse.ok)
+				{
+					throw new Error('Favorites collection not found');
+				}
+				return pResponse.json();
+			})
+			.then((pData) =>
+			{
+				let tmpRemote = tmpSelf._getRemote();
+				tmpRemote.FavoritesCollection = pData;
+				tmpSelf._rebuildFavoritesPathSet(pData);
+
+				// Update heart icon in topbar
+				let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
+				if (tmpTopBar && typeof tmpTopBar.updateFavoritesIcon === 'function')
+				{
+					tmpTopBar.updateFavoritesIcon();
+				}
+
+				// Update favorites pane if visible
+				tmpSelf._renderFavoritesPane();
+
+				return tmpCallback(null);
+			})
+			.catch((pError) =>
+			{
+				tmpSelf.log.error('Failed to load favorites collection: ' + pError.message);
+				return tmpCallback(pError);
+			});
+	}
+
+	/**
+	 * Rebuild the FavoritesPathSet from a collection's Items array.
+	 *
+	 * @param {Object} pCollection - Collection object with Items array
+	 */
+	_rebuildFavoritesPathSet(pCollection)
+	{
+		let tmpRemote = this._getRemote();
+		tmpRemote.FavoritesPathSet = {};
+
+		if (!pCollection || !Array.isArray(pCollection.Items))
+		{
+			return;
+		}
+
+		for (let i = 0; i < pCollection.Items.length; i++)
+		{
+			let tmpItem = pCollection.Items[i];
+			if (tmpItem.Path)
+			{
+				tmpRemote.FavoritesPathSet[tmpItem.Path] = tmpItem.ID;
+			}
+		}
+	}
+
+	/**
+	 * Check if a file path is in favorites.
+	 *
+	 * @param {string} [pPath] - File path (defaults to currently viewed file)
+	 * @returns {boolean} True if favorited
+	 */
+	isFavorited(pPath)
+	{
+		let tmpRemote = this._getRemote();
+		let tmpFilePath = pPath || this.pict.AppData.ContentEditor.CurrentFile;
+		return !!(tmpRemote.FavoritesPathSet[tmpFilePath]);
+	}
+
+	/**
+	 * Toggle a file in/out of favorites.
+	 *
+	 * @param {string} [pPath] - File path (defaults to currently viewed file)
+	 */
+	toggleFavorite(pPath)
+	{
+		let tmpSelf = this;
+		let tmpRemote = this._getRemote();
+		let tmpFilePath = pPath || this.pict.AppData.ContentEditor.CurrentFile;
+
+		if (!tmpFilePath)
+		{
+			return;
+		}
+
+		if (!tmpRemote.FavoritesGUID)
+		{
+			// Favorites collection not ready yet
+			return;
+		}
+
+		if (this.isFavorited(tmpFilePath))
+		{
+			// Remove from favorites
+			let tmpItemID = tmpRemote.FavoritesPathSet[tmpFilePath];
+			this.removeItemFromCollection(tmpRemote.FavoritesGUID, tmpItemID, (pError, pData) =>
+			{
+				if (!pError && pData)
+				{
+					tmpRemote.FavoritesCollection = pData;
+					tmpSelf._rebuildFavoritesPathSet(pData);
+				}
+
+				// Update heart icon
+				let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
+				if (tmpTopBar && typeof tmpTopBar.updateFavoritesIcon === 'function')
+				{
+					tmpTopBar.updateFavoritesIcon();
+				}
+
+				tmpSelf._renderFavoritesPane();
+
+				let tmpToast = tmpSelf._getToast();
+				if (tmpToast)
+				{
+					tmpToast.showToast('Removed from favorites');
+				}
+			});
+		}
+		else
+		{
+			// Add to favorites — build item using same logic as addCurrentFileToCollection
+			let tmpItem =
+			{
+				Type: 'file',
+				Path: tmpFilePath,
+				Label: '',
+				Note: ''
+			};
+
+			// Detect archive subfile
+			let tmpArchiveMatch = tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);
+			if (tmpArchiveMatch)
+			{
+				tmpItem.Type = 'subfile';
+				tmpItem.ArchivePath = tmpArchiveMatch[1];
+			}
+
+			// Include hash if available
+			let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+			if (tmpProvider)
+			{
+				let tmpHash = tmpProvider.getHashForPath(tmpFilePath);
+				if (tmpHash)
+				{
+					tmpItem.Hash = tmpHash;
+				}
+			}
+
+			this.addItemsToCollection(tmpRemote.FavoritesGUID, [tmpItem], (pError, pData) =>
+			{
+				if (!pError && pData)
+				{
+					tmpRemote.FavoritesCollection = pData;
+					tmpSelf._rebuildFavoritesPathSet(pData);
+				}
+
+				// Update heart icon
+				let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
+				if (tmpTopBar && typeof tmpTopBar.updateFavoritesIcon === 'function')
+				{
+					tmpTopBar.updateFavoritesIcon();
+				}
+
+				tmpSelf._renderFavoritesPane();
+
+				let tmpToast = tmpSelf._getToast();
+				if (tmpToast)
+				{
+					tmpToast.showToast('Added to favorites');
+				}
+			});
+		}
+	}
+
+	/**
+	 * Render the favorites pane if the favorites tab is active.
+	 */
+	_renderFavoritesPane()
+	{
+		let tmpLayoutView = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayoutView && typeof tmpLayoutView.renderFavoritesList === 'function')
+		{
+			tmpLayoutView.renderFavoritesList();
 		}
 	}
 
@@ -1018,7 +1276,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Sort plan created: ' + (pData.Name || pName));
+					tmpToast.showToast('Sort plan created: ' + (pData.Name || pName));
 				}
 
 				return tmpCallback(null, pData);
@@ -1068,11 +1326,11 @@ class CollectionManagerProvider extends libPictProvider
 				{
 					if (pData.TotalFailed > 0)
 					{
-						tmpToast.show('Moved ' + pData.TotalMoved + ' files (' + pData.TotalFailed + ' failed)');
+						tmpToast.showToast('Moved ' + pData.TotalMoved + ' files (' + pData.TotalFailed + ' failed)');
 					}
 					else
 					{
-						tmpToast.show('Successfully moved ' + pData.TotalMoved + ' files');
+						tmpToast.showToast('Successfully moved ' + pData.TotalMoved + ' files');
 					}
 				}
 
@@ -1084,7 +1342,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Failed to execute operations: ' + pError.message);
+					tmpToast.showToast('Failed to execute operations: ' + pError.message);
 				}
 				return tmpCallback(pError);
 			});
@@ -1108,7 +1366,7 @@ class CollectionManagerProvider extends libPictProvider
 			let tmpToast = tmpSelf._getToast();
 			if (tmpToast)
 			{
-				tmpToast.show('No batch to undo');
+				tmpToast.showToast('No batch to undo');
 			}
 			return tmpCallback(new Error('No batch to undo'));
 		}
@@ -1147,7 +1405,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Undo complete: ' + pData.TotalReversed + ' files restored');
+					tmpToast.showToast('Undo complete: ' + pData.TotalReversed + ' files restored');
 				}
 
 				return tmpCallback(null, pData);
@@ -1158,7 +1416,7 @@ class CollectionManagerProvider extends libPictProvider
 				let tmpToast = tmpSelf._getToast();
 				if (tmpToast)
 				{
-					tmpToast.show('Failed to undo: ' + pError.message);
+					tmpToast.showToast('Failed to undo: ' + pError.message);
 				}
 				return tmpCallback(pError);
 			});
