@@ -13,12 +13,11 @@
 		"html/",
 		"css/",
 		"docs/",
-		"server.js",
 		"README.md",
 		"LICENSE"
 	],
 	"scripts": {
-		"start": "node server.js",
+		"start": "node source/cli/RetoldRemote-CLI-Run.js serve",
 		"build": "npx quack build && npx quack copy",
 		"test": "npx mocha -u tdd --exit --timeout 30000 test/*_test.js",
 		"prepack": "npm run build"
@@ -31,14 +30,15 @@
 		"fable-serviceproviderbase": "^3.0.19",
 		"orator": "^6.0.3",
 		"orator-serviceserver-restify": "^2.0.9",
+		"parime": "^1.0.3",
 		"pict": "^1.0.356",
 		"pict-application": "^1.0.33",
+		"pict-docuserve": "^0.0.30",
 		"pict-provider": "^1.0.12",
 		"pict-section-code": "^1.0.3",
 		"pict-section-filebrowser": "^0.0.2",
 		"pict-service-commandlineutility": "^1.0.19",
 		"pict-view": "^1.0.67",
-		"pict-docuserve": "^0.0.30",
 		"retold-content-system": "^1.0.8",
 		"yauzl": "^3.2.0"
 	},

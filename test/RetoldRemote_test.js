@@ -45,37 +45,68 @@ suite
 
 		test
 		(
-			'ThumbnailCache builds deterministic keys',
+			'ThumbnailCache builds deterministic keys with folder co-location',
 			(fDone) =>
 			{
 				let libThumbnailCache = require('../source/server/RetoldRemote-ThumbnailCache.js');
+				let libFable = require('fable');
+				let libParimeStorage = require('parime/storage');
 				let libPath = require('path');
 				let libOs = require('os');
 
 				let tmpCachePath = libPath.join(libOs.tmpdir(), '.retold-remote-test-cache-' + Date.now());
-				let tmpCache = new libThumbnailCache(tmpCachePath);
+				let tmpFable = new libFable(
+				{
+					ParimeBinaryStorageRoot: tmpCachePath,
+					ParimeBinarySharding: { Enabled: true, SegmentSize: 2, Depth: 4 }
+				});
 
-				let tmpKey1 = tmpCache.buildKey('photo.jpg', 1700000000000, 200, 200);
-				let tmpKey2 = tmpCache.buildKey('photo.jpg', 1700000000000, 200, 200);
-				let tmpKey3 = tmpCache.buildKey('photo.jpg', 1700000000001, 200, 200);
+				tmpFable.serviceManager.addServiceType('ParimeStorage', libParimeStorage);
+				let tmpParimeStorage = tmpFable.serviceManager.instantiateServiceProvider('ParimeStorage');
 
-				libAssert.strictEqual(tmpKey1, tmpKey2, 'Same inputs should produce same key');
-				libAssert.notStrictEqual(tmpKey1, tmpKey3, 'Different mtime should produce different key');
+				tmpParimeStorage.initialize(
+					(pError) =>
+					{
+						libAssert.ok(!pError, 'ParimeStorage should initialize without error');
 
-				// Test put and get
-				let tmpBuffer = Buffer.from('fake-thumbnail-data');
-				tmpCache.put(tmpKey1, tmpBuffer, 'webp');
-				let tmpCachedPath = tmpCache.get(tmpKey1, 'webp');
-				libAssert.ok(tmpCachedPath, 'Should find cached thumbnail');
+						let tmpCache = new libThumbnailCache(tmpFable);
 
-				let tmpMissPath = tmpCache.get(tmpKey3, 'webp');
-				libAssert.strictEqual(tmpMissPath, null, 'Should not find uncached thumbnail');
+						let tmpKey1 = tmpCache.buildKey('albums/vacation/photo.jpg', 1700000000000, 200, 200);
+						let tmpKey2 = tmpCache.buildKey('albums/vacation/photo.jpg', 1700000000000, 200, 200);
+						let tmpKey3 = tmpCache.buildKey('albums/vacation/photo.jpg', 1700000000001, 200, 200);
 
-				// Clean up
-				let libFs = require('fs');
-				libFs.rmSync(tmpCachePath, { recursive: true, force: true });
+						libAssert.strictEqual(tmpKey1, tmpKey2, 'Same inputs should produce same key');
+						libAssert.notStrictEqual(tmpKey1, tmpKey3, 'Different mtime should produce different key');
 
-				return fDone();
+						// Key should contain a slash (folderHash/fileHash)
+						libAssert.ok(tmpKey1.indexOf('/') > 0, 'Key should have folderHash/fileHash structure');
+
+						// Files in the same folder should share the same folder hash prefix
+						let tmpKeyOther = tmpCache.buildKey('albums/vacation/sunset.png', 1700000000000, 200, 200);
+						let tmpFolderHash1 = tmpKey1.split('/')[0];
+						let tmpFolderHashOther = tmpKeyOther.split('/')[0];
+						libAssert.strictEqual(tmpFolderHash1, tmpFolderHashOther, 'Same folder should produce same folder hash');
+
+						// Files in different folders should have different folder hashes
+						let tmpKeyDiffFolder = tmpCache.buildKey('albums/birthday/photo.jpg', 1700000000000, 200, 200);
+						let tmpFolderHashDiff = tmpKeyDiffFolder.split('/')[0];
+						libAssert.notStrictEqual(tmpFolderHash1, tmpFolderHashDiff, 'Different folders should produce different folder hashes');
+
+						// Test put and get
+						let tmpBuffer = Buffer.from('fake-thumbnail-data');
+						tmpCache.put(tmpKey1, tmpBuffer, 'webp');
+						let tmpCachedPath = tmpCache.get(tmpKey1, 'webp');
+						libAssert.ok(tmpCachedPath, 'Should find cached thumbnail');
+
+						let tmpMissPath = tmpCache.get(tmpKey3, 'webp');
+						libAssert.strictEqual(tmpMissPath, null, 'Should not find uncached thumbnail');
+
+						// Clean up
+						let libFs = require('fs');
+						libFs.rmSync(tmpCachePath, { recursive: true, force: true });
+
+						return fDone();
+					});
 			}
 		);
 

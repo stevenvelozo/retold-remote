@@ -11,16 +11,16 @@
  * server setup) so that we control all routes and avoid conflicts with editor-
  * specific endpoints (save, upload) that aren't needed here.
  *
+ * Cache storage is managed by Parime's BinaryStorage with configurable
+ * hash-based subfolder sharding to avoid huge flat directories.
+ *
  * @param {object}   pOptions
  * @param {string}   pOptions.ContentPath          - Absolute path to the media folder to browse
  * @param {string}   pOptions.DistPath             - Absolute path to the built web-application folder
  * @param {number}   pOptions.Port                 - HTTP port
  * @param {boolean}  [pOptions.HashedFilenames]      - Enable hashed filenames mode
  * @param {string}   [pOptions.CacheRoot]            - Root cache directory (default: ./dist/retold-cache/)
- * @param {string}   [pOptions.CacheThumbnails]      - Override thumbnails cache directory
- * @param {string}   [pOptions.CacheArchives]        - Override archives cache directory
- * @param {string}   [pOptions.CacheVideoFrames]     - Override video-frames cache directory
- * @param {string}   [pOptions.CacheAudioWaveforms]  - Override audio-waveforms cache directory
+ * @param {string}   [pOptions.CacheServer]          - URL to a remote parime cache server
  * @param {Function} fCallback                     - Callback(pError, { Fable, Orator, Port })
  */
 
@@ -32,6 +32,9 @@ const libFable = require('fable');
 const libOrator = require('orator');
 const libOratorServiceServerRestify = require('orator-serviceserver-restify');
 const libFileBrowserService = require('pict-section-filebrowser').FileBrowserService;
+
+const libParimeStorage = require('parime/storage');
+const libRetoldRemoteParimeCache = require('../server/RetoldRemote-ParimeCache.js');
 
 const libRetoldRemoteMediaService = require('../server/RetoldRemote-MediaService.js');
 const libRetoldRemotePathRegistry = require('../server/RetoldRemote-PathRegistry.js');
@@ -46,15 +49,32 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	let tmpContentPath = pOptions.ContentPath;
 	let tmpDistFolder = pOptions.DistPath;
 	let tmpPort = pOptions.Port;
-	let tmpHashedFilenames = !!(pOptions.HashedFilenames || process.env.RETOLD_HASHED_FILENAMES === 'true');
+	let tmpHashedFilenames = (pOptions.HashedFilenames !== false) && (process.env.RETOLD_HASHED_FILENAMES !== 'false');
+
+	// --- Resolve cache root ---
+	let tmpCacheRoot = pOptions.CacheRoot
+		|| libPath.resolve(process.cwd(), 'dist', 'retold-cache');
 
 	let tmpSettings =
 	{
 		Product: 'Retold-Remote',
 		ProductVersion: require('../../package.json').version,
 		APIServerPort: tmpPort,
-		ContentPath: tmpContentPath
+		ContentPath: tmpContentPath,
+		ParimeBinaryStorageRoot: tmpCacheRoot,
+		ParimeBinarySharding:
+		{
+			Enabled: true,
+			SegmentSize: 2,
+			Depth: 4
+		}
 	};
+
+	// If a remote cache server is specified, route cache operations over HTTP
+	if (pOptions.CacheServer)
+	{
+		tmpSettings.ParimeCacheServer = pOptions.CacheServer;
+	}
 
 	let tmpFable = new libFable(tmpSettings);
 
@@ -89,68 +109,56 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 		tmpFable.log.info('Hashed filenames mode: ENABLED');
 	}
 
-	// --- Resolve cache paths ---
-	// Default root: ./dist/retold-cache/ relative to process cwd.
-	// Individual overrides take precedence over root.
-	let tmpCacheRoot = pOptions.CacheRoot
-		|| libPath.resolve(process.cwd(), 'dist', 'retold-cache');
+	// --- Initialize Parime storage ---
+	tmpFable.serviceManager.addServiceType('ParimeStorage', libParimeStorage);
+	let tmpParimeStorage = tmpFable.serviceManager.instantiateServiceProvider('ParimeStorage');
 
-	let tmpCacheThumbnails = pOptions.CacheThumbnails
-		|| libPath.join(tmpCacheRoot, 'thumbnails');
-	let tmpCacheArchives = pOptions.CacheArchives
-		|| libPath.join(tmpCacheRoot, 'archives');
-	let tmpCacheVideoFrames = pOptions.CacheVideoFrames
-		|| libPath.join(tmpCacheRoot, 'video-frames');
-	let tmpCacheAudioWaveforms = pOptions.CacheAudioWaveforms
-		|| libPath.join(tmpCacheRoot, 'audio-waveforms');
-	let tmpCacheEbooks = pOptions.CacheEbooks
-		|| libPath.join(tmpCacheRoot, 'ebook-conversions');
+	tmpFable.serviceManager.addServiceType('RetoldRemoteParimeCache', libRetoldRemoteParimeCache);
+	let tmpParimeCache = tmpFable.serviceManager.instantiateServiceProvider('RetoldRemoteParimeCache');
 
-	tmpFable.log.info(`Cache root: ${tmpCacheRoot}`);
-	tmpFable.log.info(`  Thumbnails:       ${tmpCacheThumbnails}`);
-	tmpFable.log.info(`  Archives:         ${tmpCacheArchives}`);
-	tmpFable.log.info(`  Video frames:     ${tmpCacheVideoFrames}`);
-	tmpFable.log.info(`  Audio waveforms:  ${tmpCacheAudioWaveforms}`);
-	tmpFable.log.info(`  Ebook conversions: ${tmpCacheEbooks}`);
+	tmpParimeStorage.initialize(
+		(pStorageError) =>
+		{
+			if (pStorageError)
+			{
+				return fCallback(pStorageError);
+			}
 
-	// Set up the archive service
-	let tmpArchiveService = new libRetoldRemoteArchiveService(tmpFable,
-	{
-		ContentPath: tmpContentPath,
-		CachePath: tmpCacheArchives
-	});
+			tmpFable.log.info(`Cache storage: ${tmpParimeCache.isRemote ? 'REMOTE (' + pOptions.CacheServer + ')' : tmpCacheRoot}`);
 
-	// Set up the video frame service
-	let tmpVideoFrameService = new libRetoldRemoteVideoFrameService(tmpFable,
-	{
-		ContentPath: tmpContentPath,
-		CachePath: tmpCacheVideoFrames
-	});
+			// Set up the archive service
+			let tmpArchiveService = new libRetoldRemoteArchiveService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
 
-	// Set up the audio waveform service
-	let tmpAudioWaveformService = new libRetoldRemoteAudioWaveformService(tmpFable,
-	{
-		ContentPath: tmpContentPath,
-		CachePath: tmpCacheAudioWaveforms
-	});
+			// Set up the video frame service
+			let tmpVideoFrameService = new libRetoldRemoteVideoFrameService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
 
-	// Set up the ebook conversion service
-	let tmpEbookService = new libRetoldRemoteEbookService(tmpFable,
-	{
-		ContentPath: tmpContentPath,
-		CachePath: tmpCacheEbooks
-	});
+			// Set up the audio waveform service
+			let tmpAudioWaveformService = new libRetoldRemoteAudioWaveformService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
 
-	// Set up the media service
-	let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
-	{
-		ContentPath: tmpContentPath,
-		ThumbnailCachePath: tmpCacheThumbnails,
-		APIRoutePrefix: '/api/media',
-		PathRegistry: tmpPathRegistry
-	});
+			// Set up the ebook conversion service
+			let tmpEbookService = new libRetoldRemoteEbookService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
 
-	tmpOrator.initialize(
+			// Set up the media service
+			let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
+			{
+				ContentPath: tmpContentPath,
+				APIRoutePrefix: '/api/media',
+				PathRegistry: tmpPathRegistry
+			});
+
+			tmpOrator.initialize(
 		function ()
 		{
 			let tmpServiceServer = tmpOrator.serviceServer;
@@ -196,13 +204,11 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					{
 						Success: true,
 						HashedFilenames: tmpHashedFilenames,
-						CachePaths:
+						CacheStorage:
 						{
 							Root: tmpCacheRoot,
-							Thumbnails: tmpCacheThumbnails,
-							Archives: tmpCacheArchives,
-							VideoFrames: tmpCacheVideoFrames,
-							AudioWaveforms: tmpCacheAudioWaveforms
+							Remote: tmpParimeCache.isRemote,
+							Sharding: true
 						},
 						ArchiveSupport:
 						{
@@ -1030,10 +1036,12 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						VideoFrameService: tmpVideoFrameService,
 						AudioWaveformService: tmpAudioWaveformService,
 						PathRegistry: tmpPathRegistry,
+						ParimeCache: tmpParimeCache,
 						Port: tmpPort
 					});
 				});
 		});
+	});
 }
 
 module.exports = setupRetoldRemoteServer;

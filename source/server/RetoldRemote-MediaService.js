@@ -23,7 +23,6 @@ const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 const _DefaultServiceConfiguration =
 {
 	"ContentPath": ".",
-	"ThumbnailCachePath": null,
 	"APIRoutePrefix": "/api/media",
 	"DefaultThumbnailWidth": 200,
 	"DefaultThumbnailHeight": 200
@@ -48,12 +47,9 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
-		let tmpCachePath = this.options.ThumbnailCachePath
-			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'thumbnails');
-
 		this.toolDetector = new libToolDetector();
 		this.capabilities = this.toolDetector.detect();
-		this.thumbnailCache = new libThumbnailCache(tmpCachePath);
+		this.thumbnailCache = new libThumbnailCache(this.fable);
 		this.pathRegistry = this.options.PathRegistry || null;
 
 		this.fable.log.info(`Media Service: capabilities = ${JSON.stringify(this.capabilities)}`);

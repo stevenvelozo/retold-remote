@@ -47,16 +47,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
-		this.cachePath = this.options.CachePath
-			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'video-frames');
-
-		// Ensure cache directory exists
-		if (!libFs.existsSync(this.cachePath))
-		{
-			libFs.mkdirSync(this.cachePath, { recursive: true });
-		}
-
-		this.fable.log.info(`Video Frame Service: cache at ${this.cachePath}`);
+		this.fable.log.info('Video Frame Service: using ParimeBinaryStorage (category: video-frames)');
 	}
 
 	/**
@@ -75,7 +66,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	{
 		let tmpInput = `${pAbsPath}:${pMtimeMs}:${pFrameCount}:${pWidth}x${pHeight}`;
 		let tmpHash = libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
-		return libPath.join(this.cachePath, tmpHash);
+		return this.fable.ParimeBinaryStorage.resolvePath('video-frames', tmpHash);
 	}
 
 	/**
@@ -398,7 +389,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			return fCallback(new Error('Invalid cache key.'));
 		}
 
-		let tmpCacheDir = libPath.join(this.cachePath, pCacheKey);
+		let tmpCacheDir = this.fable.ParimeBinaryStorage.resolvePath('video-frames', pCacheKey);
 		if (!libFs.existsSync(tmpCacheDir))
 		{
 			return fCallback(new Error('Cache directory not found. Extract frames first.'));
@@ -466,11 +457,12 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			return null;
 		}
 
-		let tmpPath = libPath.join(this.cachePath, pCacheKey, pFilename);
+		let tmpCacheDir = this.fable.ParimeBinaryStorage.resolvePath('video-frames', pCacheKey);
+		let tmpPath = libPath.join(tmpCacheDir, pFilename);
 
-		// Double-check it's under our cache dir
+		// Double-check it's under the storage root
 		let tmpResolved = libPath.resolve(tmpPath);
-		if (!tmpResolved.startsWith(this.cachePath))
+		if (!tmpResolved.startsWith(this.fable.ParimeBinaryStorage.storageRoot))
 		{
 			return null;
 		}

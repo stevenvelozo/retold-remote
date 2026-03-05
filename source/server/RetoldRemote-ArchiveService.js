@@ -59,8 +59,7 @@ const _MimeTypes =
 
 const _DefaultServiceConfiguration =
 {
-	"ContentPath": ".",
-	"CachePath": null
+	"ContentPath": "."
 };
 
 class RetoldRemoteArchiveService extends libFableServiceProviderBase
@@ -81,15 +80,6 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
-
-		this.archiveCachePath = this.options.CachePath
-			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'archives');
-
-		// Ensure cache directory exists
-		if (!libFs.existsSync(this.archiveCachePath))
-		{
-			libFs.mkdirSync(this.archiveCachePath, { recursive: true });
-		}
 
 		// Detect 7z availability
 		let tmpDetector = new libToolDetector();
@@ -246,7 +236,7 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 
 		let tmpInput = `${pArchiveAbsPath}:${tmpMtime}`;
 		let tmpHash = libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
-		let tmpDir = libPath.join(this.archiveCachePath, tmpHash);
+		let tmpDir = this.fable.ParimeBinaryStorage.resolvePath('archive-cache', tmpHash);
 
 		if (!libFs.existsSync(tmpDir))
 		{

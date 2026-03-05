@@ -23,7 +23,6 @@ const libChildProcess = require('child_process');
 const _DefaultServiceConfiguration =
 {
 	"ContentPath": ".",
-	"CachePath": null,
 	"DefaultPeakCount": 2000,
 	"DefaultSegmentFormat": "mp3",
 	"MaxSegmentDuration": 600
@@ -48,19 +47,10 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
-		this.cachePath = this.options.CachePath
-			|| libPath.join(process.cwd(), 'dist', 'retold-cache', 'audio-waveforms');
-
-		// Ensure cache directory exists
-		if (!libFs.existsSync(this.cachePath))
-		{
-			libFs.mkdirSync(this.cachePath, { recursive: true });
-		}
-
 		// Detect audiowaveform availability
 		this.hasAudiowaveform = this._detectCommand('audiowaveform --version');
 
-		this.fable.log.info(`Audio Waveform Service: cache at ${this.cachePath}`);
+		this.fable.log.info('Audio Waveform Service: using ParimeBinaryStorage (categories: audio-waveforms, audio-segments)');
 		this.fable.log.info(`  audiowaveform tool: ${this.hasAudiowaveform ? 'available' : 'not found (using ffprobe fallback)'}`);
 	}
 
@@ -95,7 +85,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 	{
 		let tmpInput = `waveform:${pAbsPath}:${pMtimeMs}:${pPeakCount}`;
 		let tmpHash = libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
-		return libPath.join(this.cachePath, tmpHash);
+		return this.fable.ParimeBinaryStorage.resolvePath('audio-waveforms', tmpHash);
 	}
 
 	/**
@@ -112,7 +102,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 	{
 		let tmpInput = `segment:${pAbsPath}:${pMtimeMs}:${pStart}:${pEnd}:${pFormat}`;
 		let tmpHash = libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
-		return libPath.join(this.cachePath, tmpHash);
+		return this.fable.ParimeBinaryStorage.resolvePath('audio-segments', tmpHash);
 	}
 
 	/**
@@ -652,11 +642,12 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 			return null;
 		}
 
-		let tmpPath = libPath.join(this.cachePath, pCacheKey, pFilename);
+		let tmpCacheDir = this.fable.ParimeBinaryStorage.resolvePath('audio-segments', pCacheKey);
+		let tmpPath = libPath.join(tmpCacheDir, pFilename);
 
-		// Double-check it's under our cache dir
+		// Double-check it's under the storage root
 		let tmpResolved = libPath.resolve(tmpPath);
-		if (!tmpResolved.startsWith(this.cachePath))
+		if (!tmpResolved.startsWith(this.fable.ParimeBinaryStorage.storageRoot))
 		{
 			return null;
 		}

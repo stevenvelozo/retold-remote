@@ -19,18 +19,12 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			{ Name: '-p, --port [port]', Description: 'Port to serve on (defaults to random 7000-7999).', Default: '0' });
 
 		this.options.CommandOptions.push(
-			{ Name: '-H, --hashed-filenames', Description: 'Enable hashed filenames mode (short hashes instead of full paths in URLs).', Default: false });
+			{ Name: '--no-hash', Description: 'Disable hashed filenames mode (use plain paths in URLs instead of short hashes).', Default: false });
 
 		this.options.CommandOptions.push(
 			{ Name: '-c, --cache-path [path]', Description: 'Root cache directory (defaults to ./dist/retold-cache/).', Default: '' });
 		this.options.CommandOptions.push(
-			{ Name: '--cache-thumbnails [path]', Description: 'Override thumbnails cache directory.', Default: '' });
-		this.options.CommandOptions.push(
-			{ Name: '--cache-archives [path]', Description: 'Override archives cache directory.', Default: '' });
-		this.options.CommandOptions.push(
-			{ Name: '--cache-video-frames [path]', Description: 'Override video-frames cache directory.', Default: '' });
-		this.options.CommandOptions.push(
-			{ Name: '--cache-audio-waveforms [path]', Description: 'Override audio-waveforms cache directory.', Default: '' });
+			{ Name: '--cache-server [url]', Description: 'URL of a remote parime cache server (e.g. http://host:9999).', Default: '' });
 
 		this.addCommand();
 	}
@@ -60,24 +54,12 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		let tmpSelf = this;
 		let tmpSetupServer = require('../RetoldRemote-Server-Setup.js');
 
-		let tmpHashedFilenames = !!(this.CommandOptions.hashedFilenames);
+		let tmpHashedFilenames = !(this.CommandOptions.noHash);
 
-		// Resolve cache paths: individual overrides > root override > default
 		let tmpCacheRoot = this.CommandOptions.cachePath
 			? libPath.resolve(this.CommandOptions.cachePath)
 			: null;
-		let tmpCacheThumbnails = this.CommandOptions.cacheThumbnails
-			? libPath.resolve(this.CommandOptions.cacheThumbnails)
-			: null;
-		let tmpCacheArchives = this.CommandOptions.cacheArchives
-			? libPath.resolve(this.CommandOptions.cacheArchives)
-			: null;
-		let tmpCacheVideoFrames = this.CommandOptions.cacheVideoFrames
-			? libPath.resolve(this.CommandOptions.cacheVideoFrames)
-			: null;
-		let tmpCacheAudioWaveforms = this.CommandOptions.cacheAudioWaveforms
-			? libPath.resolve(this.CommandOptions.cacheAudioWaveforms)
-			: null;
+		let tmpCacheServer = this.CommandOptions.cacheServer || null;
 
 		tmpSetupServer(
 			{
@@ -86,10 +68,7 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 				Port: tmpPort,
 				HashedFilenames: tmpHashedFilenames,
 				CacheRoot: tmpCacheRoot,
-				CacheThumbnails: tmpCacheThumbnails,
-				CacheArchives: tmpCacheArchives,
-				CacheVideoFrames: tmpCacheVideoFrames,
-				CacheAudioWaveforms: tmpCacheAudioWaveforms
+				CacheServer: tmpCacheServer
 			},
 			function (pError, pServerInfo)
 			{
