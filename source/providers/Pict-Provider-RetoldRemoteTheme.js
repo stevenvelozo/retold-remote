@@ -759,6 +759,58 @@ class RetoldRemoteThemeProvider extends libPictProvider
 				PdfText: '#CC4422'
 			}
 		});
+
+		// ===================================================================
+		// DEBUG THEME (unique color per container for layout debugging)
+		// ===================================================================
+
+		tmpSelf._addTheme('mobile-debug',
+		{
+			Name: 'Mobile Container Debug',
+			Category: 'Debug',
+			Description: 'Unique color per container for layout debugging',
+			Variables:
+			{
+				'--retold-bg-primary': '#FF0000',
+				'--retold-bg-secondary': '#00CCCC',
+				'--retold-bg-tertiary': '#00AA00',
+				'--retold-bg-panel': '#FFAA00',
+				'--retold-bg-viewer': '#333333',
+				'--retold-bg-hover': 'rgba(255, 255, 255, 0.2)',
+				'--retold-bg-selected': 'rgba(255, 255, 255, 0.3)',
+				'--retold-bg-thumb': '#AA00AA',
+				'--retold-text-primary': '#FFFFFF',
+				'--retold-text-secondary': '#EEEEEE',
+				'--retold-text-muted': '#CCCCCC',
+				'--retold-text-dim': '#AAAAAA',
+				'--retold-text-placeholder': '#888888',
+				'--retold-accent': '#FFFF00',
+				'--retold-accent-hover': '#FFFF88',
+				'--retold-border': '#FFFFFF',
+				'--retold-border-light': '#CCCCCC',
+				'--retold-danger': '#FF0000',
+				'--retold-danger-muted': '#CC4444',
+				'--retold-scrollbar': '#888888',
+				'--retold-scrollbar-hover': '#AAAAAA',
+				'--retold-selection-bg': 'rgba(255, 255, 0, 0.3)',
+				'--retold-focus-outline': '#FFFF00',
+				'--retold-font-family': "system-ui, -apple-system, sans-serif",
+				'--retold-font-mono': "'SF Mono', 'Consolas', monospace"
+			},
+			IconColors:
+			{
+				Primary: '#FFFFFF',
+				Accent: '#FFFF00',
+				Muted: '#CCCCCC',
+				Light: '#333333',
+				WarmBeige: '#FFAA00',
+				TealTint: '#00CCCC',
+				Lavender: '#AA00AA',
+				AmberTint: '#FFAA00',
+				PdfFill: '#FF4444',
+				PdfText: '#FFFFFF'
+			}
+		});
 	}
 
 	/**
