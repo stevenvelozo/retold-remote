@@ -285,6 +285,155 @@ const _ViewConfiguration =
 			color: var(--retold-danger-muted, #e55);
 			background: rgba(200, 50, 50, 0.1);
 		}
+		/* ---- Operation Plan mode ---- */
+		.retold-remote-collections-op-controls
+		{
+			flex-direction: column;
+			gap: 6px;
+		}
+		.retold-remote-collections-op-summary
+		{
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+			padding: 4px 0;
+		}
+		.retold-remote-collections-op-buttons
+		{
+			display: flex;
+			gap: 6px;
+		}
+		.retold-remote-collections-op-execute-btn
+		{
+			flex: 1;
+			padding: 6px 12px;
+			border: none;
+			border-radius: 3px;
+			background: var(--retold-accent, #4a90d9);
+			color: #fff;
+			font-size: 0.78rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.retold-remote-collections-op-execute-btn:hover
+		{
+			opacity: 0.9;
+		}
+		.retold-remote-collections-op-execute-btn:disabled
+		{
+			opacity: 0.5;
+			cursor: default;
+		}
+		.retold-remote-collections-op-undo-btn
+		{
+			padding: 6px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-secondary);
+			font-size: 0.78rem;
+			cursor: pointer;
+		}
+		.retold-remote-collections-op-undo-btn:hover
+		{
+			background: var(--retold-bg-tertiary);
+		}
+		.retold-remote-collection-op-item
+		{
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			padding: 6px 8px;
+			border-bottom: 1px solid var(--retold-border);
+			font-size: 0.75rem;
+			flex-wrap: wrap;
+		}
+		.retold-remote-collection-op-item.op-status-completed
+		{
+			opacity: 0.6;
+		}
+		.retold-remote-collection-op-item.op-status-skipped
+		{
+			opacity: 0.4;
+			text-decoration: line-through;
+		}
+		.retold-remote-collection-op-item.op-status-failed
+		{
+			background: rgba(200, 50, 50, 0.05);
+		}
+		.retold-remote-collection-op-status
+		{
+			flex-shrink: 0;
+			width: 16px;
+			text-align: center;
+			font-size: 0.8rem;
+		}
+		.op-status-completed .retold-remote-collection-op-status
+		{
+			color: var(--retold-success, #4a4);
+		}
+		.op-status-failed .retold-remote-collection-op-status
+		{
+			color: var(--retold-danger-muted, #e55);
+		}
+		.op-status-pending .retold-remote-collection-op-status
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-collection-op-source
+		{
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-collection-op-arrow
+		{
+			flex-shrink: 0;
+			color: var(--retold-text-dim);
+			padding: 0 2px;
+		}
+		.retold-remote-collection-op-dest
+		{
+			flex: 2;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-collection-op-dest-input
+		{
+			width: 100%;
+			padding: 2px 4px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 2px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.75rem;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		.retold-remote-collection-op-badge
+		{
+			flex-shrink: 0;
+			font-size: 0.6rem;
+			padding: 1px 4px;
+			border-radius: 2px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-dim);
+			text-transform: uppercase;
+			font-weight: 600;
+			letter-spacing: 0.3px;
+		}
+		.retold-remote-collection-op-error
+		{
+			width: 100%;
+			font-size: 0.68rem;
+			color: var(--retold-danger-muted, #e55);
+			padding: 2px 0 0 20px;
+		}
 		/* ---- Edit mode ---- */
 		.retold-remote-collections-edit
 		{
@@ -644,57 +793,135 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 		tmpHeader.appendChild(tmpEditBtn);
 		pRoot.appendChild(tmpHeader);
 
-		// Sort controls
-		let tmpControls = document.createElement('div');
-		tmpControls.className = 'retold-remote-collections-detail-controls';
+		// Check if this is an operation-plan collection
+		let tmpIsOperationPlan = (tmpCollection.CollectionType === 'operation-plan');
 
-		let tmpSortSelect = document.createElement('select');
-		tmpSortSelect.className = 'retold-remote-collections-sort-select';
-
-		let tmpSortOptions = [
-			{ value: 'manual', label: 'Manual' },
-			{ value: 'name', label: 'Name' },
-			{ value: 'modified', label: 'Date Added' },
-			{ value: 'type', label: 'Type' }
-		];
-
-		for (let i = 0; i < tmpSortOptions.length; i++)
+		if (tmpIsOperationPlan)
 		{
-			let tmpOpt = document.createElement('option');
-			tmpOpt.value = tmpSortOptions[i].value;
-			tmpOpt.textContent = tmpSortOptions[i].label;
-			if (tmpCollection.SortMode === tmpSortOptions[i].value)
+			// Operation plan controls: summary + execute/undo buttons
+			let tmpOpControls = document.createElement('div');
+			tmpOpControls.className = 'retold-remote-collections-detail-controls retold-remote-collections-op-controls';
+
+			// Count pending, completed, failed, skipped
+			let tmpItems = tmpCollection.Items || [];
+			let tmpPending = 0;
+			let tmpCompleted = 0;
+			let tmpFailed = 0;
+			let tmpSkipped = 0;
+			for (let i = 0; i < tmpItems.length; i++)
 			{
-				tmpOpt.selected = true;
+				let tmpStatus = tmpItems[i].OperationStatus;
+				if (tmpStatus === 'completed') tmpCompleted++;
+				else if (tmpStatus === 'failed') tmpFailed++;
+				else if (tmpStatus === 'skipped') tmpSkipped++;
+				else if (tmpItems[i].Operation) tmpPending++;
 			}
-			tmpSortSelect.appendChild(tmpOpt);
+
+			let tmpSummary = document.createElement('div');
+			tmpSummary.className = 'retold-remote-collections-op-summary';
+			let tmpSummaryParts = [];
+			if (tmpPending > 0) tmpSummaryParts.push(tmpPending + ' pending');
+			if (tmpCompleted > 0) tmpSummaryParts.push(tmpCompleted + ' done');
+			if (tmpFailed > 0) tmpSummaryParts.push(tmpFailed + ' failed');
+			if (tmpSkipped > 0) tmpSummaryParts.push(tmpSkipped + ' skipped');
+			tmpSummary.textContent = tmpSummaryParts.join(' \u00b7 ') || 'No operations';
+			tmpOpControls.appendChild(tmpSummary);
+
+			let tmpBtnRow = document.createElement('div');
+			tmpBtnRow.className = 'retold-remote-collections-op-buttons';
+
+			if (tmpPending > 0)
+			{
+				let tmpExecBtn = document.createElement('button');
+				tmpExecBtn.className = 'retold-remote-collections-op-execute-btn';
+				tmpExecBtn.textContent = 'Execute ' + tmpPending + ' Move' + (tmpPending > 1 ? 's' : '');
+				tmpExecBtn.onclick = () =>
+				{
+					tmpExecBtn.disabled = true;
+					tmpExecBtn.textContent = 'Moving...';
+					tmpManager.executeCollectionOperations(tmpCollection.GUID);
+				};
+				tmpBtnRow.appendChild(tmpExecBtn);
+			}
+
+			if (tmpCollection.OperationBatchGUID && tmpCompleted > 0)
+			{
+				let tmpUndoBtn = document.createElement('button');
+				tmpUndoBtn.className = 'retold-remote-collections-op-undo-btn';
+				tmpUndoBtn.textContent = 'Undo';
+				tmpUndoBtn.onclick = () =>
+				{
+					tmpUndoBtn.disabled = true;
+					tmpUndoBtn.textContent = 'Undoing...';
+					tmpManager.undoCollectionOperations(tmpCollection.GUID);
+				};
+				tmpBtnRow.appendChild(tmpUndoBtn);
+			}
+
+			tmpOpControls.appendChild(tmpBtnRow);
+			pRoot.appendChild(tmpOpControls);
 		}
-
-		tmpSortSelect.onchange = (pEvent) =>
+		else
 		{
-			tmpManager.sortActiveCollection(pEvent.target.value, null);
-		};
+			// Standard sort controls for bookmark collections
+			let tmpControls = document.createElement('div');
+			tmpControls.className = 'retold-remote-collections-detail-controls';
 
-		let tmpDirBtn = document.createElement('button');
-		tmpDirBtn.className = 'retold-remote-collections-sort-dir';
-		tmpDirBtn.textContent = tmpCollection.SortDirection === 'desc' ? '\u2193' : '\u2191';
-		tmpDirBtn.title = tmpCollection.SortDirection === 'desc' ? 'Descending' : 'Ascending';
-		tmpDirBtn.onclick = () =>
-		{
-			let tmpNewDir = (tmpRemote.ActiveCollection.SortDirection === 'desc') ? 'asc' : 'desc';
-			tmpManager.sortActiveCollection(null, tmpNewDir);
-		};
+			let tmpSortSelect = document.createElement('select');
+			tmpSortSelect.className = 'retold-remote-collections-sort-select';
 
-		tmpControls.appendChild(tmpSortSelect);
-		tmpControls.appendChild(tmpDirBtn);
-		pRoot.appendChild(tmpControls);
+			let tmpSortOptions = [
+				{ value: 'manual', label: 'Manual' },
+				{ value: 'name', label: 'Name' },
+				{ value: 'modified', label: 'Date Added' },
+				{ value: 'type', label: 'Type' }
+			];
+
+			for (let i = 0; i < tmpSortOptions.length; i++)
+			{
+				let tmpOpt = document.createElement('option');
+				tmpOpt.value = tmpSortOptions[i].value;
+				tmpOpt.textContent = tmpSortOptions[i].label;
+				if (tmpCollection.SortMode === tmpSortOptions[i].value)
+				{
+					tmpOpt.selected = true;
+				}
+				tmpSortSelect.appendChild(tmpOpt);
+			}
+
+			tmpSortSelect.onchange = (pEvent) =>
+			{
+				tmpManager.sortActiveCollection(pEvent.target.value, null);
+			};
+
+			let tmpDirBtn = document.createElement('button');
+			tmpDirBtn.className = 'retold-remote-collections-sort-dir';
+			tmpDirBtn.textContent = tmpCollection.SortDirection === 'desc' ? '\u2193' : '\u2191';
+			tmpDirBtn.title = tmpCollection.SortDirection === 'desc' ? 'Descending' : 'Ascending';
+			tmpDirBtn.onclick = () =>
+			{
+				let tmpNewDir = (tmpRemote.ActiveCollection.SortDirection === 'desc') ? 'asc' : 'desc';
+				tmpManager.sortActiveCollection(null, tmpNewDir);
+			};
+
+			tmpControls.appendChild(tmpSortSelect);
+			tmpControls.appendChild(tmpDirBtn);
+			pRoot.appendChild(tmpControls);
+		}
 
 		// Item list
 		let tmpBody = document.createElement('div');
 		tmpBody.className = 'retold-remote-collections-body';
 		pRoot.appendChild(tmpBody);
 
-		this._renderItemList(tmpBody, tmpCollection);
+		if (tmpIsOperationPlan)
+		{
+			this._renderOperationItemList(tmpBody, tmpCollection);
+		}
+		else
+		{
+			this._renderItemList(tmpBody, tmpCollection);
+		}
 	}
 
 	_renderItemList(pBody, pCollection)
@@ -860,6 +1087,178 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 			tmpRow.appendChild(tmpRemoveBtn);
 			pBody.appendChild(tmpRow);
 		}
+	}
+
+	// -- Operation Plan Item Rendering ------------------------------------
+
+	_renderOperationItemList(pBody, pCollection)
+	{
+		let tmpSelf = this;
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		let tmpItems = pCollection.Items || [];
+
+		pBody.innerHTML = '';
+
+		if (tmpItems.length === 0)
+		{
+			let tmpEmpty = document.createElement('div');
+			tmpEmpty.className = 'retold-remote-collections-empty';
+			tmpEmpty.textContent = 'No items in this sort plan.';
+			pBody.appendChild(tmpEmpty);
+			return;
+		}
+
+		for (let i = 0; i < tmpItems.length; i++)
+		{
+			let tmpItem = tmpItems[i];
+			let tmpRow = document.createElement('div');
+			tmpRow.className = 'retold-remote-collection-op-item';
+
+			// Status color
+			let tmpStatus = tmpItem.OperationStatus || 'pending';
+			tmpRow.classList.add('op-status-' + tmpStatus);
+
+			// Status indicator
+			let tmpStatusDiv = document.createElement('div');
+			tmpStatusDiv.className = 'retold-remote-collection-op-status';
+			if (tmpStatus === 'completed')
+			{
+				tmpStatusDiv.textContent = '\u2713';
+				tmpStatusDiv.title = 'Completed';
+			}
+			else if (tmpStatus === 'failed')
+			{
+				tmpStatusDiv.textContent = '\u2717';
+				tmpStatusDiv.title = tmpItem.OperationError || 'Failed';
+			}
+			else if (tmpStatus === 'skipped')
+			{
+				tmpStatusDiv.textContent = '\u2014';
+				tmpStatusDiv.title = 'Skipped';
+			}
+			else
+			{
+				tmpStatusDiv.textContent = '\u25CB';
+				tmpStatusDiv.title = 'Pending';
+			}
+
+			// Source path (filename only, full path in tooltip)
+			let tmpSourceDiv = document.createElement('div');
+			tmpSourceDiv.className = 'retold-remote-collection-op-source';
+			let tmpSourcePath = tmpItem.Path || '';
+			tmpSourceDiv.textContent = tmpSourcePath.split('/').pop() || tmpSourcePath;
+			tmpSourceDiv.title = tmpSourcePath;
+
+			// Arrow
+			let tmpArrow = document.createElement('div');
+			tmpArrow.className = 'retold-remote-collection-op-arrow';
+			tmpArrow.textContent = '\u2192';
+
+			// Destination path (editable)
+			let tmpDestDiv = document.createElement('div');
+			tmpDestDiv.className = 'retold-remote-collection-op-dest';
+			let tmpDestPath = tmpItem.DestinationPath || '';
+			tmpDestDiv.textContent = tmpDestPath || '(no destination)';
+			tmpDestDiv.title = tmpDestPath;
+
+			// Make destination editable on click (only for pending items)
+			if (tmpStatus === 'pending')
+			{
+				tmpDestDiv.style.cursor = 'pointer';
+				tmpDestDiv.onclick = (pEvent) =>
+				{
+					pEvent.stopPropagation();
+					tmpSelf._startEditDestination(tmpDestDiv, tmpItem, pCollection);
+				};
+			}
+
+			// Operation badge
+			let tmpOpBadge = document.createElement('div');
+			tmpOpBadge.className = 'retold-remote-collection-op-badge';
+			tmpOpBadge.textContent = (tmpItem.Operation || 'move').toUpperCase();
+
+			// Skip/remove button (only for pending items)
+			let tmpSkipBtn = document.createElement('button');
+			tmpSkipBtn.className = 'retold-remote-collection-item-remove';
+			tmpSkipBtn.title = 'Skip this operation';
+			tmpSkipBtn.textContent = '\u00d7';
+
+			if (tmpStatus === 'pending')
+			{
+				tmpSkipBtn.onclick = (pEvent) =>
+				{
+					pEvent.stopPropagation();
+					tmpManager.skipItemOperation(tmpItem.ID);
+				};
+			}
+			else
+			{
+				tmpSkipBtn.style.visibility = 'hidden';
+			}
+
+			// Error message (if failed)
+			if (tmpStatus === 'failed' && tmpItem.OperationError)
+			{
+				let tmpErrorDiv = document.createElement('div');
+				tmpErrorDiv.className = 'retold-remote-collection-op-error';
+				tmpErrorDiv.textContent = tmpItem.OperationError;
+				tmpRow.appendChild(tmpErrorDiv);
+			}
+
+			tmpRow.appendChild(tmpStatusDiv);
+			tmpRow.appendChild(tmpSourceDiv);
+			tmpRow.appendChild(tmpArrow);
+			tmpRow.appendChild(tmpDestDiv);
+			tmpRow.appendChild(tmpOpBadge);
+			tmpRow.appendChild(tmpSkipBtn);
+			pBody.appendChild(tmpRow);
+		}
+	}
+
+	/**
+	 * Start inline editing of an operation item's destination path.
+	 */
+	_startEditDestination(pDestDiv, pItem, pCollection)
+	{
+		let tmpSelf = this;
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+
+		let tmpInput = document.createElement('input');
+		tmpInput.type = 'text';
+		tmpInput.className = 'retold-remote-collection-op-dest-input';
+		tmpInput.value = pItem.DestinationPath || '';
+
+		let tmpFinishEdit = () =>
+		{
+			let tmpNewDest = tmpInput.value.trim();
+			if (tmpNewDest && tmpNewDest !== pItem.DestinationPath)
+			{
+				tmpManager.setItemDestination(pItem.ID, tmpNewDest);
+			}
+			pDestDiv.textContent = tmpNewDest || pItem.DestinationPath || '(no destination)';
+			pDestDiv.title = tmpNewDest || pItem.DestinationPath || '';
+		};
+
+		tmpInput.onblur = tmpFinishEdit;
+		tmpInput.onkeydown = (pEvent) =>
+		{
+			if (pEvent.key === 'Enter')
+			{
+				pEvent.preventDefault();
+				tmpInput.blur();
+			}
+			else if (pEvent.key === 'Escape')
+			{
+				pEvent.preventDefault();
+				pDestDiv.textContent = pItem.DestinationPath || '(no destination)';
+				pDestDiv.title = pItem.DestinationPath || '';
+			}
+		};
+
+		pDestDiv.textContent = '';
+		pDestDiv.appendChild(tmpInput);
+		tmpInput.focus();
+		tmpInput.select();
 	}
 
 	// -- Edit Mode --------------------------------------------------------

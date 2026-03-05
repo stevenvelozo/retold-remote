@@ -43,6 +43,9 @@ const libRetoldRemoteVideoFrameService = require('../server/RetoldRemote-VideoFr
 const libRetoldRemoteAudioWaveformService = require('../server/RetoldRemote-AudioWaveformService.js');
 const libRetoldRemoteEbookService = require('../server/RetoldRemote-EbookService.js');
 const libRetoldRemoteCollectionService = require('../server/RetoldRemote-CollectionService.js');
+const libRetoldRemoteMetadataCache = require('../server/RetoldRemote-MetadataCache.js');
+const libRetoldRemoteFileOperationService = require('../server/RetoldRemote-FileOperationService.js');
+const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortService.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -151,8 +154,28 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 				ContentPath: tmpContentPath
 			});
 
+			// Set up the metadata cache service
+			let tmpMetadataCache = new libRetoldRemoteMetadataCache(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
+			// Set up the file operation service
+			let tmpFileOperationService = new libRetoldRemoteFileOperationService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
+			// Set up the AI sort service
+			let tmpAISortService = new libRetoldRemoteAISortService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+			tmpAISortService.setMetadataCache(tmpMetadataCache);
+
 			// Set up the collection service
 			let tmpCollectionService = new libRetoldRemoteCollectionService(tmpFable, {});
+			tmpCollectionService.setFileOperationService(tmpFileOperationService);
 
 			// Set up the media service
 			let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
@@ -333,8 +356,112 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Connect media service API routes
 			tmpMediaService.connectRoutes(tmpServiceServer);
 
+			// Connect file operation service API routes
+			tmpFileOperationService.connectRoutes(tmpServiceServer);
+
 			// Connect collection service API routes
 			tmpCollectionService.connectRoutes(tmpServiceServer);
+
+			// Connect AI sort service API routes
+			tmpAISortService.connectRoutes(tmpServiceServer);
+
+			// --- GET /api/media/metadata ---
+			// Get cached metadata (with ID3/format tags) for a single file.
+			tmpServiceServer.get('/api/media/metadata',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						tmpMetadataCache.getMetadata(tmpRelPath,
+							(pError, pMetadata) =>
+							{
+								if (pError)
+								{
+									pResponse.send(404, { Success: false, Error: pError.message });
+									return fNext();
+								}
+								pResponse.send(pMetadata);
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- POST /api/media/metadata-batch ---
+			// Get cached metadata for multiple files at once.
+			tmpServiceServer.post('/api/media/metadata-batch',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpPaths = pRequest.body && pRequest.body.Paths;
+
+						if (!Array.isArray(tmpPaths) || tmpPaths.length === 0)
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing Paths array.' });
+							return fNext();
+						}
+
+						// Sanitize all paths
+						let tmpSanitized = [];
+						for (let i = 0; i < tmpPaths.length; i++)
+						{
+							let tmpRelPath = (typeof (tmpPaths[i]) === 'string')
+								? decodeURIComponent(tmpPaths[i]).replace(/^\/+/, '')
+								: null;
+
+							if (!tmpRelPath || tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+							{
+								continue;
+							}
+							tmpSanitized.push(tmpRelPath);
+						}
+
+						if (tmpSanitized.length === 0)
+						{
+							pResponse.send(400, { Success: false, Error: 'No valid paths.' });
+							return fNext();
+						}
+
+						tmpMetadataCache.getMetadataBatch(tmpSanitized,
+							(pError, pResults) =>
+							{
+								if (pError)
+								{
+									pResponse.send(500, { Success: false, Error: pError.message });
+									return fNext();
+								}
+								pResponse.send({ Success: true, Files: pResults });
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
 
 			// --- GET /api/media/video-frames ---
 			// Extract evenly-spaced frames from a video for the Video Explorer.
@@ -1044,6 +1171,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						AudioWaveformService: tmpAudioWaveformService,
 						PathRegistry: tmpPathRegistry,
 						ParimeCache: tmpParimeCache,
+						MetadataCache: tmpMetadataCache,
+						FileOperationService: tmpFileOperationService,
 						Port: tmpPort
 					});
 				});

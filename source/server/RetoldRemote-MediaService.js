@@ -254,6 +254,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 									tmpProbe.Height = pMetadata.height;
 									tmpProbe.Codec = pMetadata.codec;
 									tmpProbe.Bitrate = pMetadata.bitrate;
+									tmpProbe.Tags = pMetadata.tags || {};
 								}
 								pResponse.send(tmpProbe);
 								return fNext();
@@ -491,6 +492,17 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			{
 				tmpResult.duration = parseFloat(tmpData.format.duration) || null;
 				tmpResult.bitrate = parseInt(tmpData.format.bit_rate, 10) || null;
+
+				// Extract format-level tags (ID3, Vorbis comments, etc.)
+				if (tmpData.format.tags)
+				{
+					tmpResult.tags = {};
+					let tmpTagKeys = Object.keys(tmpData.format.tags);
+					for (let t = 0; t < tmpTagKeys.length; t++)
+					{
+						tmpResult.tags[tmpTagKeys[t].toLowerCase()] = tmpData.format.tags[tmpTagKeys[t]];
+					}
+				}
 			}
 
 			// Find video stream for dimensions

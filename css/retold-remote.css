@@ -12,6 +12,7 @@ html, body
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	height: 100dvh;
 	overflow: hidden;
 	background: var(--retold-bg-primary);
 	color: var(--retold-text-primary);
@@ -20,6 +21,8 @@ html, body
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	/* Safe area insets for notched devices */
+	padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Scrollbar styling */

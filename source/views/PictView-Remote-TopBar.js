@@ -333,6 +333,31 @@ const _ViewConfiguration =
 			border-color: var(--retold-text-muted);
 			background: rgba(128, 128, 128, 0.06);
 		}
+		.retold-remote-topbar-aisort-btn
+		{
+			padding: 4px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.72rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s, background 0.15s;
+			font-family: inherit;
+			white-space: nowrap;
+		}
+		.retold-remote-topbar-aisort-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+			background: rgba(128, 128, 128, 0.1);
+		}
+		.retold-remote-topbar-aisort-btn.generating
+		{
+			color: var(--retold-accent);
+			border-color: var(--retold-accent);
+			cursor: wait;
+		}
 		.retold-remote-topbar-filter-badge
 		{
 			position: absolute;
@@ -362,6 +387,7 @@ const _ViewConfiguration =
 					<div class="retold-remote-topbar-location" id="RetoldRemote-TopBar-Location"></div>
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
+						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">AI Sort</button>
 						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">+&#9733;</button>
 						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
 						<button class="retold-remote-topbar-filter-btn" id="RetoldRemote-TopBar-FilterBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFilterBar()" title="Toggle filter bar (/)">&#9698;</button>
@@ -694,9 +720,11 @@ class RetoldRemoteTopBarView extends libPictView
 
 	/**
 	 * Update the info display with folder summary.
+	 * Also updates the AI Sort button visibility.
 	 */
 	updateInfo()
 	{
+		this.updateAISortButton();
 		let tmpInfoEl = document.getElementById('RetoldRemote-TopBar-Info');
 		if (!tmpInfoEl)
 		{
@@ -744,6 +772,64 @@ class RetoldRemoteTopBarView extends libPictView
 		if (tmpSummary.Other > 0) tmpParts.push(tmpSummary.Other + ' other');
 
 		tmpInfoEl.textContent = tmpParts.join(' \u00b7 ');
+	}
+
+	// -- AI Sort ----------------------------------------------------------
+
+	/**
+	 * Trigger AI sort for the current folder.
+	 */
+	triggerAISort()
+	{
+		let tmpAISortManager = this.pict.providers['RetoldRemote-AISortManager'];
+		if (!tmpAISortManager)
+		{
+			return;
+		}
+
+		let tmpCurrentPath = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
+
+		// Show generating state
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-AISortBtn');
+		if (tmpBtn)
+		{
+			tmpBtn.classList.add('generating');
+			tmpBtn.textContent = 'Sorting...';
+		}
+
+		tmpAISortManager.generateSortPlan(tmpCurrentPath,
+			(pError, pResult) =>
+			{
+				// Reset button state
+				if (tmpBtn)
+				{
+					tmpBtn.classList.remove('generating');
+					tmpBtn.textContent = 'AI Sort';
+				}
+			});
+	}
+
+	/**
+	 * Update the AI Sort button visibility.
+	 * Shows only when browsing a folder (gallery mode).
+	 */
+	updateAISortButton()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-TopBar-AISortBtn');
+		if (!tmpBtn)
+		{
+			return;
+		}
+
+		let tmpAISortManager = this.pict.providers['RetoldRemote-AISortManager'];
+		if (tmpAISortManager && tmpAISortManager.isAvailable())
+		{
+			tmpBtn.style.display = '';
+		}
+		else
+		{
+			tmpBtn.style.display = 'none';
+		}
 	}
 
 	// -- Collections Panel ------------------------------------------------

@@ -14,6 +14,11 @@
  *   DELETE /api/collections/:guid/items/:itemId  -- Remove an item
  *   PUT    /api/collections/:guid/reorder        -- Reorder items (manual sort)
  *   POST   /api/collections/copy-items           -- Copy items between collections
+ *   POST   /api/collections/:guid/execute        -- Execute pending operations (move/rename)
+ *
+ * Collections with CollectionType "operation-plan" represent file sort plans:
+ * each item has Operation, DestinationPath, OperationStatus, and OperationError
+ * fields that describe a pending file operation.
  *
  * @license MIT
  */
@@ -28,6 +33,19 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 		super(pFable, pOptions, pServiceHash);
 
 		this.serviceType = 'RetoldRemoteCollectionService';
+
+		// Will be set by server setup after FileOperationService is created
+		this._fileOperationService = null;
+	}
+
+	/**
+	 * Set the file operation service instance for execute operations.
+	 *
+	 * @param {RetoldRemoteFileOperationService} pService
+	 */
+	setFileOperationService(pService)
+	{
+		this._fileOperationService = pService;
 	}
 
 	// -- Helpers ----------------------------------------------------------
@@ -50,7 +68,9 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 			ItemCount: (Array.isArray(pRecord.Items)) ? pRecord.Items.length : 0,
 			CreatedAt: pRecord.CreatedAt || '',
 			ModifiedAt: pRecord.ModifiedAt || '',
-			Tags: pRecord.Tags || []
+			Tags: pRecord.Tags || [],
+			CollectionType: pRecord.CollectionType || 'bookmark',
+			OperationBatchGUID: pRecord.OperationBatchGUID || null
 		});
 	}
 
@@ -139,6 +159,8 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 			SortMode: 'manual',
 			SortDirection: 'asc',
 			Tags: [],
+			CollectionType: 'bookmark',
+			OperationBatchGUID: null,
 			Items: []
 		});
 	}
@@ -307,6 +329,8 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 							if (typeof tmpBody.SortMode === 'string') tmpRecord.SortMode = tmpBody.SortMode;
 							if (typeof tmpBody.SortDirection === 'string') tmpRecord.SortDirection = tmpBody.SortDirection;
 							if (Array.isArray(tmpBody.Tags)) tmpRecord.Tags = tmpBody.Tags;
+							if (typeof tmpBody.CollectionType === 'string') tmpRecord.CollectionType = tmpBody.CollectionType;
+							if (typeof tmpBody.OperationBatchGUID === 'string' || tmpBody.OperationBatchGUID === null) tmpRecord.OperationBatchGUID = tmpBody.OperationBatchGUID;
 							if (Array.isArray(tmpBody.Items)) tmpRecord.Items = tmpBody.Items;
 							tmpRecord.ModifiedAt = new Date().toISOString();
 						}
@@ -320,6 +344,8 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 							if (typeof tmpBody.SortMode === 'string') tmpRecord.SortMode = tmpBody.SortMode;
 							if (typeof tmpBody.SortDirection === 'string') tmpRecord.SortDirection = tmpBody.SortDirection;
 							if (Array.isArray(tmpBody.Tags)) tmpRecord.Tags = tmpBody.Tags;
+							if (typeof tmpBody.CollectionType === 'string') tmpRecord.CollectionType = tmpBody.CollectionType;
+							if (Array.isArray(tmpBody.Items)) tmpRecord.Items = tmpBody.Items;
 						}
 
 						tmpSelf.fable.Bibliograph.write(SOURCE_NAME, tmpGUID, tmpRecord,
@@ -431,7 +457,12 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 								CropRegion: tmpItem.CropRegion || null,
 								VideoStart: (typeof tmpItem.VideoStart === 'number') ? tmpItem.VideoStart : null,
 								VideoEnd: (typeof tmpItem.VideoEnd === 'number') ? tmpItem.VideoEnd : null,
-								FrameTimestamp: (typeof tmpItem.FrameTimestamp === 'number') ? tmpItem.FrameTimestamp : null
+								FrameTimestamp: (typeof tmpItem.FrameTimestamp === 'number') ? tmpItem.FrameTimestamp : null,
+								// Operation fields (for operation-plan collections)
+								Operation: tmpItem.Operation || null,
+								DestinationPath: tmpItem.DestinationPath || null,
+								OperationStatus: tmpItem.OperationStatus || null,
+								OperationError: tmpItem.OperationError || null
 							});
 						}
 
@@ -671,6 +702,134 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 										}
 
 										pResponse.send(200, pTargetRecord);
+										return fNext();
+									});
+							});
+					});
+			});
+
+		// -----------------------------------------------------------------
+		// POST /api/collections/:guid/execute — Execute pending operations
+		// Requires a FileOperationService instance on this.fable.FileOperationService
+		// -----------------------------------------------------------------
+		tmpServer.post('/api/collections/:guid/execute',
+			(pRequest, pResponse, fNext) =>
+			{
+				let tmpGUID = pRequest.params.guid;
+				if (!tmpGUID)
+				{
+					pResponse.send(400, { Error: 'Missing collection GUID.' });
+					return fNext();
+				}
+
+				tmpSelf.fable.Bibliograph.read(SOURCE_NAME, tmpGUID,
+					(pReadError, pRecord) =>
+					{
+						if (pReadError || !pRecord)
+						{
+							pResponse.send(404, { Error: 'Collection not found.' });
+							return fNext();
+						}
+
+						if (!Array.isArray(pRecord.Items) || pRecord.Items.length === 0)
+						{
+							pResponse.send(400, { Error: 'Collection has no items.' });
+							return fNext();
+						}
+
+						// Find the FileOperationService
+						let tmpFileOpService = tmpSelf._fileOperationService;
+						if (!tmpFileOpService)
+						{
+							pResponse.send(500, { Error: 'File operation service not available.' });
+							return fNext();
+						}
+
+						// Build the moves list from pending operation items
+						let tmpMoves = [];
+						let tmpMoveIndexMap = [];  // Maps move index -> item index for status updates
+
+						for (let i = 0; i < pRecord.Items.length; i++)
+						{
+							let tmpItem = pRecord.Items[i];
+							if (tmpItem.Operation && tmpItem.DestinationPath
+								&& tmpItem.OperationStatus !== 'completed'
+								&& tmpItem.OperationStatus !== 'skipped')
+							{
+								tmpMoves.push(
+								{
+									Source: tmpItem.Path,
+									Destination: tmpItem.DestinationPath
+								});
+								tmpMoveIndexMap.push(i);
+							}
+						}
+
+						if (tmpMoves.length === 0)
+						{
+							pResponse.send(200, { Success: true, Message: 'No pending operations to execute.', Collection: pRecord });
+							return fNext();
+						}
+
+						tmpFileOpService.moveBatch(tmpMoves,
+							(pMoveError, pMoveResult) =>
+							{
+								if (pMoveError)
+								{
+									pResponse.send(500, { Error: 'Batch move failed: ' + pMoveError.message });
+									return fNext();
+								}
+
+								// Update item statuses based on results
+								let tmpCompletedSet = {};
+								for (let c = 0; c < pMoveResult.Completed.length; c++)
+								{
+									tmpCompletedSet[pMoveResult.Completed[c].Source] = true;
+								}
+
+								let tmpFailedMap = {};
+								for (let f = 0; f < pMoveResult.Failed.length; f++)
+								{
+									tmpFailedMap[pMoveResult.Failed[f].Source] = pMoveResult.Failed[f].Error;
+								}
+
+								for (let m = 0; m < tmpMoveIndexMap.length; m++)
+								{
+									let tmpItemIndex = tmpMoveIndexMap[m];
+									let tmpItem = pRecord.Items[tmpItemIndex];
+
+									if (tmpCompletedSet[tmpItem.Path])
+									{
+										tmpItem.OperationStatus = 'completed';
+										tmpItem.OperationError = null;
+									}
+									else if (tmpFailedMap[tmpItem.Path])
+									{
+										tmpItem.OperationStatus = 'failed';
+										tmpItem.OperationError = tmpFailedMap[tmpItem.Path];
+									}
+								}
+
+								// Store batch GUID on collection for undo
+								pRecord.OperationBatchGUID = pMoveResult.BatchGUID;
+								pRecord.ModifiedAt = new Date().toISOString();
+
+								tmpSelf.fable.Bibliograph.write(SOURCE_NAME, tmpGUID, pRecord,
+									(pWriteError) =>
+									{
+										if (pWriteError)
+										{
+											tmpSelf.fable.log.warn('Failed to update collection after execute: ' + pWriteError.message);
+										}
+
+										pResponse.send(200,
+										{
+											Success: true,
+											BatchGUID: pMoveResult.BatchGUID,
+											TotalMoved: pMoveResult.TotalMoved,
+											TotalFailed: pMoveResult.TotalFailed,
+											Collection: pRecord
+										});
 										return fNext();
 									});
 							});

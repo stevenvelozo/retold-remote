@@ -97,6 +97,42 @@ const _ViewConfiguration =
 			background: var(--retold-bg-hover);
 			color: var(--retold-text-primary);
 		}
+		.retold-remote-settings-input
+		{
+			width: 100%;
+			padding: 5px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-secondary);
+			font-size: 0.75rem;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		.retold-remote-settings-input:focus
+		{
+			outline: none;
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-settings-input-row
+		{
+			margin-bottom: 8px;
+		}
+		.retold-remote-settings-input-label
+		{
+			display: block;
+			font-size: 0.72rem;
+			color: var(--retold-text-dim);
+			margin-bottom: 3px;
+		}
+		.retold-remote-settings-template-preview
+		{
+			font-size: 0.68rem;
+			color: var(--retold-text-dim);
+			margin-top: 3px;
+			font-style: italic;
+			word-break: break-all;
+		}
 	`
 };
 
@@ -306,6 +342,60 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '</div>';
 		tmpHTML += '</div>'; // end capabilities section
 
+		// AI File Sort
+		tmpHTML += '<div class="retold-remote-settings-section">';
+		tmpHTML += '<div class="retold-remote-settings-section-title">AI File Sort</div>';
+
+		let tmpAISortManager = this.pict.providers['RetoldRemote-AISortManager'];
+		let tmpAISettings = tmpRemote.AISortSettings ||
+		{
+			AIEndpoint: 'http://localhost:11434',
+			AIModel: 'llama3.1',
+			AIProvider: 'ollama',
+			NamingTemplate: '{artist}/{album}/{track} - {title}'
+		};
+
+		// AI Endpoint
+		tmpHTML += '<div class="retold-remote-settings-input-row">';
+		tmpHTML += '<label class="retold-remote-settings-input-label">AI Endpoint URL</label>';
+		tmpHTML += '<input class="retold-remote-settings-input" type="text" id="RetoldRemote-AISortEndpoint" value="' + this._escapeAttr(tmpAISettings.AIEndpoint) + '" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeAISetting(\'AIEndpoint\', this.value)" placeholder="http://localhost:11434">';
+		tmpHTML += '</div>';
+
+		// AI Model
+		tmpHTML += '<div class="retold-remote-settings-input-row">';
+		tmpHTML += '<label class="retold-remote-settings-input-label">Model</label>';
+		tmpHTML += '<input class="retold-remote-settings-input" type="text" id="RetoldRemote-AISortModel" value="' + this._escapeAttr(tmpAISettings.AIModel) + '" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeAISetting(\'AIModel\', this.value)" placeholder="llama3.1">';
+		tmpHTML += '</div>';
+
+		// AI Provider
+		tmpHTML += '<div class="retold-remote-settings-row">';
+		tmpHTML += '<span class="retold-remote-settings-label">Provider</span>';
+		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeAISetting(\'AIProvider\', this.value)">';
+		tmpHTML += '<option value="ollama"' + (tmpAISettings.AIProvider === 'ollama' ? ' selected' : '') + '>Ollama</option>';
+		tmpHTML += '<option value="openai"' + (tmpAISettings.AIProvider === 'openai' ? ' selected' : '') + '>OpenAI-compatible</option>';
+		tmpHTML += '</select>';
+		tmpHTML += '</div>';
+
+		// Naming Template
+		tmpHTML += '<div class="retold-remote-settings-input-row" style="margin-top: 8px;">';
+		tmpHTML += '<label class="retold-remote-settings-input-label">Naming Template</label>';
+		tmpHTML += '<input class="retold-remote-settings-input" type="text" id="RetoldRemote-AISortTemplate" value="' + this._escapeAttr(tmpAISettings.NamingTemplate) + '" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeAISetting(\'NamingTemplate\', this.value)" placeholder="{artist}/{album}/{track} - {title}">';
+
+		// Template preview
+		let tmpTemplatePreview = tmpAISortManager ? tmpAISortManager.getTemplatePreview(tmpAISettings.NamingTemplate) : '';
+		if (tmpTemplatePreview)
+		{
+			tmpHTML += '<div class="retold-remote-settings-template-preview">Preview: ' + this._escapeHTML(tmpTemplatePreview) + '</div>';
+		}
+		tmpHTML += '</div>';
+
+		// Test Connection button
+		tmpHTML += '<button class="retold-remote-settings-vlc-btn" id="RetoldRemote-AISortTestBtn" onclick="pict.views[\'RetoldRemote-SettingsPanel\'].testAIConnection()" style="margin-top: 8px;">';
+		tmpHTML += 'Test Connection';
+		tmpHTML += '</button>';
+
+		tmpHTML += '</div>'; // end AI sort section
+
 		// VLC Setup
 		tmpHTML += '<div class="retold-remote-settings-section">';
 		tmpHTML += '<div class="retold-remote-settings-section-title">VLC Streaming</div>';
@@ -433,6 +523,72 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		}
 		this.pict.PictApplication.saveSettings();
 		this._refilterGallery();
+	}
+
+	/**
+	 * Change an AI sort setting.
+	 *
+	 * @param {string} pKey - Setting key (AIEndpoint, AIModel, AIProvider, NamingTemplate)
+	 * @param {string} pValue - New value
+	 */
+	changeAISetting(pKey, pValue)
+	{
+		let tmpAISortManager = this.pict.providers['RetoldRemote-AISortManager'];
+		if (tmpAISortManager)
+		{
+			let tmpUpdate = {};
+			tmpUpdate[pKey] = pValue;
+			tmpAISortManager.updateSettings(tmpUpdate);
+		}
+
+		// Update the template preview if the template changed
+		if (pKey === 'NamingTemplate')
+		{
+			this._renderSettingsContent();
+		}
+	}
+
+	/**
+	 * Test the AI endpoint connection.
+	 */
+	testAIConnection()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-AISortTestBtn');
+		if (tmpBtn)
+		{
+			tmpBtn.disabled = true;
+			tmpBtn.textContent = 'Testing...';
+		}
+
+		let tmpAISortManager = this.pict.providers['RetoldRemote-AISortManager'];
+		if (tmpAISortManager)
+		{
+			tmpAISortManager.testConnection();
+		}
+	}
+
+	/**
+	 * Escape HTML attribute values.
+	 *
+	 * @param {string} pStr
+	 * @returns {string}
+	 */
+	_escapeAttr(pStr)
+	{
+		if (!pStr) return '';
+		return String(pStr).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	}
+
+	/**
+	 * Escape HTML text content.
+	 *
+	 * @param {string} pStr
+	 * @returns {string}
+	 */
+	_escapeHTML(pStr)
+	{
+		if (!pStr) return '';
+		return String(pStr).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
 	/**

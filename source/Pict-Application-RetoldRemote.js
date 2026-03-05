@@ -11,6 +11,7 @@ const libProviderRetoldRemoteTheme = require('./providers/Pict-Provider-RetoldRe
 const libProviderFormattingUtilities = require('./providers/Pict-Provider-FormattingUtilities.js');
 const libProviderToastNotification = require('./providers/Pict-Provider-ToastNotification.js');
 const libProviderCollectionManager = require('./providers/Pict-Provider-CollectionManager.js');
+const libProviderAISortManager = require('./providers/Pict-Provider-AISortManager.js');
 
 // Views (replace parent views)
 const libViewLayout = require('./views/PictView-Remote-Layout.js');
@@ -68,6 +69,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addProvider('RetoldRemote-FormattingUtilities', libProviderFormattingUtilities.default_configuration, libProviderFormattingUtilities);
 		this.pict.addProvider('RetoldRemote-ToastNotification', libProviderToastNotification.default_configuration, libProviderToastNotification);
 		this.pict.addProvider('RetoldRemote-CollectionManager', libProviderCollectionManager.default_configuration, libProviderCollectionManager);
+		this.pict.addProvider('RetoldRemote-AISortManager', libProviderAISortManager.default_configuration, libProviderAISortManager);
 	}
 
 	onAfterInitializeAsync(fCallback)
@@ -145,7 +147,16 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			CollectionSearchQuery: '',
 			LastUsedCollectionGUID: null,
 			BrowsingCollection: false,		// true when viewer is navigating collection items
-			BrowsingCollectionIndex: -1		// index into ActiveCollection.Items
+			BrowsingCollectionIndex: -1,	// index into ActiveCollection.Items
+
+			// AI Sort settings
+			AISortSettings:
+			{
+				AIEndpoint: 'http://localhost:11434',
+				AIModel: 'llama3.1',
+				AIProvider: 'ollama',
+				NamingTemplate: '{artist}/{album}/{track} - {title}'
+			}
 		};
 
 		// Load persisted settings
@@ -746,7 +757,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				ListShowDate: tmpRemote.ListShowDate,
 				CollectionsPanelOpen: tmpRemote.CollectionsPanelOpen,
 				CollectionsPanelWidth: tmpRemote.CollectionsPanelWidth,
-				LastUsedCollectionGUID: tmpRemote.LastUsedCollectionGUID
+				LastUsedCollectionGUID: tmpRemote.LastUsedCollectionGUID,
+				AISortSettings: tmpRemote.AISortSettings
 			};
 			localStorage.setItem('retold-remote-settings', JSON.stringify(tmpSettings));
 		}
@@ -794,6 +806,13 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.CollectionsPanelOpen) === 'boolean') tmpRemote.CollectionsPanelOpen = tmpSettings.CollectionsPanelOpen;
 				if (tmpSettings.CollectionsPanelWidth) tmpRemote.CollectionsPanelWidth = tmpSettings.CollectionsPanelWidth;
 				if (tmpSettings.LastUsedCollectionGUID) tmpRemote.LastUsedCollectionGUID = tmpSettings.LastUsedCollectionGUID;
+				if (tmpSettings.AISortSettings && typeof tmpSettings.AISortSettings === 'object')
+				{
+					if (tmpSettings.AISortSettings.AIEndpoint) tmpRemote.AISortSettings.AIEndpoint = tmpSettings.AISortSettings.AIEndpoint;
+					if (tmpSettings.AISortSettings.AIModel) tmpRemote.AISortSettings.AIModel = tmpSettings.AISortSettings.AIModel;
+					if (tmpSettings.AISortSettings.AIProvider) tmpRemote.AISortSettings.AIProvider = tmpSettings.AISortSettings.AIProvider;
+					if (tmpSettings.AISortSettings.NamingTemplate) tmpRemote.AISortSettings.NamingTemplate = tmpSettings.AISortSettings.NamingTemplate;
+				}
 			}
 		}
 		catch (pError)

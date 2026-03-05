@@ -15,6 +15,7 @@ const _ViewConfiguration =
 			display: flex;
 			flex-direction: column;
 			height: 100vh;
+			height: 100dvh;
 			background: var(--retold-bg-primary);
 			color: var(--retold-text-primary);
 			font-family: var(--retold-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
@@ -278,6 +279,7 @@ const _ViewConfiguration =
 			{
 				width: 100% !important;
 				height: 33vh;
+				height: 33dvh;
 				transition: height 0.2s ease;
 				flex-direction: column;
 			}
