@@ -73,10 +73,20 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		this._selectionStart = -1;
 		this._selectionEnd = -1;
 
-		// Update the hash
+		// Update the hash.  Replace (not push) when coming from #/view/ to
+		// prevent back-button loops when auto-launched from the media viewer.
 		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpFragId = tmpFragProvider ? tmpFragProvider.getFragmentIdentifier(pFilePath) : pFilePath;
-		window.location.hash = '#/explore-audio/' + tmpFragId;
+		let tmpNewHash = '#/explore-audio/' + tmpFragId;
+		let tmpCurrentHash = window.location.hash || '';
+		if (tmpCurrentHash.indexOf('#/view/') === 0)
+		{
+			history.replaceState(null, '', tmpNewHash);
+		}
+		else
+		{
+			window.location.hash = tmpNewHash;
+		}
 
 		// Show viewer container, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');

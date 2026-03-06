@@ -52,10 +52,22 @@ class RetoldRemoteImageExplorerView extends libPictView
 			this._osdViewer = null;
 		}
 
-		// Update URL hash
+		// Update URL hash.
+		// When the current hash is #/view/ for the same file (i.e. the media
+		// viewer auto-launched us), REPLACE the history entry so the back
+		// button goes to the gallery instead of bouncing back through #/view/.
 		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpFragId = tmpFragProvider ? tmpFragProvider.getFragmentIdentifier(pFilePath) : pFilePath;
-		window.location.hash = '#/explore-image/' + tmpFragId;
+		let tmpNewHash = '#/explore-image/' + tmpFragId;
+		let tmpCurrentHash = window.location.hash || '';
+		if (tmpCurrentHash.indexOf('#/view/') === 0)
+		{
+			history.replaceState(null, '', tmpNewHash);
+		}
+		else
+		{
+			window.location.hash = tmpNewHash;
+		}
 
 		// Show viewer, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');

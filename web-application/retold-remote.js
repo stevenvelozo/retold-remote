@@ -9076,7 +9076,7 @@ FolderSummary:null,// From /api/media/folder-summary
 CurrentViewerFile:'',// File being viewed
 CurrentViewerMediaType:'',// Media type of viewed file
 HashedFilenames:true,// From /api/remote/settings
-ShowHiddenFiles:false,DistractionFreeShowNav:false,ImageFitMode:'auto',SidebarCollapsed:false,SidebarWidth:250,AutoplayVideo:false,AutoplayAudio:false,// List column visibility
+ShowHiddenFiles:false,DistractionFreeShowNav:false,ImageFitMode:'fit',SidebarCollapsed:false,SidebarWidth:250,AutoplayVideo:false,AutoplayAudio:false,// List column visibility
 ListShowExtension:true,ListShowSize:true,ListShowDate:true,// Filter state
 FilterState:{MediaType:'all',Extensions:[],// e.g. ['png', 'jpg'] -- empty = all
 SizeMin:null,// bytes or null
@@ -9109,8 +9109,16 @@ let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvi
 let tmpCurrentLocation=tmpSelf.pict.AppData.PictFileBrowser&&tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpNewPath=tmpCurrentLocation?tmpCurrentLocation+'/'+pFileEntry.Name:pFileEntry.Name;tmpSelf.loadFileList(tmpNewPath);}};}// Wire up folder navigation
 let tmpBrowseProvider=this.pict.providers['Pict-FileBrowser-Browse'];if(tmpBrowseProvider){let tmpOriginalNavigate=tmpBrowseProvider.navigateToFolder.bind(tmpBrowseProvider);tmpBrowseProvider.navigateToFolder=function(pPath){tmpOriginalNavigate(pPath);tmpSelf.loadFileList(pPath);};}// Fetch server capabilities and remote settings
 let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){tmpProvider.fetchCapabilities((pError,pCapabilities)=>{if(!pError&&pCapabilities){tmpSelf.pict.AppData.RetoldRemote.ServerCapabilities=pCapabilities;}});tmpProvider.fetchRemoteSettings((pError,pSettings)=>{if(!pError&&pSettings){tmpSelf.pict.AppData.RetoldRemote.HashedFilenames=!!pSettings.HashedFilenames;}});}// Bind keyboard navigation
-let tmpNavProvider=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNavProvider){tmpNavProvider.bindKeyboardNavigation();}// Sync hidden files setting and load initial file list
-this.syncHiddenFilesSetting(()=>{tmpSelf.loadFileList(null,()=>{tmpSelf.resolveHash();});});// Do NOT call super.onAfterInitializeAsync because we have replaced
+let tmpNavProvider=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNavProvider){tmpNavProvider.bindKeyboardNavigation();}// Capture the initial hash BEFORE loading the file list.
+// loadFileList() overwrites window.location.hash with the loaded
+// folder's hash, so if we don't save it first, the original
+// deep-link hash (e.g. #/browse/11ee5820d1) gets clobbered.
+let tmpInitialHash=window.location.hash||'';// Sync hidden files setting and load initial file list
+this.syncHiddenFilesSetting(()=>{tmpSelf.loadFileList(null,()=>{// Restore the initial hash so resolveHash() sees the original
+// deep-link, not the root folder's hash that loadFileList set.
+// Setting the hash fires hashchange → resolveHash() automatically,
+// so we only need the explicit call when there's no hash to restore.
+if(tmpInitialHash&&tmpInitialHash!=='#'&&tmpInitialHash!=='#/'&&tmpInitialHash!=='#/browse/'&&tmpInitialHash!=='#/browse'){window.location.hash=tmpInitialHash;}else{tmpSelf.resolveHash();}});});// Do NOT call super.onAfterInitializeAsync because we have replaced
 // the full initialization flow above.  Instead call the grandparent's callback.
 // The parent's onAfterInitializeAsync tries to render editors and load topics
 // which we don't need.
@@ -10407,8 +10415,9 @@ this._mainCanvas=null;this._overviewCanvas=null;this._resizeObserver=null;}/**
 	 * @param {number} [pSelectionStart] - Optional selection start in seconds
 	 * @param {number} [pSelectionEnd] - Optional selection end in seconds
 	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='audio-explorer';this._currentPath=pFilePath;this._waveformData=null;this._peaks=[];this._viewStart=0;this._viewEnd=1;this._segmentURL=null;// Store passed-in selection times (in seconds) to apply after waveform loads
-this._pendingSelectionStartSec=typeof pSelectionStart==='number'&&pSelectionStart>=0?pSelectionStart:-1;this._pendingSelectionEndSec=typeof pSelectionEnd==='number'&&pSelectionEnd>=0?pSelectionEnd:-1;this._selectionStart=-1;this._selectionEnd=-1;// Update the hash
-let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore-audio/'+tmpFragId;// Show viewer container, hide gallery
+this._pendingSelectionStartSec=typeof pSelectionStart==='number'&&pSelectionStart>=0?pSelectionStart:-1;this._pendingSelectionEndSec=typeof pSelectionEnd==='number'&&pSelectionEnd>=0?pSelectionEnd:-1;this._selectionStart=-1;this._selectionEnd=-1;// Update the hash.  Replace (not push) when coming from #/view/ to
+// prevent back-button loops when auto-launched from the media viewer.
+let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;let tmpNewHash='#/explore-audio/'+tmpFragId;let tmpCurrentHash=window.location.hash||'';if(tmpCurrentHash.indexOf('#/view/')===0){history.replaceState(null,'',tmpNewHash);}else{window.location.hash=tmpNewHash;}// Show viewer container, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');// Build initial UI
 let tmpHTML='<div class="retold-remote-aex">';// Header
 tmpHTML+='<div class="retold-remote-aex-header">';tmpHTML+='<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()" title="Back to audio (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-aex-title">Audio Explorer &mdash; '+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar (populated after waveform loads)
@@ -10775,8 +10784,11 @@ let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||t
 	 * @param {string} pFilePath - Relative file path
 	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='image-explorer';this._currentPath=pFilePath;this._dziData=null;this._loading=false;// Clean up existing viewer
 if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
-}this._osdViewer=null;}// Update URL hash
-let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore-image/'+tmpFragId;// Show viewer, hide gallery
+}this._osdViewer=null;}// Update URL hash.
+// When the current hash is #/view/ for the same file (i.e. the media
+// viewer auto-launched us), REPLACE the history entry so the back
+// button goes to the gallery instead of bouncing back through #/view/.
+let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;let tmpNewHash='#/explore-image/'+tmpFragId;let tmpCurrentHash=window.location.hash||'';if(tmpCurrentHash.indexOf('#/view/')===0){history.replaceState(null,'',tmpNewHash);}else{window.location.hash=tmpNewHash;}// Show viewer, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];// Build the explorer UI
 let tmpHTML='<div class="retold-remote-iex">';// Header
 tmpHTML+='<div class="retold-remote-iex-header">';tmpHTML+='<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-iex-title">Image Explorer &mdash; '+tmpFmt.escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar
@@ -10890,7 +10902,7 @@ this._showExploreButton();}/**
 	 * Get the current fit mode from AppData.
 	 *
 	 * @returns {string} 'fit' | 'auto' | 'original'
-	 */_getFitMode(){let tmpRemote=this.pict.AppData.RetoldRemote;return tmpRemote.ImageFitMode||'auto';}/**
+	 */_getFitMode(){let tmpRemote=this.pict.AppData.RetoldRemote;return tmpRemote.ImageFitMode||'fit';}/**
 	 * Set the fit mode and persist it.
 	 *
 	 * @param {string} pMode - 'fit' | 'auto' | 'original'
@@ -11357,8 +11369,9 @@ tmpCollMgr.setPendingClipContext({Type:'video-clip',Start:tmpStart,End:tmpEnd});
 // _selectionFromCaller prevents _loadSavedCustomFrames from
 // overwriting an explicit selection (e.g. when opening a saved clip)
 if(typeof pSelectionStart==='number'&&pSelectionStart>=0&&typeof pSelectionEnd==='number'&&pSelectionEnd>=0){this._selectionStartTime=pSelectionStart;this._selectionEndTime=pSelectionEnd;this._selectionFromCaller=true;}else{this._selectionStartTime=-1;this._selectionEndTime=-1;this._selectionFromCaller=false;}// Clean up any window-level event listeners from previous session
-this._cleanupWindowListeners();// Update the hash
-let tmpFragProvider=this._getProvider();let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore/'+tmpFragId;// Show viewer container, hide gallery
+this._cleanupWindowListeners();// Update the hash.  Replace (not push) when coming from #/view/ to
+// prevent back-button loops when auto-launched from the media viewer.
+let tmpFragProvider=this._getProvider();let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;let tmpNewHash='#/explore/'+tmpFragId;let tmpCurrentHash=window.location.hash||'';if(tmpCurrentHash.indexOf('#/view/')===0){history.replaceState(null,'',tmpNewHash);}else{window.location.hash=tmpNewHash;}// Show viewer container, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');// Build initial UI with loading state
 let tmpHTML='<div class="retold-remote-vex">';// Header
 tmpHTML+='<div class="retold-remote-vex-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-vex-title">Video Explorer &mdash; '+this._getFmt().escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar (populated after frames load)

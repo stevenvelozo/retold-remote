@@ -108,7 +108,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			HashedFilenames: true,         // From /api/remote/settings
 			ShowHiddenFiles: false,
 			DistractionFreeShowNav: false,
-			ImageFitMode: 'auto',
+			ImageFitMode: 'fit',
 			SidebarCollapsed: false,
 			SidebarWidth: 250,
 			AutoplayVideo: false,
@@ -302,12 +302,29 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			tmpNavProvider.bindKeyboardNavigation();
 		}
 
+		// Capture the initial hash BEFORE loading the file list.
+		// loadFileList() overwrites window.location.hash with the loaded
+		// folder's hash, so if we don't save it first, the original
+		// deep-link hash (e.g. #/browse/11ee5820d1) gets clobbered.
+		let tmpInitialHash = window.location.hash || '';
+
 		// Sync hidden files setting and load initial file list
 		this.syncHiddenFilesSetting(() =>
 		{
 			tmpSelf.loadFileList(null, () =>
 			{
-				tmpSelf.resolveHash();
+				// Restore the initial hash so resolveHash() sees the original
+				// deep-link, not the root folder's hash that loadFileList set.
+				// Setting the hash fires hashchange → resolveHash() automatically,
+				// so we only need the explicit call when there's no hash to restore.
+				if (tmpInitialHash && tmpInitialHash !== '#' && tmpInitialHash !== '#/' && tmpInitialHash !== '#/browse/' && tmpInitialHash !== '#/browse')
+				{
+					window.location.hash = tmpInitialHash;
+				}
+				else
+				{
+					tmpSelf.resolveHash();
+				}
 			});
 		});
 

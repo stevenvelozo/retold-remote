@@ -74,6 +74,10 @@
 			"to": "./web-application/js/"
 		},
 		{
+			"from": "./node_modules/jszip/dist/jszip.min.js",
+			"to": "./web-application/js/"
+		},
+		{
 			"from": "./node_modules/epubjs/dist/epub.min.js",
 			"to": "./web-application/js/"
 		},

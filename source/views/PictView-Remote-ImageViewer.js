@@ -87,7 +87,7 @@ class RetoldRemoteImageViewerView extends libPictView
 	_getFitMode()
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
-		return tmpRemote.ImageFitMode || 'auto';
+		return tmpRemote.ImageFitMode || 'fit';
 	}
 
 	/**

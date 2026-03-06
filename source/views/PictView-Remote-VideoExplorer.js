@@ -229,10 +229,20 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		// Clean up any window-level event listeners from previous session
 		this._cleanupWindowListeners();
 
-		// Update the hash
+		// Update the hash.  Replace (not push) when coming from #/view/ to
+		// prevent back-button loops when auto-launched from the media viewer.
 		let tmpFragProvider = this._getProvider();
 		let tmpFragId = tmpFragProvider ? tmpFragProvider.getFragmentIdentifier(pFilePath) : pFilePath;
-		window.location.hash = '#/explore/' + tmpFragId;
+		let tmpNewHash = '#/explore/' + tmpFragId;
+		let tmpCurrentHash = window.location.hash || '';
+		if (tmpCurrentHash.indexOf('#/view/') === 0)
+		{
+			history.replaceState(null, '', tmpNewHash);
+		}
+		else
+		{
+			window.location.hash = tmpNewHash;
+		}
 
 		// Show viewer container, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
