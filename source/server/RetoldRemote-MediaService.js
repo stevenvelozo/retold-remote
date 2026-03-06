@@ -265,6 +265,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 					// Try sharp for image metadata
 					if (tmpCategory === 'image' && tmpSelf.capabilities.sharp)
 					{
+						let tmpIsRawFile = libExtensionMaps.isRawImage(tmpExtension);
 						try
 						{
 							let tmpSharp = require('sharp');
@@ -276,11 +277,21 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 									tmpProbe.Format = pMetadata.format;
 									tmpProbe.Space = pMetadata.space;
 									tmpProbe.HasAlpha = pMetadata.hasAlpha;
+									if (tmpIsRawFile)
+									{
+										tmpProbe.IsRawFormat = true;
+									}
 									pResponse.send(tmpProbe);
 									return fNext();
 								})
 								.catch(() =>
 								{
+									// Sharp failed — for raw files, try exifr as fallback
+									if (tmpIsRawFile)
+									{
+										tmpSelf._probeRawWithExifr(tmpFullPath, tmpProbe, pResponse, fNext);
+										return;
+									}
 									pResponse.send(tmpProbe);
 									return fNext();
 								});
@@ -288,8 +299,19 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						}
 						catch (pErr)
 						{
-							// sharp not available after all
+							// sharp not available after all — try exifr for raw
+							if (tmpIsRawFile)
+							{
+								this._probeRawWithExifr(tmpFullPath, tmpProbe, pResponse, fNext);
+								return;
+							}
 						}
+					}
+					// For raw images without sharp, still try exifr
+					else if (tmpCategory === 'image' && libExtensionMaps.isRawImage(tmpExtension))
+					{
+						tmpSelf._probeRawWithExifr(tmpFullPath, tmpProbe, pResponse, fNext);
+						return;
 					}
 
 					pResponse.send(tmpProbe);
@@ -414,9 +436,17 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 	/**
 	 * Generate an image thumbnail using sharp or ImageMagick.
+	 * Raw camera formats are routed to _generateRawThumbnail.
 	 */
 	_generateImageThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
+		// Raw camera formats need special handling
+		let tmpExt = libPath.extname(pFullPath).replace(/^\./, '').toLowerCase();
+		if (libExtensionMaps.RawImageExtensions[tmpExt])
+		{
+			return this._generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback);
+		}
+
 		// Try sharp first
 		if (this.capabilities.sharp)
 		{
@@ -457,6 +487,119 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Generate a thumbnail for a raw camera image.
+	 * Fallback chain: dcraw+sharp → ImageMagick → exifr embedded preview.
+	 */
+	_generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+		// Strategy 1: dcraw piped to sharp (half-size for speed)
+		if (this.capabilities.dcraw && this.capabilities.sharp)
+		{
+			try
+			{
+				let tmpSharp = require('sharp');
+				let tmpDcraw = libChildProcess.spawn('dcraw', ['-c', '-w', '-h', pFullPath], { timeout: 60000 });
+				let tmpChunks = [];
+
+				tmpDcraw.stdout.on('data', (pChunk) =>
+				{
+					tmpChunks.push(pChunk);
+				});
+
+				tmpDcraw.on('error', () =>
+				{
+					// Fall through to next strategy
+					tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+				});
+
+				tmpDcraw.on('close', (pCode) =>
+				{
+					if (pCode !== 0 || tmpChunks.length === 0)
+					{
+						return tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+					}
+
+					let tmpBuffer = Buffer.concat(tmpChunks);
+					tmpSharp(tmpBuffer)
+						.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
+						.toFormat(tmpOutputFormat, { quality: 80 })
+						.toBuffer()
+						.then((pOutBuf) => fCallback(null, pOutBuf))
+						.catch(() =>
+						{
+							tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+						});
+				});
+				return;
+			}
+			catch (pError)
+			{
+				// Fall through
+			}
+		}
+
+		return this._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Fallback raw thumbnail generation: ImageMagick → exifr embedded preview.
+	 */
+	_generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+		// Strategy 2: ImageMagick (may have dcraw delegate)
+		if (this.capabilities.imagemagick)
+		{
+			try
+			{
+				let tmpCmd = `convert "${pFullPath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:-`;
+				let tmpBuffer = libChildProcess.execSync(tmpCmd, { maxBuffer: 10 * 1024 * 1024, timeout: 30000 });
+				return fCallback(null, tmpBuffer);
+			}
+			catch (pError)
+			{
+				// Fall through to exifr
+			}
+		}
+
+		// Strategy 3: Extract embedded JPEG preview via exifr, resize with sharp
+		if (this.capabilities.sharp)
+		{
+			try
+			{
+				let tmpExifr = require('exifr');
+				let tmpSharp = require('sharp');
+				tmpExifr.thumbnailBuffer(pFullPath)
+					.then((pBuffer) =>
+					{
+						if (!pBuffer || pBuffer.length === 0)
+						{
+							return fCallback(new Error('No embedded preview available.'));
+						}
+						tmpSharp(pBuffer)
+							.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
+							.toFormat(tmpOutputFormat, { quality: 80 })
+							.toBuffer()
+							.then((pOutBuf) => fCallback(null, pOutBuf))
+							.catch(fCallback);
+					})
+					.catch(fCallback);
+				return;
+			}
+			catch (pError)
+			{
+				// Fall through
+			}
+		}
+
+		return fCallback(new Error('No raw thumbnail tools available.'));
+	}
+
+	/**
 	 * Generate a video thumbnail by extracting a frame with ffmpeg.
 	 */
 	_generateVideoThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
@@ -472,6 +615,43 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		catch (pError)
 		{
 			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Probe a raw camera image for dimensions using exifr.
+	 * Used when Sharp fails to read the raw format.
+	 */
+	_probeRawWithExifr(pFullPath, pProbe, pResponse, fNext)
+	{
+		try
+		{
+			let tmpExifr = require('exifr');
+			tmpExifr.parse(pFullPath, { tiff: true, exif: true })
+				.then((pExif) =>
+				{
+					if (pExif)
+					{
+						pProbe.Width = pExif.ImageWidth || pExif.ExifImageWidth || null;
+						pProbe.Height = pExif.ImageHeight || pExif.ExifImageHeight || null;
+						pProbe.Format = 'raw';
+					}
+					pProbe.IsRawFormat = true;
+					pResponse.send(pProbe);
+					return fNext();
+				})
+				.catch(() =>
+				{
+					pProbe.IsRawFormat = true;
+					pResponse.send(pProbe);
+					return fNext();
+				});
+		}
+		catch (pError)
+		{
+			pProbe.IsRawFormat = true;
+			pResponse.send(pProbe);
+			return fNext();
 		}
 	}
 

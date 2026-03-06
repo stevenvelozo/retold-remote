@@ -9196,12 +9196,37 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
  *
  * Used by both client-side providers (GalleryFilterSort) and server-side
  * services (MediaService) to classify files by extension.
- */const ImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true,'heic':true,'heif':true};const VideoExtensions={'mp4':true,'webm':true,'mov':true,'mkv':true,'avi':true,'wmv':true,'flv':true,'m4v':true,'ogv':true,'mpg':true,'mpeg':true,'mpe':true,'mpv':true,'m2v':true,'ts':true,'mts':true,'m2ts':true,'vob':true,'3gp':true,'3g2':true,'f4v':true,'rm':true,'rmvb':true,'divx':true,'asf':true,'mxf':true,'dv':true,'nsv':true,'nuv':true,'y4m':true,'wtv':true,'swf':true,'dat':true};const AudioExtensions={'mp3':true,'wav':true,'ogg':true,'flac':true,'aac':true,'m4a':true,'wma':true,'oga':true};const DocumentExtensions={'pdf':true,'epub':true,'mobi':true,'doc':true,'docx':true};/**
+ */// Raw camera image formats that require conversion before display.
+// These are recognized as images for categorization but need dcraw,
+// ImageMagick, or embedded-preview extraction before Sharp can process them.
+const RawImageExtensions={'nef':true,'nrw':true,// Nikon
+'cr2':true,'cr3':true,'crw':true,// Canon
+'arw':true,'srf':true,'sr2':true,// Sony
+'raf':true,// Fujifilm
+'orf':true,// Olympus / OM System
+'rw2':true,'rwl':true,// Panasonic / Leica
+'pef':true,// Pentax / Ricoh
+'srw':true,// Samsung
+'x3f':true,// Sigma / Foveon
+'3fr':true,'fff':true,// Hasselblad
+'iiq':true,// Phase One
+'dcr':true,'kdc':true,// Kodak
+'mrw':true,// Minolta
+'erf':true,// Epson
+'raw':true,// Generic
+'dng':true// Adobe DNG (Leica, DJI, etc.)
+};const ImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true,'heic':true,'heif':true};// Merge raw extensions into ImageExtensions so getCategory() returns 'image'
+for(let tmpKey in RawImageExtensions){ImageExtensions[tmpKey]=true;}const VideoExtensions={'mp4':true,'webm':true,'mov':true,'mkv':true,'avi':true,'wmv':true,'flv':true,'m4v':true,'ogv':true,'mpg':true,'mpeg':true,'mpe':true,'mpv':true,'m2v':true,'ts':true,'mts':true,'m2ts':true,'vob':true,'3gp':true,'3g2':true,'f4v':true,'rm':true,'rmvb':true,'divx':true,'asf':true,'mxf':true,'dv':true,'nsv':true,'nuv':true,'y4m':true,'wtv':true,'swf':true,'dat':true};const AudioExtensions={'mp3':true,'wav':true,'ogg':true,'flac':true,'aac':true,'m4a':true,'wma':true,'oga':true};const DocumentExtensions={'pdf':true,'epub':true,'mobi':true,'doc':true,'docx':true};/**
  * Get the media category for a file extension.
  *
  * @param {string} pExtension - Extension with or without leading dot (e.g. '.png' or 'png')
  * @returns {string} 'image', 'video', 'audio', 'document', or 'other'
- */function getCategory(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(ImageExtensions[tmpExt])return'image';if(VideoExtensions[tmpExt])return'video';if(AudioExtensions[tmpExt])return'audio';if(DocumentExtensions[tmpExt])return'document';return'other';}module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;},{}],115:[function(require,module,exports){/**
+ */function getCategory(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(ImageExtensions[tmpExt])return'image';if(VideoExtensions[tmpExt])return'video';if(AudioExtensions[tmpExt])return'audio';if(DocumentExtensions[tmpExt])return'document';return'other';}/**
+ * Check if an extension is a raw camera image format.
+ *
+ * @param {string} pExtension - Extension with or without leading dot
+ * @returns {boolean}
+ */function isRawImage(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();return!!RawImageExtensions[tmpExt];}module.exports.RawImageExtensions=RawImageExtensions;module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;module.exports.isRawImage=isRawImage;},{}],115:[function(require,module,exports){/**
  * CollectionManager — Add Items Mixin
  *
  * Convenience methods for adding various media types to collections.
@@ -9936,7 +9961,7 @@ tmpVLCURL='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(tmpSt
 tmpVLCURL='vlc://'+tmpStreamURL;}else{// macOS/Linux: our custom handlers URL-decode, so we encode
 tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);}this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use window.location for iOS (more reliable for custom URL schemes
 // on iOS Safari than a programmatic anchor click), anchor for others.
-if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":128,"./keyboard-handlers/KeyHandler-Gallery.js":129,"./keyboard-handlers/KeyHandler-ImageExplorer.js":130,"./keyboard-handlers/KeyHandler-Sidebar.js":131,"./keyboard-handlers/KeyHandler-VideoExplorer.js":132,"./keyboard-handlers/KeyHandler-Viewer.js":133,"pict-provider":46}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":128,"./keyboard-handlers/KeyHandler-Gallery.js":129,"./keyboard-handlers/KeyHandler-ImageExplorer.js":130,"./keyboard-handlers/KeyHandler-Sidebar.js":131,"./keyboard-handlers/KeyHandler-VideoExplorer.js":132,"./keyboard-handlers/KeyHandler-Viewer.js":133,"pict-provider":46}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -10018,7 +10043,7 @@ if(pData&&pData.Hash&&pData.Path){this.registerHash(pData.Path,pData.Hash);}fCal
 	 *
 	 * @param {string} pExtension - Lowercase extension
 	 * @returns {boolean}
-	 */_isImageExtension(pExtension){let tmpImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};return!!tmpImageExtensions[pExtension];}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"pict-provider":46}],124:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
+	 */_isImageExtension(pExtension){return libExtensionMaps.getCategory(pExtension)==='image';}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46}],124:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
 // DEFAULT DARK-THEME COLOR PALETTE
 //
 // Designed for retold-remote's dark navy background (#16162B).
@@ -10044,7 +10069,8 @@ PdfText:'#E06060'// Bright red for PDF label text
 let _BaseExtensionMap;try{_BaseExtensionMap=require('pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js').ExtensionMap;}catch(pError){// Fallback if the require path differs in production bundles
 _BaseExtensionMap={};}// Ensure we have a reasonable extension map even if the import failed
 const _FallbackExtensionMap={// Images
-'.jpg':'file-image','.jpeg':'file-image','.png':'file-image','.gif':'file-image','.svg':'file-image','.webp':'file-image','.bmp':'file-image','.ico':'file-image','.tiff':'file-image','.tif':'file-image','.heic':'file-image','.heif':'file-image','.avif':'file-image','.raw':'file-image',// Documents / text
+'.jpg':'file-image','.jpeg':'file-image','.png':'file-image','.gif':'file-image','.svg':'file-image','.webp':'file-image','.bmp':'file-image','.ico':'file-image','.tiff':'file-image','.tif':'file-image','.heic':'file-image','.heif':'file-image','.avif':'file-image','.raw':'file-image','.dng':'file-image',// Raw camera formats
+'.nef':'file-image','.nrw':'file-image','.cr2':'file-image','.cr3':'file-image','.crw':'file-image','.arw':'file-image','.srf':'file-image','.sr2':'file-image','.raf':'file-image','.orf':'file-image','.rw2':'file-image','.rwl':'file-image','.pef':'file-image','.srw':'file-image','.x3f':'file-image','.3fr':'file-image','.fff':'file-image','.iiq':'file-image','.dcr':'file-image','.kdc':'file-image','.mrw':'file-image','.erf':'file-image',// Documents / text
 '.txt':'file-text','.md':'file-text','.rtf':'file-text','.doc':'file-text','.docx':'file-text',// PDF
 '.pdf':'file-pdf',// Spreadsheets
 '.xls':'file-spreadsheet','.xlsx':'file-spreadsheet','.csv':'file-spreadsheet','.ods':'file-spreadsheet',// Code
@@ -10770,9 +10796,11 @@ this._ensureOSDLoaded(()=>{this._probeAndShow(pFilePath);});}/**
 	 */_probeAndShow(pFilePath){// Guard against duplicate requests (e.g. rapid re-renders)
 if(this._loading){return;}this._loading=true;let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);// Probe dimensions via the image-preview endpoint
 fetch('/api/media/image-preview?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){// sharp might not be available — fall back to simple image source
-tmpSelf._loading=false;tmpSelf._showSimpleImage(pFilePath);return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);if(tmpLongest>4096){// Large image — use DZI tiles for efficient pan+zoom
+// But raw files can't be displayed directly by the browser
+tmpSelf._loading=false;if(tmpSelf._isRawExtension(pFilePath)){tmpSelf._showRawUnsupported();}else{tmpSelf._showSimpleImage(pFilePath);}return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);if(tmpLongest>4096){// Large image — use DZI tiles for efficient pan+zoom
 tmpSelf._generateAndShowTiles(pFilePath,tmpPathParam);}else{// Regular image — use simple image source (no tile generation)
-tmpSelf._loading=false;tmpSelf._dziData={Width:pResult.OrigWidth,Height:pResult.OrigHeight};tmpSelf._showSimpleImageInfo(pResult.OrigWidth,pResult.OrigHeight);tmpSelf._initSimpleViewer(pFilePath);}}).catch(()=>{// Probe failed — fall back to simple image source
+tmpSelf._loading=false;tmpSelf._dziData={Width:pResult.OrigWidth,Height:pResult.OrigHeight};tmpSelf._showSimpleImageInfo(pResult.OrigWidth,pResult.OrigHeight);// Raw files need to use the preview JPEG — browsers can't display raw formats
+if(pResult.IsRawFormat&&pResult.CacheKey){let tmpPreviewURL='/api/media/image-preview-file/'+encodeURIComponent(pResult.CacheKey)+'/'+encodeURIComponent(pResult.OutputFilename);tmpSelf._initSimpleViewer(null,tmpPreviewURL);}else{tmpSelf._initSimpleViewer(pFilePath);}}}).catch(()=>{// Probe failed — fall back to simple image source
 tmpSelf._loading=false;tmpSelf._showSimpleImage(pFilePath);});}/**
 	 * Open a regular-sized image directly with OpenSeadragon's simple
 	 * image source — no server-side tile generation needed.
@@ -10780,6 +10808,14 @@ tmpSelf._loading=false;tmpSelf._showSimpleImage(pFilePath);});}/**
 	 * @param {string} pFilePath  - Relative file path
 	 * @param {string} pPathParam - URL-encoded path parameter
 	 */_showSimpleImage(pFilePath){this._dziData={Width:0,Height:0};this._initSimpleViewer(pFilePath);}/**
+	 * Check if a file path has a raw camera image extension.
+	 *
+	 * @param {string} pFilePath - File path to check
+	 * @returns {boolean}
+	 */_isRawExtension(pFilePath){let tmpExt=(pFilePath||'').replace(/^.*\./,'').toLowerCase();// Common raw camera extensions
+let tmpRawExts={'nef':true,'nrw':true,'cr2':true,'cr3':true,'crw':true,'arw':true,'srf':true,'sr2':true,'raf':true,'orf':true,'rw2':true,'rwl':true,'pef':true,'srw':true,'x3f':true,'3fr':true,'fff':true,'iiq':true,'dcr':true,'kdc':true,'mrw':true,'erf':true,'raw':true,'dng':true};return!!tmpRawExts[tmpExt];}/**
+	 * Show a message when a raw image cannot be displayed.
+	 */_showRawUnsupported(){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.innerHTML='<div style="padding: 2em; text-align: center; color: #999;">Raw image preview not available.<br>Install dcraw on the server for raw camera format support.</div>';}}/**
 	 * Show the info bar for a simple-image viewer (without tile details).
 	 *
 	 * @param {number} pWidth  - Image width
@@ -10787,9 +10823,10 @@ tmpSelf._loading=false;tmpSelf._showSimpleImage(pFilePath);});}/**
 	 */_showSimpleImageInfo(pWidth,pHeight){let tmpInfoBar=document.getElementById('RetoldRemote-IEX-Info');if(!tmpInfoBar){return;}let tmpHTML='';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Dimensions:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+pWidth+' \u00d7 '+pHeight+' px</span></span>';let tmpMegapixels=(pWidth*pHeight/1000000).toFixed(1);tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Size:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+tmpMegapixels+' MP</span></span>';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Mode:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">Direct</span></span>';tmpInfoBar.innerHTML=tmpHTML;tmpInfoBar.style.display='';}/**
 	 * Initialize OpenSeadragon with a simple image tile source (no DZI).
 	 *
-	 * @param {string} pFilePath  - Relative file path
-	 * @param {string} pPathParam - URL-encoded path parameter
-	 */_initSimpleViewer(pFilePath){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');let tmpControls=document.getElementById('RetoldRemote-IEX-Controls');if(tmpLoading)tmpLoading.style.display='none';if(tmpViewerDiv)tmpViewerDiv.style.display='block';if(tmpControls)tmpControls.style.display='';let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:{type:'image',url:tmpContentURL},prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});this._osdViewer.addHandler('zoom',function(){tmpSelf._updateZoomLabel();});this._osdViewer.addHandler('open',function(){// Capture actual image dimensions from the loaded source
+	 * @param {string} pFilePath    - Relative file path (used to build content URL)
+	 * @param {string} pExplicitURL - Optional explicit URL to use instead of content URL
+	 *                                (used for raw camera formats that need a converted preview)
+	 */_initSimpleViewer(pFilePath,pExplicitURL){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');let tmpControls=document.getElementById('RetoldRemote-IEX-Controls');if(tmpLoading)tmpLoading.style.display='none';if(tmpViewerDiv)tmpViewerDiv.style.display='block';if(tmpControls)tmpControls.style.display='';let tmpSelf=this;let tmpContentURL;if(pExplicitURL){tmpContentURL=pExplicitURL;}else{let tmpProvider=this.pict.providers['RetoldRemote-Provider'];tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);}this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:{type:'image',url:tmpContentURL},prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});this._osdViewer.addHandler('zoom',function(){tmpSelf._updateZoomLabel();});this._osdViewer.addHandler('open',function(){// Capture actual image dimensions from the loaded source
 let tmpTiledImage=tmpSelf._osdViewer.world.getItemAt(0);if(tmpTiledImage){let tmpContentSize=tmpTiledImage.getContentSize();if(tmpContentSize){tmpSelf._dziData={Width:tmpContentSize.x,Height:tmpContentSize.y};}}tmpSelf._updateZoomLabel();});if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
 	 * Request DZI tile generation from the server, then initialize the viewer.
 	 *

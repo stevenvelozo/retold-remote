@@ -13,6 +13,10 @@
  *
  * Both tiers cache their output in ParimeBinaryStorage.
  *
+ * Raw camera formats (NEF, CR2, ARW, DNG, etc.) are supported via a
+ * conversion pipeline: dcraw → ImageMagick → exifr embedded preview.
+ * The converted JPEG is cached and then fed to the normal Sharp pipeline.
+ *
  * API:
  *   generatePreview(pAbsPath, pRelPath, pMaxDimension, fCallback)
  *     -> { Success, CacheKey, OutputFilename, Width, Height, OrigWidth, OrigHeight, FileSize }
@@ -32,6 +36,8 @@ const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
 const libCrypto = require('crypto');
+const libChildProcess = require('child_process');
+const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
 const _DefaultServiceConfiguration =
 {
@@ -70,6 +76,9 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		// for the same image instead of regenerating tiles in parallel.
 		this._dziInFlight = new Map();
 
+		// Tool capabilities — set by MediaService after ToolDetector runs
+		this._capabilities = {};
+
 		// Try to load sharp
 		try
 		{
@@ -93,6 +102,266 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Set tool capabilities from ToolDetector results.
+	 *
+	 * @param {object} pCapabilities - { dcraw, imagemagick, sharp, ... }
+	 */
+	setCapabilities(pCapabilities)
+	{
+		this._capabilities = pCapabilities || {};
+	}
+
+	// ---------------------------------------------------------------
+	// Raw format detection and conversion
+	// ---------------------------------------------------------------
+
+	/**
+	 * Check if a file is a raw camera format that needs conversion.
+	 *
+	 * @param {string} pAbsPath - Absolute path to check
+	 * @returns {boolean}
+	 */
+	_isRawFormat(pAbsPath)
+	{
+		let tmpExt = libPath.extname(pAbsPath).replace(/^\./, '').toLowerCase();
+		return !!libExtensionMaps.RawImageExtensions[tmpExt];
+	}
+
+	/**
+	 * Ensure a raw camera image has been converted to a JPEG that Sharp can process.
+	 * The converted file is cached in ParimeBinaryStorage under 'raw-conversions'.
+	 *
+	 * @param {string}   pAbsPath        - Absolute path to the raw file
+	 * @param {number}   pMtimeMs        - File modification time in ms
+	 * @param {boolean}  pFullResolution - true for full-size (DZI), false for half-size (previews)
+	 * @param {Function} fCallback       - Callback(pError, pConvertedPath)
+	 */
+	_ensureConvertedRaw(pAbsPath, pMtimeMs, pFullResolution, fCallback)
+	{
+		// Handle optional pFullResolution parameter
+		if (typeof (pFullResolution) === 'function')
+		{
+			fCallback = pFullResolution;
+			pFullResolution = false;
+		}
+
+		let tmpSelf = this;
+		let tmpSuffix = pFullResolution ? 'raw-full' : 'raw-half';
+		let tmpCacheKey = this._buildCacheKey(pAbsPath, pMtimeMs, tmpSuffix);
+		let tmpCacheDir = this.fable.ParimeBinaryStorage.resolvePath('raw-conversions', tmpCacheKey);
+		let tmpOutputPath = libPath.join(tmpCacheDir, 'converted.jpg');
+
+		// Check cache
+		if (libFs.existsSync(tmpOutputPath))
+		{
+			this.fable.log.info(`Raw conversion cache hit: ${libPath.basename(pAbsPath)}`);
+			return fCallback(null, tmpOutputPath);
+		}
+
+		// Ensure cache directory
+		if (!libFs.existsSync(tmpCacheDir))
+		{
+			libFs.mkdirSync(tmpCacheDir, { recursive: true });
+		}
+
+		this.fable.log.info(`Converting raw image: ${libPath.basename(pAbsPath)} (${pFullResolution ? 'full' : 'half'} resolution)`);
+
+		// Try dcraw → Sharp pipeline
+		this._convertWithDcraw(pAbsPath, tmpOutputPath, pFullResolution, (pError) =>
+		{
+			if (!pError)
+			{
+				tmpSelf.fable.log.info(`Raw conversion complete (dcraw): ${libPath.basename(pAbsPath)}`);
+				return fCallback(null, tmpOutputPath);
+			}
+
+			// Fallback: ImageMagick convert
+			tmpSelf._convertWithImageMagick(pAbsPath, tmpOutputPath, (pError2) =>
+			{
+				if (!pError2)
+				{
+					tmpSelf.fable.log.info(`Raw conversion complete (ImageMagick): ${libPath.basename(pAbsPath)}`);
+					return fCallback(null, tmpOutputPath);
+				}
+
+				// Last resort: extract embedded JPEG preview via exifr
+				tmpSelf._extractEmbeddedPreview(pAbsPath, tmpOutputPath, (pError3) =>
+				{
+					if (!pError3)
+					{
+						tmpSelf.fable.log.info(`Raw conversion complete (embedded preview): ${libPath.basename(pAbsPath)}`);
+						return fCallback(null, tmpOutputPath);
+					}
+
+					tmpSelf.fable.log.warn(`Raw conversion failed for ${libPath.basename(pAbsPath)}: no conversion tool available`);
+					return fCallback(new Error('No raw conversion tool available.'));
+				});
+			});
+		});
+	}
+
+	/**
+	 * Convert a raw image to JPEG using dcraw piped through Sharp.
+	 * dcraw outputs PPM to stdout; Sharp converts to JPEG.
+	 *
+	 * @param {string}   pAbsPath        - Raw file path
+	 * @param {string}   pOutputPath     - Output JPEG path
+	 * @param {boolean}  pFullResolution - false = -h (half-size, fast), true = full size
+	 * @param {Function} fCallback       - Callback(pError)
+	 */
+	_convertWithDcraw(pAbsPath, pOutputPath, pFullResolution, fCallback)
+	{
+		if (!this._capabilities.dcraw || !this._sharp)
+		{
+			return fCallback(new Error('dcraw or sharp not available'));
+		}
+
+		let tmpSelf = this;
+
+		try
+		{
+			// dcraw -c = write to stdout, -w = use camera white balance
+			// -h = half-size interpolation (fast, good for previews)
+			let tmpArgs = ['-c', '-w'];
+			if (!pFullResolution)
+			{
+				tmpArgs.push('-h');
+			}
+			tmpArgs.push(pAbsPath);
+
+			let tmpDcraw = libChildProcess.spawn('dcraw', tmpArgs, { timeout: 120000 });
+			let tmpChunks = [];
+			let tmpErrorOutput = '';
+
+			tmpDcraw.stdout.on('data', (pChunk) =>
+			{
+				tmpChunks.push(pChunk);
+			});
+
+			tmpDcraw.stderr.on('data', (pData) =>
+			{
+				tmpErrorOutput += pData.toString();
+			});
+
+			tmpDcraw.on('error', (pError) =>
+			{
+				return fCallback(pError);
+			});
+
+			tmpDcraw.on('close', (pCode) =>
+			{
+				if (pCode !== 0 || tmpChunks.length === 0)
+				{
+					return fCallback(new Error('dcraw failed (exit ' + pCode + '): ' + tmpErrorOutput));
+				}
+
+				let tmpBuffer = Buffer.concat(tmpChunks);
+
+				// Convert PPM buffer to JPEG via Sharp
+				tmpSelf._sharp(tmpBuffer, { limitInputPixels: false })
+					.jpeg({ quality: 92 })
+					.toFile(pOutputPath)
+					.then(() =>
+					{
+						return fCallback(null);
+					})
+					.catch((pSharpError) =>
+					{
+						return fCallback(pSharpError);
+					});
+			});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Convert a raw image to JPEG using ImageMagick's convert command.
+	 * Works if ImageMagick has the dcraw/ufraw delegate installed.
+	 *
+	 * @param {string}   pAbsPath    - Raw file path
+	 * @param {string}   pOutputPath - Output JPEG path
+	 * @param {Function} fCallback   - Callback(pError)
+	 */
+	_convertWithImageMagick(pAbsPath, pOutputPath, fCallback)
+	{
+		if (!this._capabilities.imagemagick)
+		{
+			return fCallback(new Error('ImageMagick not available'));
+		}
+
+		try
+		{
+			let tmpCmd = `convert "${pAbsPath}" -auto-orient -quality 92 "${pOutputPath}"`;
+			libChildProcess.exec(tmpCmd, { timeout: 120000 }, (pError, pStdout, pStderr) =>
+			{
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+				if (!libFs.existsSync(pOutputPath))
+				{
+					return fCallback(new Error('ImageMagick produced no output'));
+				}
+				return fCallback(null);
+			});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Extract the embedded JPEG preview from a raw file using exifr.
+	 * Most cameras embed a full-size or near-full-size JPEG preview
+	 * inside the raw file — this is the fastest extraction method
+	 * but may produce a lower-resolution image.
+	 *
+	 * @param {string}   pAbsPath    - Raw file path
+	 * @param {string}   pOutputPath - Output JPEG path
+	 * @param {Function} fCallback   - Callback(pError)
+	 */
+	_extractEmbeddedPreview(pAbsPath, pOutputPath, fCallback)
+	{
+		try
+		{
+			let tmpExifr = require('exifr');
+			tmpExifr.thumbnailBuffer(pAbsPath)
+				.then((pBuffer) =>
+				{
+					if (!pBuffer || pBuffer.length === 0)
+					{
+						return fCallback(new Error('No embedded preview found.'));
+					}
+					try
+					{
+						libFs.writeFileSync(pOutputPath, pBuffer);
+						return fCallback(null);
+					}
+					catch (pWriteError)
+					{
+						return fCallback(pWriteError);
+					}
+				})
+				.catch((pError) =>
+				{
+					return fCallback(pError);
+				});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	// ---------------------------------------------------------------
+	// Cache key generation
+	// ---------------------------------------------------------------
+
+	/**
 	 * Build a cache key from an absolute path and modification time.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the image
@@ -110,9 +379,18 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		return libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
 	}
 
+	// ---------------------------------------------------------------
+	// Preview generation
+	// ---------------------------------------------------------------
+
 	/**
 	 * Generate a downscaled preview of a large image.
 	 * Results are cached in ParimeBinaryStorage under 'image-previews'.
+	 *
+	 * For raw camera formats, the file is first converted to JPEG via
+	 * dcraw/ImageMagick/exifr, then processed normally with Sharp.
+	 * Raw files always get a preview JPEG (even if small) because
+	 * browsers cannot display raw formats directly.
 	 *
 	 * @param {string}   pAbsPath       - Absolute path to the source image
 	 * @param {string}   pRelPath       - Relative path (for the response)
@@ -145,6 +423,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		let tmpOutputFilename = 'preview.jpg';
 		let tmpCacheDir = this.fable.ParimeBinaryStorage.resolvePath('image-previews', tmpCacheKey);
 		let tmpManifestPath = libPath.join(tmpCacheDir, 'manifest.json');
+		let tmpIsRaw = this._isRawFormat(pAbsPath);
 
 		// Check for cached manifest
 		if (libFs.existsSync(tmpManifestPath))
@@ -175,35 +454,76 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		this.fable.log.info(`Generating image preview: ${pRelPath} (max ${tmpMaxDim}px)`);
 
+		// For raw formats, convert first then process the converted file
+		if (tmpIsRaw)
+		{
+			this._ensureConvertedRaw(pAbsPath, tmpStat.mtimeMs, false, (pError, pConvertedPath) =>
+			{
+				if (pError)
+				{
+					return fCallback(new Error('Raw conversion failed: ' + pError.message));
+				}
+				tmpSelf._doGeneratePreview(pConvertedPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, true, fCallback);
+			});
+		}
+		else
+		{
+			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
+		}
+	}
+
+	/**
+	 * Internal preview generation — shared by both raw and standard image paths.
+	 *
+	 * @param {string}   pInputPath      - Path to read (converted JPEG for raw, original for standard)
+	 * @param {string}   pOrigAbsPath    - Original file path (for metadata)
+	 * @param {string}   pRelPath        - Relative path (for response)
+	 * @param {number}   pMaxDim         - Max dimension
+	 * @param {string}   pCacheKey       - Cache key
+	 * @param {string}   pOutputFilename - Output filename
+	 * @param {string}   pCacheDir       - Cache directory
+	 * @param {string}   pManifestPath   - Manifest file path
+	 * @param {string}   pOutputPath     - Output file path
+	 * @param {object}   pStat           - Original file stat
+	 * @param {boolean}  pIsRaw          - Whether this is a raw camera format
+	 * @param {Function} fCallback       - Callback(pError, pResult)
+	 */
+	_doGeneratePreview(pInputPath, pOrigAbsPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pCacheDir, pManifestPath, pOutputPath, pStat, pIsRaw, fCallback)
+	{
+		let tmpSelf = this;
+
 		// Get metadata first to check if downscaling is needed
-		this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
+		this._sharp(pInputPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
 				let tmpOrigWidth = pMetadata.width;
 				let tmpOrigHeight = pMetadata.height;
 				let tmpLongest = Math.max(tmpOrigWidth, tmpOrigHeight);
 
-				// If image is smaller than threshold, just note it — no preview needed
-				if (tmpLongest <= tmpMaxDim)
+				// If image is smaller than threshold AND not a raw format,
+				// just note it — no preview needed (browser can display it directly).
+				// Raw files always need a preview because browsers can't display them.
+				if (tmpLongest <= pMaxDim && !pIsRaw)
 				{
 					let tmpResult =
 					{
 						Success: true,
 						SourcePath: pRelPath,
-						CacheKey: tmpCacheKey,
-						OutputFilename: tmpOutputFilename,
+						CacheKey: pCacheKey,
+						OutputFilename: pOutputFilename,
 						Width: tmpOrigWidth,
 						Height: tmpOrigHeight,
 						OrigWidth: tmpOrigWidth,
 						OrigHeight: tmpOrigHeight,
-						FileSize: tmpStat.size,
+						FileSize: pStat.size,
 						NeedsPreview: false,
+						IsRawFormat: false,
 						GeneratedAt: new Date().toISOString()
 					};
 
 					try
 					{
-						libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+						libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
 					}
 					catch (pWriteError)
 					{
@@ -214,37 +534,43 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				}
 
 				// Calculate new dimensions maintaining aspect ratio
-				let tmpScale = tmpMaxDim / tmpLongest;
-				let tmpNewWidth = Math.round(tmpOrigWidth * tmpScale);
-				let tmpNewHeight = Math.round(tmpOrigHeight * tmpScale);
+				let tmpNewWidth = tmpOrigWidth;
+				let tmpNewHeight = tmpOrigHeight;
+				if (tmpLongest > pMaxDim)
+				{
+					let tmpScale = pMaxDim / tmpLongest;
+					tmpNewWidth = Math.round(tmpOrigWidth * tmpScale);
+					tmpNewHeight = Math.round(tmpOrigHeight * tmpScale);
+				}
 
 				// Generate the preview
-				tmpSelf._sharp(pAbsPath, { limitInputPixels: false })
+				tmpSelf._sharp(pInputPath, { limitInputPixels: false })
 					.resize(tmpNewWidth, tmpNewHeight, { fit: 'inside', withoutEnlargement: true })
 					.jpeg({ quality: tmpSelf.options.PreviewQuality })
-					.toFile(tmpOutputPath)
+					.toFile(pOutputPath)
 					.then(() =>
 					{
-						let tmpOutputStat = libFs.statSync(tmpOutputPath);
+						let tmpOutputStat = libFs.statSync(pOutputPath);
 
 						let tmpResult =
 						{
 							Success: true,
 							SourcePath: pRelPath,
-							CacheKey: tmpCacheKey,
-							OutputFilename: tmpOutputFilename,
+							CacheKey: pCacheKey,
+							OutputFilename: pOutputFilename,
 							Width: tmpNewWidth,
 							Height: tmpNewHeight,
 							OrigWidth: tmpOrigWidth,
 							OrigHeight: tmpOrigHeight,
 							FileSize: tmpOutputStat.size,
 							NeedsPreview: true,
+							IsRawFormat: pIsRaw,
 							GeneratedAt: new Date().toISOString()
 						};
 
 						try
 						{
-							libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+							libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
 						}
 						catch (pWriteError)
 						{
@@ -265,9 +591,16 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			});
 	}
 
+	// ---------------------------------------------------------------
+	// DZI tile generation
+	// ---------------------------------------------------------------
+
 	/**
 	 * Generate DZI (Deep Zoom Image) tiles for an image.
 	 * Results are cached in ParimeBinaryStorage under 'dzi-tiles'.
+	 *
+	 * For raw camera formats, the file is first converted to JPEG at
+	 * full resolution, then tiled normally with Sharp.
 	 *
 	 * @param {string}   pAbsPath  - Absolute path to the source image
 	 * @param {string}   pRelPath  - Relative path (for the response)
@@ -335,8 +668,47 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		this.fable.log.info(`Generating DZI tiles: ${pRelPath}`);
 
+		// For raw formats, convert first then tile the converted file
+		if (this._isRawFormat(pAbsPath))
+		{
+			this._ensureConvertedRaw(pAbsPath, tmpStat.mtimeMs, true, (pError, pConvertedPath) =>
+			{
+				if (pError)
+				{
+					let tmpErr = new Error('Raw conversion failed: ' + pError.message);
+					let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
+					tmpSelf._dziInFlight.delete(tmpCacheKey);
+					for (let i = 0; i < tmpWaiters.length; i++)
+					{
+						tmpWaiters[i](tmpErr);
+					}
+					return fCallback(tmpErr);
+				}
+				tmpSelf._doGenerateDziTiles(pConvertedPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, fCallback);
+			});
+		}
+		else
+		{
+			this._doGenerateDziTiles(pAbsPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, fCallback);
+		}
+	}
+
+	/**
+	 * Internal DZI tile generation — shared by both raw and standard image paths.
+	 *
+	 * @param {string}   pInputPath    - Path to read (converted JPEG for raw, original for standard)
+	 * @param {string}   pRelPath      - Relative path (for response)
+	 * @param {string}   pCacheKey     - Cache key
+	 * @param {string}   pCacheDir     - Cache directory
+	 * @param {string}   pManifestPath - Manifest file path
+	 * @param {Function} fCallback     - Callback(pError, pResult)
+	 */
+	_doGenerateDziTiles(pInputPath, pRelPath, pCacheKey, pCacheDir, pManifestPath, fCallback)
+	{
+		let tmpSelf = this;
+
 		// Get metadata first
-		this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
+		this._sharp(pInputPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
 				let tmpTileSize = tmpSelf.options.DziTileSize;
@@ -351,7 +723,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				//     0/, 1/, 2/, ...       (zoom levels)
 				//       0_0.jpeg, 0_1.jpeg  (tiles)
 				let tmpBaseName = 'image';
-				let tmpOutputBase = libPath.join(tmpCacheDir, tmpBaseName);
+				let tmpOutputBase = libPath.join(pCacheDir, tmpBaseName);
 
 				let tmpSharpOptions =
 				{
@@ -371,7 +743,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 					tmpFormatOptions = { compressionLevel: 6 };
 				}
 
-				tmpSelf._sharp(pAbsPath, { limitInputPixels: false })
+				tmpSelf._sharp(pInputPath, { limitInputPixels: false })
 					.toFormat(tmpFormat, tmpFormatOptions)
 					.tile(tmpSharpOptions)
 					.toFile(tmpOutputBase)
@@ -381,7 +753,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 						{
 							Success: true,
 							SourcePath: pRelPath,
-							CacheKey: tmpCacheKey,
+							CacheKey: pCacheKey,
 							DziFilename: tmpBaseName + '.dzi',
 							TileDir: tmpBaseName + '_files',
 							Width: pMetadata.width,
@@ -394,7 +766,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 						try
 						{
-							libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+							libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
 						}
 						catch (pWriteError)
 						{
@@ -404,8 +776,8 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 						tmpSelf.fable.log.info(`Generated DZI tiles: ${pRelPath} (${pMetadata.width}×${pMetadata.height})`);
 
 						// Notify queued waiters
-						let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
-						tmpSelf._dziInFlight.delete(tmpCacheKey);
+						let tmpWaiters = tmpSelf._dziInFlight.get(pCacheKey) || [];
+						tmpSelf._dziInFlight.delete(pCacheKey);
 						for (let i = 0; i < tmpWaiters.length; i++)
 						{
 							tmpWaiters[i](null, tmpResult);
@@ -416,8 +788,8 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 					.catch((pError) =>
 					{
 						let tmpErr = new Error('DZI tile generation failed: ' + pError.message);
-						let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
-						tmpSelf._dziInFlight.delete(tmpCacheKey);
+						let tmpWaiters = tmpSelf._dziInFlight.get(pCacheKey) || [];
+						tmpSelf._dziInFlight.delete(pCacheKey);
 						for (let i = 0; i < tmpWaiters.length; i++)
 						{
 							tmpWaiters[i](tmpErr);
@@ -428,8 +800,8 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			.catch((pError) =>
 			{
 				let tmpErr = new Error('Could not read image metadata: ' + pError.message);
-				let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
-				tmpSelf._dziInFlight.delete(tmpCacheKey);
+				let tmpWaiters = tmpSelf._dziInFlight.get(pCacheKey) || [];
+				tmpSelf._dziInFlight.delete(pCacheKey);
 				for (let i = 0; i < tmpWaiters.length; i++)
 				{
 					tmpWaiters[i](tmpErr);
@@ -437,6 +809,10 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				return fCallback(tmpErr);
 			});
 	}
+
+	// ---------------------------------------------------------------
+	// Cache path resolution
+	// ---------------------------------------------------------------
 
 	/**
 	 * Get the absolute path to a cached preview file.
@@ -565,14 +941,59 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		return null;
 	}
 
+	// ---------------------------------------------------------------
+	// Size checking
+	// ---------------------------------------------------------------
+
 	/**
 	 * Check if an image is considered "large" by probing its dimensions.
+	 *
+	 * For raw camera formats, uses exifr to read dimensions from EXIF
+	 * headers (faster than converting the entire file just to check size).
 	 *
 	 * @param {string}   pAbsPath  - Absolute path to the image
 	 * @param {Function} fCallback - Callback(pError, pResult) where pResult = { IsLarge, Width, Height }
 	 */
 	checkImageSize(pAbsPath, fCallback)
 	{
+		let tmpSelf = this;
+
+		// For raw formats, try exifr first (no conversion needed for size check)
+		if (this._isRawFormat(pAbsPath))
+		{
+			try
+			{
+				let tmpExifr = require('exifr');
+				tmpExifr.parse(pAbsPath, { tiff: true, exif: true })
+					.then((pExif) =>
+					{
+						if (!pExif)
+						{
+							return fCallback(null, { IsLarge: false, Width: 0, Height: 0, IsRawFormat: true });
+						}
+						let tmpW = pExif.ImageWidth || pExif.ExifImageWidth || 0;
+						let tmpH = pExif.ImageHeight || pExif.ExifImageHeight || 0;
+						let tmpLongest = Math.max(tmpW, tmpH);
+						return fCallback(null,
+						{
+							IsLarge: tmpLongest > tmpSelf.options.LargeImageThreshold,
+							Width: tmpW,
+							Height: tmpH,
+							IsRawFormat: true
+						});
+					})
+					.catch(() =>
+					{
+						return fCallback(null, { IsLarge: false, Width: 0, Height: 0, IsRawFormat: true });
+					});
+				return;
+			}
+			catch (pError)
+			{
+				return fCallback(null, { IsLarge: false, Width: 0, Height: 0, IsRawFormat: true });
+			}
+		}
+
 		if (!this._sharp)
 		{
 			return fCallback(null, { IsLarge: false, Width: 0, Height: 0 });
@@ -584,7 +1005,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				let tmpLongest = Math.max(pMetadata.width || 0, pMetadata.height || 0);
 				return fCallback(null,
 				{
-					IsLarge: tmpLongest > this.options.LargeImageThreshold,
+					IsLarge: tmpLongest > tmpSelf.options.LargeImageThreshold,
 					Width: pMetadata.width,
 					Height: pMetadata.height
 				});

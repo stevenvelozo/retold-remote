@@ -176,8 +176,16 @@ class RetoldRemoteImageExplorerView extends libPictView
 				if (!pResult || !pResult.Success)
 				{
 					// sharp might not be available — fall back to simple image source
+					// But raw files can't be displayed directly by the browser
 					tmpSelf._loading = false;
-					tmpSelf._showSimpleImage(pFilePath);
+					if (tmpSelf._isRawExtension(pFilePath))
+					{
+						tmpSelf._showRawUnsupported();
+					}
+					else
+					{
+						tmpSelf._showSimpleImage(pFilePath);
+					}
 					return;
 				}
 
@@ -194,7 +202,19 @@ class RetoldRemoteImageExplorerView extends libPictView
 					tmpSelf._loading = false;
 					tmpSelf._dziData = { Width: pResult.OrigWidth, Height: pResult.OrigHeight };
 					tmpSelf._showSimpleImageInfo(pResult.OrigWidth, pResult.OrigHeight);
-					tmpSelf._initSimpleViewer(pFilePath);
+
+					// Raw files need to use the preview JPEG — browsers can't display raw formats
+					if (pResult.IsRawFormat && pResult.CacheKey)
+					{
+						let tmpPreviewURL = '/api/media/image-preview-file/' +
+							encodeURIComponent(pResult.CacheKey) + '/' +
+							encodeURIComponent(pResult.OutputFilename);
+						tmpSelf._initSimpleViewer(null, tmpPreviewURL);
+					}
+					else
+					{
+						tmpSelf._initSimpleViewer(pFilePath);
+					}
 				}
 			})
 			.catch(() =>
@@ -216,6 +236,32 @@ class RetoldRemoteImageExplorerView extends libPictView
 	{
 		this._dziData = { Width: 0, Height: 0 };
 		this._initSimpleViewer(pFilePath);
+	}
+
+	/**
+	 * Check if a file path has a raw camera image extension.
+	 *
+	 * @param {string} pFilePath - File path to check
+	 * @returns {boolean}
+	 */
+	_isRawExtension(pFilePath)
+	{
+		let tmpExt = (pFilePath || '').replace(/^.*\./, '').toLowerCase();
+		// Common raw camera extensions
+		let tmpRawExts = { 'nef': true, 'nrw': true, 'cr2': true, 'cr3': true, 'crw': true, 'arw': true, 'srf': true, 'sr2': true, 'raf': true, 'orf': true, 'rw2': true, 'rwl': true, 'pef': true, 'srw': true, 'x3f': true, '3fr': true, 'fff': true, 'iiq': true, 'dcr': true, 'kdc': true, 'mrw': true, 'erf': true, 'raw': true, 'dng': true };
+		return !!tmpRawExts[tmpExt];
+	}
+
+	/**
+	 * Show a message when a raw image cannot be displayed.
+	 */
+	_showRawUnsupported()
+	{
+		let tmpLoading = document.getElementById('RetoldRemote-IEX-Loading');
+		if (tmpLoading)
+		{
+			tmpLoading.innerHTML = '<div style="padding: 2em; text-align: center; color: #999;">Raw image preview not available.<br>Install dcraw on the server for raw camera format support.</div>';
+		}
 	}
 
 	/**
@@ -250,10 +296,11 @@ class RetoldRemoteImageExplorerView extends libPictView
 	/**
 	 * Initialize OpenSeadragon with a simple image tile source (no DZI).
 	 *
-	 * @param {string} pFilePath  - Relative file path
-	 * @param {string} pPathParam - URL-encoded path parameter
+	 * @param {string} pFilePath    - Relative file path (used to build content URL)
+	 * @param {string} pExplicitURL - Optional explicit URL to use instead of content URL
+	 *                                (used for raw camera formats that need a converted preview)
 	 */
-	_initSimpleViewer(pFilePath)
+	_initSimpleViewer(pFilePath, pExplicitURL)
 	{
 		let tmpLoading = document.getElementById('RetoldRemote-IEX-Loading');
 		let tmpViewerDiv = document.getElementById('RetoldRemote-IEX-Viewer');
@@ -264,8 +311,16 @@ class RetoldRemoteImageExplorerView extends libPictView
 		if (tmpControls) tmpControls.style.display = '';
 
 		let tmpSelf = this;
-		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
-		let tmpContentURL = tmpProvider ? tmpProvider.getContentURL(pFilePath) : ('/content/' + encodeURIComponent(pFilePath));
+		let tmpContentURL;
+		if (pExplicitURL)
+		{
+			tmpContentURL = pExplicitURL;
+		}
+		else
+		{
+			let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+			tmpContentURL = tmpProvider ? tmpProvider.getContentURL(pFilePath) : ('/content/' + encodeURIComponent(pFilePath));
+		}
 
 		this._osdViewer = OpenSeadragon(
 		{

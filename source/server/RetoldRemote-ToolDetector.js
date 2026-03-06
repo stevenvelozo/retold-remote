@@ -36,7 +36,8 @@ class ToolDetector
 			p7zip: this._detectCommand('7z --help'),
 			audiowaveform: this._detectCommand('audiowaveform --version'),
 			ebook_convert: this._detectCommand('ebook-convert --version'),
-			exiftool: this._detectCommand('exiftool -ver')
+			exiftool: this._detectCommand('exiftool -ver'),
+			dcraw: this._detectCommandExists('dcraw')
 		};
 
 		return this._capabilities;
@@ -84,6 +85,26 @@ class ToolDetector
 
 		// Linux / other: try vlc --version
 		return this._detectCommand('vlc --version');
+	}
+
+	/**
+	 * Check if a command-line tool exists on the PATH using 'which'.
+	 * Useful for tools that exit non-zero when invoked with no arguments (e.g. dcraw).
+	 *
+	 * @param {string} pToolName - The tool name (e.g. 'dcraw')
+	 * @returns {boolean}
+	 */
+	_detectCommandExists(pToolName)
+	{
+		try
+		{
+			libChildProcess.execSync('which ' + pToolName, { stdio: 'ignore', timeout: 5000 });
+			return true;
+		}
+		catch (pError)
+		{
+			return false;
+		}
 	}
 
 	/**

@@ -200,6 +200,10 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 				PathRegistry: tmpPathRegistry
 			});
 
+			// Share tool capabilities with the image service so it can
+			// use dcraw and ImageMagick for raw camera format conversion.
+			tmpImageService.setCapabilities(tmpMediaService.capabilities);
+
 			tmpOrator.initialize(
 		function ()
 		{

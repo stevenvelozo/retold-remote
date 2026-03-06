@@ -1,4 +1,5 @@
 const libPictProvider = require('pict-provider');
+const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
 const _DefaultProviderConfiguration =
 {
@@ -272,8 +273,7 @@ class RetoldRemoteProvider extends libPictProvider
 	 */
 	_isImageExtension(pExtension)
 	{
-		let tmpImageExtensions = { 'png': true, 'jpg': true, 'jpeg': true, 'gif': true, 'webp': true, 'svg': true, 'bmp': true, 'ico': true, 'avif': true, 'tiff': true, 'tif': true };
-		return !!tmpImageExtensions[pExtension];
+		return libExtensionMaps.getCategory(pExtension) === 'image';
 	}
 }
 

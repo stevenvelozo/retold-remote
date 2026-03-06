@@ -55,7 +55,17 @@ const _FallbackExtensionMap =
 	'.gif': 'file-image', '.svg': 'file-image', '.webp': 'file-image',
 	'.bmp': 'file-image', '.ico': 'file-image', '.tiff': 'file-image',
 	'.tif': 'file-image', '.heic': 'file-image', '.heif': 'file-image',
-	'.avif': 'file-image', '.raw': 'file-image',
+	'.avif': 'file-image', '.raw': 'file-image', '.dng': 'file-image',
+	// Raw camera formats
+	'.nef': 'file-image', '.nrw': 'file-image',
+	'.cr2': 'file-image', '.cr3': 'file-image', '.crw': 'file-image',
+	'.arw': 'file-image', '.srf': 'file-image', '.sr2': 'file-image',
+	'.raf': 'file-image', '.orf': 'file-image',
+	'.rw2': 'file-image', '.rwl': 'file-image',
+	'.pef': 'file-image', '.srw': 'file-image', '.x3f': 'file-image',
+	'.3fr': 'file-image', '.fff': 'file-image', '.iiq': 'file-image',
+	'.dcr': 'file-image', '.kdc': 'file-image',
+	'.mrw': 'file-image', '.erf': 'file-image',
 
 	// Documents / text
 	'.txt': 'file-text', '.md': 'file-text', '.rtf': 'file-text',
