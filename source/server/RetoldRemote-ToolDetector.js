@@ -41,7 +41,9 @@ class ToolDetector
 			audiowaveform: this._detectCommand('audiowaveform --version'),
 			ebook_convert: this._detectCommand('ebook-convert --version'),
 			exiftool: this._detectCommand('exiftool -ver'),
-			dcraw: this._detectCommandExists('dcraw')
+			dcraw: this._detectCommandExists('dcraw'),
+			dcrawJs: this._detectModule('dcraw'),
+			dcrawJsModule: this._loadModule('dcraw')
 		};
 
 		return this._capabilities;
@@ -71,13 +73,20 @@ class ToolDetector
 			// native or WASM binding (the constructor validates immediately).
 			tmpSharp(Buffer.from([0, 0, 0]), { raw: { width: 1, height: 1, channels: 3 } });
 
-			// Determine mode: if the native platform package resolves, we
-			// are running native.  Otherwise sharp loaded via WASM.
+			// Determine mode: check if the native platform package directory
+			// exists in node_modules.  require.resolve() can fail due to
+			// exports map issues, so we check the filesystem directly.
 			let tmpMode = 'native';
 			try
 			{
+				let tmpLibFs = require('fs');
+				let tmpLibPath = require('path');
 				let tmpPlatform = process.platform + '-' + process.arch;
-				require.resolve('@img/sharp-' + tmpPlatform);
+				let tmpNativePkgDir = tmpLibPath.join(__dirname, '..', '..', 'node_modules', '@img', 'sharp-' + tmpPlatform);
+				if (!tmpLibFs.existsSync(tmpNativePkgDir))
+				{
+					tmpMode = 'wasm';
+				}
 			}
 			catch (pError)
 			{
@@ -135,6 +144,43 @@ class ToolDetector
 		catch (pError)
 		{
 			return false;
+		}
+	}
+
+	/**
+	 * Check if a Node module is available.
+	 *
+	 * @param {string} pModuleName - The module name (e.g. 'dcraw')
+	 * @returns {boolean}
+	 */
+	_detectModule(pModuleName)
+	{
+		try
+		{
+			require(pModuleName);
+			return true;
+		}
+		catch (pError)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Load and return a Node module, or null if unavailable.
+	 *
+	 * @param {string} pModuleName - The module name (e.g. 'dcraw')
+	 * @returns {*|null}
+	 */
+	_loadModule(pModuleName)
+	{
+		try
+		{
+			return require(pModuleName);
+		}
+		catch (pError)
+		{
+			return null;
 		}
 	}
 

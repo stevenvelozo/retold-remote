@@ -168,38 +168,170 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		this.fable.log.info(`Converting raw image: ${libPath.basename(pAbsPath)} (${pFullResolution ? 'full' : 'half'} resolution)`);
 
-		// Try dcraw → Sharp pipeline
-		this._convertWithDcraw(pAbsPath, tmpOutputPath, pFullResolution, (pError) =>
+		// Tier 0: Try Sharp directly — libvips can natively decode DNG and
+		// some other raw formats without needing dcraw or ImageMagick.
+		this._convertWithSharpDirect(pAbsPath, tmpOutputPath, pFullResolution, (pErrorSharp) =>
 		{
-			if (!pError)
+			if (!pErrorSharp)
 			{
-				tmpSelf.fable.log.info(`Raw conversion complete (dcraw): ${libPath.basename(pAbsPath)}`);
+				tmpSelf.fable.log.info(`Raw conversion complete (sharp direct): ${libPath.basename(pAbsPath)}`);
 				return fCallback(null, tmpOutputPath);
 			}
 
-			// Fallback: ImageMagick convert
-			tmpSelf._convertWithImageMagick(pAbsPath, tmpOutputPath, (pError2) =>
+			// Tier 1: dcraw.js (pure JavaScript Emscripten port, no native binary needed)
+			tmpSelf._convertWithDcrawJs(pAbsPath, tmpOutputPath, pFullResolution, (pErrorJs) =>
 			{
-				if (!pError2)
+				if (!pErrorJs)
 				{
-					tmpSelf.fable.log.info(`Raw conversion complete (ImageMagick): ${libPath.basename(pAbsPath)}`);
+					tmpSelf.fable.log.info(`Raw conversion complete (dcraw.js): ${libPath.basename(pAbsPath)}`);
 					return fCallback(null, tmpOutputPath);
 				}
 
-				// Last resort: extract embedded JPEG preview via exifr
-				tmpSelf._extractEmbeddedPreview(pAbsPath, tmpOutputPath, (pError3) =>
+				// Tier 2: native dcraw binary → Sharp pipeline
+				tmpSelf._convertWithDcraw(pAbsPath, tmpOutputPath, pFullResolution, (pError) =>
 				{
-					if (!pError3)
+					if (!pError)
 					{
-						tmpSelf.fable.log.info(`Raw conversion complete (embedded preview): ${libPath.basename(pAbsPath)}`);
+						tmpSelf.fable.log.info(`Raw conversion complete (dcraw native): ${libPath.basename(pAbsPath)}`);
 						return fCallback(null, tmpOutputPath);
 					}
 
-					tmpSelf.fable.log.warn(`Raw conversion failed for ${libPath.basename(pAbsPath)}: no conversion tool available`);
-					return fCallback(new Error('No raw conversion tool available.'));
+					// Tier 3: ImageMagick convert
+					tmpSelf._convertWithImageMagick(pAbsPath, tmpOutputPath, (pError2) =>
+					{
+						if (!pError2)
+						{
+							tmpSelf.fable.log.info(`Raw conversion complete (ImageMagick): ${libPath.basename(pAbsPath)}`);
+							return fCallback(null, tmpOutputPath);
+						}
+
+						// Tier 4: extract embedded JPEG preview via exifr + binary scan
+						tmpSelf._extractEmbeddedPreview(pAbsPath, tmpOutputPath, (pError3) =>
+						{
+							if (!pError3)
+							{
+								tmpSelf.fable.log.info(`Raw conversion complete (embedded preview): ${libPath.basename(pAbsPath)}`);
+								return fCallback(null, tmpOutputPath);
+							}
+
+							tmpSelf.fable.log.warn(`Raw conversion failed for ${libPath.basename(pAbsPath)}: no conversion tool available`);
+							return fCallback(new Error('No raw conversion tool available.'));
+						});
+					});
 				});
 			});
 		});
+	}
+
+	/**
+	 * Try to convert a raw image to JPEG using Sharp directly.
+	 * Libvips (the C library inside Sharp) can natively decode DNG,
+	 * and may handle other raw formats depending on its build.
+	 * This is the fastest path and requires no external tools.
+	 *
+	 * @param {string}   pAbsPath        - Raw file path
+	 * @param {string}   pOutputPath     - Output JPEG path
+	 * @param {boolean}  pFullResolution - false = resize for preview, true = full size
+	 * @param {Function} fCallback       - Callback(pError)
+	 */
+	_convertWithSharpDirect(pAbsPath, pOutputPath, pFullResolution, fCallback)
+	{
+		if (!this._sharp)
+		{
+			return fCallback(new Error('sharp not available'));
+		}
+
+		try
+		{
+			let tmpPipeline = this._sharp(pAbsPath, { limitInputPixels: false });
+
+			if (!pFullResolution)
+			{
+				// For previews, limit to 4096px to keep it fast
+				tmpPipeline = tmpPipeline.resize(4096, 4096, { fit: 'inside', withoutEnlargement: true });
+			}
+
+			tmpPipeline
+				.jpeg({ quality: 92 })
+				.toFile(pOutputPath)
+				.then(() =>
+				{
+					return fCallback(null);
+				})
+				.catch((pError) =>
+				{
+					return fCallback(pError);
+				});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Convert a raw image to JPEG using the dcraw npm package (Emscripten port).
+	 * This is a pure JavaScript implementation — no native binary needed.
+	 * dcraw.js reads the raw file buffer and outputs TIFF data, which Sharp
+	 * then converts to JPEG.
+	 *
+	 * @param {string}   pAbsPath        - Raw file path
+	 * @param {string}   pOutputPath     - Output JPEG path
+	 * @param {boolean}  pFullResolution - false = half-size (fast), true = full size
+	 * @param {Function} fCallback       - Callback(pError)
+	 */
+	_convertWithDcrawJs(pAbsPath, pOutputPath, pFullResolution, fCallback)
+	{
+		if (!this._capabilities.dcrawJs || !this._capabilities.dcrawJsModule)
+		{
+			return fCallback(new Error('dcraw.js module not available'));
+		}
+
+		if (!this._sharp)
+		{
+			return fCallback(new Error('sharp not available for TIFF-to-JPEG conversion'));
+		}
+
+		try
+		{
+			let tmpRawBuffer = libFs.readFileSync(pAbsPath);
+			let tmpDcrawJs = this._capabilities.dcrawJsModule;
+
+			// dcraw.js options: exportAsTiff outputs TIFF data,
+			// useCameraWhiteBalance for correct color,
+			// setHalfSizeMode for fast preview generation
+			let tmpOptions = { exportAsTiff: true, useCameraWhiteBalance: true };
+			if (!pFullResolution)
+			{
+				tmpOptions.setHalfSizeMode = true;
+			}
+
+			let tmpTiffData = tmpDcrawJs(tmpRawBuffer, tmpOptions);
+
+			// dcraw.js returns a Uint8Array on success, or a string on failure
+			if (!tmpTiffData || typeof tmpTiffData === 'string' || tmpTiffData.length === 0)
+			{
+				return fCallback(new Error('dcraw.js returned no image data'));
+			}
+
+			// Convert TIFF buffer to JPEG via Sharp
+			let tmpBuffer = Buffer.from(tmpTiffData);
+			this._sharp(tmpBuffer, { limitInputPixels: false })
+				.jpeg({ quality: 92 })
+				.toFile(pOutputPath)
+				.then(() =>
+				{
+					return fCallback(null);
+				})
+				.catch((pSharpError) =>
+				{
+					return fCallback(pSharpError);
+				});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
 	}
 
 	/**
@@ -322,36 +454,107 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	 * inside the raw file — this is the fastest extraction method
 	 * but may produce a lower-resolution image.
 	 *
+	 * We try two approaches:
+	 *  1. exifr.thumbnailBuffer() — extracts IFD1 JPEG thumbnail
+	 *  2. Manual scan for JPEG SOI marker — finds larger embedded
+	 *     previews that exifr may not expose via thumbnailBuffer()
+	 *
 	 * @param {string}   pAbsPath    - Raw file path
 	 * @param {string}   pOutputPath - Output JPEG path
 	 * @param {Function} fCallback   - Callback(pError)
 	 */
 	_extractEmbeddedPreview(pAbsPath, pOutputPath, fCallback)
 	{
+		let tmpSelf = this;
+
 		try
 		{
 			let tmpExifr = require('exifr');
+
+			// Approach 1: exifr thumbnailBuffer (IFD1 JPEG thumbnail)
 			tmpExifr.thumbnailBuffer(pAbsPath)
 				.then((pBuffer) =>
 				{
-					if (!pBuffer || pBuffer.length === 0)
+					if (pBuffer && pBuffer.length > 0)
 					{
-						return fCallback(new Error('No embedded preview found.'));
+						try
+						{
+							libFs.writeFileSync(pOutputPath, pBuffer);
+							return fCallback(null);
+						}
+						catch (pWriteError)
+						{
+							return fCallback(pWriteError);
+						}
 					}
-					try
-					{
-						libFs.writeFileSync(pOutputPath, pBuffer);
-						return fCallback(null);
-					}
-					catch (pWriteError)
-					{
-						return fCallback(pWriteError);
-					}
+
+					// Approach 2: Scan for the largest embedded JPEG in the file.
+					// Raw files from Nikon, DJI, Leica, etc. often contain a
+					// full-size JPEG preview that exifr doesn't expose through
+					// thumbnailBuffer().  We look for JPEG SOI (FFD8) / EOI (FFD9)
+					// markers and extract the largest JPEG block.
+					tmpSelf._extractLargestEmbeddedJpeg(pAbsPath, pOutputPath, fCallback);
 				})
-				.catch((pError) =>
+				.catch(() =>
 				{
-					return fCallback(pError);
+					// exifr couldn't parse the file at all — try manual scan
+					tmpSelf._extractLargestEmbeddedJpeg(pAbsPath, pOutputPath, fCallback);
 				});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Scan a raw file for embedded JPEG data by looking for SOI/EOI markers.
+	 * Extracts the largest JPEG block found — this is typically the full-size
+	 * camera preview rather than the tiny EXIF thumbnail.
+	 *
+	 * @param {string}   pAbsPath    - Raw file path
+	 * @param {string}   pOutputPath - Output JPEG path
+	 * @param {Function} fCallback   - Callback(pError)
+	 */
+	_extractLargestEmbeddedJpeg(pAbsPath, pOutputPath, fCallback)
+	{
+		try
+		{
+			let tmpFileBuffer = libFs.readFileSync(pAbsPath);
+			let tmpLargestJpeg = null;
+			let tmpLargestSize = 0;
+
+			// Scan for JPEG SOI markers (0xFF 0xD8)
+			for (let i = 0; i < tmpFileBuffer.length - 1; i++)
+			{
+				if (tmpFileBuffer[i] === 0xFF && tmpFileBuffer[i + 1] === 0xD8)
+				{
+					// Found SOI — look for corresponding EOI (0xFF 0xD9)
+					for (let j = i + 2; j < tmpFileBuffer.length - 1; j++)
+					{
+						if (tmpFileBuffer[j] === 0xFF && tmpFileBuffer[j + 1] === 0xD9)
+						{
+							let tmpJpegSize = j + 2 - i;
+							// Only consider JPEG blocks > 10KB (skip tiny thumbnails
+							// if we can find a bigger one)
+							if (tmpJpegSize > tmpLargestSize && tmpJpegSize > 10240)
+							{
+								tmpLargestSize = tmpJpegSize;
+								tmpLargestJpeg = tmpFileBuffer.subarray(i, j + 2);
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			if (tmpLargestJpeg)
+			{
+				libFs.writeFileSync(pOutputPath, tmpLargestJpeg);
+				return fCallback(null);
+			}
+
+			return fCallback(new Error('No embedded JPEG preview found in raw file.'));
 		}
 		catch (pError)
 		{

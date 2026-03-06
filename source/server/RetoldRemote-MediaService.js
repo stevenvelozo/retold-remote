@@ -488,9 +488,87 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 	/**
 	 * Generate a thumbnail for a raw camera image.
-	 * Fallback chain: dcraw+sharp → ImageMagick → exifr embedded preview.
+	 * Fallback chain: Sharp direct → dcraw.js → native dcraw → ImageMagick → exifr/JPEG scan.
 	 */
 	_generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+		// Strategy 0: Try Sharp directly — libvips can natively decode DNG
+		// and some other raw formats without needing external tools.
+		if (this.capabilities.sharp)
+		{
+			try
+			{
+				let tmpSharp = this.capabilities.sharpModule;
+				tmpSharp(pFullPath)
+					.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
+					.toFormat(tmpOutputFormat, { quality: 80 })
+					.toBuffer()
+					.then((pOutBuf) => fCallback(null, pOutBuf))
+					.catch(() =>
+					{
+						// Sharp can't decode this format — fall through to dcraw.js
+						tmpSelf._generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback);
+					});
+				return;
+			}
+			catch (pError)
+			{
+				// Fall through
+			}
+		}
+
+		return this._generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Generate a raw thumbnail using dcraw.js (Emscripten port — Strategy 1).
+	 * Pure JavaScript, no native binary needed. Outputs TIFF → Sharp resize.
+	 */
+	_generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+		if (this.capabilities.dcrawJs && this.capabilities.dcrawJsModule && this.capabilities.sharp)
+		{
+			try
+			{
+				let tmpRawBuffer = libFs.readFileSync(pFullPath);
+				let tmpDcrawJs = this.capabilities.dcrawJsModule;
+				let tmpTiffData = tmpDcrawJs(tmpRawBuffer, { exportAsTiff: true, useCameraWhiteBalance: true, setHalfSizeMode: true });
+
+				if (tmpTiffData && typeof tmpTiffData !== 'string' && tmpTiffData.length > 0)
+				{
+					let tmpSharp = this.capabilities.sharpModule;
+					tmpSharp(Buffer.from(tmpTiffData))
+						.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
+						.toFormat(tmpOutputFormat, { quality: 80 })
+						.toBuffer()
+						.then((pOutBuf) => fCallback(null, pOutBuf))
+						.catch(() =>
+						{
+							tmpSelf._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
+						});
+					return;
+				}
+			}
+			catch (pError)
+			{
+				// Fall through to native dcraw
+			}
+		}
+
+		return this._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Generate a raw thumbnail using native dcraw binary + sharp (Strategy 2).
+	 * Called after dcraw.js fails.
+	 */
+	_generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		let tmpSelf = this;
 		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
@@ -569,25 +647,46 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		// Strategy 3: Extract embedded JPEG preview via exifr, resize with sharp
 		if (this.capabilities.sharp)
 		{
+			let tmpSharp = this.capabilities.sharpModule;
+
+			let _resizeBuffer = (pJpegBuffer) =>
+			{
+				tmpSharp(pJpegBuffer)
+					.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
+					.toFormat(tmpOutputFormat, { quality: 80 })
+					.toBuffer()
+					.then((pOutBuf) => fCallback(null, pOutBuf))
+					.catch(fCallback);
+			};
+
 			try
 			{
 				let tmpExifr = require('exifr');
-				let tmpSharp = this.capabilities.sharpModule;
 				tmpExifr.thumbnailBuffer(pFullPath)
 					.then((pBuffer) =>
 					{
-						if (!pBuffer || pBuffer.length === 0)
+						if (pBuffer && pBuffer.length > 0)
 						{
-							return fCallback(new Error('No embedded preview available.'));
+							return _resizeBuffer(pBuffer);
 						}
-						tmpSharp(pBuffer)
-							.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
-							.toFormat(tmpOutputFormat, { quality: 80 })
-							.toBuffer()
-							.then((pOutBuf) => fCallback(null, pOutBuf))
-							.catch(fCallback);
+						// exifr found nothing — try manual JPEG scan
+						let tmpJpeg = this._extractLargestEmbeddedJpeg(pFullPath);
+						if (tmpJpeg)
+						{
+							return _resizeBuffer(tmpJpeg);
+						}
+						return fCallback(new Error('No embedded preview available.'));
 					})
-					.catch(fCallback);
+					.catch(() =>
+					{
+						// exifr parse failed — try manual JPEG scan
+						let tmpJpeg = this._extractLargestEmbeddedJpeg(pFullPath);
+						if (tmpJpeg)
+						{
+							return _resizeBuffer(tmpJpeg);
+						}
+						return fCallback(new Error('No embedded preview available.'));
+					});
 				return;
 			}
 			catch (pError)
@@ -597,6 +696,49 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		}
 
 		return fCallback(new Error('No raw thumbnail tools available.'));
+	}
+
+	/**
+	 * Scan a raw file for embedded JPEG data by looking for SOI/EOI markers.
+	 * Returns the largest JPEG block found as a Buffer, or null.
+	 *
+	 * @param {string} pFullPath - Path to the raw file
+	 * @returns {Buffer|null}
+	 */
+	_extractLargestEmbeddedJpeg(pFullPath)
+	{
+		try
+		{
+			let tmpFileBuffer = libFs.readFileSync(pFullPath);
+			let tmpLargestJpeg = null;
+			let tmpLargestSize = 0;
+
+			for (let i = 0; i < tmpFileBuffer.length - 1; i++)
+			{
+				if (tmpFileBuffer[i] === 0xFF && tmpFileBuffer[i + 1] === 0xD8)
+				{
+					for (let j = i + 2; j < tmpFileBuffer.length - 1; j++)
+					{
+						if (tmpFileBuffer[j] === 0xFF && tmpFileBuffer[j + 1] === 0xD9)
+						{
+							let tmpJpegSize = j + 2 - i;
+							if (tmpJpegSize > tmpLargestSize && tmpJpegSize > 10240)
+							{
+								tmpLargestSize = tmpJpegSize;
+								tmpLargestJpeg = tmpFileBuffer.subarray(i, j + 2);
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			return tmpLargestJpeg;
+		}
+		catch (pError)
+		{
+			return null;
+		}
 	}
 
 	/**
