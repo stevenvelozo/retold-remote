@@ -67,23 +67,7 @@ These work while viewing any image:
 
 ## Image Explorer
 
-The image explorer provides a dedicated zoom and pan interface for detailed image inspection.
-
-### Opening the Explorer
-
-- From the image viewer, press `e`
-
-### Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `+` / `=` | Zoom in |
-| `-` | Zoom out |
-| `0` | Reset zoom to home |
-| `a` | Quick-add to collection |
-| `b` | Toggle collection panel |
-| `h` | Toggle favorite |
-| `Esc` | Back to image viewer |
+Press `e` to open the image explorer for deep-zoom inspection with OpenSeadragon. Images larger than 4096 pixels are automatically tiled for smooth pan and zoom at any resolution. See the full [Image Explorer](image-explorer.md) documentation for details.
 
 ## File Info Overlay
 

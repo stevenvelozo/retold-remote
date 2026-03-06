@@ -53,74 +53,7 @@ Autoplay is off by default. Enable it in Settings > Gallery > Autoplay video. Wh
 
 ## Video Explorer
 
-The video explorer extracts multiple frames from a video and displays them in a grid, letting you scrub through content visually without playing the video.
-
-### Opening the Explorer
-
-- From the video action menu, press `e`
-- From the video stats bar during playback, click "Explore Video"
-
-### Frame Grid
-
-Frames are displayed in a responsive grid. Each frame card shows:
-
-- The extracted frame image
-- A timestamp label (e.g., "1:23")
-- A frame index number
-
-Double-click any frame to open it in a full-screen preview overlay.
-
-### Controls
-
-At the top of the explorer:
-
-| Control | Description |
-|---------|-------------|
-| Frame count dropdown | Choose 10, 20, 40, 60, or 100 frames (default: 20) |
-| Full-res checkbox | Extract frames at 1920x1080 instead of 640x360 |
-| Refresh button | Re-extract frames with current settings |
-
-### Info Bar
-
-Below the controls, an info bar displays video metadata:
-
-- Duration
-- Resolution
-- Codec
-- File size
-- Number of extracted frames
-
-### Timeline Bar
-
-Below the frame grid, a timeline bar shows the video duration with markers at each extracted frame's position. The timeline also shows markers for any custom frames you extract.
-
-**Click anywhere on the timeline** to extract a frame at that exact timestamp. The extracted frame appears in the grid in chronological order, styled with a dashed border to distinguish it from the evenly-spaced frames.
-
-### Frame Preview
-
-Double-click any frame in the grid to open a full-screen preview overlay showing the frame at full size.
-
-In the preview:
-
-| Key | Action |
-|-----|--------|
-| Left / `k` | Previous frame |
-| Right / `j` | Next frame |
-| `Esc` | Close preview |
-
-The Back button in the preview header also closes it. Navigation moves through all frames (regular and custom) in chronological order.
-
-### Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `Esc` | Back to video viewer (or close frame preview) |
-| `a` | Add current frame to collection |
-| `s` | Add video clip (selection) to collection |
-| `[` | Set selection start marker at current frame |
-| `]` | Set selection end marker at current frame |
-| `b` | Toggle collection panel |
-| `h` | Toggle favorite |
+Press `e` from the action menu, stats bar, or viewer to open the video explorer. It extracts frames into a grid, provides a clickable timeline, range selection for marking clips, and a full-screen frame preview overlay. See the full [Video Explorer](video-explorer.md) documentation for details.
 
 ## VLC Streaming
 

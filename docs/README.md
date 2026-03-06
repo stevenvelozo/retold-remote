@@ -41,9 +41,14 @@ Then open `http://localhost:8086` in a browser.
 |----------|----------|
 | [Server Setup and Docker](server-setup.md) | Installation, CLI options, environment variables, configuration, Docker |
 | [Image Viewer](image-viewer.md) | Fit modes, zoom, keyboard shortcuts, mouse interactions |
-| [Video Viewer](video-viewer.md) | Action menu, playback, frame explorer, timeline, VLC streaming |
-| [Audio Viewer](audio-viewer.md) | Waveform visualization, selection, zoom, segment playback |
+| [Video Viewer](video-viewer.md) | Action menu, in-browser playback, VLC streaming |
+| [Audio Viewer](audio-viewer.md) | HTML5 playback, autoplay, VLC streaming |
 | [eBook Reader](ebook-reader.md) | EPUB/MOBI support, table of contents, page navigation |
+| [Image Explorer](image-explorer.md) | Deep-zoom with OpenSeadragon, DZI tiling, coordinate display |
+| [Video Explorer](video-explorer.md) | Frame grid, timeline, range selection, clip extraction |
+| [Audio Explorer](audio-explorer.md) | Waveform visualization, selection, zoom, segment playback |
+| [Collections](collections.md) | Bookmarks, favorites, quick-add, item types, operation plans |
+| [File Metadata](metadata.md) | Info overlay, sidebar metadata, EXIF/GPS, ffprobe, explorer info bars |
 
 ## Keyboard Shortcuts (All Modes)
 

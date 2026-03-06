@@ -5,6 +5,15 @@
 
 - Media Viewers
   - [Image Viewer](image-viewer.md)
-  - [Video Viewer & Explorer](video-viewer.md)
-  - [Audio Viewer & Explorer](audio-viewer.md)
+  - [Video Viewer](video-viewer.md)
+  - [Audio Viewer](audio-viewer.md)
   - [eBook Reader](ebook-reader.md)
+
+- Explorers
+  - [Image Explorer](image-explorer.md)
+  - [Video Explorer](video-explorer.md)
+  - [Audio Explorer](audio-explorer.md)
+
+- Features
+  - [Collections](collections.md)
+  - [File Metadata](metadata.md)
