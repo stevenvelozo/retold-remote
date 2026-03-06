@@ -1,22 +1,27 @@
 /**
  * Retold Remote -- Metadata Cache
  *
- * Wraps ffprobe calls with a Parime BinaryStorage cache layer so that
- * file metadata (duration, codec, dimensions, ID3/format tags, etc.)
- * is extracted once and served from cache on subsequent requests.
+ * Wraps ffprobe/exifr/pdf-parse calls with a Parime BinaryStorage cache
+ * layer so that file metadata (duration, codec, dimensions, EXIF, GPS,
+ * ID3/format tags, PDF info, MD5, etc.) is extracted once and served
+ * from cache on subsequent requests.
  *
  * Cache key: SHA-256 of "metadata:{relativePath}:{mtimeMs}" truncated
  * to 16 hex chars.  Invalidation is mtime-based -- if the source file
  * is modified, the stale entry is automatically bypassed and replaced.
  *
- * Storage category: "metadata" in ParimeBinaryStorage.
+ * Storage category: "file-extended-metadata" in ParimeBinaryStorage.
  *
  * API:
  *   getMetadata(pRelPath, fCallback)
- *     -> { Path, FileSize, Modified, Category, Extension, Duration, ... Tags, Video, Audio }
+ *     -> { Path, FileSize, Modified, Category, Extension, MD5, ...
+ *          Tags, Video, Audio, Image, Document, Chapters }
  *
  *   getMetadataBatch(pRelPaths, fCallback)
  *     -> [ metadata, metadata, ... ]
+ *
+ *   checkCached(pRelPath, fCallback)
+ *     -> cached metadata if available, or { Success: false, Cached: false }
  *
  *   invalidate(pRelPath, fCallback)
  *     -> removes cached entry
@@ -31,7 +36,7 @@ const libChildProcess = require('child_process');
 
 const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
-const CACHE_CATEGORY = 'metadata';
+const CACHE_CATEGORY = 'file-extended-metadata';
 
 const _DefaultServiceConfiguration =
 {
@@ -57,11 +62,17 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
-		// Detect ffprobe availability
+		// Detect tool availability
 		this.hasFfprobe = this._detectCommand('ffprobe -version');
+		this.hasExifr = this._detectModule('exifr');
+		this.hasPdfParse = this._detectModule('pdf-parse');
+		this.hasSharp = this._detectModule('sharp');
 
 		this.fable.log.info(`Metadata Cache: using ParimeBinaryStorage (category: ${CACHE_CATEGORY})`);
 		this.fable.log.info(`  ffprobe: ${this.hasFfprobe ? 'available' : 'not found'}`);
+		this.fable.log.info(`  exifr: ${this.hasExifr ? 'available' : 'not found'}`);
+		this.fable.log.info(`  pdf-parse: ${this.hasPdfParse ? 'available' : 'not found'}`);
+		this.fable.log.info(`  sharp: ${this.hasSharp ? 'available' : 'not found'}`);
 	}
 
 	/**
@@ -75,6 +86,25 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 		try
 		{
 			libChildProcess.execSync(pCommand, { stdio: 'ignore', timeout: 5000 });
+			return true;
+		}
+		catch (pError)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Check if a Node module is available.
+	 *
+	 * @param {string} pModuleName
+	 * @returns {boolean}
+	 */
+	_detectModule(pModuleName)
+	{
+		try
+		{
+			require(pModuleName);
 			return true;
 		}
 		catch (pError)
@@ -98,7 +128,7 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 
 	/**
 	 * Get metadata for a file.  Returns cached data if available and
-	 * the file has not been modified; otherwise runs ffprobe and caches
+	 * the file has not been modified; otherwise probes and caches
 	 * the result.
 	 *
 	 * @param {string} pRelPath - Path relative to the content root
@@ -140,6 +170,57 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 
 					// Cache miss -- probe and cache
 					tmpSelf._probeAndCache(pRelPath, tmpAbsPath, tmpStat, tmpCacheKey, fCallback);
+				});
+		}
+		catch (pError)
+		{
+			return fCallback(pError);
+		}
+	}
+
+	/**
+	 * Check if metadata is cached for a file without triggering extraction.
+	 *
+	 * @param {string} pRelPath - Path relative to the content root
+	 * @param {function} fCallback - Callback(pError, pResult)
+	 */
+	checkCached(pRelPath, fCallback)
+	{
+		try
+		{
+			let tmpAbsPath = libPath.join(this.contentPath, pRelPath);
+
+			if (!libFs.existsSync(tmpAbsPath))
+			{
+				return fCallback(new Error('File not found: ' + pRelPath));
+			}
+
+			let tmpStat = libFs.statSync(tmpAbsPath);
+			let tmpCacheKey = this._buildCacheKey(pRelPath, tmpStat.mtimeMs);
+
+			this.fable.ParimeBinaryStorage.read(CACHE_CATEGORY, tmpCacheKey,
+				(pReadError, pBuffer) =>
+				{
+					if (!pReadError && pBuffer && pBuffer.length > 0)
+					{
+						try
+						{
+							let tmpCached = JSON.parse(pBuffer.toString());
+							return fCallback(null, tmpCached);
+						}
+						catch (pParseError)
+						{
+							// Corrupted entry
+						}
+					}
+
+					// Not cached
+					return fCallback(null,
+					{
+						Success: false,
+						Cached: false,
+						Path: pRelPath
+					});
 				});
 		}
 		catch (pError)
@@ -218,8 +299,12 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 		}
 	}
 
+	// ---------------------------------------------------------------
+	// Probing and caching
+	// ---------------------------------------------------------------
+
 	/**
-	 * Run ffprobe on a file, build the metadata record, cache it,
+	 * Probe a file for metadata, build the extended record, cache it,
 	 * and return it via callback.
 	 *
 	 * @param {string} pRelPath - Relative path
@@ -243,15 +328,21 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 			FileSize: pStat.size,
 			Modified: pStat.mtime.toISOString(),
 			ModifiedMs: pStat.mtimeMs,
+			Created: pStat.birthtime.toISOString(),
 			Category: tmpCategory,
 			Extension: tmpExtension,
 
-			// Format-level (populated by ffprobe)
+			// File hashes and signatures
+			MD5: null,
+			MagicBytes: null,
+			TailBytes: null,
+
+			// Format-level (populated by ffprobe for video/audio)
 			FormatName: null,
 			Duration: null,
 			Bitrate: null,
 
-			// Tags (populated by ffprobe)
+			// Tags (populated by ffprobe for video/audio)
 			Tags: {},
 
 			// Video stream (null if absent)
@@ -260,35 +351,81 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 			// Audio stream (null if absent)
 			Audio: null,
 
+			// Chapters (populated by ffprobe)
+			Chapters: [],
+
+			// Image metadata (null if not an image)
+			Image: null,
+
+			// Document metadata (null if not a document)
+			Document: null,
+
 			// Timestamp
 			CachedAt: new Date().toISOString()
 		};
 
-		// Only probe video/audio files with ffprobe
-		if ((tmpCategory === 'video' || tmpCategory === 'audio') && this.hasFfprobe)
-		{
-			this._probe(pAbsPath,
-				(pProbeError, pProbeData) =>
-				{
-					if (!pProbeError && pProbeData)
-					{
-						tmpMetadata.FormatName = pProbeData.formatName;
-						tmpMetadata.Duration = pProbeData.duration;
-						tmpMetadata.Bitrate = pProbeData.bitrate;
-						tmpMetadata.Tags = pProbeData.tags || {};
-						tmpMetadata.Video = pProbeData.video;
-						tmpMetadata.Audio = pProbeData.audio;
-					}
+		// Step 1: Compute MD5 hash
+		tmpSelf._computeMD5(pAbsPath,
+			(pMD5) =>
+			{
+				tmpMetadata.MD5 = pMD5;
 
-					// Cache even if probe failed (the stat-only data is still useful)
+				// Step 2: Read magic bytes and tail bytes
+				tmpMetadata.MagicBytes = tmpSelf._readHeadBytes(pAbsPath, 100);
+				tmpMetadata.TailBytes = tmpSelf._readTailBytes(pAbsPath, 100);
+
+				// Step 3: Category-specific probing
+				if ((tmpCategory === 'video' || tmpCategory === 'audio') && tmpSelf.hasFfprobe)
+				{
+					tmpSelf._probe(pAbsPath,
+						(pProbeError, pProbeData) =>
+						{
+							if (!pProbeError && pProbeData)
+							{
+								tmpMetadata.FormatName = pProbeData.formatName;
+								tmpMetadata.Duration = pProbeData.duration;
+								tmpMetadata.Bitrate = pProbeData.bitrate;
+								tmpMetadata.Tags = pProbeData.tags || {};
+								tmpMetadata.Video = pProbeData.video;
+								tmpMetadata.Audio = pProbeData.audio;
+								tmpMetadata.Chapters = pProbeData.chapters || [];
+							}
+
+							tmpSelf._writeCache(pCacheKey, tmpMetadata, fCallback);
+						});
+				}
+				else if (tmpCategory === 'image')
+				{
+					tmpSelf._probeImage(pAbsPath,
+						(pImageError, pImageData) =>
+						{
+							if (!pImageError && pImageData)
+							{
+								tmpMetadata.Image = pImageData;
+							}
+
+							tmpSelf._writeCache(pCacheKey, tmpMetadata, fCallback);
+						});
+				}
+				else if (tmpCategory === 'document' && tmpExtension === 'pdf')
+				{
+					tmpSelf._probePDF(pAbsPath,
+						(pPDFError, pPDFData) =>
+						{
+							if (!pPDFError && pPDFData)
+							{
+								tmpMetadata.Document = pPDFData;
+							}
+
+							tmpSelf._writeCache(pCacheKey, tmpMetadata, fCallback);
+						});
+				}
+				else
+				{
+					// Non-probeable file; cache basic stat + hash data
 					tmpSelf._writeCache(pCacheKey, tmpMetadata, fCallback);
-				});
-		}
-		else
-		{
-			// Non-probeable file; cache basic stat data
-			this._writeCache(pCacheKey, tmpMetadata, fCallback);
-		}
+				}
+			});
 	}
 
 	/**
@@ -315,9 +452,107 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 			});
 	}
 
+	// ---------------------------------------------------------------
+	// Hash and byte extraction helpers
+	// ---------------------------------------------------------------
+
 	/**
-	 * Run ffprobe and parse the full output including format tags and
-	 * all stream details.
+	 * Compute MD5 hash of a file using streaming reads.
+	 *
+	 * @param {string} pAbsPath - Absolute path to file
+	 * @param {function} fCallback - Callback(pMD5HexOrNull)
+	 * @private
+	 */
+	_computeMD5(pAbsPath, fCallback)
+	{
+		try
+		{
+			let tmpHash = libCrypto.createHash('md5');
+			let tmpStream = libFs.createReadStream(pAbsPath);
+
+			tmpStream.on('data', (pChunk) =>
+			{
+				tmpHash.update(pChunk);
+			});
+
+			tmpStream.on('end', () =>
+			{
+				return fCallback(tmpHash.digest('hex'));
+			});
+
+			tmpStream.on('error', (pError) =>
+			{
+				this.fable.log.warn(`MD5 compute error for ${pAbsPath}: ${pError.message}`);
+				return fCallback(null);
+			});
+		}
+		catch (pError)
+		{
+			this.fable.log.warn(`MD5 compute error for ${pAbsPath}: ${pError.message}`);
+			return fCallback(null);
+		}
+	}
+
+	/**
+	 * Read the first N bytes of a file.
+	 *
+	 * @param {string} pAbsPath - Absolute path to file
+	 * @param {number} pCount - Number of bytes to read
+	 * @returns {string|null} Hex-encoded bytes or null on error
+	 * @private
+	 */
+	_readHeadBytes(pAbsPath, pCount)
+	{
+		try
+		{
+			let tmpFd = libFs.openSync(pAbsPath, 'r');
+			let tmpStat = libFs.fstatSync(tmpFd);
+			let tmpLen = Math.min(pCount, tmpStat.size);
+			let tmpBuf = Buffer.alloc(tmpLen);
+			libFs.readSync(tmpFd, tmpBuf, 0, tmpLen, 0);
+			libFs.closeSync(tmpFd);
+			return tmpBuf.toString('hex');
+		}
+		catch (pError)
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Read the last N bytes of a file.
+	 *
+	 * @param {string} pAbsPath - Absolute path to file
+	 * @param {number} pCount - Number of bytes to read
+	 * @returns {string|null} Hex-encoded bytes or null on error
+	 * @private
+	 */
+	_readTailBytes(pAbsPath, pCount)
+	{
+		try
+		{
+			let tmpFd = libFs.openSync(pAbsPath, 'r');
+			let tmpStat = libFs.fstatSync(tmpFd);
+			let tmpLen = Math.min(pCount, tmpStat.size);
+			let tmpOffset = tmpStat.size - tmpLen;
+			let tmpBuf = Buffer.alloc(tmpLen);
+			libFs.readSync(tmpFd, tmpBuf, 0, tmpLen, tmpOffset);
+			libFs.closeSync(tmpFd);
+			return tmpBuf.toString('hex');
+		}
+		catch (pError)
+		{
+			return null;
+		}
+	}
+
+	// ---------------------------------------------------------------
+	// ffprobe (video / audio)
+	// ---------------------------------------------------------------
+
+	/**
+	 * Run ffprobe and parse the full output including format tags,
+	 * all stream details, and chapters.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the file
 	 * @param {function} fCallback - Callback(pError, pResult)
@@ -327,8 +562,8 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 	{
 		try
 		{
-			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams "${pAbsPath}"`;
-			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 1024 * 1024, timeout: 15000 });
+			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams -show_chapters "${pAbsPath}"`;
+			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 2 * 1024 * 1024, timeout: 30000 });
 			let tmpData = JSON.parse(tmpOutput.toString());
 
 			let tmpResult =
@@ -338,7 +573,8 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 				bitrate: null,
 				tags: {},
 				video: null,
-				audio: null
+				audio: null,
+				chapters: []
 			};
 
 			// Parse format section
@@ -377,12 +613,15 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 						tmpResult.video =
 						{
 							Codec: tmpStream.codec_name || null,
+							Profile: tmpStream.profile || null,
+							Level: tmpStream.level || null,
 							Width: tmpStream.width || null,
 							Height: tmpStream.height || null,
 							FrameRate: tmpStream.r_frame_rate || tmpStream.avg_frame_rate || null,
 							PixelFormat: tmpStream.pix_fmt || null,
-							Bitrate: parseInt(tmpStream.bit_rate, 10) || null,
-							Level: tmpStream.level || null
+							ColorSpace: tmpStream.color_space || null,
+							ColorRange: tmpStream.color_range || null,
+							Bitrate: parseInt(tmpStream.bit_rate, 10) || null
 						};
 					}
 					else if (tmpStream.codec_type === 'audio' && !tmpResult.audio)
@@ -390,12 +629,30 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 						tmpResult.audio =
 						{
 							Codec: tmpStream.codec_name || null,
+							Profile: tmpStream.profile || null,
 							SampleRate: parseInt(tmpStream.sample_rate, 10) || null,
 							Channels: tmpStream.channels || null,
 							ChannelLayout: tmpStream.channel_layout || null,
-							Bitrate: parseInt(tmpStream.bit_rate, 10) || null
+							Bitrate: parseInt(tmpStream.bit_rate, 10) || null,
+							BitsPerSample: parseInt(tmpStream.bits_per_raw_sample, 10) || null
 						};
 					}
+				}
+			}
+
+			// Parse chapters
+			if (tmpData.chapters && tmpData.chapters.length > 0)
+			{
+				for (let c = 0; c < tmpData.chapters.length; c++)
+				{
+					let tmpChapter = tmpData.chapters[c];
+					tmpResult.chapters.push(
+					{
+						Id: tmpChapter.id,
+						StartTime: parseFloat(tmpChapter.start_time) || 0,
+						EndTime: parseFloat(tmpChapter.end_time) || 0,
+						Title: (tmpChapter.tags && tmpChapter.tags.title) || `Chapter ${tmpChapter.id + 1}`
+					});
 				}
 			}
 
@@ -404,6 +661,227 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 		catch (pError)
 		{
 			return fCallback(pError);
+		}
+	}
+
+	// ---------------------------------------------------------------
+	// Image EXIF / GPS
+	// ---------------------------------------------------------------
+
+	/**
+	 * Probe an image file for EXIF, GPS, and dimension metadata.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the image
+	 * @param {function} fCallback - Callback(pError, pImageData)
+	 * @private
+	 */
+	_probeImage(pAbsPath, fCallback)
+	{
+		let tmpImageData =
+		{
+			Width: null,
+			Height: null,
+			Format: null,
+			Space: null,
+			HasAlpha: null,
+			DPI: null,
+			EXIF: null,
+			GPS: null
+		};
+
+		let tmpSelf = this;
+
+		// Try sharp first for basic dimensions
+		let tmpSharpDone = false;
+
+		function _afterSharp()
+		{
+			if (tmpSharpDone)
+			{
+				return;
+			}
+			tmpSharpDone = true;
+
+			// Then try exifr for comprehensive EXIF + GPS
+			if (tmpSelf.hasExifr)
+			{
+				try
+				{
+					let tmpExifr = require('exifr');
+					tmpExifr.parse(pAbsPath,
+					{
+						tiff: true,
+						exif: true,
+						gps: true,
+						ifd1: true,
+						iptc: true,
+						xmp: true,
+						translateKeys: true,
+						translateValues: true,
+						reviveValues: true,
+						mergeOutput: true
+					})
+					.then((pExifData) =>
+					{
+						if (pExifData)
+						{
+							// Fill in dimensions from EXIF if sharp didn't provide them
+							if (!tmpImageData.Width && (pExifData.ImageWidth || pExifData.ExifImageWidth))
+							{
+								tmpImageData.Width = pExifData.ImageWidth || pExifData.ExifImageWidth;
+							}
+							if (!tmpImageData.Height && (pExifData.ImageHeight || pExifData.ExifImageHeight))
+							{
+								tmpImageData.Height = pExifData.ImageHeight || pExifData.ExifImageHeight;
+							}
+
+							tmpImageData.EXIF =
+							{
+								Make: pExifData.Make || null,
+								Model: pExifData.Model || null,
+								LensModel: pExifData.LensModel || null,
+								Software: pExifData.Software || null,
+								ExposureTime: pExifData.ExposureTime || null,
+								FNumber: pExifData.FNumber || null,
+								ISO: pExifData.ISO || null,
+								FocalLength: pExifData.FocalLength || null,
+								DateTimeOriginal: pExifData.DateTimeOriginal
+									? (pExifData.DateTimeOriginal instanceof Date
+										? pExifData.DateTimeOriginal.toISOString()
+										: String(pExifData.DateTimeOriginal))
+									: null,
+								Orientation: pExifData.Orientation || null,
+								ColorSpace: pExifData.ColorSpace || null,
+								WhiteBalance: pExifData.WhiteBalance || null,
+								Flash: pExifData.Flash || null
+							};
+
+							// GPS
+							if (pExifData.latitude !== undefined && pExifData.longitude !== undefined)
+							{
+								tmpImageData.GPS =
+								{
+									Latitude: pExifData.latitude,
+									Longitude: pExifData.longitude,
+									Altitude: pExifData.GPSAltitude || null
+								};
+							}
+						}
+
+						return fCallback(null, tmpImageData);
+					})
+					.catch((pExifError) =>
+					{
+						// EXIF parse failed, still return what we have
+						tmpSelf.fable.log.trace(`EXIF parse failed for ${pAbsPath}: ${pExifError.message}`);
+						return fCallback(null, tmpImageData);
+					});
+				}
+				catch (pError)
+				{
+					return fCallback(null, tmpImageData);
+				}
+			}
+			else
+			{
+				return fCallback(null, tmpImageData);
+			}
+		}
+
+		if (this.hasSharp)
+		{
+			try
+			{
+				let tmpSharp = require('sharp');
+				tmpSharp(pAbsPath).metadata()
+					.then((pMeta) =>
+					{
+						tmpImageData.Width = pMeta.width || null;
+						tmpImageData.Height = pMeta.height || null;
+						tmpImageData.Format = pMeta.format || null;
+						tmpImageData.Space = pMeta.space || null;
+						tmpImageData.HasAlpha = pMeta.hasAlpha || false;
+						tmpImageData.DPI = pMeta.density || null;
+						_afterSharp();
+					})
+					.catch(() =>
+					{
+						_afterSharp();
+					});
+				return;
+			}
+			catch (pError)
+			{
+				// sharp not available after all
+			}
+		}
+
+		_afterSharp();
+	}
+
+	// ---------------------------------------------------------------
+	// PDF metadata
+	// ---------------------------------------------------------------
+
+	/**
+	 * Probe a PDF file for metadata.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the PDF
+	 * @param {function} fCallback - Callback(pError, pDocumentData)
+	 * @private
+	 */
+	_probePDF(pAbsPath, fCallback)
+	{
+		if (!this.hasPdfParse)
+		{
+			return fCallback(null, null);
+		}
+
+		try
+		{
+			let tmpPdfParse = require('pdf-parse');
+			let tmpBuffer = libFs.readFileSync(pAbsPath);
+
+			tmpPdfParse(tmpBuffer)
+				.then((pData) =>
+				{
+					let tmpDocData =
+					{
+						PageCount: pData.numpages || null,
+						Title: null,
+						Author: null,
+						Subject: null,
+						Keywords: null,
+						Creator: null,
+						Producer: null,
+						CreatedDate: null,
+						ModifiedDate: null
+					};
+
+					if (pData.info)
+					{
+						tmpDocData.Title = pData.info.Title || null;
+						tmpDocData.Author = pData.info.Author || null;
+						tmpDocData.Subject = pData.info.Subject || null;
+						tmpDocData.Keywords = pData.info.Keywords || null;
+						tmpDocData.Creator = pData.info.Creator || null;
+						tmpDocData.Producer = pData.info.Producer || null;
+						tmpDocData.CreatedDate = pData.info.CreationDate || null;
+						tmpDocData.ModifiedDate = pData.info.ModDate || null;
+					}
+
+					return fCallback(null, tmpDocData);
+				})
+				.catch((pError) =>
+				{
+					this.fable.log.warn(`PDF parse error for ${pAbsPath}: ${pError.message}`);
+					return fCallback(null, null);
+				});
+		}
+		catch (pError)
+		{
+			this.fable.log.warn(`PDF parse error for ${pAbsPath}: ${pError.message}`);
+			return fCallback(null, null);
 		}
 	}
 }

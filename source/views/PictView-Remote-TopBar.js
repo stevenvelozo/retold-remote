@@ -160,8 +160,8 @@ const _ViewConfiguration =
 			top: 100%;
 			left: 0;
 			margin-top: 4px;
-			min-width: 200px;
-			max-width: 300px;
+			min-width: 220px;
+			max-width: 400px;
 			background: var(--retold-bg-secondary);
 			border: 1px solid var(--retold-border);
 			border-radius: 6px;
@@ -214,6 +214,15 @@ const _ViewConfiguration =
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+		}
+		.retold-remote-topbar-overflow-item-prefix
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-topbar-overflow-item:hover .retold-remote-topbar-overflow-item-prefix,
+		.retold-remote-topbar-overflow-item:active .retold-remote-topbar-overflow-item-prefix
+		{
+			color: var(--retold-text-muted);
 		}
 		.retold-remote-topbar-info
 		{
@@ -595,24 +604,38 @@ class RetoldRemoteTopBarView extends libPictView
 		let tmpFolderIcon = tmpIconProvider ? tmpIconProvider.getIcon('folder', 16) : '';
 		let tmpHomeIconSmall = tmpIconProvider ? tmpIconProvider.getIcon('home', 16) : '/';
 
-		// Build dropdown items: home first, then each intermediate folder
+		// Build dropdown items: deepest folder first, root last
 		let tmpDropdownHTML = '';
 
-		// Home item
+		// All folders from deepest to shallowest (includes current folder)
+		for (let i = tmpParts.length - 1; i >= 0; i--)
+		{
+			let tmpPath = tmpParts.slice(0, i + 1).join('/');
+			let tmpFolderName = tmpParts[i] + '/';
+			let tmpPrefix = '';
+			if (i > 0)
+			{
+				tmpPrefix = '/' + tmpParts.slice(0, i).join('/') + '/';
+			}
+
+			tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'' + tmpPath + '\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
+			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpFolderIcon + '</span>';
+			if (tmpPrefix)
+			{
+				tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label"><span class="retold-remote-topbar-overflow-item-prefix">' + tmpPrefix + '</span>' + tmpFolderName + '</span>';
+			}
+			else
+			{
+				tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">' + tmpFolderName + '</span>';
+			}
+			tmpDropdownHTML += '</button>';
+		}
+
+		// Home / root item at the bottom
 		tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
 		tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpHomeIconSmall + '</span>';
 		tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">Home</span>';
 		tmpDropdownHTML += '</button>';
-
-		// Intermediate folders (all except the last segment, which is shown in the breadcrumb)
-		for (let i = 0; i < tmpParts.length - 1; i++)
-		{
-			let tmpPath = tmpParts.slice(0, i + 1).join('/');
-			tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'' + tmpPath + '\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
-			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpFolderIcon + '</span>';
-			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">' + tmpParts[i] + '</span>';
-			tmpDropdownHTML += '</button>';
-		}
 
 		// Assemble: [hamburger + dropdown] [inner: home / current folder]
 		let tmpLastPart = tmpParts[tmpParts.length - 1];
@@ -1054,10 +1077,11 @@ class RetoldRemoteTopBarView extends libPictView
 			return;
 		}
 
-		// Quick-add: if we have a last-used collection, add directly
-		if (tmpRemote.LastUsedCollectionGUID)
+		// Quick-add: if we have an active or last-used collection, add directly
+		let tmpQuickGUID = tmpManager.getQuickAddTargetGUID();
+		if (tmpQuickGUID)
 		{
-			let tmpAdded = tmpManager.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);
+			let tmpAdded = tmpManager.addCurrentFileToCollection(tmpQuickGUID);
 			if (tmpAdded)
 			{
 				return;
@@ -1111,9 +1135,14 @@ class RetoldRemoteTopBarView extends libPictView
 					{
 						if (!pError && pCollection)
 						{
-							tmpManager.addCurrentFileToCollection(pCollection.GUID);
+							tmpManager.addPendingOrCurrentToCollection(pCollection.GUID);
 						}
 					});
+				}
+				else
+				{
+					// User cancelled — clear any pending clip context
+					tmpManager.clearPendingClipContext();
 				}
 			};
 			tmpDropdown.appendChild(tmpNewItem);
@@ -1128,7 +1157,7 @@ class RetoldRemoteTopBarView extends libPictView
 				tmpItem.onclick = () =>
 				{
 					tmpSelf._closeAddToCollectionDropdown();
-					tmpManager.addCurrentFileToCollection(tmpCollection.GUID);
+					tmpManager.addPendingOrCurrentToCollection(tmpCollection.GUID);
 				};
 				tmpDropdown.appendChild(tmpItem);
 			}
@@ -1165,6 +1194,13 @@ class RetoldRemoteTopBarView extends libPictView
 		{
 			document.removeEventListener('click', this._boundCloseDropdown);
 			this._boundCloseDropdown = null;
+		}
+
+		// Clear any pending clip context that was never consumed
+		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (tmpManager)
+		{
+			tmpManager.clearPendingClipContext();
 		}
 	}
 }

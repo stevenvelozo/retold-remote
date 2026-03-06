@@ -9048,7 +9048,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
 if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":78,"qs":80}],111:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],112:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');const libProviderFormattingUtilities=require('./providers/Pict-Provider-FormattingUtilities.js');const libProviderToastNotification=require('./providers/Pict-Provider-ToastNotification.js');const libProviderCollectionManager=require('./providers/Pict-Provider-CollectionManager.js');const libProviderAISortManager=require('./providers/Pict-Provider-AISortManager.js');const libExtensionMaps=require('./RetoldRemote-ExtensionMaps.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
-const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');// Application configuration
+const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewImageExplorer=require('./views/PictView-Remote-ImageExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');const libViewFileInfoPanel=require('./views/PictView-Remote-FileInfoPanel.js');// Application configuration
 const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configuration.json');/**
  * Retold Remote Application
  *
@@ -9059,7 +9059,7 @@ const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configurati
  */class RetoldRemoteApplication extends libContentEditorApplication{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);// Replace parent views with media-focused versions.
 // Re-registering with the same ViewIdentifier replaces the parent's view.
 this.pict.addView('ContentEditor-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('ContentEditor-TopBar',libViewTopBar.default_configuration,libViewTopBar);// Add new views
-this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);this.pict.addView('RetoldRemote-VLCSetup',libViewVLCSetup.default_configuration,libViewVLCSetup);this.pict.addView('RetoldRemote-CollectionsPanel',libViewCollectionsPanel.default_configuration,libViewCollectionsPanel);// Add new providers
+this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);this.pict.addView('RetoldRemote-ImageExplorer',libViewImageExplorer.default_configuration,libViewImageExplorer);this.pict.addView('RetoldRemote-VLCSetup',libViewVLCSetup.default_configuration,libViewVLCSetup);this.pict.addView('RetoldRemote-CollectionsPanel',libViewCollectionsPanel.default_configuration,libViewCollectionsPanel);this.pict.addView('RetoldRemote-FileInfoPanel',libViewFileInfoPanel.default_configuration,libViewFileInfoPanel);// Add new providers
 this.pict.addProvider('RetoldRemote-Provider',libProviderRetoldRemote.default_configuration,libProviderRetoldRemote);this.pict.addProvider('RetoldRemote-GalleryNavigation',libProviderGalleryNavigation.default_configuration,libProviderGalleryNavigation);this.pict.addProvider('RetoldRemote-GalleryFilterSort',libProviderGalleryFilterSort.default_configuration,libProviderGalleryFilterSort);this.pict.addProvider('RetoldRemote-Icons',libProviderRetoldRemoteIcons.default_configuration,libProviderRetoldRemoteIcons);this.pict.addProvider('RetoldRemote-Theme',libProviderRetoldRemoteTheme.default_configuration,libProviderRetoldRemoteTheme);this.pict.addProvider('RetoldRemote-FormattingUtilities',libProviderFormattingUtilities.default_configuration,libProviderFormattingUtilities);this.pict.addProvider('RetoldRemote-ToastNotification',libProviderToastNotification.default_configuration,libProviderToastNotification);this.pict.addProvider('RetoldRemote-CollectionManager',libProviderCollectionManager.default_configuration,libProviderCollectionManager);this.pict.addProvider('RetoldRemote-AISortManager',libProviderAISortManager.default_configuration,libProviderAISortManager);}onAfterInitializeAsync(fCallback){// Expose pict on window for inline onclick handlers
 if(typeof window!=='undefined'){window.pict=this.pict;}// Initialize RetoldRemote-specific state
 this.pict.AppData.RetoldRemote={ActiveMode:'gallery',// 'gallery' or 'viewer'
@@ -9076,7 +9076,7 @@ FolderSummary:null,// From /api/media/folder-summary
 CurrentViewerFile:'',// File being viewed
 CurrentViewerMediaType:'',// Media type of viewed file
 HashedFilenames:true,// From /api/remote/settings
-ShowHiddenFiles:false,DistractionFreeShowNav:true,ImageFitMode:'auto',SidebarCollapsed:false,SidebarWidth:250,AutoplayVideo:false,AutoplayAudio:false,// List column visibility
+ShowHiddenFiles:false,DistractionFreeShowNav:false,ImageFitMode:'auto',SidebarCollapsed:false,SidebarWidth:250,AutoplayVideo:false,AutoplayAudio:false,// List column visibility
 ListShowExtension:true,ListShowSize:true,ListShowDate:true,// Filter state
 FilterState:{MediaType:'all',Extensions:[],// e.g. ['png', 'jpg'] -- empty = all
 SizeMin:null,// bytes or null
@@ -9094,6 +9094,7 @@ ActiveCollectionGUID:null,ActiveCollection:null,CollectionSearchQuery:'',LastUse
 BrowsingCollectionIndex:-1,// index into ActiveCollection.Items
 // Favorites
 FavoritesGUID:null,FavoritesCollection:null,FavoritesPathSet:{},// path → itemID for O(1) favorited-state checks
+CurrentFileMetadata:null,// cached extended metadata for the currently viewed file
 // AI Sort settings
 AISortSettings:{AIEndpoint:'http://localhost:11434',AIModel:'llama3.1',AIProvider:'ollama',NamingTemplate:'{artist}/{album}/{track} - {title}'}};// Load persisted settings
 this._loadRemoteSettings();// Apply the loaded theme (must happen after _loadRemoteSettings sets Theme)
@@ -9157,9 +9158,25 @@ tmpRemote.GalleryItems=pFileList||[];let tmpSavedIndex=tmpRemote.FolderCursorHis
 let tmpCurrentPath=tmpSelf.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpBrowseFragProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpBrowseFragId=tmpBrowseFragProvider&&tmpCurrentPath?tmpBrowseFragProvider.getFragmentIdentifier(tmpCurrentPath):tmpCurrentPath;window.location.hash=tmpBrowseFragId?'#/browse/'+tmpBrowseFragId:'#/browse/';// Fetch folder summary for topbar info (skip for archive paths — they are not filesystem directories)
 let tmpMediaProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];let tmpIsArchivePath=/\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz)(\/|$)/i.test(tmpCurrentPath);if(tmpMediaProvider&&!tmpIsArchivePath){tmpMediaProvider.fetchFolderSummary(tmpCurrentPath,(pError,pSummary)=>{if(!pError&&pSummary){tmpRemote.FolderSummary=pSummary;let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}});}else{let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateLocation();tmpTopBar.updateInfo();}}return tmpCallback();}).catch(pError=>{tmpSelf.log.error(`Failed to load file list: ${pError.message}`);return tmpCallback();});}/**
 	 * Override resolveHash to handle gallery and viewer routes.
-	 */resolveHash(){let tmpHash=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''));if(!tmpHash){return;}let tmpParts=tmpHash.split('/');let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpParts[0]==='browse'){let tmpRawPath=tmpParts.slice(1).join('/');// Resolve hash token to actual path if needed
-let tmpPath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(tmpPath!==tmpCurrentPath){this.loadFileList(tmpPath);}}else if(tmpParts[0]==='view'&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');// Resolve hash token to actual path if needed
-let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;if(this.pict.AppData.ContentEditor.CurrentFile===tmpFilePath){return;}this.navigateToFile(tmpFilePath);}else if(tmpParts[0]==='explore'&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpFilePath);}}else if(tmpParts[0]==='explore-audio'&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpFilePath);}}else if(tmpParts[0]==='collection'&&tmpParts.length>=2){let tmpCollectionGUID=tmpParts[1];let tmpCollManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelMode='detail';tmpCollManager.openPanel();tmpCollManager.fetchCollection(tmpCollectionGUID);}}else if(tmpParts[0]==='edit'&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');let tmpFilePath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;this.navigateToFile(tmpFilePath);}}/**
+	 *
+	 * When a hash token (10-char hex) can't be resolved from the client-side
+	 * cache, we ask the server to walk the content directory and find it.
+	 */resolveHash(){let tmpHash=decodeURIComponent((window.location.hash||'').replace(/^#\/?/,''));if(!tmpHash){return;}let tmpParts=tmpHash.split('/');let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpSelf=this;// Routes that take a path identifier in the second segment
+let tmpPathRoutes=['browse','view','explore','explore-audio','explore-image','edit'];let tmpRoute=tmpParts[0];if(tmpPathRoutes.indexOf(tmpRoute)>=0&&tmpParts.length>=2){let tmpRawPath=tmpParts.slice(1).join('/');let tmpResolvedPath=tmpFragProvider?tmpFragProvider.resolveFragmentIdentifier(tmpRawPath):tmpRawPath;// If it still looks like an unresolved hash, ask the server
+if(/^[a-f0-9]{10}$/.test(tmpResolvedPath)){tmpSelf._resolveHashFromServer(tmpResolvedPath,pResolvedPath=>{tmpSelf._executeRoute(tmpRoute,pResolvedPath||tmpResolvedPath);});return;}this._executeRoute(tmpRoute,tmpResolvedPath);}else if(tmpRoute==='collection'&&tmpParts.length>=2){let tmpCollectionGUID=tmpParts[1];let tmpCollManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelMode='detail';tmpCollManager.openPanel();tmpCollManager.fetchCollection(tmpCollectionGUID);}}}/**
+	 * Execute a resolved route action.
+	 *
+	 * @param {string} pRoute - Route type (browse, view, explore, etc.)
+	 * @param {string} pPath - Resolved file/folder path
+	 */_executeRoute(pRoute,pPath){switch(pRoute){case'browse':{let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(pPath!==tmpCurrentPath){this.loadFileList(pPath);}break;}case'view':case'edit':{if(this.pict.AppData.ContentEditor.CurrentFile!==pPath){this.navigateToFile(pPath);}break;}case'explore':{let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(pPath);}break;}case'explore-audio':{let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(pPath);}break;}case'explore-image':{let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pPath);}break;}}}/**
+	 * Ask the server to resolve a hash token to a file path.
+	 * Falls back to returning null if the server can't resolve it.
+	 *
+	 * @param {string} pHash - 10-char hex hash
+	 * @param {Function} fCallback - Callback(pResolvedPath) — null if not found
+	 */_resolveHashFromServer(pHash,fCallback){let tmpSelf=this;fetch('/api/resolve-hash/'+pHash).then(pResponse=>{if(!pResponse.ok){return fCallback(null);}return pResponse.json();}).then(pData=>{if(pData&&pData.Success&&pData.Path){// Register the mapping client-side for future use
+let tmpProvider=tmpSelf.pict.providers['RetoldRemote-Provider'];if(tmpProvider){tmpProvider.registerHash(pData.Path,pHash);}// Also load the parent folder so the gallery has context
+let tmpParent=pData.Path.replace(/\/[^/]+$/,'')||'';tmpSelf.loadFileList(tmpParent);return fCallback(pData.Path);}return fCallback(null);}).catch(()=>{return fCallback(null);});}/**
 	 * Inject a subtle "Add Folder" button at the bottom of the sidebar file list.
 	 * Replaces the bright white "+" button from the breadcrumb bar.
 	 */_injectSidebarAddFolderButton(){let tmpDetailRows=document.getElementById('Pict-FileBrowser-DetailRows');if(!tmpDetailRows){return;}// Remove any existing injected button so we don't duplicate
@@ -9170,7 +9187,7 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;if(typeof tmpSettings.ListShowExtension==='boolean')tmpRemote.ListShowExtension=tmpSettings.ListShowExtension;if(typeof tmpSettings.ListShowSize==='boolean')tmpRemote.ListShowSize=tmpSettings.ListShowSize;if(typeof tmpSettings.ListShowDate==='boolean')tmpRemote.ListShowDate=tmpSettings.ListShowDate;if(typeof tmpSettings.CollectionsPanelOpen==='boolean')tmpRemote.CollectionsPanelOpen=tmpSettings.CollectionsPanelOpen;if(tmpSettings.CollectionsPanelWidth)tmpRemote.CollectionsPanelWidth=tmpSettings.CollectionsPanelWidth;if(tmpSettings.LastUsedCollectionGUID)tmpRemote.LastUsedCollectionGUID=tmpSettings.LastUsedCollectionGUID;if(tmpSettings.FavoritesGUID)tmpRemote.FavoritesGUID=tmpSettings.FavoritesGUID;if(tmpSettings.AISortSettings&&typeof tmpSettings.AISortSettings==='object'){if(tmpSettings.AISortSettings.AIEndpoint)tmpRemote.AISortSettings.AIEndpoint=tmpSettings.AISortSettings.AIEndpoint;if(tmpSettings.AISortSettings.AIModel)tmpRemote.AISortSettings.AIModel=tmpSettings.AISortSettings.AIModel;if(tmpSettings.AISortSettings.AIProvider)tmpRemote.AISortSettings.AIProvider=tmpSettings.AISortSettings.AIProvider;if(tmpSettings.AISortSettings.NamingTemplate)tmpRemote.AISortSettings.NamingTemplate=tmpSettings.AISortSettings.NamingTemplate;}}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":111,"./RetoldRemote-ExtensionMaps.js":114,"./providers/Pict-Provider-AISortManager.js":115,"./providers/Pict-Provider-CollectionManager.js":116,"./providers/Pict-Provider-FormattingUtilities.js":117,"./providers/Pict-Provider-GalleryFilterSort.js":118,"./providers/Pict-Provider-GalleryNavigation.js":119,"./providers/Pict-Provider-RetoldRemote.js":120,"./providers/Pict-Provider-RetoldRemoteIcons.js":121,"./providers/Pict-Provider-RetoldRemoteTheme.js":122,"./providers/Pict-Provider-ToastNotification.js":123,"./views/PictView-Remote-AudioExplorer.js":129,"./views/PictView-Remote-CollectionsPanel.js":130,"./views/PictView-Remote-Gallery.js":131,"./views/PictView-Remote-ImageViewer.js":132,"./views/PictView-Remote-Layout.js":133,"./views/PictView-Remote-MediaViewer.js":134,"./views/PictView-Remote-SettingsPanel.js":135,"./views/PictView-Remote-TopBar.js":136,"./views/PictView-Remote-VLCSetup.js":137,"./views/PictView-Remote-VideoExplorer.js":138,"pict-section-filebrowser":54,"retold-content-system":97}],113:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":111,"./RetoldRemote-ExtensionMaps.js":114,"./providers/Pict-Provider-AISortManager.js":115,"./providers/Pict-Provider-CollectionManager.js":116,"./providers/Pict-Provider-FormattingUtilities.js":117,"./providers/Pict-Provider-GalleryFilterSort.js":118,"./providers/Pict-Provider-GalleryNavigation.js":119,"./providers/Pict-Provider-RetoldRemote.js":120,"./providers/Pict-Provider-RetoldRemoteIcons.js":121,"./providers/Pict-Provider-RetoldRemoteTheme.js":122,"./providers/Pict-Provider-ToastNotification.js":123,"./views/PictView-Remote-AudioExplorer.js":130,"./views/PictView-Remote-CollectionsPanel.js":131,"./views/PictView-Remote-FileInfoPanel.js":132,"./views/PictView-Remote-Gallery.js":133,"./views/PictView-Remote-ImageExplorer.js":134,"./views/PictView-Remote-ImageViewer.js":135,"./views/PictView-Remote-Layout.js":136,"./views/PictView-Remote-MediaViewer.js":137,"./views/PictView-Remote-SettingsPanel.js":138,"./views/PictView-Remote-TopBar.js":139,"./views/PictView-Remote-VLCSetup.js":140,"./views/PictView-Remote-VideoExplorer.js":141,"pict-section-filebrowser":54,"retold-content-system":97}],113:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
@@ -9275,7 +9292,35 @@ let tmpCollManager=tmpSelf._getCollectionManager();if(tmpCollManager){let tmpRem
 	 * Get the collections panel view.
 	 */_getPanelView(){return this.pict.views['RetoldRemote-CollectionsPanel'];}/**
 	 * Get the toast notification provider.
-	 */_getToast(){return this.pict.providers['RetoldRemote-ToastNotification'];}// -- API Methods ------------------------------------------------------
+	 */_getToast(){return this.pict.providers['RetoldRemote-ToastNotification'];}// -- Pending Clip Context ---------------------------------------------
+/**
+	 * Set a pending clip context for the next add-to-collection action.
+	 *
+	 * When a segment save triggers the "create/pick collection" dropdown,
+	 * the specific segment data (start/end times, type) would be lost
+	 * because the dropdown generically calls addCurrentFileToCollection().
+	 * This stores the clip data so the dropdown callback can use it.
+	 *
+	 * @param {object} pContext - { Type: 'video-clip'|'audio-clip', Start: number, End: number }
+	 */setPendingClipContext(pContext){this._pendingClipContext=pContext||null;}/**
+	 * Clear any pending clip context (called after use or on navigation).
+	 */clearPendingClipContext(){this._pendingClipContext=null;}/**
+	 * Add the pending clip (or current file) to a collection.
+	 *
+	 * If a pending clip context exists (from a segment save that triggered
+	 * the dropdown), dispatches to the appropriate clip-add method.
+	 * Otherwise falls back to addCurrentFileToCollection().
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @returns {boolean} true if the add was initiated
+	 */addPendingOrCurrentToCollection(pGUID){if(this._pendingClipContext){let tmpCtx=this._pendingClipContext;this._pendingClipContext=null;if(tmpCtx.Type==='video-clip'){return this.addVideoClipToCollection(pGUID,tmpCtx.Start,tmpCtx.End);}else if(tmpCtx.Type==='audio-clip'){return this.addAudioClipToCollection(pGUID,tmpCtx.Start,tmpCtx.End);}}return this.addCurrentFileToCollection(pGUID);}/**
+	 * Return the GUID of the collection that quick-add actions should
+	 * target.  If a collection is currently open in the side panel,
+	 * prefer it over the sticky last-used GUID.
+	 *
+	 * @returns {string|null} Collection GUID, or null if none available
+	 */getQuickAddTargetGUID(){let tmpRemote=this._getRemote();// If a collection is currently open (detail view), prefer it
+if(tmpRemote.ActiveCollectionGUID&&tmpRemote.CollectionsPanelMode==='detail'){return tmpRemote.ActiveCollectionGUID;}return tmpRemote.LastUsedCollectionGUID||null;}// -- API Methods ------------------------------------------------------
 /**
 	 * Fetch all collections (summaries) from the server.
 	 *
@@ -9353,7 +9398,30 @@ let tmpSelf=this;setTimeout(()=>{let tmpGalleryNav=tmpSelf.pict.providers['Retol
 	 * Open the collections panel.
 	 */openPanel(){let tmpRemote=this._getRemote();if(!tmpRemote.CollectionsPanelOpen){this.togglePanel();}}/**
 	 * Close the collections panel.
-	 */closePanel(){let tmpRemote=this._getRemote();if(tmpRemote.CollectionsPanelOpen){this.togglePanel();}}// -- Favorites Methods ------------------------------------------------
+	 */closePanel(){let tmpRemote=this._getRemote();if(tmpRemote.CollectionsPanelOpen){this.togglePanel();}}// -- Path Resolution --------------------------------------------------
+/**
+	 * Resolve the current file path from multiple state sources.
+	 *
+	 * Checks in order:
+	 *   1. ContentEditor.CurrentFile (set when viewing a file)
+	 *   2. RetoldRemote.CurrentViewerFile (set in viewer mode)
+	 *   3. Gallery cursor item Path (the highlighted item in gallery mode)
+	 *
+	 * @returns {string} File path or empty string
+	 */_resolveCurrentFilePath(){// 1. Content editor current file (most authoritative)
+let tmpPath=this.pict.AppData.ContentEditor.CurrentFile;if(tmpPath){return tmpPath;}let tmpRemote=this._getRemote();// 2. Viewer state (set when the media viewer is showing a file)
+if(tmpRemote.CurrentViewerFile){return tmpRemote.CurrentViewerFile;}// 3. Gallery cursor item (the highlighted item when browsing)
+let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpItems.length>0&&tmpItems[tmpIndex]&&tmpItems[tmpIndex].Path){return tmpItems[tmpIndex].Path;}return'';}/**
+	 * Resolve the current item from multiple state sources.
+	 *
+	 * Like _resolveCurrentFilePath() but returns an object with { Path, Type }
+	 * so callers can detect when the cursor is on a folder.
+	 *
+	 * @returns {Object|null} Item with Path and Type, or null
+	 */_resolveCurrentItem(){// 1. Content editor current file (always a file)
+let tmpPath=this.pict.AppData.ContentEditor.CurrentFile;if(tmpPath){return{Path:tmpPath,Type:'file'};}let tmpRemote=this._getRemote();// 2. Viewer state (always a file)
+if(tmpRemote.CurrentViewerFile){return{Path:tmpRemote.CurrentViewerFile,Type:'file'};}// 3. Gallery cursor item (could be a folder)
+let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpItems.length>0&&tmpItems[tmpIndex]){return{Path:tmpItems[tmpIndex].Path||'',Type:tmpItems[tmpIndex].Type||'file'};}return null;}// -- Favorites Methods ------------------------------------------------
 /**
 	 * Ensure the favorites collection exists.
 	 * If FavoritesGUID is set, loads it.  Otherwise searches existing
@@ -9378,16 +9446,18 @@ tmpSelf._renderFavoritesPane();return tmpCallback(null);}).catch(pError=>{tmpSel
 	 */_rebuildFavoritesPathSet(pCollection){let tmpRemote=this._getRemote();tmpRemote.FavoritesPathSet={};if(!pCollection||!Array.isArray(pCollection.Items)){return;}for(let i=0;i<pCollection.Items.length;i++){let tmpItem=pCollection.Items[i];if(tmpItem.Path){tmpRemote.FavoritesPathSet[tmpItem.Path]=tmpItem.ID;}}}/**
 	 * Check if a file path is in favorites.
 	 *
-	 * @param {string} [pPath] - File path (defaults to currently viewed file)
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
 	 * @returns {boolean} True if favorited
-	 */isFavorited(pPath){let tmpRemote=this._getRemote();let tmpFilePath=pPath||this.pict.AppData.ContentEditor.CurrentFile;return!!tmpRemote.FavoritesPathSet[tmpFilePath];}/**
+	 */isFavorited(pPath){let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();return!!tmpRemote.FavoritesPathSet[tmpFilePath];}/**
 	 * Toggle a file in/out of favorites.
 	 *
-	 * @param {string} [pPath] - File path (defaults to currently viewed file)
-	 */toggleFavorite(pPath){let tmpSelf=this;let tmpRemote=this._getRemote();let tmpFilePath=pPath||this.pict.AppData.ContentEditor.CurrentFile;if(!tmpFilePath){return;}if(!tmpRemote.FavoritesGUID){// Favorites collection not ready yet
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
+	 */toggleFavorite(pPath){let tmpSelf=this;let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();if(!tmpFilePath){return;}if(!tmpRemote.FavoritesGUID){// Favorites collection not ready yet
 return;}if(this.isFavorited(tmpFilePath)){// Remove from favorites
 let tmpItemID=tmpRemote.FavoritesPathSet[tmpFilePath];this.removeItemFromCollection(tmpRemote.FavoritesGUID,tmpItemID,(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
-let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Removed from favorites');}});}else{// Add to favorites — build item using same logic as addCurrentFileToCollection
+let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Removed from favorites');}});}else{// Check if the current item is a folder
+let tmpCurrentItem=this._resolveCurrentItem();if(tmpCurrentItem&&(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive')){// Prompt user to choose folder reference vs folder contents
+this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpFolderItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});});return;}// Add to favorites — build item using same logic as addCurrentFileToCollection
 let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile
 let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// Include hash if available
 let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
@@ -9398,9 +9468,16 @@ let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tm
 	 * Add the currently viewed file to a collection.
 	 * If pGUID is not provided, uses the last-used collection.
 	 *
+	 * Context-aware: in the video explorer, adds a video-frame item with
+	 * the selected frame timestamp.  In the audio explorer, adds an audio
+	 * snippet.  Otherwise adds a file/subfile item.
+	 *
 	 * @param {string} [pGUID] - Collection GUID (omit for quick-add to last-used)
 	 * @returns {boolean} true if the add was initiated
-	 */addCurrentFileToCollection(pGUID){let tmpRemote=this._getRemote();let tmpFilePath=this.pict.AppData.ContentEditor.CurrentFile;if(!tmpFilePath){return false;}let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Build the item — detect archive subfiles and video timestamp context
+	 */addCurrentFileToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// If the video explorer is active, delegate to addVideoFrameToCollection
+if(tmpRemote.ActiveMode==='video-explorer'){return this.addVideoFrameToCollection(tmpTargetGUID);}// If the audio explorer is active, delegate to addAudioSnippetToCollection
+if(tmpRemote.ActiveMode==='audio-explorer'){return this.addAudioSnippetToCollection(tmpTargetGUID);}let tmpCurrentItem=this._resolveCurrentItem();if(!tmpCurrentItem||!tmpCurrentItem.Path){return false;}let tmpFilePath=tmpCurrentItem.Path;// Check if the current item is a folder — prompt for folder vs contents
+if(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive'){let tmpSelf=this;this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpTargetGUID,[tmpFolderItem]);});return true;}// Build the item — detect archive subfiles and video timestamp context
 let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile — path contains an archive extension followed by /
 let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// If we're viewing a video with the player active, capture current timestamp as video-frame
 if(tmpRemote.ActiveMode==='viewer'&&tmpRemote.CurrentViewerMediaType==='video'&&!tmpRemote.VideoMenuActive){let tmpVideo=document.getElementById('RetoldRemote-VideoPlayer');if(tmpVideo&&!isNaN(tmpVideo.currentTime)&&tmpVideo.currentTime>0){tmpItem.Type='video-frame';tmpItem.FrameTimestamp=Math.round(tmpVideo.currentTime*100)/100;}}// If we have a hash for this file, include it
@@ -9410,7 +9487,7 @@ let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let
 	 * @param {string} pGUID - Collection GUID
 	 * @returns {boolean} true if the add was initiated
 	 */addVideoFrameToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(!tmpVEX||!tmpVEX._currentPath||!tmpVEX._frameData){return false;}let tmpFrameIndex=tmpVEX._selectedFrameIndex;if(tmpFrameIndex<0){// No frame selected — use first frame
-tmpFrameIndex=0;}let tmpFrame=tmpVEX._frameData.Frames[tmpFrameIndex];if(!tmpFrame){return false;}let tmpItem={Type:'video-frame',Path:tmpVEX._currentPath,FrameTimestamp:tmpFrame.Timestamp,Label:tmpFrame.TimestampFormatted||'',Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
+tmpFrameIndex=0;}let tmpFrame=tmpVEX._frameData.Frames[tmpFrameIndex];if(!tmpFrame){return false;}let tmpFileName=tmpVEX._currentPath.replace(/^.*\//,'');let tmpTimestamp=tmpFrame.TimestampFormatted||this._formatTimestamp(tmpFrame.Timestamp);let tmpItem={Type:'video-frame',Path:tmpVEX._currentPath,FrameTimestamp:tmpFrame.Timestamp,FrameCacheKey:tmpVEX._frameData.CacheKey||null,FrameFilename:tmpFrame.Filename||null,Label:tmpFileName+' @ '+tmpTimestamp,Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
 	 * Add a video clip (time range) to a collection from the video player.
 	 *
 	 * Uses the current playback position and a duration offset, or explicit
@@ -9420,14 +9497,27 @@ tmpFrameIndex=0;}let tmpFrame=tmpVEX._frameData.Frames[tmpFrameIndex];if(!tmpFra
 	 * @param {number} pStartTime - Start time in seconds
 	 * @param {number} pEndTime - End time in seconds
 	 * @returns {boolean} true if the add was initiated
-	 */addVideoClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return false;}let tmpItem={Type:'video-clip',Path:tmpFilePath,VideoStart:pStartTime,VideoEnd:pEndTime,Label:this._formatTimestamp(pStartTime)+' - '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
+	 */addVideoClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check video explorer first, then fall back to viewer file
+let tmpFilePath=null;if(tmpRemote.ActiveMode==='video-explorer'){let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX&&tmpVEX._currentPath){tmpFilePath=tmpVEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'video-clip',Path:tmpFilePath,VideoStart:pStartTime,VideoEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
 	 * Add an audio snippet (selected range) from the audio explorer.
 	 *
 	 * @param {string} pGUID - Collection GUID
 	 * @returns {boolean} true if the add was initiated
 	 */addAudioSnippetToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX||!tmpAEX._currentPath||!tmpAEX._waveformData){return false;}let tmpDuration=tmpAEX._waveformData.Duration||0;if(tmpDuration<=0){return false;}// Convert normalized selection (0..1) to seconds
-let tmpStart=0;let tmpEnd=tmpDuration;if(tmpAEX._selectionStart>=0&&tmpAEX._selectionEnd>=0){tmpStart=Math.round(tmpAEX._selectionStart*tmpDuration*100)/100;tmpEnd=Math.round(tmpAEX._selectionEnd*tmpDuration*100)/100;}let tmpItem={Type:'video-clip',// reuse video-clip type for audio time ranges
-Path:tmpAEX._currentPath,VideoStart:tmpStart,VideoEnd:tmpEnd,Label:this._formatTimestamp(tmpStart)+' - '+this._formatTimestamp(tmpEnd),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
+let tmpStart=0;let tmpEnd=tmpDuration;if(tmpAEX._selectionStart>=0&&tmpAEX._selectionEnd>=0){tmpStart=Math.round(tmpAEX._selectionStart*tmpDuration*100)/100;tmpEnd=Math.round(tmpAEX._selectionEnd*tmpDuration*100)/100;}let tmpFileName=tmpAEX._currentPath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpAEX._currentPath,AudioStart:tmpStart,AudioEnd:tmpEnd,Label:tmpFileName+': '+this._formatTimestamp(tmpStart)+' \u2013 '+this._formatTimestamp(tmpEnd),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
+	 * Add an audio clip with explicit start/end timestamps in seconds.
+	 *
+	 * Unlike addAudioSnippetToCollection (which reads normalized selection
+	 * from the explorer view), this accepts absolute second values —
+	 * used by the pending-clip-context mechanism when saving a segment
+	 * triggers the collection picker dropdown.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {number} pStartTime - Start time in seconds
+	 * @param {number} pEndTime - End time in seconds
+	 * @returns {boolean} true if the add was initiated
+	 */addAudioClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check audio explorer first, then fall back to viewer file
+let tmpFilePath=null;if(tmpRemote.ActiveMode==='audio-explorer'){let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX&&tmpAEX._currentPath){tmpFilePath=tmpAEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpFilePath,AudioStart:pStartTime,AudioEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
 	 * Format a timestamp in seconds to a human-readable string.
 	 *
 	 * @param {number} pSeconds - Timestamp in seconds
@@ -9438,6 +9528,22 @@ Path:tmpAEX._currentPath,VideoStart:tmpStart,VideoEnd:tmpEnd,Label:this._formatT
 	 * @param {string} pGUID - Collection GUID
 	 * @param {string} pMode - "folder" (add folder reference) or "contents" (add folder contents wildcard)
 	 */addCurrentFolderToCollection(pGUID,pMode){let tmpRemote=this._getRemote();let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentPath||!pGUID){return;}let tmpItem={Type:pMode==='contents'?'folder-contents':'folder',Path:tmpCurrentPath,Label:'',Note:''};this.addItemsToCollection(pGUID,[tmpItem]);}/**
+	 * Show a small inline dropdown prompting the user to choose between
+	 * adding a folder reference or the folder's contents.
+	 *
+	 * @param {Function} pCallback - Called with ('folder') or ('contents')
+	 */showFolderChoicePrompt(pCallback){let tmpSelf=this;// Remove any existing folder choice dropdown
+this.closeFolderChoicePrompt();// Anchor to the add-to-collection button (star) or favorites button (heart)
+let tmpAnchor=document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn')||document.getElementById('RetoldRemote-TopBar-FavoritesBtn');// Build the dropdown
+let tmpDropdown=document.createElement('div');tmpDropdown.className='retold-remote-addcoll-dropdown';tmpDropdown.id='RetoldRemote-FolderChoice-Dropdown';// Header
+let tmpHeader=document.createElement('div');tmpHeader.className='retold-remote-addcoll-dropdown-item';tmpHeader.style.fontWeight='600';tmpHeader.style.cursor='default';tmpHeader.style.color='var(--retold-text-muted)';tmpHeader.style.fontSize='0.75rem';tmpHeader.textContent='This is a folder:';tmpDropdown.appendChild(tmpHeader);// Option 1: Add folder reference
+let tmpFolderBtn=document.createElement('button');tmpFolderBtn.className='retold-remote-addcoll-dropdown-item';tmpFolderBtn.textContent='\uD83D\uDCC1 Add Folder';tmpFolderBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('folder');};tmpDropdown.appendChild(tmpFolderBtn);// Option 2: Add folder contents
+let tmpContentsBtn=document.createElement('button');tmpContentsBtn.className='retold-remote-addcoll-dropdown-item';tmpContentsBtn.textContent='\uD83D\uDCC2 Add Folder Contents';tmpContentsBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('contents');};tmpDropdown.appendChild(tmpContentsBtn);if(tmpAnchor){tmpAnchor.style.position='relative';tmpAnchor.appendChild(tmpDropdown);}else{// Fallback: position fixed near top-right
+tmpDropdown.style.position='fixed';tmpDropdown.style.top='50px';tmpDropdown.style.right='20px';document.body.appendChild(tmpDropdown);}// Close on outside click (deferred so the current click doesn't immediately close it)
+setTimeout(function(){tmpSelf._boundCloseFolderChoice=function(pClickEvent){if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpAnchor){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('click',tmpSelf._boundCloseFolderChoice);// Close on Escape key
+tmpSelf._boundCloseFolderChoiceKey=function(pKeyEvent){if(pKeyEvent.key==='Escape'){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('keydown',tmpSelf._boundCloseFolderChoiceKey);},10);}/**
+	 * Close the folder choice prompt dropdown.
+	 */closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}/**
 	 * Sort a collection's Items array in place (client-side mirror of server logic).
 	 *
 	 * @param {Array} pItems - Items array
@@ -9608,7 +9714,7 @@ if(tmpRemote.SearchQuery){let tmpSearchLabel='Search: "'+tmpRemote.SearchQuery+'
 	 * Delete a saved preset.
 	 *
 	 * @param {number} pIndex - index into FilterPresets array
-	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46}],119:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
+	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46}],119:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
 	 * Calculate how many columns are in the current gallery grid by
 	 * inspecting the rendered DOM.  In list mode this is always 1.
 	 */recalculateColumns(){let tmpRemote=this.pict.AppData.RetoldRemote;// List mode is always a single column
@@ -9624,7 +9730,7 @@ if(pEvent.target.tagName==='INPUT'||pEvent.target.tagName==='TEXTAREA'||pEvent.t
 pEvent.preventDefault();tmpSelf._toggleFilterBar();return;}// Escape from the search input hides the filter bar
 if(pEvent.key==='Escape'&&pEvent.target.id==='RetoldRemote-Gallery-Search'){pEvent.preventDefault();pEvent.target.blur();tmpSelf._hideFilterBar();return;}// Don't capture keys when an input is focused
 if(pEvent.target.tagName==='INPUT'||pEvent.target.tagName==='TEXTAREA'||pEvent.target.isContentEditable){return;}// If the help panel is visible, Escape closes it
-if(tmpSelf._helpPanelVisible&&pEvent.key==='Escape'){pEvent.preventDefault();tmpSelf._toggleHelpPanel();return;}let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;let tmpActiveMode=tmpRemote.ActiveMode;if(tmpActiveMode==='gallery'&&tmpSelf._sidebarFocused){tmpSelf._handleSidebarKey(pEvent);}else if(tmpActiveMode==='gallery'){tmpSelf._handleGalleryKey(pEvent);}else if(tmpActiveMode==='video-explorer'){tmpSelf._handleVideoExplorerKey(pEvent);}else if(tmpActiveMode==='audio-explorer'){tmpSelf._handleAudioExplorerKey(pEvent);}else if(tmpActiveMode==='viewer'){tmpSelf._handleViewerKey(pEvent);}};document.addEventListener('keydown',this._keydownHandler);this._keydownBound=true;// Set up edge-swipe gestures for distraction-free mode on touch devices
+if(tmpSelf._helpPanelVisible&&pEvent.key==='Escape'){pEvent.preventDefault();tmpSelf._toggleHelpPanel();return;}let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;let tmpActiveMode=tmpRemote.ActiveMode;if(tmpActiveMode==='gallery'&&tmpSelf._sidebarFocused){tmpSelf._handleSidebarKey(pEvent);}else if(tmpActiveMode==='gallery'){tmpSelf._handleGalleryKey(pEvent);}else if(tmpActiveMode==='video-explorer'){tmpSelf._handleVideoExplorerKey(pEvent);}else if(tmpActiveMode==='audio-explorer'){tmpSelf._handleAudioExplorerKey(pEvent);}else if(tmpActiveMode==='image-explorer'){tmpSelf._handleImageExplorerKey(pEvent);}else if(tmpActiveMode==='viewer'){tmpSelf._handleViewerKey(pEvent);}};document.addEventListener('keydown',this._keydownHandler);this._keydownBound=true;// Set up edge-swipe gestures for distraction-free mode on touch devices
 this._setupDFSwipeGestures();}/**
 	 * Set up touch swipe gestures near the top edge for toggling
 	 * distraction-free mode.
@@ -9659,6 +9765,8 @@ if(pIndex<tmpRows.length){tmpRows[pIndex].classList.add('sidebar-focused');tmpRo
 	 */_handleVideoExplorerKey(pEvent){libHandleVideoExplorerKey(this,pEvent);}/**
 	 * Handle keyboard events in audio explorer mode.
 	 */_handleAudioExplorerKey(pEvent){libHandleAudioExplorerKey(this,pEvent);}/**
+	 * Handle keyboard events in image explorer mode.
+	 */_handleImageExplorerKey(pEvent){libHandleImageExplorerKey(this,pEvent);}/**
 	 * Move the gallery cursor to a new index and update the UI.
 	 *
 	 * @param {number} pNewIndex - The new cursor position
@@ -9684,20 +9792,30 @@ let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.na
 	 */navigateUp(){let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentLocation){return;}// Remember cursor position in the current folder before navigating away
 let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.FolderCursorHistory[tmpCurrentLocation]=tmpRemote.GalleryCursorIndex||0;let tmpParent=tmpCurrentLocation.indexOf('/')>=0?tmpCurrentLocation.replace(/\/[^/]+\/?$/,''):'';let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.loadFileList){tmpApp.loadFileList(tmpParent);}}/**
 	 * Close the viewer and return to gallery mode.
-	 */closeViewer(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='gallery';// Exit collection browsing mode
+	 */closeViewer(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='gallery';// Clear viewer file state so collection/favorites resolution
+// falls through to the gallery cursor instead of a stale path
+tmpRemote.CurrentViewerFile='';tmpRemote.CurrentViewerMediaType='';// Exit collection browsing mode
 tmpRemote.BrowsingCollection=false;tmpRemote.BrowsingCollectionIndex=-1;let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Clean up swipe and DF exit listeners
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){if(tmpMediaViewer._cleanupSwipe){tmpMediaViewer._cleanupSwipe();}if(tmpMediaViewer._cleanupDFExitHotspot){tmpMediaViewer._cleanupDFExitHotspot();}}// Restore the hash to the browse route (use hashed identifier when available)
 let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider&&tmpCurrentLocation?tmpFragProvider.getFragmentIdentifier(tmpCurrentLocation):tmpCurrentLocation;window.location.hash=tmpFragId?'#/browse/'+tmpFragId:'#/browse/';// Re-render gallery to ensure cursor is visible
 let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}/**
+	 * Navigate to a collection item based on its type.  Video-frame items
+	 * are shown as images in the media viewer; video/audio clips open
+	 * their respective explorers; everything else uses navigateToFile.
+	 *
+	 * @param {object} pItem      - The collection item record
+	 * @param {number} pItemIndex - Index within ActiveCollection.Items
+	 */_navigateToCollectionItem(pItem,pItemIndex){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.BrowsingCollection=true;tmpRemote.BrowsingCollectionIndex=pItemIndex;if(pItem.Type==='video-clip'){let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(pItem.Path,pItem.VideoStart,pItem.VideoEnd);}}else if(pItem.Type==='audio-clip'){let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(pItem.Path,pItem.AudioStart,pItem.AudioEnd);}}else if(pItem.Type==='video-frame'&&pItem.FrameCacheKey&&pItem.FrameFilename){// Show the cached frame image directly in the viewer
+let tmpFrameURL='/api/media/video-frame/'+encodeURIComponent(pItem.FrameCacheKey)+'/'+encodeURIComponent(pItem.FrameFilename);let tmpViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.showDirectImage(tmpFrameURL,pItem.Label||pItem.FrameFilename,pItem.Path);}}else{let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(pItem.Path);}}}/**
 	 * Navigate to the next file in the gallery list.
 	 * When browsing a collection, navigates through collection items instead.
 	 */nextFile(){let tmpRemote=this.pict.AppData.RetoldRemote;// Collection browsing mode — navigate through ActiveCollection.Items
-if(tmpRemote.BrowsingCollection&&tmpRemote.ActiveCollection){let tmpCollItems=tmpRemote.ActiveCollection.Items||[];let tmpCollIndex=tmpRemote.BrowsingCollectionIndex;for(let i=tmpCollIndex+1;i<tmpCollItems.length;i++){let tmpItem=tmpCollItems[i];if(tmpItem.Type==='file'||tmpItem.Type==='subfile'||tmpItem.Type==='image-crop'||tmpItem.Type==='video-clip'||tmpItem.Type==='video-frame'){tmpRemote.BrowsingCollectionIndex=i;let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(tmpItem.Path);}return;}}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;// Find the next file (skip folders)
+if(tmpRemote.BrowsingCollection&&tmpRemote.ActiveCollection){let tmpCollItems=tmpRemote.ActiveCollection.Items||[];let tmpCollIndex=tmpRemote.BrowsingCollectionIndex;for(let i=tmpCollIndex+1;i<tmpCollItems.length;i++){let tmpItem=tmpCollItems[i];if(tmpItem.Type==='file'||tmpItem.Type==='subfile'||tmpItem.Type==='image-crop'||tmpItem.Type==='video-clip'||tmpItem.Type==='video-frame'){this._navigateToCollectionItem(tmpItem,i);return;}}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;// Find the next file (skip folders)
 for(let i=tmpIndex+1;i<tmpItems.length;i++){if(tmpItems[i].Type==='file'){tmpRemote.GalleryCursorIndex=i;let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(tmpItems[i].Path);}return;}}}/**
 	 * Navigate to the previous file in the gallery list.
 	 * When browsing a collection, navigates through collection items instead.
 	 */prevFile(){let tmpRemote=this.pict.AppData.RetoldRemote;// Collection browsing mode — navigate through ActiveCollection.Items
-if(tmpRemote.BrowsingCollection&&tmpRemote.ActiveCollection){let tmpCollItems=tmpRemote.ActiveCollection.Items||[];let tmpCollIndex=tmpRemote.BrowsingCollectionIndex;for(let i=tmpCollIndex-1;i>=0;i--){let tmpItem=tmpCollItems[i];if(tmpItem.Type==='file'||tmpItem.Type==='subfile'||tmpItem.Type==='image-crop'||tmpItem.Type==='video-clip'||tmpItem.Type==='video-frame'){tmpRemote.BrowsingCollectionIndex=i;let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(tmpItem.Path);}return;}}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;// Find the previous file (skip folders)
+if(tmpRemote.BrowsingCollection&&tmpRemote.ActiveCollection){let tmpCollItems=tmpRemote.ActiveCollection.Items||[];let tmpCollIndex=tmpRemote.BrowsingCollectionIndex;for(let i=tmpCollIndex-1;i>=0;i--){let tmpItem=tmpCollItems[i];if(tmpItem.Type==='file'||tmpItem.Type==='subfile'||tmpItem.Type==='image-crop'||tmpItem.Type==='video-clip'||tmpItem.Type==='video-frame'){this._navigateToCollectionItem(tmpItem,i);return;}}return;}let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;// Find the previous file (skip folders)
 for(let i=tmpIndex-1;i>=0;i--){if(tmpItems[i].Type==='file'){tmpRemote.GalleryCursorIndex=i;let tmpApp=this.pict.PictApplication;if(tmpApp&&tmpApp.navigateToFile){tmpApp.navigateToFile(tmpItems[i].Path);}return;}}}_toggleViewMode(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ViewMode=tmpRemote.ViewMode==='gallery'?'list':'gallery';let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}// Persist the change
 let tmpApp=this.pict.PictApplication;if(tmpApp&&typeof tmpApp.saveSettings==='function'){tmpApp.saveSettings();}}_focusSearch(){let tmpSearch=document.getElementById('RetoldRemote-Gallery-Search');if(tmpSearch){tmpSearch.focus();}}// ──────────────────────────────────────────────
 // Filter bar toggle
@@ -9754,9 +9872,11 @@ let tmpPresetInput=document.getElementById('RetoldRemote-Filter-PresetName');if(
 	 */_toggleDistractionFree(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpTopBar=document.getElementById('ContentEditor-TopBar-Container');let tmpSidebarWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpTopBar||!tmpSidebarWrap){return;}// Check current state — if either is visible, hide both; if both hidden, show both
 let tmpIsDistractionFree=tmpRemote._distractionFreeMode||false;if(tmpIsDistractionFree){// Restore
 tmpTopBar.style.display='';tmpSidebarWrap.style.display='';tmpRemote._distractionFreeMode=false;// Restore viewer nav header
-let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display='';}}else{// Hide
+let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display='';}// Restore collections panel if it was open before DF mode
+if(tmpRemote._collectionsPanelWasOpen){let tmpCollWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(tmpCollWrap){tmpCollWrap.classList.remove('collapsed');if(tmpRemote.CollectionsPanelWidth){tmpCollWrap.style.width=tmpRemote.CollectionsPanelWidth+'px';}}tmpRemote.CollectionsPanelOpen=true;tmpRemote._collectionsPanelWasOpen=false;}}else{// Hide
 tmpTopBar.style.display='none';tmpSidebarWrap.style.display='none';tmpRemote._distractionFreeMode=true;// Hide viewer nav header if setting says so
-if(!tmpRemote.DistractionFreeShowNav){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display='none';}}}// Sync DF toggle/hotspot in the media viewer
+if(!tmpRemote.DistractionFreeShowNav){let tmpViewerHeader=document.querySelector('.retold-remote-viewer-header');if(tmpViewerHeader){tmpViewerHeader.style.display='none';}}// Hide collections panel if it's open
+if(tmpRemote.CollectionsPanelOpen){tmpRemote._collectionsPanelWasOpen=true;let tmpCollWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(tmpCollWrap){tmpCollWrap.classList.add('collapsed');}tmpRemote.CollectionsPanelOpen=false;}}// Sync DF toggle/hotspot in the media viewer
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer&&tmpMediaViewer._updateDFControls){tmpMediaViewer._updateDFControls();}// Recalculate gallery columns after layout change
 setTimeout(()=>this.recalculateColumns(),100);}_toggleFullscreen(){if(document.fullscreenElement){document.exitFullscreen();return;}// When viewing a video, fullscreen the video element itself
 let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote.CurrentViewerMediaType==='video'){let tmpVideo=document.getElementById('RetoldRemote-VideoPlayer');if(tmpVideo){tmpVideo.requestFullscreen();return;}}// For other media types, fullscreen the viewer container
@@ -9768,11 +9888,14 @@ let tmpCapabilities=tmpRemote.ServerCapabilities||{};if(!tmpCapabilities.vlc){re
 this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening in VLC...');// POST to the server to open the file
 fetch('/api/media/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:tmpFilePath})}).then(pResponse=>{return pResponse.json();}).then(pData=>{if(!pData.Success){this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Failed to open: '+(pData.Error||'Unknown error'));}}).catch(pError=>{this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Failed to open: '+pError.message);});}/**
 	 * Stream the current media file to VLC on the client device via vlc:// protocol link.
-	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;// On Windows and mobile (iOS/Android), VLC handles the raw URL natively.
-// On macOS/Linux our custom handlers URL-decode, so we encode.
-let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpVLCURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpStreamURL:'vlc://'+encodeURIComponent(tmpStreamURL);this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use a temporary anchor element to trigger the protocol handler
-// without navigating the current page away
-let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":124,"./keyboard-handlers/KeyHandler-Gallery.js":125,"./keyboard-handlers/KeyHandler-Sidebar.js":126,"./keyboard-handlers/KeyHandler-VideoExplorer.js":127,"./keyboard-handlers/KeyHandler-Viewer.js":128,"pict-provider":46}],120:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+	 */_streamWithVLC(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType!=='video'&&tmpMediaType!=='audio'){return;}let tmpFilePath=tmpRemote.CurrentViewerFile;if(!tmpFilePath){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentPath=tmpProvider?tmpProvider.getContentURL(tmpFilePath):'/content/'+encodeURIComponent(tmpFilePath);let tmpStreamURL=window.location.origin+tmpContentPath;// Detect platform for VLC URL format.
+// iPadOS 13+ sends a macOS user agent — detect it via maxTouchPoints.
+let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||/Macintosh/i.test(navigator.userAgent)&&navigator.maxTouchPoints>1;let tmpIsAndroid=/Android/i.test(navigator.userAgent);let tmpIsMobile=tmpIsIOS||tmpIsAndroid;let tmpVLCURL;if(tmpIsIOS){// iOS/iPadOS: use vlc-x-callback for reliable app launching
+tmpVLCURL='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(tmpStreamURL);}else if(tmpIsWindows||tmpIsAndroid){// Windows and Android: VLC handles the raw URL natively
+tmpVLCURL='vlc://'+tmpStreamURL;}else{// macOS/Linux: our custom handlers URL-decode, so we encode
+tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);}this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use window.location for iOS (more reliable for custom URL schemes
+// on iOS Safari than a programmatic anchor click), anchor for others.
+if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":124,"./keyboard-handlers/KeyHandler-Gallery.js":125,"./keyboard-handlers/KeyHandler-ImageExplorer.js":126,"./keyboard-handlers/KeyHandler-Sidebar.js":127,"./keyboard-handlers/KeyHandler-VideoExplorer.js":128,"./keyboard-handlers/KeyHandler-Viewer.js":129,"pict-provider":46}],120:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -9889,7 +10012,7 @@ const _FallbackExtensionMap={// Images
 '.json':'file-config','.yaml':'file-config','.yml':'file-config','.toml':'file-config','.ini':'file-config','.env':'file-config','.conf':'file-config','.cfg':'file-config',// Archives
 '.zip':'file-archive','.tar':'file-archive','.gz':'file-archive','.rar':'file-archive','.7z':'file-archive','.bz2':'file-archive','.xz':'file-archive','.tgz':'file-archive','.cbz':'file-archive','.cbr':'file-archive',// Audio
 '.mp3':'file-audio','.wav':'file-audio','.flac':'file-audio','.ogg':'file-audio','.aac':'file-audio','.wma':'file-audio','.m4a':'file-audio','.opus':'file-audio','.aiff':'file-audio',// Video
-'.mp4':'file-video','.avi':'file-video','.mov':'file-video','.mkv':'file-video','.webm':'file-video','.wmv':'file-video','.flv':'file-video','.m4v':'file-video',// Ebooks
+'.mp4':'file-video','.avi':'file-video','.mov':'file-video','.mkv':'file-video','.webm':'file-video','.wmv':'file-video','.flv':'file-video','.m4v':'file-video','.ogv':'file-video','.mpg':'file-video','.mpeg':'file-video','.mpe':'file-video','.mpv':'file-video','.m2v':'file-video','.ts':'file-video','.mts':'file-video','.m2ts':'file-video','.vob':'file-video','.3gp':'file-video','.3g2':'file-video','.f4v':'file-video','.rm':'file-video','.rmvb':'file-video','.divx':'file-video','.asf':'file-video','.mxf':'file-video','.dv':'file-video','.nsv':'file-video','.nuv':'file-video','.y4m':'file-video','.wtv':'file-video','.swf':'file-video','.dat':'file-video',// Ebooks
 '.epub':'file-text','.mobi':'file-text'};const _ExtensionMap=Object.keys(_BaseExtensionMap).length>0?_BaseExtensionMap:_FallbackExtensionMap;/**
  * Dark-theme SVG icon provider for retold-remote.
  *
@@ -9995,7 +10118,11 @@ return this.getIcon('file',tmpSize);}/**
 	 * @returns {Object} Extension-to-icon name map
 	 */getExtensionMap(){return Object.assign({},this._extensionMap);}/**
 	 * Inject CSS classes for icon sizing into the pict CSSMap.
-	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('RetoldRemoteIcons','.retold-remote-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.retold-remote-icon svg { display: block; }\n'+'.retold-remote-icon-sm svg { width: 16px; height: 16px; }\n'+'.retold-remote-icon-md svg { width: 48px; height: 48px; }\n'+'.retold-remote-icon-lg svg { width: 64px; height: 64px; }\n'+'.retold-remote-icon-xl svg { width: 96px; height: 96px; }\n');this._cssInjected=true;}}onAfterInitialize(){this.injectCSS();return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"pict-provider":46,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":56}],122:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
+	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('RetoldRemoteIcons','.retold-remote-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.retold-remote-icon svg { display: block; }\n'+'.retold-remote-icon-sm svg { width: 16px; height: 16px; }\n'+'.retold-remote-icon-md svg { width: 48px; height: 48px; }\n'+'.retold-remote-icon-lg svg { width: 64px; height: 64px; }\n'+'.retold-remote-icon-xl svg { width: 96px; height: 96px; }\n');this._cssInjected=true;}}onAfterInitialize(){this.injectCSS();// Ensure all video/audio extensions from the shared extension maps are
+// registered in the icon extension map.  The base map imported from
+// pict-section-filebrowser only covers a handful of common formats;
+// this fills in the gaps (mpg, mpeg, ts, mts, 3gp, etc.)
+let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":56}],122:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
  * Theme provider for retold-remote.
  *
  * Manages 15 themes (5 grey-only + 10 fun) via CSS custom properties.
@@ -10057,16 +10184,22 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':pEvent.preventDefault();{let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){if(tmpRemote.LastUsedCollectionGUID){tmpCollMgr.addAudioSnippetToCollection(tmpRemote.LastUsedCollectionGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleAudioExplorerKey;},{}],125:[function(require,module,exports){/**
+ */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleAudioExplorerKey;},{}],125:[function(require,module,exports){/**
  * Gallery mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
  */function handleGalleryKey(pGalleryNav,pEvent){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;switch(pEvent.key){case'ArrowRight':pEvent.preventDefault();pGalleryNav.moveCursor(Math.min(tmpIndex+1,tmpItems.length-1));break;case'ArrowLeft':pEvent.preventDefault();pGalleryNav.moveCursor(Math.max(tmpIndex-1,0));break;case'ArrowDown':pEvent.preventDefault();pGalleryNav.moveCursor(Math.min(tmpIndex+pGalleryNav._columnsPerRow,tmpItems.length-1));break;case'ArrowUp':pEvent.preventDefault();pGalleryNav.moveCursor(Math.max(tmpIndex-pGalleryNav._columnsPerRow,0));break;case'Enter':pEvent.preventDefault();pGalleryNav.openCurrent();break;case'Escape':pEvent.preventDefault();pGalleryNav.navigateUp();break;case'g':pEvent.preventDefault();pGalleryNav._toggleViewMode();break;case'x':pEvent.preventDefault();pGalleryNav._clearAllFilters();break;case'Home':pEvent.preventDefault();pGalleryNav.moveCursor(0);break;case'End':pEvent.preventDefault();pGalleryNav.moveCursor(tmpItems.length-1);break;case'1':pEvent.preventDefault();pGalleryNav.openCurrentAs('image');break;case'2':pEvent.preventDefault();pGalleryNav.openCurrentAs('video');break;case'3':pEvent.preventDefault();pGalleryNav.openCurrentAs('audio');break;case'4':pEvent.preventDefault();pGalleryNav.openCurrentAs('text');break;case'f':pEvent.preventDefault();{// Ensure the filter bar is visible first
 pGalleryNav._showFilterBar();let tmpGalleryView=pGalleryNav.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.toggleFilterPanel();}}break;case's':pEvent.preventDefault();{// Ensure the filter bar is visible first
-pGalleryNav._showFilterBar();setTimeout(()=>{let tmpSortSelect=document.getElementById('RetoldRemote-Gallery-Sort');if(tmpSortSelect){tmpSortSelect.focus();}},50);}break;case'c':pEvent.preventDefault();pGalleryNav._toggleSettingsPanel();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpCursorItem=tmpItems[tmpIndex];if(tmpCursorItem&&tmpRemote.LastUsedCollectionGUID){// Quick-add the highlighted gallery item to the last-used collection
-let tmpAddItem={Type:tmpCursorItem.Type==='folder'||tmpCursorItem.Type==='archive'?'folder':'file',Path:tmpCursorItem.Path||'',Hash:tmpCursorItem.Hash||'',Label:''};tmpCollMgr.addItemsToCollection(tmpRemote.LastUsedCollectionGUID,[tmpAddItem]);}else{// No last-used collection or no item — open the topbar dropdown
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleGalleryKey;},{}],126:[function(require,module,exports){/**
+pGalleryNav._showFilterBar();setTimeout(()=>{let tmpSortSelect=document.getElementById('RetoldRemote-Gallery-Sort');if(tmpSortSelect){tmpSortSelect.focus();}},50);}break;case'c':pEvent.preventDefault();pGalleryNav._toggleSettingsPanel();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpCursorItem=tmpItems[tmpIndex];let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpCursorItem&&tmpQuickGUID){if(tmpCursorItem.Type==='folder'||tmpCursorItem.Type==='archive'){// For folders, prompt user for folder reference vs folder contents
+tmpCollMgr.showFolderChoicePrompt(pChoice=>{let tmpAddItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpCursorItem.Path||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);});}else{// Quick-add the highlighted file item to the active collection
+let tmpAddItem={Type:'file',Path:tmpCursorItem.Path||'',Hash:tmpCursorItem.Hash||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);}}else{// No active or last-used collection, or no item — open the topbar dropdown
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],126:[function(require,module,exports){/**
+ * Image explorer mode keyboard handler.
+ *
+ * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
+ * @param {KeyboardEvent} pEvent - The keyboard event
+ */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();tmpIEX.goBack();break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleImageExplorerKey;},{}],127:[function(require,module,exports){/**
  * Sidebar file list keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10074,20 +10207,25 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
  */function handleSidebarKey(pGalleryNav,pEvent){let tmpRows=document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');let tmpCount=tmpRows.length;if(tmpCount===0){// Nothing in the sidebar, bail back to gallery
 pGalleryNav._blurSidebar();return;}switch(pEvent.key){case'ArrowDown':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.min(pGalleryNav._sidebarCursorIndex+1,tmpCount-1));break;case'ArrowUp':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.max(pGalleryNav._sidebarCursorIndex-1,0));break;case'Home':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(0);break;case'End':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(tmpCount-1);break;case'Enter':pEvent.preventDefault();{// Click the focused row to open it (folder or file)
 let tmpRow=tmpRows[pGalleryNav._sidebarCursorIndex];if(tmpRow){// Fire the dblclick handler which opens folders / selects files
-let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],127:[function(require,module,exports){/**
+let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],128:[function(require,module,exports){/**
  * Video explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleVideoExplorerKey(pGalleryNav,pEvent){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;switch(pEvent.key){case'Escape':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.goBack();}break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){if(tmpRemote.LastUsedCollectionGUID){tmpCollMgr.addVideoFrameToCollection(tmpRemote.LastUsedCollectionGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleVideoExplorerKey;},{}],128:[function(require,module,exports){/**
+ */function handleVideoExplorerKey(pGalleryNav,pEvent){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;switch(pEvent.key){case'Escape':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){// If a frame preview overlay is open, close it instead of leaving the explorer
+if(tmpVEX._previewKeyHandler){tmpVEX.closeFramePreview();}else{tmpVEX.goBack();}}break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addVideoFrameToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case's':pEvent.preventDefault();{// Add the selected time range (subsection) to a collection
+let tmpSelVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(!tmpSelVEX||tmpSelVEX._selectionStartTime<0||tmpSelVEX._selectionEndTime<0){// No selection active \u2014 do nothing
+break;}let tmpSelCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpSelCollMgr){let tmpStart=Math.min(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpEnd=Math.max(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpSelQuickGUID=tmpSelCollMgr.getQuickAddTargetGUID();if(tmpSelQuickGUID){tmpSelCollMgr.addVideoClipToCollection(tmpSelQuickGUID,tmpStart,tmpEnd);}else{let tmpSelTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpSelTopBar&&typeof tmpSelTopBar.showAddToCollectionDropdown==='function'){tmpSelTopBar.showAddToCollectionDropdown();}}}}break;case'[':pEvent.preventDefault();{// Set selection start marker at currently selected frame's timestamp
+let tmpStartVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpStartVEX&&tmpStartVEX._frameData&&tmpStartVEX._frameData.Frames&&tmpStartVEX._selectedFrameIndex>=0&&tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex]){let tmpTimestamp=tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex].Timestamp;tmpStartVEX.setSelectionStart(tmpTimestamp);}}break;case']':pEvent.preventDefault();{// Set selection end marker at currently selected frame's timestamp
+let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleVideoExplorerKey;},{}],129:[function(require,module,exports){/**
  * Viewer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
  */function handleViewerKey(pGalleryNav,pEvent){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;// Video action menu mode — intercept keys for menu options
-if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();break;case'f':pEvent.preventDefault();pGalleryNav._toggleFullscreen();break;case'i':pEvent.preventDefault();pGalleryNav._toggleFileInfo();break;case' ':pEvent.preventDefault();pGalleryNav._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();pGalleryNav._zoomIn();break;case'-':pEvent.preventDefault();pGalleryNav._zoomOut();break;case'0':pEvent.preventDefault();pGalleryNav._zoomReset();break;case'z':pEvent.preventDefault();pGalleryNav._cycleFitMode();break;case'Enter':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;if(tmpRemote.LastUsedCollectionGUID){// Quick-add the currently viewed file
-tmpCollMgr.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);}else{// No last-used collection — open the picker
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],129:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();return;case'a':pEvent.preventDefault();{let tmpMenuCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollMgr){let tmpMenuQuickGUID=tmpMenuCollMgr.getQuickAddTargetGUID();if(tmpMenuQuickGUID){tmpMenuCollMgr.addCurrentFileToCollection(tmpMenuQuickGUID);}else{let tmpMenuTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpMenuTopBar&&typeof tmpMenuTopBar.showAddToCollectionDropdown==='function'){tmpMenuTopBar.showAddToCollectionDropdown();}}}}return;case'b':pEvent.preventDefault();{let tmpMenuCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollManager){tmpMenuCollManager.togglePanel();}}return;case'h':pEvent.preventDefault();{let tmpMenuFavManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuFavManager){tmpMenuFavManager.toggleFavorite();}}return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();break;case'f':pEvent.preventDefault();pGalleryNav._toggleFullscreen();break;case'i':pEvent.preventDefault();pGalleryNav._toggleFileInfo();break;case' ':pEvent.preventDefault();pGalleryNav._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();pGalleryNav._zoomIn();break;case'-':pEvent.preventDefault();pGalleryNav._zoomOut();break;case'0':pEvent.preventDefault();pGalleryNav._zoomReset();break;case'z':pEvent.preventDefault();pGalleryNav._cycleFitMode();break;case'Enter':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){// Quick-add the currently viewed file
+tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{// No active or last-used collection — open the picker
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],130:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-aex
 		{
 			display: flex;
@@ -10212,6 +10350,34 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
 		{
 			background: transparent;
 			color: var(--retold-accent);
+		}
+		/* Save segment to collection button */
+		.retold-remote-aex-save-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid #98c379;
+			border-radius: 3px;
+			background: transparent;
+			color: #98c379;
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-aex-save-btn:hover
+		{
+			background: #98c379;
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-aex-save-btn:disabled
+		{
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+		.retold-remote-aex-save-btn:disabled:hover
+		{
+			background: transparent;
+			color: #98c379;
 		}
 		.retold-remote-aex-body
 		{
@@ -10361,13 +10527,20 @@ this._mainCanvas=null;this._overviewCanvas=null;this._resizeObserver=null;}/**
 	 * Show the audio explorer for a given audio file.
 	 *
 	 * @param {string} pFilePath - Relative file path
-	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='audio-explorer';this._currentPath=pFilePath;this._waveformData=null;this._peaks=[];this._viewStart=0;this._viewEnd=1;this._selectionStart=-1;this._selectionEnd=-1;this._segmentURL=null;// Update the hash
+	 *//**
+	 * Show the audio explorer for a given file.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 * @param {number} [pSelectionStart] - Optional selection start in seconds
+	 * @param {number} [pSelectionEnd] - Optional selection end in seconds
+	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='audio-explorer';this._currentPath=pFilePath;this._waveformData=null;this._peaks=[];this._viewStart=0;this._viewEnd=1;this._segmentURL=null;// Store passed-in selection times (in seconds) to apply after waveform loads
+this._pendingSelectionStartSec=typeof pSelectionStart==='number'&&pSelectionStart>=0?pSelectionStart:-1;this._pendingSelectionEndSec=typeof pSelectionEnd==='number'&&pSelectionEnd>=0?pSelectionEnd:-1;this._selectionStart=-1;this._selectionEnd=-1;// Update the hash
 let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore-audio/'+tmpFragId;// Show viewer container, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');// Build initial UI
 let tmpHTML='<div class="retold-remote-aex">';// Header
 tmpHTML+='<div class="retold-remote-aex-header">';tmpHTML+='<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()" title="Back to audio (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-aex-title">Audio Explorer &mdash; '+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar (populated after waveform loads)
 tmpHTML+='<div class="retold-remote-aex-info" id="RetoldRemote-AEX-Info" style="display:none;"></div>';// Controls bar
-tmpHTML+='<div class="retold-remote-aex-controls" id="RetoldRemote-AEX-Controls" style="display:none;">';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomIn()" title="Zoom In (+)">+ Zoom In</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomOut()" title="Zoom Out (-)">- Zoom Out</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomToFit()" title="Zoom to Fit (0)">Fit All</button>';tmpHTML+='<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-ZoomSelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomToSelection()" title="Zoom to Selection (Z)" disabled>Zoom to Selection</button>';tmpHTML+='<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-PlaySelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].playSelection()" title="Play Selection (Space)" disabled>&#9654; Play Selection</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].clearSelection()" title="Clear Selection (Esc)">Clear Selection</button>';tmpHTML+='</div>';// Body (loading initially)
+tmpHTML+='<div class="retold-remote-aex-controls" id="RetoldRemote-AEX-Controls" style="display:none;">';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomIn()" title="Zoom In (+)">+ Zoom In</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomOut()" title="Zoom Out (-)">- Zoom Out</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomToFit()" title="Zoom to Fit (0)">Fit All</button>';tmpHTML+='<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-ZoomSelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomToSelection()" title="Zoom to Selection (Z)" disabled>Zoom to Selection</button>';tmpHTML+='<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-PlaySelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].playSelection()" title="Play Selection (Space)" disabled>&#9654; Play Selection</button>';tmpHTML+='<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].clearSelection()" title="Clear Selection (Esc)">Clear Selection</button>';tmpHTML+='<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 4px;"></span>';tmpHTML+='<button class="retold-remote-aex-save-btn" id="RetoldRemote-AEX-SaveSelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].saveSelectionToCollection()" title="Save segment to collection (s)" disabled>Save Segment</button>';tmpHTML+='</div>';// Body (loading initially)
 tmpHTML+='<div class="retold-remote-aex-body" id="RetoldRemote-AEX-Body">';tmpHTML+='<div class="retold-remote-aex-loading">';tmpHTML+='<div class="retold-remote-aex-loading-spinner"></div>';tmpHTML+='Analyzing audio waveform...';tmpHTML+='</div>';tmpHTML+='</div>';// Time display bar
 tmpHTML+='<div class="retold-remote-aex-time-bar" id="RetoldRemote-AEX-TimeBar" style="display:none;">';tmpHTML+='<span class="retold-remote-aex-time-label">View:</span>';tmpHTML+='<span class="retold-remote-aex-time-value" id="RetoldRemote-AEX-ViewRange">--</span>';tmpHTML+='<span class="retold-remote-aex-time-label" style="margin-left: 12px;">Selection:</span>';tmpHTML+='<span class="retold-remote-aex-time-selection" id="RetoldRemote-AEX-SelectionRange">None</span>';tmpHTML+='<span class="retold-remote-aex-time-label" style="margin-left: 12px;">Cursor:</span>';tmpHTML+='<span class="retold-remote-aex-time-value" id="RetoldRemote-AEX-CursorTime">--</span>';tmpHTML+='</div>';// Playback bar
 tmpHTML+='<div class="retold-remote-aex-playback" id="RetoldRemote-AEX-Playback" style="display:none;">';tmpHTML+='<span class="retold-remote-aex-playback-label">Segment:</span>';tmpHTML+='<audio controls id="RetoldRemote-AEX-Audio"></audio>';tmpHTML+='</div>';tmpHTML+='</div>';if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Update topbar
@@ -10388,7 +10561,8 @@ tmpBodyHTML+='<div class="retold-remote-aex-overview-wrap" id="RetoldRemote-AEX-
 this._mainCanvas=document.getElementById('RetoldRemote-AEX-MainCanvas');this._overviewCanvas=document.getElementById('RetoldRemote-AEX-OverviewCanvas');// Bind interactions
 this._bindCanvasEvents();// Initial draw
 this._resizeCanvases();this._drawAll();this._updateTimeDisplay();// Set up resize observer
-let tmpSelf=this;if(typeof ResizeObserver!=='undefined'){this._resizeObserver=new ResizeObserver(()=>{tmpSelf._resizeCanvases();tmpSelf._drawAll();});let tmpWrap=document.getElementById('RetoldRemote-AEX-CanvasWrap');if(tmpWrap){this._resizeObserver.observe(tmpWrap);}}}/**
+let tmpSelf=this;if(typeof ResizeObserver!=='undefined'){this._resizeObserver=new ResizeObserver(()=>{tmpSelf._resizeCanvases();tmpSelf._drawAll();});let tmpWrap=document.getElementById('RetoldRemote-AEX-CanvasWrap');if(tmpWrap){this._resizeObserver.observe(tmpWrap);}}// Load saved selection/view state
+this._loadSavedState();}/**
 	 * Resize canvases to match their container's pixel dimensions.
 	 */_resizeCanvases(){if(this._mainCanvas){let tmpWrap=this._mainCanvas.parentElement;if(tmpWrap){let tmpDPR=window.devicePixelRatio||1;this._mainCanvas.width=tmpWrap.clientWidth*tmpDPR;this._mainCanvas.height=tmpWrap.clientHeight*tmpDPR;}}if(this._overviewCanvas){let tmpWrap=this._overviewCanvas.parentElement;if(tmpWrap){let tmpDPR=window.devicePixelRatio||1;this._overviewCanvas.width=tmpWrap.clientWidth*tmpDPR;this._overviewCanvas.height=tmpWrap.clientHeight*tmpDPR;}}}/**
 	 * Draw both main and overview canvases.
@@ -10415,7 +10589,8 @@ tmpWrap.addEventListener('mousemove',pEvent=>{let tmpRect=tmpWrap.getBoundingCli
 tmpSelf._drawMainWaveform();});tmpWrap.addEventListener('mouseleave',()=>{tmpSelf._cursorX=-1;tmpSelf._drawMainWaveform();});// Mouse down: start selection drag
 tmpWrap.addEventListener('mousedown',pEvent=>{if(pEvent.button!==0){return;}let tmpRect=tmpWrap.getBoundingClientRect();let tmpNorm=tmpSelf._viewStart+(pEvent.clientX-tmpRect.left)/tmpRect.width*(tmpSelf._viewEnd-tmpSelf._viewStart);tmpNorm=Math.max(0,Math.min(1,tmpNorm));tmpSelf._isDragging=true;tmpSelf._selectionStart=tmpNorm;tmpSelf._selectionEnd=tmpNorm;tmpSelf._dragStart=tmpNorm;tmpSelf._segmentURL=null;let tmpPlaybackBar=document.getElementById('RetoldRemote-AEX-Playback');if(tmpPlaybackBar){tmpPlaybackBar.style.display='none';}});// Mouse up: end selection drag
 window.addEventListener('mouseup',()=>{if(tmpSelf._isDragging){tmpSelf._isDragging=false;// If selection is too small, clear it
-if(Math.abs(tmpSelf._selectionEnd-tmpSelf._selectionStart)<0.001){tmpSelf._selectionStart=-1;tmpSelf._selectionEnd=-1;}tmpSelf._updateSelectionButtons();tmpSelf._drawAll();tmpSelf._updateTimeDisplay();}});// Mouse wheel: zoom
+if(Math.abs(tmpSelf._selectionEnd-tmpSelf._selectionStart)<0.001){tmpSelf._selectionStart=-1;tmpSelf._selectionEnd=-1;}tmpSelf._updateSelectionButtons();tmpSelf._drawAll();tmpSelf._updateTimeDisplay();// Persist selection state
+tmpSelf._saveState();}});// Mouse wheel: zoom
 tmpWrap.addEventListener('wheel',pEvent=>{pEvent.preventDefault();let tmpRect=tmpWrap.getBoundingClientRect();let tmpMouseNorm=(pEvent.clientX-tmpRect.left)/tmpRect.width;let tmpZoomFactor=pEvent.deltaY>0?1.2:0.8;tmpSelf._zoomAtPoint(tmpMouseNorm,tmpZoomFactor);},{passive:false});// Overview click: pan to position
 let tmpOverviewWrap=document.getElementById('RetoldRemote-AEX-OverviewWrap');if(tmpOverviewWrap){tmpOverviewWrap.addEventListener('click',pEvent=>{let tmpRect=tmpOverviewWrap.getBoundingClientRect();let tmpClickNorm=(pEvent.clientX-tmpRect.left)/tmpRect.width;tmpClickNorm=Math.max(0,Math.min(1,tmpClickNorm));let tmpViewRange=tmpSelf._viewEnd-tmpSelf._viewStart;let tmpNewStart=tmpClickNorm-tmpViewRange/2;tmpNewStart=Math.max(0,Math.min(1-tmpViewRange,tmpNewStart));tmpSelf._viewStart=tmpNewStart;tmpSelf._viewEnd=tmpNewStart+tmpViewRange;tmpSelf._drawAll();tmpSelf._updateTimeDisplay();});}}/**
 	 * Zoom in/out centered on a normalized position within the current view.
@@ -10430,20 +10605,44 @@ let tmpViewRangeEl=document.getElementById('RetoldRemote-AEX-ViewRange');if(tmpV
 let tmpSelRangeEl=document.getElementById('RetoldRemote-AEX-SelectionRange');if(tmpSelRangeEl){if(this._selectionStart>=0&&this._selectionEnd>=0){let tmpSelMin=Math.min(this._selectionStart,this._selectionEnd)*tmpDuration;let tmpSelMax=Math.max(this._selectionStart,this._selectionEnd)*tmpDuration;let tmpSelDur=tmpSelMax-tmpSelMin;tmpSelRangeEl.textContent=this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelMin,true)+' - '+this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelMax,true)+' ('+this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpSelDur,true)+')';}else{tmpSelRangeEl.textContent='None';}}// Cursor
 let tmpCursorEl=document.getElementById('RetoldRemote-AEX-CursorTime');if(tmpCursorEl){if(this._cursorX>=0&&this._mainCanvas){let tmpWrap=this._mainCanvas.parentElement;if(tmpWrap){let tmpNorm=this._viewStart+this._cursorX/tmpWrap.clientWidth*(this._viewEnd-this._viewStart);tmpCursorEl.textContent=this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpNorm*tmpDuration,true);}}else{tmpCursorEl.textContent='--';}}}/**
 	 * Update selection-dependent button states.
-	 */_updateSelectionButtons(){let tmpHasSelection=this._selectionStart>=0&&this._selectionEnd>=0&&Math.abs(this._selectionEnd-this._selectionStart)>=0.001;let tmpZoomSelBtn=document.getElementById('RetoldRemote-AEX-ZoomSelBtn');if(tmpZoomSelBtn){tmpZoomSelBtn.disabled=!tmpHasSelection;}let tmpPlaySelBtn=document.getElementById('RetoldRemote-AEX-PlaySelBtn');if(tmpPlaySelBtn){tmpPlaySelBtn.disabled=!tmpHasSelection;}}// --- User actions ---
+	 */_updateSelectionButtons(){let tmpHasSelection=this._selectionStart>=0&&this._selectionEnd>=0&&Math.abs(this._selectionEnd-this._selectionStart)>=0.001;let tmpZoomSelBtn=document.getElementById('RetoldRemote-AEX-ZoomSelBtn');if(tmpZoomSelBtn){tmpZoomSelBtn.disabled=!tmpHasSelection;}let tmpPlaySelBtn=document.getElementById('RetoldRemote-AEX-PlaySelBtn');if(tmpPlaySelBtn){tmpPlaySelBtn.disabled=!tmpHasSelection;}let tmpSaveSelBtn=document.getElementById('RetoldRemote-AEX-SaveSelBtn');if(tmpSaveSelBtn){tmpSaveSelBtn.disabled=!tmpHasSelection;}}// --- User actions ---
 zoomIn(){this._zoomAtPoint(0.5,0.5);}zoomOut(){this._zoomAtPoint(0.5,2);}zoomToFit(){this._viewStart=0;this._viewEnd=1;this._drawAll();this._updateTimeDisplay();}zoomToSelection(){if(this._selectionStart<0||this._selectionEnd<0){return;}let tmpMin=Math.min(this._selectionStart,this._selectionEnd);let tmpMax=Math.max(this._selectionStart,this._selectionEnd);// Add a small margin (5%)
-let tmpRange=tmpMax-tmpMin;let tmpMargin=tmpRange*0.05;this._viewStart=Math.max(0,tmpMin-tmpMargin);this._viewEnd=Math.min(1,tmpMax+tmpMargin);this._drawAll();this._updateTimeDisplay();}clearSelection(){this._selectionStart=-1;this._selectionEnd=-1;this._segmentURL=null;let tmpPlaybackBar=document.getElementById('RetoldRemote-AEX-Playback');if(tmpPlaybackBar){tmpPlaybackBar.style.display='none';}this._updateSelectionButtons();this._drawAll();this._updateTimeDisplay();}/**
+let tmpRange=tmpMax-tmpMin;let tmpMargin=tmpRange*0.05;this._viewStart=Math.max(0,tmpMin-tmpMargin);this._viewEnd=Math.min(1,tmpMax+tmpMargin);this._drawAll();this._updateTimeDisplay();}clearSelection(){this._selectionStart=-1;this._selectionEnd=-1;this._segmentURL=null;let tmpPlaybackBar=document.getElementById('RetoldRemote-AEX-Playback');if(tmpPlaybackBar){tmpPlaybackBar.style.display='none';}this._updateSelectionButtons();this._drawAll();this._updateTimeDisplay();// Persist cleared state
+this._saveState();}/**
+	 * Apply a pending selection that was passed in via showExplorer()
+	 * parameters (e.g. when navigating from a collection audio-clip item).
+	 * Converts seconds to normalized 0..1 values.
+	 */_applyPendingSelection(){if(this._pendingSelectionStartSec<0||this._pendingSelectionEndSec<0){return;}if(!this._waveformData||!this._waveformData.Duration||this._waveformData.Duration<=0){return;}let tmpDuration=this._waveformData.Duration;this._selectionStart=Math.min(this._pendingSelectionStartSec,this._pendingSelectionEndSec)/tmpDuration;this._selectionEnd=Math.max(this._pendingSelectionStartSec,this._pendingSelectionEndSec)/tmpDuration;// Clamp to 0..1
+this._selectionStart=Math.max(0,Math.min(1,this._selectionStart));this._selectionEnd=Math.max(0,Math.min(1,this._selectionEnd));// Clear pending values
+this._pendingSelectionStartSec=-1;this._pendingSelectionEndSec=-1;}/**
+	 * Save the current selection range as an audio clip to the last-used
+	 * collection.  Mirrors the keyboard shortcut (s) behaviour.
+	 * If no last-used collection exists, opens the collection picker.
+	 */saveSelectionToCollection(){if(this._selectionStart<0||this._selectionEnd<0){return;}let tmpCollMgr=this.pict.providers['RetoldRemote-CollectionManager'];if(!tmpCollMgr){return;}let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{// Convert normalized selection (0..1) to seconds for the pending context
+let tmpDuration=this._waveformData&&this._waveformData.Duration?this._waveformData.Duration:0;let tmpStartSec=Math.round(this._selectionStart*tmpDuration*100)/100;let tmpEndSec=Math.round(this._selectionEnd*tmpDuration*100)/100;tmpCollMgr.setPendingClipContext({Type:'audio-clip',Start:tmpStartSec,End:tmpEndSec});let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}/**
 	 * Request the server to extract and serve the selected audio segment.
 	 */playSelection(){if(this._selectionStart<0||this._selectionEnd<0||!this._waveformData){return;}let tmpSelf=this;let tmpDuration=this._waveformData.Duration;let tmpStart=Math.min(this._selectionStart,this._selectionEnd)*tmpDuration;let tmpEnd=Math.max(this._selectionStart,this._selectionEnd)*tmpDuration;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);let tmpURL='/api/media/audio-segment?path='+tmpPathParam+'&start='+tmpStart.toFixed(3)+'&end='+tmpEnd.toFixed(3)+'&format=mp3';// Show playback bar with loading state
 let tmpPlaybackBar=document.getElementById('RetoldRemote-AEX-Playback');if(tmpPlaybackBar){tmpPlaybackBar.style.display='';}let tmpAudioEl=document.getElementById('RetoldRemote-AEX-Audio');if(tmpAudioEl){tmpAudioEl.src=tmpURL;tmpAudioEl.load();tmpAudioEl.play().catch(()=>{// Autoplay may be blocked; user can click play
 });}this._segmentURL=tmpURL;}/**
 	 * Navigate back to the audio player viewer.
 	 */goBack(){// Clean up resize observer
-if(this._resizeObserver){this._resizeObserver.disconnect();this._resizeObserver=null;}if(this._currentPath){let tmpViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.showMedia(this._currentPath,'audio');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}/**
+if(this._resizeObserver){this._resizeObserver.disconnect();this._resizeObserver=null;}if(this._currentPath){let tmpViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.showMedia(this._currentPath,'audio');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}// --- Explorer State Persistence ---
+/**
+	 * Fire-and-forget save of the current selection and view state.
+	 */_saveState(){if(!this._currentPath||!this._waveformData){return;}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpSelections=[];if(this._selectionStart>=0&&this._selectionEnd>=0&&Math.abs(this._selectionEnd-this._selectionStart)>=0.001){let tmpDuration=this._waveformData.Duration||0;let tmpStartNorm=Math.min(this._selectionStart,this._selectionEnd);let tmpEndNorm=Math.max(this._selectionStart,this._selectionEnd);let tmpStartSec=Math.round(tmpStartNorm*tmpDuration*100)/100;let tmpEndSec=Math.round(tmpEndNorm*tmpDuration*100)/100;let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpSelections.push({Start:tmpStartNorm,End:tmpEndNorm,StartSeconds:tmpStartSec,EndSeconds:tmpEndSec,Label:tmpFmt.formatTimestamp(tmpStartSec,true)+' - '+tmpFmt.formatTimestamp(tmpEndSec,true)});}let tmpBody={Path:this._currentPath,Selections:tmpSelections,ViewStart:this._viewStart,ViewEnd:this._viewEnd};fetch('/api/media/audio-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{// Non-critical — explorer works without persistence
+});}/**
+	 * Load saved state after waveform renders.
+	 * Restores selection and view state if available.
+	 */_loadSavedState(){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);let tmpURL='/api/media/audio-explorer-state?path='+tmpPathParam;fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.State){let tmpState=pData.State;// Restore view state
+if(typeof tmpState.ViewStart==='number'&&typeof tmpState.ViewEnd==='number'){tmpSelf._viewStart=tmpState.ViewStart;tmpSelf._viewEnd=tmpState.ViewEnd;}// Restore selection (first selection if array)
+if(Array.isArray(tmpState.Selections)&&tmpState.Selections.length>0){let tmpSel=tmpState.Selections[0];tmpSelf._selectionStart=tmpSel.Start;tmpSelf._selectionEnd=tmpSel.End;}}// If we were opened from a collection item with explicit times, apply those
+tmpSelf._applyPendingSelection();// Redraw with restored state
+tmpSelf._updateSelectionButtons();tmpSelf._drawAll();tmpSelf._updateTimeDisplay();}).catch(()=>{// Still apply pending selection on network failure
+tmpSelf._applyPendingSelection();tmpSelf._updateSelectionButtons();tmpSelf._drawAll();tmpSelf._updateTimeDisplay();});}/**
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":76}],130:[function(require,module,exports){/**
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":76}],131:[function(require,module,exports){/**
  * Retold Remote -- Collections Panel View
  *
  * Right-side flyout panel for managing user-defined collections.
@@ -10996,12 +11195,13 @@ if(pCollection.SortMode==='manual'){let tmpDrag=document.createElement('div');tm
 let tmpAllItems=pBody.querySelectorAll('.retold-remote-collection-item');for(let j=0;j<tmpAllItems.length;j++){tmpAllItems[j].classList.remove('drag-over');}};tmpRow.appendChild(tmpDrag);}// Drop target events
 tmpRow.ondragover=pEvent=>{pEvent.preventDefault();pEvent.dataTransfer.dropEffect='move';tmpRow.classList.add('drag-over');};tmpRow.ondragleave=()=>{tmpRow.classList.remove('drag-over');};tmpRow.ondrop=pEvent=>{pEvent.preventDefault();tmpRow.classList.remove('drag-over');if(tmpSelf._draggedItemId&&tmpSelf._draggedItemId!==tmpItem.ID){// Build new order: move dragged item before this item
 let tmpCurrentItems=pCollection.Items||[];let tmpNewOrder=[];for(let j=0;j<tmpCurrentItems.length;j++){if(tmpCurrentItems[j].ID===tmpSelf._draggedItemId){continue;}if(tmpCurrentItems[j].ID===tmpItem.ID){tmpNewOrder.push(tmpSelf._draggedItemId);}tmpNewOrder.push(tmpCurrentItems[j].ID);}tmpManager.reorderItems(pCollection.GUID,tmpNewOrder);}};// Item icon/thumbnail
-let tmpIconDiv=document.createElement('div');tmpIconDiv.className='retold-remote-collection-item-icon';let tmpPath=tmpItem.Path||'';let tmpExt=tmpPath.replace(/^.*\./,'').toLowerCase();let tmpMediaType=this.pict.PictApplication._getMediaType(tmpExt);if(tmpMediaType==='image'&&tmpItem.Type==='file'){let tmpImg=document.createElement('img');let tmpMediaProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpMediaProvider){tmpImg.src=tmpMediaProvider.getThumbnailURL(tmpPath,48,48);}tmpImg.alt='';tmpImg.loading='lazy';tmpIconDiv.appendChild(tmpImg);}else{tmpIconDiv.textContent=this._getTypeIcon(tmpItem.Type,tmpMediaType);}// Item name
+let tmpIconDiv=document.createElement('div');tmpIconDiv.className='retold-remote-collection-item-icon';let tmpPath=tmpItem.Path||'';let tmpExt=tmpPath.replace(/^.*\./,'').toLowerCase();let tmpMediaType=this.pict.PictApplication._getMediaType(tmpExt);if(tmpItem.Type==='video-frame'&&tmpItem.FrameCacheKey&&tmpItem.FrameFilename){// Show the actual video frame thumbnail
+let tmpImg=document.createElement('img');tmpImg.src='/api/media/video-frame/'+encodeURIComponent(tmpItem.FrameCacheKey)+'/'+encodeURIComponent(tmpItem.FrameFilename);tmpImg.alt='';tmpImg.loading='lazy';tmpIconDiv.appendChild(tmpImg);}else if(tmpItem.Type==='image-crop'&&tmpItem.CropRegion){// Show the source image thumbnail for crop items
+let tmpImg=document.createElement('img');let tmpMediaProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpMediaProvider){tmpImg.src=tmpMediaProvider.getThumbnailURL(tmpPath,48,48);}tmpImg.alt='';tmpImg.loading='lazy';tmpIconDiv.appendChild(tmpImg);}else if(tmpMediaType==='image'&&tmpItem.Type==='file'){let tmpImg=document.createElement('img');let tmpMediaProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpMediaProvider){tmpImg.src=tmpMediaProvider.getThumbnailURL(tmpPath,48,48);}tmpImg.alt='';tmpImg.loading='lazy';tmpIconDiv.appendChild(tmpImg);}else{tmpIconDiv.textContent=this._getTypeIcon(tmpItem.Type,tmpMediaType);}// Item name
 let tmpNameDiv=document.createElement('div');tmpNameDiv.className='retold-remote-collection-item-name';tmpNameDiv.textContent=tmpItem.Label||tmpPath.split('/').pop()||tmpPath;tmpNameDiv.title=tmpPath;// Type badge
 let tmpTypeDiv=document.createElement('div');tmpTypeDiv.className='retold-remote-collection-item-type';tmpTypeDiv.textContent=tmpItem.Type||'file';// Remove button
-let tmpRemoveBtn=document.createElement('button');tmpRemoveBtn.className='retold-remote-collection-item-remove';tmpRemoveBtn.title='Remove from collection';tmpRemoveBtn.textContent='\u00d7';tmpRemoveBtn.onclick=pEvent=>{pEvent.stopPropagation();tmpManager.removeItemFromCollection(pCollection.GUID,tmpItem.ID);};// Click to navigate — set up collection browsing context
-let tmpItemIndex=i;tmpRow.onclick=()=>{if(tmpItem.Type==='file'||tmpItem.Type==='subfile'||tmpItem.Type==='image-crop'||tmpItem.Type==='video-clip'||tmpItem.Type==='video-frame'){// Enter collection browsing mode so next/prev navigate through collection items
-tmpRemote.BrowsingCollection=true;tmpRemote.BrowsingCollectionIndex=tmpItemIndex;tmpSelf.pict.PictApplication.navigateToFile(tmpItem.Path);}else if(tmpItem.Type==='folder'||tmpItem.Type==='folder-contents'){tmpSelf.pict.PictApplication.loadFileList(tmpItem.Path);}};tmpRow.appendChild(tmpIconDiv);tmpRow.appendChild(tmpNameDiv);tmpRow.appendChild(tmpTypeDiv);tmpRow.appendChild(tmpRemoveBtn);pBody.appendChild(tmpRow);}}// -- Operation Plan Item Rendering ------------------------------------
+let tmpRemoveBtn=document.createElement('button');tmpRemoveBtn.className='retold-remote-collection-item-remove';tmpRemoveBtn.title='Remove from collection';tmpRemoveBtn.textContent='\u00d7';tmpRemoveBtn.onclick=pEvent=>{pEvent.stopPropagation();tmpManager.removeItemFromCollection(pCollection.GUID,tmpItem.ID);};// Click to navigate — use the centralized collection-item router
+let tmpItemIndex=i;tmpRow.onclick=()=>{if(tmpItem.Type==='folder'||tmpItem.Type==='folder-contents'){tmpSelf.pict.PictApplication.loadFileList(tmpItem.Path);}else{let tmpNav=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav._navigateToCollectionItem(tmpItem,tmpItemIndex);}}};tmpRow.appendChild(tmpIconDiv);tmpRow.appendChild(tmpNameDiv);tmpRow.appendChild(tmpTypeDiv);tmpRow.appendChild(tmpRemoveBtn);pBody.appendChild(tmpRow);}}// -- Operation Plan Item Rendering ------------------------------------
 _renderOperationItemList(pBody,pCollection){let tmpSelf=this;let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];let tmpItems=pCollection.Items||[];pBody.innerHTML='';if(tmpItems.length===0){let tmpEmpty=document.createElement('div');tmpEmpty.className='retold-remote-collections-empty';tmpEmpty.textContent='No items in this sort plan.';pBody.appendChild(tmpEmpty);return;}for(let i=0;i<tmpItems.length;i++){let tmpItem=tmpItems[i];let tmpRow=document.createElement('div');tmpRow.className='retold-remote-collection-op-item';// Status color
 let tmpStatus=tmpItem.OperationStatus||'pending';tmpRow.classList.add('op-status-'+tmpStatus);// Status indicator
 let tmpStatusDiv=document.createElement('div');tmpStatusDiv.className='retold-remote-collection-op-status';if(tmpStatus==='completed'){tmpStatusDiv.textContent='\u2713';tmpStatusDiv.title='Completed';}else if(tmpStatus==='failed'){tmpStatusDiv.textContent='\u2717';tmpStatusDiv.title=tmpItem.OperationError||'Failed';}else if(tmpStatus==='skipped'){tmpStatusDiv.textContent='\u2014';tmpStatusDiv.title='Skipped';}else{tmpStatusDiv.textContent='\u25CB';tmpStatusDiv.title='Pending';}// Source path (filename only, full path in tooltip)
@@ -11028,7 +11228,198 @@ let tmpDeleteBtn=document.createElement('button');tmpDeleteBtn.className='retold
 	 */_createEditGroup(pLabel,pType,pValue,pId){let tmpGroup=document.createElement('div');tmpGroup.className='retold-remote-collections-edit-group';let tmpLabel=document.createElement('div');tmpLabel.className='retold-remote-collections-edit-label';tmpLabel.textContent=pLabel;let tmpInput;if(pType==='textarea'){tmpInput=document.createElement('textarea');tmpInput.className='retold-remote-collections-edit-textarea';}else{tmpInput=document.createElement('input');tmpInput.className='retold-remote-collections-edit-input';tmpInput.type='text';}tmpInput.value=pValue;tmpInput.id='retold-remote-'+pId;tmpGroup.appendChild(tmpLabel);tmpGroup.appendChild(tmpInput);return tmpGroup;}// -- Helpers ----------------------------------------------------------
 /**
 	 * Get a text icon character for an item type.
-	 */_getTypeIcon(pType,pMediaType){switch(pType){case'folder':case'folder-contents':return'\uD83D\uDCC1';case'subfile':return'\uD83D\uDDC4';case'image-crop':return'\u2702';case'video-clip':case'video-frame':return'\uD83C\uDFAC';default:break;}switch(pMediaType){case'image':return'\uD83D\uDDBC';case'video':return'\uD83C\uDFAC';case'audio':return'\uD83C\uDFB5';case'document':return'\uD83D\uDCC4';default:return'\uD83D\uDCC4';}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":76}],131:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
+	 */_getTypeIcon(pType,pMediaType){switch(pType){case'folder':case'folder-contents':return'\uD83D\uDCC1';case'subfile':return'\uD83D\uDDC4';case'image-crop':return'\u2702';case'audio-clip':return'\uD83C\uDFB5';case'video-clip':case'video-frame':return'\uD83C\uDFAC';default:break;}switch(pMediaType){case'image':return'\uD83D\uDDBC';case'video':return'\uD83C\uDFAC';case'audio':return'\uD83C\uDFB5';case'document':return'\uD83D\uDCC4';default:return'\uD83D\uDCC4';}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":76}],132:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-info
+		{
+			padding: 12px;
+			font-size: 0.78rem;
+			overflow-y: auto;
+		}
+		.retold-remote-info-filename
+		{
+			font-size: 0.85rem;
+			font-weight: 700;
+			color: var(--retold-text-primary);
+			word-break: break-all;
+			margin-bottom: 2px;
+		}
+		.retold-remote-info-path
+		{
+			font-size: 0.7rem;
+			color: var(--retold-text-dim);
+			word-break: break-all;
+			margin-bottom: 12px;
+		}
+		.retold-remote-info-section
+		{
+			margin-bottom: 14px;
+		}
+		.retold-remote-info-section-title
+		{
+			font-size: 0.68rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			color: var(--retold-text-dim);
+			margin-bottom: 6px;
+			padding-bottom: 3px;
+			border-bottom: 1px solid var(--retold-border);
+		}
+		.retold-remote-info-row
+		{
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			padding: 2px 0;
+			gap: 8px;
+		}
+		.retold-remote-info-label
+		{
+			font-size: 0.72rem;
+			color: var(--retold-text-dim);
+			flex-shrink: 0;
+		}
+		.retold-remote-info-value
+		{
+			font-size: 0.72rem;
+			color: var(--retold-text-secondary);
+			text-align: right;
+			word-break: break-all;
+		}
+		.retold-remote-info-value-mono
+		{
+			font-family: monospace;
+			font-size: 0.68rem;
+		}
+		.retold-remote-info-extract-btn
+		{
+			display: block;
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 4px;
+			background: var(--retold-bg-secondary);
+			color: var(--retold-accent);
+			font-size: 0.78rem;
+			font-family: inherit;
+			cursor: pointer;
+			text-align: center;
+			transition: background 0.15s, color 0.15s;
+			margin-bottom: 14px;
+		}
+		.retold-remote-info-extract-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-info-extract-btn:disabled
+		{
+			opacity: 0.5;
+			cursor: wait;
+		}
+		.retold-remote-info-empty
+		{
+			padding: 24px 12px;
+			text-align: center;
+			color: var(--retold-text-dim);
+			font-size: 0.78rem;
+		}
+		.retold-remote-info-chapter-row
+		{
+			display: flex;
+			align-items: baseline;
+			padding: 2px 0;
+			gap: 6px;
+			font-size: 0.72rem;
+		}
+		.retold-remote-info-chapter-time
+		{
+			color: var(--retold-accent);
+			font-family: monospace;
+			font-size: 0.68rem;
+			flex-shrink: 0;
+		}
+		.retold-remote-info-chapter-title
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-info-tag-row
+		{
+			display: flex;
+			align-items: baseline;
+			padding: 1px 0;
+			gap: 6px;
+			font-size: 0.7rem;
+		}
+		.retold-remote-info-tag-key
+		{
+			color: var(--retold-text-dim);
+			flex-shrink: 0;
+			font-family: monospace;
+			font-size: 0.66rem;
+		}
+		.retold-remote-info-tag-value
+		{
+			color: var(--retold-text-secondary);
+			word-break: break-all;
+		}
+		.retold-remote-info-gps-link
+		{
+			color: var(--retold-accent);
+			text-decoration: none;
+			font-size: 0.72rem;
+		}
+		.retold-remote-info-gps-link:hover
+		{
+			text-decoration: underline;
+		}
+		.retold-remote-info-spinner
+		{
+			text-align: center;
+			padding: 16px;
+			color: var(--retold-text-dim);
+			font-size: 0.75rem;
+		}
+	`,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
+	 * Determine the currently selected file path and fetch metadata.
+	 */_refreshForCurrentFile(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpPath='';// Try content editor current file first
+if(this.pict.AppData.ContentEditor&&this.pict.AppData.ContentEditor.CurrentFile){tmpPath=this.pict.AppData.ContentEditor.CurrentFile;}// Fall back to viewer state
+if(!tmpPath&&tmpRemote.CurrentViewerFile){tmpPath=tmpRemote.CurrentViewerFile;}// Fall back to gallery cursor item
+if(!tmpPath){let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpItems.length>0&&tmpItems[tmpIndex]&&tmpItems[tmpIndex].Path){tmpPath=tmpItems[tmpIndex].Path;}}if(!tmpPath){this._renderEmpty('No file selected');return;}// If same file and we already have metadata, just re-render
+if(tmpPath===this._currentPath&&this._currentMetadata){this._renderMetadata(this._currentMetadata);return;}this._currentPath=tmpPath;this._currentMetadata=null;// Check cache first (no extraction)
+this._fetchMetadata(tmpPath,false);}/**
+	 * Fetch extended metadata from the server.
+	 *
+	 * @param {string} pPath - Relative file path
+	 * @param {boolean} pExtract - Whether to trigger extraction
+	 */_fetchMetadata(pPath,pExtract){let tmpSelf=this;let tmpURL='/api/media/extended-metadata?path='+encodeURIComponent(pPath);if(pExtract){tmpURL+='&extract=true';this._extracting=true;this._renderSpinner();}fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{tmpSelf._extracting=false;if(pData&&pData.Success){tmpSelf._currentMetadata=pData;tmpSelf.pict.AppData.RetoldRemote.CurrentFileMetadata=pData;tmpSelf._renderMetadata(pData);}else if(pData&&pData.Cached===false){// Not cached — show basic info + extract button
+tmpSelf._renderUncached(pPath);}else{tmpSelf._renderEmpty('Could not load metadata');}}).catch(pError=>{tmpSelf._extracting=false;tmpSelf._renderEmpty('Error: '+pError.message);});}/**
+	 * Called when the user clicks "Extract Metadata".
+	 */extractMetadata(){if(this._extracting||!this._currentPath){return;}this._fetchMetadata(this._currentPath,true);}// ---------------------------------------------------------------
+// Rendering helpers
+// ---------------------------------------------------------------
+_getInfoBody(){return document.getElementById('RetoldRemote-Info-Body');}_renderEmpty(pMessage){let tmpBody=this._getInfoBody();if(!tmpBody){return;}tmpBody.innerHTML=`<div class="retold-remote-info-empty">${this._esc(pMessage)}</div>`;}_renderSpinner(){let tmpBody=this._getInfoBody();if(!tmpBody){return;}tmpBody.innerHTML=`<div class="retold-remote-info-spinner">Extracting metadata...</div>`;}/**
+	 * Render the "not yet cached" state with basic info + extract button.
+	 */_renderUncached(pPath){let tmpBody=this._getInfoBody();if(!tmpBody){return;}let tmpFileName=pPath.split('/').pop()||pPath;let tmpDirPath=pPath.substring(0,pPath.length-tmpFileName.length);// Try to get basic info from gallery item
+let tmpRemote=this.pict.AppData.RetoldRemote;let tmpItems=tmpRemote.GalleryItems||[];let tmpItem=null;for(let i=0;i<tmpItems.length;i++){if(tmpItems[i].Path===pPath){tmpItem=tmpItems[i];break;}}let tmpHTML='';tmpHTML+=`<div class="retold-remote-info-filename">${this._esc(tmpFileName)}</div>`;tmpHTML+=`<div class="retold-remote-info-path">${this._esc(tmpDirPath)}</div>`;if(tmpItem){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Basic</div>`;if(tmpItem.Size){tmpHTML+=this._row('Size',this._formatSize(tmpItem.Size));}if(tmpItem.Type){tmpHTML+=this._row('Type',tmpItem.Type);}if(tmpItem.Extension){tmpHTML+=this._row('Extension',tmpItem.Extension);}tmpHTML+=`</div>`;}tmpHTML+=`<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].extractMetadata()">Extract Metadata</button>`;tmpBody.innerHTML=tmpHTML;}/**
+	 * Render the full metadata record.
+	 */_renderMetadata(pMeta){let tmpBody=this._getInfoBody();if(!tmpBody){return;}let tmpFileName=(pMeta.Path||'').split('/').pop()||pMeta.Path;let tmpDirPath=(pMeta.Path||'').substring(0,(pMeta.Path||'').length-tmpFileName.length);let tmpHTML='';// Header
+tmpHTML+=`<div class="retold-remote-info-filename">${this._esc(tmpFileName)}</div>`;tmpHTML+=`<div class="retold-remote-info-path">${this._esc(tmpDirPath)}</div>`;// Basic section
+tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Basic</div>`;tmpHTML+=this._row('Size',this._formatSize(pMeta.FileSize));tmpHTML+=this._row('Category',pMeta.Category||'unknown');if(pMeta.Extension){tmpHTML+=this._row('Extension',pMeta.Extension);}if(pMeta.Modified){tmpHTML+=this._row('Modified',this._formatDate(pMeta.Modified));}if(pMeta.Created){tmpHTML+=this._row('Created',this._formatDate(pMeta.Created));}if(pMeta.MD5){tmpHTML+=`<div class="retold-remote-info-row">`;tmpHTML+=`<span class="retold-remote-info-label">MD5</span>`;tmpHTML+=`<span class="retold-remote-info-value retold-remote-info-value-mono">${this._esc(pMeta.MD5)}</span>`;tmpHTML+=`</div>`;}tmpHTML+=`</div>`;// Format section (video/audio)
+if(pMeta.FormatName||pMeta.Duration){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Format</div>`;if(pMeta.FormatName){tmpHTML+=this._row('Container',pMeta.FormatName);}if(pMeta.Duration){tmpHTML+=this._row('Duration',this._formatDuration(pMeta.Duration));}if(pMeta.Bitrate){tmpHTML+=this._row('Bitrate',this._formatBitrate(pMeta.Bitrate));}tmpHTML+=`</div>`;}// Video section
+if(pMeta.Video){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Video</div>`;let tmpV=pMeta.Video;if(tmpV.Codec){let tmpCodecStr=tmpV.Codec;if(tmpV.Profile){tmpCodecStr+=` (${tmpV.Profile}`;if(tmpV.Level){tmpCodecStr+=` ${tmpV.Level}`;}tmpCodecStr+=')';}tmpHTML+=this._row('Codec',tmpCodecStr);}if(tmpV.Width&&tmpV.Height){tmpHTML+=this._row('Resolution',`${tmpV.Width}\u00D7${tmpV.Height}`);}if(tmpV.FrameRate){tmpHTML+=this._row('Frame Rate',this._formatFrameRate(tmpV.FrameRate));}if(tmpV.PixelFormat){tmpHTML+=this._row('Pixel Format',tmpV.PixelFormat);}if(tmpV.ColorSpace){tmpHTML+=this._row('Color Space',tmpV.ColorSpace);}if(tmpV.Bitrate){tmpHTML+=this._row('Bitrate',this._formatBitrate(tmpV.Bitrate));}tmpHTML+=`</div>`;}// Audio section
+if(pMeta.Audio){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Audio</div>`;let tmpA=pMeta.Audio;if(tmpA.Codec){let tmpCodecStr=tmpA.Codec;if(tmpA.Profile){tmpCodecStr+=` (${tmpA.Profile})`;}tmpHTML+=this._row('Codec',tmpCodecStr);}if(tmpA.SampleRate){tmpHTML+=this._row('Sample Rate',tmpA.SampleRate+' Hz');}if(tmpA.Channels){let tmpChStr=tmpA.ChannelLayout||tmpA.Channels+' ch';tmpHTML+=this._row('Channels',tmpChStr);}if(tmpA.Bitrate){tmpHTML+=this._row('Bitrate',this._formatBitrate(tmpA.Bitrate));}if(tmpA.BitsPerSample){tmpHTML+=this._row('Bit Depth',tmpA.BitsPerSample+'-bit');}tmpHTML+=`</div>`;}// Image section
+if(pMeta.Image){let tmpImg=pMeta.Image;tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Image</div>`;if(tmpImg.Width&&tmpImg.Height){tmpHTML+=this._row('Dimensions',`${tmpImg.Width}\u00D7${tmpImg.Height}`);}if(tmpImg.Format){tmpHTML+=this._row('Format',tmpImg.Format);}if(tmpImg.Space){tmpHTML+=this._row('Color Space',tmpImg.Space);}if(tmpImg.DPI){tmpHTML+=this._row('DPI',tmpImg.DPI);}if(tmpImg.HasAlpha!==null&&tmpImg.HasAlpha!==undefined){tmpHTML+=this._row('Alpha',tmpImg.HasAlpha?'Yes':'No');}tmpHTML+=`</div>`;// EXIF subsection
+if(tmpImg.EXIF){let tmpE=tmpImg.EXIF;let tmpHasExif=tmpE.Make||tmpE.Model||tmpE.ExposureTime||tmpE.Software;if(tmpHasExif){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">EXIF</div>`;if(tmpE.Make||tmpE.Model){tmpHTML+=this._row('Camera',((tmpE.Make||'')+' '+(tmpE.Model||'')).trim());}if(tmpE.LensModel){tmpHTML+=this._row('Lens',tmpE.LensModel);}if(tmpE.ExposureTime||tmpE.FNumber||tmpE.ISO){let tmpExpStr='';if(tmpE.ExposureTime){tmpExpStr+=tmpE.ExposureTime<1?`1/${Math.round(1/tmpE.ExposureTime)}s`:tmpE.ExposureTime+'s';}if(tmpE.FNumber){tmpExpStr+=(tmpExpStr?' ':'')+`f/${tmpE.FNumber}`;}if(tmpE.ISO){tmpExpStr+=(tmpExpStr?' ':'')+`ISO ${tmpE.ISO}`;}tmpHTML+=this._row('Exposure',tmpExpStr);}if(tmpE.FocalLength){tmpHTML+=this._row('Focal Length',tmpE.FocalLength+'mm');}if(tmpE.DateTimeOriginal){tmpHTML+=this._row('Date Taken',this._formatDate(tmpE.DateTimeOriginal));}if(tmpE.Software){tmpHTML+=this._row('Software',tmpE.Software);}tmpHTML+=`</div>`;}}// GPS subsection
+if(tmpImg.GPS){let tmpG=tmpImg.GPS;tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">GPS</div>`;if(tmpG.Latitude!==null&&tmpG.Longitude!==null){let tmpLat=parseFloat(tmpG.Latitude).toFixed(6);let tmpLon=parseFloat(tmpG.Longitude).toFixed(6);let tmpLatDir=tmpG.Latitude>=0?'N':'S';let tmpLonDir=tmpG.Longitude>=0?'E':'W';tmpHTML+=this._row('Latitude',`${Math.abs(tmpLat)}\u00B0 ${tmpLatDir}`);tmpHTML+=this._row('Longitude',`${Math.abs(tmpLon)}\u00B0 ${tmpLonDir}`);if(tmpG.Altitude!==null&&tmpG.Altitude!==undefined){tmpHTML+=this._row('Altitude',Math.round(tmpG.Altitude)+'m');}let tmpMapsURL=`https://www.google.com/maps?q=${tmpLat},${tmpLon}`;tmpHTML+=`<div style="margin-top: 4px;">`;tmpHTML+=`<a class="retold-remote-info-gps-link" href="${tmpMapsURL}" target="_blank" rel="noopener">Open in Maps \u2197</a>`;tmpHTML+=`</div>`;}tmpHTML+=`</div>`;}}// Document section (PDF)
+if(pMeta.Document){let tmpDoc=pMeta.Document;tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Document</div>`;if(tmpDoc.PageCount){tmpHTML+=this._row('Pages',tmpDoc.PageCount);}if(tmpDoc.Title){tmpHTML+=this._row('Title',tmpDoc.Title);}if(tmpDoc.Author){tmpHTML+=this._row('Author',tmpDoc.Author);}if(tmpDoc.Subject){tmpHTML+=this._row('Subject',tmpDoc.Subject);}if(tmpDoc.Keywords){tmpHTML+=this._row('Keywords',tmpDoc.Keywords);}if(tmpDoc.Creator){tmpHTML+=this._row('Creator',tmpDoc.Creator);}if(tmpDoc.Producer){tmpHTML+=this._row('Producer',tmpDoc.Producer);}if(tmpDoc.CreatedDate){tmpHTML+=this._row('Created',this._formatDate(tmpDoc.CreatedDate));}if(tmpDoc.ModifiedDate){tmpHTML+=this._row('Modified',this._formatDate(tmpDoc.ModifiedDate));}tmpHTML+=`</div>`;}// Tags section
+if(pMeta.Tags&&Object.keys(pMeta.Tags).length>0){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Tags</div>`;let tmpTagKeys=Object.keys(pMeta.Tags).sort();for(let i=0;i<tmpTagKeys.length;i++){let tmpKey=tmpTagKeys[i];let tmpVal=pMeta.Tags[tmpKey];tmpHTML+=`<div class="retold-remote-info-tag-row">`;tmpHTML+=`<span class="retold-remote-info-tag-key">${this._esc(tmpKey)}</span>`;tmpHTML+=`<span class="retold-remote-info-tag-value">${this._esc(String(tmpVal))}</span>`;tmpHTML+=`</div>`;}tmpHTML+=`</div>`;}// Chapters section
+if(pMeta.Chapters&&pMeta.Chapters.length>0){tmpHTML+=`<div class="retold-remote-info-section">`;tmpHTML+=`<div class="retold-remote-info-section-title">Chapters (${pMeta.Chapters.length})</div>`;for(let c=0;c<pMeta.Chapters.length;c++){let tmpCh=pMeta.Chapters[c];tmpHTML+=`<div class="retold-remote-info-chapter-row">`;tmpHTML+=`<span class="retold-remote-info-chapter-time">${this._formatDuration(tmpCh.StartTime)}</span>`;tmpHTML+=`<span class="retold-remote-info-chapter-title">${this._esc(tmpCh.Title)}</span>`;tmpHTML+=`</div>`;}tmpHTML+=`</div>`;}// Re-extract button at bottom
+tmpHTML+=`<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].extractMetadata()" style="margin-top: 8px;">Re-extract Metadata</button>`;tmpBody.innerHTML=tmpHTML;}// ---------------------------------------------------------------
+// Formatting utilities
+// ---------------------------------------------------------------
+_row(pLabel,pValue){return`<div class="retold-remote-info-row"><span class="retold-remote-info-label">${this._esc(String(pLabel))}</span><span class="retold-remote-info-value">${this._esc(String(pValue))}</span></div>`;}_esc(pStr){if(!pStr){return'';}return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatSize(pBytes){if(!pBytes&&pBytes!==0){return'unknown';}let tmpBytes=parseInt(pBytes,10);if(tmpBytes<1024){return tmpBytes+' B';}if(tmpBytes<1024*1024){return(tmpBytes/1024).toFixed(1)+' KB';}if(tmpBytes<1024*1024*1024){return(tmpBytes/(1024*1024)).toFixed(1)+' MB';}return(tmpBytes/(1024*1024*1024)).toFixed(2)+' GB';}_formatDuration(pSeconds){if(!pSeconds&&pSeconds!==0){return'unknown';}let tmpSec=Math.floor(pSeconds);let tmpHours=Math.floor(tmpSec/3600);let tmpMins=Math.floor(tmpSec%3600/60);let tmpRem=tmpSec%60;if(tmpHours>0){return`${tmpHours}:${String(tmpMins).padStart(2,'0')}:${String(tmpRem).padStart(2,'0')}`;}return`${tmpMins}:${String(tmpRem).padStart(2,'0')}`;}_formatBitrate(pBits){if(!pBits){return'unknown';}let tmpBits=parseInt(pBits,10);if(tmpBits<1000){return tmpBits+' bps';}if(tmpBits<1000000){return(tmpBits/1000).toFixed(0)+' kbps';}return(tmpBits/1000000).toFixed(1)+' Mbps';}_formatFrameRate(pRate){if(!pRate){return'unknown';}// ffprobe returns frame rate as "24000/1001" or "30/1"
+if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],133:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-gallery-header
 		{
 			display: flex;
@@ -11853,7 +12244,243 @@ pEvent.preventDefault();}_hideLongPressTooltip(){if(this._longPressTooltipEl){if
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":76}],132:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":76}],134:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+		.retold-remote-iex
+		{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.retold-remote-iex-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 16px;
+			background: var(--retold-bg-secondary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			z-index: 5;
+		}
+		.retold-remote-iex-nav-btn
+		{
+			padding: 4px 10px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.8rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-iex-nav-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-iex-title
+		{
+			flex: 1;
+			font-size: 0.82rem;
+			color: var(--retold-text-secondary);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: center;
+		}
+		.retold-remote-iex-info
+		{
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 8px 16px;
+			background: var(--retold-bg-tertiary);
+			border-bottom: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-iex-info-item
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.retold-remote-iex-info-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-iex-info-value
+		{
+			color: var(--retold-text-secondary);
+		}
+		.retold-remote-iex-body
+		{
+			flex: 1;
+			position: relative;
+			overflow: hidden;
+			background: var(--retold-bg-primary);
+		}
+		#RetoldRemote-IEX-Viewer
+		{
+			width: 100%;
+			height: 100%;
+		}
+		.retold-remote-iex-loading
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			color: var(--retold-text-dim);
+			font-size: 0.85rem;
+			gap: 12px;
+		}
+		.retold-remote-iex-error
+		{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			gap: 16px;
+			padding: 20px;
+		}
+		.retold-remote-iex-error-message
+		{
+			color: var(--retold-text-muted);
+			font-size: 0.85rem;
+			text-align: center;
+		}
+		.retold-remote-iex-controls
+		{
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 6px 16px;
+			background: var(--retold-bg-secondary);
+			border-top: 1px solid var(--retold-border);
+			flex-shrink: 0;
+			font-size: 0.75rem;
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-iex-controls button
+		{
+			padding: 3px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			font-family: inherit;
+			transition: color 0.15s, border-color 0.15s;
+		}
+		.retold-remote-iex-controls button:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-iex-zoom-label
+		{
+			min-width: 40px;
+			text-align: center;
+			color: var(--retold-text-secondary);
+		}
+	`};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;}/**
+	 * Show the image explorer for a given image file.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='image-explorer';this._currentPath=pFilePath;this._dziData=null;// Clean up existing viewer
+if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
+}this._osdViewer=null;}// Update URL hash
+let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore-image/'+tmpFragId;// Show viewer, hide gallery
+let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];// Build the explorer UI
+let tmpHTML='<div class="retold-remote-iex">';// Header
+tmpHTML+='<div class="retold-remote-iex-header">';tmpHTML+='<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-iex-title">Image Explorer &mdash; '+tmpFmt.escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar
+tmpHTML+='<div class="retold-remote-iex-info" id="RetoldRemote-IEX-Info" style="display:none;"></div>';// Body
+tmpHTML+='<div class="retold-remote-iex-body" id="RetoldRemote-IEX-Body">';tmpHTML+='<div class="retold-remote-iex-loading" id="RetoldRemote-IEX-Loading">';tmpHTML+='<div>Loading image\u2026</div>';tmpHTML+='</div>';tmpHTML+='<div id="RetoldRemote-IEX-Viewer" style="display:none;"></div>';tmpHTML+='</div>';// Controls bar
+tmpHTML+='<div class="retold-remote-iex-controls" id="RetoldRemote-IEX-Controls" style="display:none;">';tmpHTML+='<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].zoomIn()" title="Zoom In (+)">+ Zoom In</button>';tmpHTML+='<span class="retold-remote-iex-zoom-label" id="RetoldRemote-IEX-ZoomLabel">100%</span>';tmpHTML+='<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].zoomOut()" title="Zoom Out (-)">- Zoom Out</button>';tmpHTML+='<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].zoomHome()" title="Fit to view (0)">Fit</button>';tmpHTML+='<span style="flex:1;"></span>';tmpHTML+='<span id="RetoldRemote-IEX-Coords" style="color:var(--retold-text-dim);font-size:0.72rem;"></span>';tmpHTML+='</div>';tmpHTML+='</div>';if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Update topbar
+let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}// Load OpenSeadragon, then decide whether to use simple image or DZI tiles
+this._ensureOSDLoaded(()=>{this._probeAndShow(pFilePath);});}/**
+	 * Ensure OpenSeadragon library is loaded (from CDN on first use).
+	 *
+	 * @param {Function} fCallback - Called when OSD is ready
+	 */_ensureOSDLoaded(fCallback){if(typeof OpenSeadragon!=='undefined'){this._osdLoaded=true;return fCallback();}let tmpSelf=this;let tmpScript=document.createElement('script');tmpScript.src=_OSD_CDN_URL;tmpScript.onload=function(){tmpSelf._osdLoaded=true;fCallback();};tmpScript.onerror=function(){tmpSelf._showError('Failed to load OpenSeadragon library.');};document.head.appendChild(tmpScript);}/**
+	 * Probe image dimensions then open with the appropriate tile source.
+	 *
+	 * Regular images (<=4096px longest side) are opened directly via
+	 * OpenSeadragon's simple image source — no server-side tile generation.
+	 * Large images (>4096px) use DZI tiles for efficient deep-zoom.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 */_probeAndShow(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);// Probe dimensions via the image-preview endpoint
+fetch('/api/media/image-preview?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){// sharp might not be available — fall back to simple image source
+tmpSelf._showSimpleImage(pFilePath);return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);if(tmpLongest>4096){// Large image — use DZI tiles for efficient pan+zoom
+tmpSelf._generateAndShowTiles(pFilePath,tmpPathParam);}else{// Regular image — use simple image source (no tile generation)
+tmpSelf._dziData={Width:pResult.OrigWidth,Height:pResult.OrigHeight};tmpSelf._showSimpleImageInfo(pResult.OrigWidth,pResult.OrigHeight);tmpSelf._initSimpleViewer(pFilePath);}}).catch(()=>{// Probe failed — fall back to simple image source
+tmpSelf._showSimpleImage(pFilePath);});}/**
+	 * Open a regular-sized image directly with OpenSeadragon's simple
+	 * image source — no server-side tile generation needed.
+	 *
+	 * @param {string} pFilePath  - Relative file path
+	 * @param {string} pPathParam - URL-encoded path parameter
+	 */_showSimpleImage(pFilePath){this._dziData={Width:0,Height:0};this._initSimpleViewer(pFilePath);}/**
+	 * Show the info bar for a simple-image viewer (without tile details).
+	 *
+	 * @param {number} pWidth  - Image width
+	 * @param {number} pHeight - Image height
+	 */_showSimpleImageInfo(pWidth,pHeight){let tmpInfoBar=document.getElementById('RetoldRemote-IEX-Info');if(!tmpInfoBar){return;}let tmpHTML='';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Dimensions:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+pWidth+' \u00d7 '+pHeight+' px</span></span>';let tmpMegapixels=(pWidth*pHeight/1000000).toFixed(1);tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Size:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+tmpMegapixels+' MP</span></span>';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Mode:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">Direct</span></span>';tmpInfoBar.innerHTML=tmpHTML;tmpInfoBar.style.display='';}/**
+	 * Initialize OpenSeadragon with a simple image tile source (no DZI).
+	 *
+	 * @param {string} pFilePath  - Relative file path
+	 * @param {string} pPathParam - URL-encoded path parameter
+	 */_initSimpleViewer(pFilePath){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');let tmpControls=document.getElementById('RetoldRemote-IEX-Controls');if(tmpLoading)tmpLoading.style.display='none';if(tmpViewerDiv)tmpViewerDiv.style.display='block';if(tmpControls)tmpControls.style.display='';let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:{type:'image',url:tmpContentURL},prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});this._osdViewer.addHandler('zoom',function(){tmpSelf._updateZoomLabel();});this._osdViewer.addHandler('open',function(){// Capture actual image dimensions from the loaded source
+let tmpTiledImage=tmpSelf._osdViewer.world.getItemAt(0);if(tmpTiledImage){let tmpContentSize=tmpTiledImage.getContentSize();if(tmpContentSize){tmpSelf._dziData={Width:tmpContentSize.x,Height:tmpContentSize.y};}}tmpSelf._updateZoomLabel();});if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
+	 * Request DZI tile generation from the server, then initialize the viewer.
+	 *
+	 * @param {string} pFilePath  - Relative file path
+	 * @param {string} pPathParam - URL-encoded path parameter
+	 */_generateAndShowTiles(pFilePath,pPathParam){let tmpSelf=this;fetch('/api/media/dzi?path='+pPathParam).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){tmpSelf._showError(pResult?pResult.Error:'DZI generation failed.');return;}tmpSelf._dziData=pResult;tmpSelf._showInfo(pResult);tmpSelf._initViewer(pResult);}).catch(pError=>{tmpSelf._showError('Failed to generate tiles: '+pError.message);});}/**
+	 * Show the info bar with image dimensions and tile info.
+	 *
+	 * @param {object} pDziData - DZI generation result
+	 */_showInfo(pDziData){let tmpInfoBar=document.getElementById('RetoldRemote-IEX-Info');if(!tmpInfoBar){return;}let tmpHTML='';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Dimensions:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+pDziData.Width+' \u00d7 '+pDziData.Height+' px</span></span>';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Tile size:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+pDziData.TileSize+' px</span></span>';tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Format:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+pDziData.Format+'</span></span>';let tmpMegapixels=(pDziData.Width*pDziData.Height/1000000).toFixed(1);tmpHTML+='<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Size:</span> ';tmpHTML+='<span class="retold-remote-iex-info-value">'+tmpMegapixels+' MP</span></span>';tmpInfoBar.innerHTML=tmpHTML;tmpInfoBar.style.display='';}/**
+	 * Initialize the OpenSeadragon viewer with the generated DZI tiles.
+	 *
+	 * @param {object} pDziData - DZI generation result with CacheKey, Format, etc.
+	 */_initViewer(pDziData){// Hide loading, show viewer container
+let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');let tmpControls=document.getElementById('RetoldRemote-IEX-Controls');if(tmpLoading)tmpLoading.style.display='none';if(tmpViewerDiv)tmpViewerDiv.style.display='block';if(tmpControls)tmpControls.style.display='';let tmpSelf=this;// Build the DZI tile source URL pattern
+// sharp generates tiles at: {cacheDir}/image_files/{level}/{col}_{row}.{format}
+// We serve them at: /api/media/dzi-tile/{cacheKey}/{level}/{col}_{row}.{format}
+let tmpTileSource={Image:{xmlns:'http://schemas.microsoft.com/deepzoom/2008',Url:'/api/media/dzi-tile/'+encodeURIComponent(pDziData.CacheKey)+'/',Format:pDziData.Format,Overlap:String(pDziData.Overlap),TileSize:String(pDziData.TileSize),Size:{Width:String(pDziData.Width),Height:String(pDziData.Height)}}};this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:tmpTileSource,prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});// Track zoom level changes
+this._osdViewer.addHandler('zoom',function(pEvent){tmpSelf._updateZoomLabel();});// Track mouse position for coordinate display
+this._osdViewer.addHandler('open',function(){tmpSelf._updateZoomLabel();});// Mouse tracker for coordinates
+if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
+	 * Update the zoom level display.
+	 */_updateZoomLabel(){if(!this._osdViewer){return;}let tmpZoomLabel=document.getElementById('RetoldRemote-IEX-ZoomLabel');if(tmpZoomLabel){let tmpZoom=this._osdViewer.viewport.getZoom(true);// Convert viewport zoom to percentage of "home" zoom
+let tmpHomeZoom=this._osdViewer.viewport.getHomeZoom();let tmpPercent=Math.round(tmpZoom/tmpHomeZoom*100);tmpZoomLabel.textContent=tmpPercent+'%';}}/**
+	 * Update the coordinate display based on mouse position.
+	 *
+	 * @param {object} pPosition - { x, y } pixel position in the viewer
+	 */_updateCoords(pPosition){if(!this._osdViewer||!this._dziData){return;}let tmpCoordsEl=document.getElementById('RetoldRemote-IEX-Coords');if(!tmpCoordsEl){return;}try{let tmpViewportPoint=this._osdViewer.viewport.pointFromPixel(pPosition);let tmpImagePoint=this._osdViewer.viewport.viewportToImageCoordinates(tmpViewportPoint);let tmpX=Math.round(tmpImagePoint.x);let tmpY=Math.round(tmpImagePoint.y);if(tmpX>=0&&tmpX<=this._dziData.Width&&tmpY>=0&&tmpY<=this._dziData.Height){tmpCoordsEl.textContent=tmpX+', '+tmpY;}else{tmpCoordsEl.textContent='';}}catch(pErr){// ignore viewport calculation errors during transitions
+}}/**
+	 * Zoom in by a step.
+	 */zoomIn(){if(this._osdViewer){let tmpCurrentZoom=this._osdViewer.viewport.getZoom();this._osdViewer.viewport.zoomTo(tmpCurrentZoom*1.5);}}/**
+	 * Zoom out by a step.
+	 */zoomOut(){if(this._osdViewer){let tmpCurrentZoom=this._osdViewer.viewport.getZoom();this._osdViewer.viewport.zoomTo(tmpCurrentZoom/1.5);}}/**
+	 * Reset to home (fit to view).
+	 */zoomHome(){if(this._osdViewer){this._osdViewer.viewport.goHome();}}/**
+	 * Navigate back to the image viewer.
+	 */goBack(){// Destroy the OSD viewer
+if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
+}this._osdViewer=null;}if(this._currentPath){let tmpViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.showMedia(this._currentPath,'image');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}/**
+	 * Show an error message.
+	 *
+	 * @param {string} pMessage - Error message
+	 */_showError(pMessage){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.style.display='none';}let tmpBody=document.getElementById('RetoldRemote-IEX-Body');if(tmpBody){let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpBody.innerHTML='<div class="retold-remote-iex-error">'+'<div class="retold-remote-iex-error-message">'+tmpFmt.escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()">Back to Image</button>'+'</div>';}}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":76}],135:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		#RetoldRemote-ImageViewer-Img
 		{
 			image-orientation: from-image;
@@ -11881,11 +12508,52 @@ let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||t
 		{
 			opacity: 1;
 		}
+		.retold-remote-image-explore-btn
+		{
+			position: absolute;
+			bottom: 16px;
+			right: 16px;
+			background: rgba(40, 44, 52, 0.85);
+			color: #abb2bf;
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			padding: 6px 14px;
+			border-radius: 6px;
+			font-size: 0.82rem;
+			cursor: pointer;
+			z-index: 20;
+			transition: background 0.2s, color 0.2s;
+		}
+		.retold-remote-image-explore-btn:hover
+		{
+			background: rgba(97, 175, 239, 0.3);
+			color: #fff;
+		}
+		.retold-remote-image-large-badge
+		{
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			background: rgba(40, 44, 52, 0.85);
+			color: #e5c07b;
+			padding: 4px 10px;
+			border-radius: 4px;
+			font-size: 0.72rem;
+			pointer-events: none;
+			z-index: 20;
+		}
 	`};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
+	 *
+	 * The MediaViewer handles probe-before-load logic (preview URLs
+	 * for large images, auto-launch of OpenSeadragon for >8192px).
+	 * This method just sets up display and always shows the Explore
+	 * button so the user can press `e` on any image.
 	 */initImage(){let tmpImg=document.getElementById('RetoldRemote-ImageViewer-Img');if(!tmpImg){return;}this._naturalWidth=tmpImg.naturalWidth;this._naturalHeight=tmpImg.naturalHeight;this._zoomLevel=1;this._applyDisplay();// Recalculate on window resize
-if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);}let tmpSelf=this;let tmpResizeTimer=null;this._resizeHandler=function(){clearTimeout(tmpResizeTimer);tmpResizeTimer=setTimeout(function(){tmpSelf._applyDisplay();},100);};window.addEventListener('resize',this._resizeHandler);}/**
+if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);}let tmpSelf=this;let tmpResizeTimer=null;this._resizeHandler=function(){clearTimeout(tmpResizeTimer);tmpResizeTimer=setTimeout(function(){tmpSelf._applyDisplay();},100);};window.addEventListener('resize',this._resizeHandler);// Always show the Explore button so `e` works on any image
+this._showExploreButton();}/**
+	 * Show the explore button for opening the deep-zoom explorer.
+	 */_showExploreButton(){let tmpBtn=document.getElementById('RetoldRemote-ImageExploreBtn');if(tmpBtn){tmpBtn.style.display='';}}/**
 	 * Get the current fit mode from AppData.
 	 *
 	 * @returns {string} 'fit' | 'auto' | 'original'
@@ -11919,7 +12587,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 * @param {string} pMode - The mode identifier
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator(tmpLabel,1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":76}],133:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":76}],136:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		#ContentEditor-Application-Container
 		{
 			display: flex;
@@ -12406,6 +13074,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
 								<button class="content-editor-sidebar-tab" data-tab="favorites" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('favorites')">Favorites</button>
+								<button class="content-editor-sidebar-tab" data-tab="info" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('info')">Info</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
 								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
@@ -12413,6 +13082,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 							<div class="content-editor-sidebar-pane" data-pane="favorites" id="RetoldRemote-Favorites-Container" style="display:none">
 								<div id="RetoldRemote-Favorites-Body"></div>
 							</div>
+							<div class="content-editor-sidebar-pane" data-pane="info" id="RetoldRemote-Info-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
@@ -12443,7 +13113,8 @@ let tmpNavProvider=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpN
 let tmpTabs=document.querySelectorAll('.content-editor-sidebar-tab');tmpTabs.forEach(pEl=>{pEl.classList.toggle('active',pEl.getAttribute('data-tab')===pTab);});// Update panes
 let tmpPanes=document.querySelectorAll('.content-editor-sidebar-pane');tmpPanes.forEach(pEl=>{pEl.style.display=pEl.getAttribute('data-pane')===pTab?'':'none';});// Render settings panel on demand
 if(pTab==='settings'){let tmpSettingsView=this.pict.views['RetoldRemote-SettingsPanel'];if(tmpSettingsView){tmpSettingsView.render();}}// Favorites tab: render the favorites list
-if(pTab==='favorites'){this.renderFavoritesList();}// Collections tab: move the collections container into the mobile pane
+if(pTab==='favorites'){this.renderFavoritesList();}// Info tab: render the file info panel
+if(pTab==='info'){let tmpInfoView=this.pict.views['RetoldRemote-FileInfoPanel'];if(tmpInfoView){tmpInfoView.render();}}// Collections tab: move the collections container into the mobile pane
 if(pTab==='collections'){let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpMobilePane=document.getElementById('RetoldRemote-Collections-MobilePane');if(tmpCollContainer&&tmpMobilePane&&!tmpMobilePane.contains(tmpCollContainer)){tmpMobilePane.appendChild(tmpCollContainer);}// Render and fetch collections
 let tmpCollView=this.pict.views['RetoldRemote-CollectionsPanel'];if(tmpCollView){tmpCollView.render();}let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.fetchCollections();}}else{// Return collections container to its original home when leaving collections tab
 let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpOrigParent=document.querySelector('.retold-remote-collections-inner');if(tmpCollContainer&&tmpOrigParent&&!tmpOrigParent.contains(tmpCollContainer)){tmpOrigParent.appendChild(tmpCollContainer);}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartY=0;let tmpStartWidth=0;let tmpStartHeight=0;function getClientPos(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return{x:pEvent.touches[0].clientX,y:pEvent.touches[0].clientY};}return{x:pEvent.clientX,y:pEvent.clientY};}function onDragStart(pEvent){tmpSelf._sidebarDragging=true;let tmpPos=getClientPos(pEvent);tmpStartX=tmpPos.x;tmpStartY=tmpPos.y;tmpStartWidth=tmpWrap.offsetWidth;tmpStartHeight=tmpWrap.offsetHeight;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);pEvent.preventDefault();}function onDragMove(pEvent){if(!tmpSelf._sidebarDragging){return;}let tmpPos=getClientPos(pEvent);if(tmpSelf.isMobileDrawer()){// Vertical resize (top drawer)
@@ -12463,7 +13134,7 @@ let tmpEscapedPath=tmpPath.replace(/'/g,"\\'");tmpHTML+='<div class="retold-remo
 	 */_setupCollectionsResizeHandle(){let tmpHandle=document.querySelector('.retold-remote-collections-resize-handle');let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(!tmpHandle||!tmpWrap){return;}let tmpSelf=this;let tmpStartX=0;let tmpStartWidth=0;function onDragStart(pEvent){if(tmpWrap.classList.contains('collapsed')){return;}pEvent.preventDefault();tmpSelf._collectionsDragging=true;tmpHandle.classList.add('dragging');let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;tmpStartX=tmpClientX;tmpStartWidth=tmpWrap.getBoundingClientRect().width;document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);}function onDragMove(pEvent){if(!tmpSelf._collectionsDragging){return;}pEvent.preventDefault();let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;// Dragging left (negative deltaX) increases width
 let tmpDelta=tmpStartX-tmpClientX;let tmpNewWidth=Math.max(150,Math.min(600,tmpStartWidth+tmpDelta));tmpWrap.style.width=tmpNewWidth+'px';}function onDragEnd(){if(!tmpSelf._collectionsDragging){return;}tmpSelf._collectionsDragging=false;tmpHandle.classList.remove('dragging');let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelWidth=tmpWrap.getBoundingClientRect().width;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Recalculate gallery columns
 let tmpGalleryNav=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpGalleryNav&&typeof tmpGalleryNav.recalculateColumns==='function'){tmpGalleryNav.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onDragStart);tmpHandle.addEventListener('touchstart',onDragStart,{passive:false});// Double-click collapses the collections panel
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":76}],134:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":76}],137:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-viewer
 		{
 			display: flex;
@@ -12962,15 +13633,38 @@ let tmpHTML='<div class="retold-remote-viewer">';// Header with nav
 tmpHTML+='<div class="retold-remote-viewer-header">';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-viewer-title">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName)+'</div>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';tmpHTML+='</div>';// Body with media content
 tmpHTML+='<div class="retold-remote-viewer-body">';// Distraction-free toggle (top-left corner)
 let tmpDFActive=tmpRemote._distractionFreeMode?' active':'';tmpHTML+='<button class="retold-remote-df-toggle'+tmpDFActive+'" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';// Exit hotspot for distraction-free mode (double-click/tap top-left to exit)
-let tmpDFHotspotDisplay=tmpRemote._distractionFreeMode?'':' style="display:none"';tmpHTML+='<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"'+tmpDFHotspotDisplay+'></div>';switch(pMediaType){case'image':tmpHTML+=this._buildImageHTML(tmpContentURL,tmpFileName);break;case'video':tmpHTML+=this._buildVideoHTML(tmpContentURL,tmpFileName);break;case'audio':tmpHTML+=this._buildAudioHTML(tmpContentURL,tmpFileName);break;case'text':tmpHTML+=this._buildTextHTML(tmpContentURL,tmpFileName,pFilePath);break;case'document':tmpHTML+=this._buildDocumentHTML(tmpContentURL,tmpFileName,pFilePath);break;default:tmpHTML+=this._buildFallbackHTML(tmpContentURL,tmpFileName);break;}// File info overlay (hidden by default)
+let tmpDFHotspotDisplay=tmpRemote._distractionFreeMode?'':' style="display:none"';tmpHTML+='<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"'+tmpDFHotspotDisplay+'></div>';// For images, probe size first to decide what URL to use
+if(pMediaType==='image'){// Show a placeholder while we probe
+tmpHTML+=this._buildImagePlaceholderHTML(tmpFileName);}else{switch(pMediaType){case'video':tmpHTML+=this._buildVideoHTML(tmpContentURL,tmpFileName);break;case'audio':tmpHTML+=this._buildAudioHTML(tmpContentURL,tmpFileName);break;case'text':tmpHTML+=this._buildTextHTML(tmpContentURL,tmpFileName,pFilePath);break;case'document':tmpHTML+=this._buildDocumentHTML(tmpContentURL,tmpFileName,pFilePath);break;default:tmpHTML+=this._buildFallbackHTML(tmpContentURL,tmpFileName);break;}}// File info overlay (hidden by default)
 tmpHTML+='<div class="retold-remote-fileinfo-overlay" id="RetoldRemote-FileInfo-Overlay">';tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Loading...</span></div>';tmpHTML+='</div>';tmpHTML+='</div>';// end body
 tmpHTML+='</div>';// end viewer
-if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Fetch and populate file info
+if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// For images, probe dimensions and decide how to display
+if(pMediaType==='image'){this._probeAndShowImage(pFilePath,tmpContentURL,tmpFileName);}// Fetch and populate file info
 this._loadFileInfo(pFilePath);// Fetch text content and initialize code viewer
 if(pMediaType==='text'){this._loadCodeViewer(tmpContentURL,pFilePath);}// Load ebook viewer for epub/mobi
 if(pMediaType==='document'){let tmpExt=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExt==='epub'||tmpExt==='mobi'){this._loadEbookViewer(tmpContentURL,pFilePath);}}// Set up swipe navigation for touch devices
 this._setupSwipeNavigation();// Set up distraction-free exit hotspot (double-click/tap top-left)
 this._setupDFExitHotspot();// Update topbar
+let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}}/**
+	 * Show an image in the viewer from a direct URL, bypassing the
+	 * content-path and probe logic.  Used for video-frame collection
+	 * items whose images live at a cache URL rather than a file path.
+	 *
+	 * @param {string} pURL          - Direct image URL
+	 * @param {string} pDisplayTitle - Title to show in the viewer header
+	 * @param {string} [pFilePath]   - Original file path (for state tracking)
+	 */showDirectImage(pURL,pDisplayTitle,pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath||'';tmpRemote.CurrentViewerMediaType='image';tmpRemote.VideoMenuActive=false;// Show viewer, hide gallery
+let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpEscapedTitle=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pDisplayTitle);// Build the viewer HTML (same chrome as showMedia, but with a direct <img>)
+let tmpHTML='<div class="retold-remote-viewer">';// Header with nav
+tmpHTML+='<div class="retold-remote-viewer-header">';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-viewer-title">'+tmpEscapedTitle+'</div>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';tmpHTML+='</div>';// Body with the frame image
+tmpHTML+='<div class="retold-remote-viewer-body">';// Distraction-free toggle
+let tmpDFActive=tmpRemote._distractionFreeMode?' active':'';tmpHTML+='<button class="retold-remote-df-toggle'+tmpDFActive+'" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';// Exit hotspot for distraction-free mode
+let tmpDFHotspotDisplay=tmpRemote._distractionFreeMode?'':' style="display:none"';tmpHTML+='<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"'+tmpDFHotspotDisplay+'></div>';// Direct image tag — no probing needed for cached frame images
+tmpHTML+='<img id="RetoldRemote-ImageViewer-Img" src="'+pURL+'" alt="'+tmpEscapedTitle+'"'+' style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;"'+' onload="if (pict.views[\'RetoldRemote-ImageViewer\']) pict.views[\'RetoldRemote-ImageViewer\'].initImage();"'+' onclick="if (pict.views[\'RetoldRemote-ImageViewer\']) pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom();"'+' />';// File info overlay (hidden by default)
+tmpHTML+='<div class="retold-remote-fileinfo-overlay" id="RetoldRemote-FileInfo-Overlay">';tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Frame: '+tmpEscapedTitle+'</span></div>';tmpHTML+='</div>';tmpHTML+='</div>';// end body
+tmpHTML+='</div>';// end viewer
+if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Set up swipe navigation and DF exit
+this._setupSwipeNavigation();this._setupDFExitHotspot();// Update topbar
 let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}}/**
 	 * Attach touch event listeners to the viewer body for swipe-based
 	 * prev/next navigation.  Only single-finger horizontal swipes are
@@ -12992,7 +13686,7 @@ let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpCont
 	 */toggleDistractionFree(){let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav._toggleDistractionFree();}this._updateDFControls();}/**
 	 * Sync the distraction-free toggle button and exit hotspot
 	 * with the current mode state.
-	 */_updateDFControls(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpActive=tmpRemote._distractionFreeMode||false;let tmpToggle=document.getElementById('RetoldRemote-DF-Toggle');if(tmpToggle){if(tmpActive){tmpToggle.classList.add('active');}else{tmpToggle.classList.remove('active');}}let tmpHotspot=document.getElementById('RetoldRemote-DF-ExitHotspot');if(tmpHotspot){tmpHotspot.style.display=tmpActive?'':'none';}}/**
+	 */_updateDFControls(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpActive=tmpRemote._distractionFreeMode||false;let tmpToggle=document.getElementById('RetoldRemote-DF-Toggle');if(tmpToggle){if(tmpActive){tmpToggle.classList.add('active');tmpToggle.style.display='none';}else{tmpToggle.classList.remove('active');tmpToggle.style.display='';}}let tmpHotspot=document.getElementById('RetoldRemote-DF-ExitHotspot');if(tmpHotspot){tmpHotspot.style.display=tmpActive?'':'none';}}/**
 	 * Set up the double-click / double-tap handler on the
 	 * exit hotspot so the user can leave distraction-free mode
 	 * from the top-left corner of the viewer.
@@ -13000,7 +13694,36 @@ let tmpContainer=document.querySelector('.retold-remote-viewer-body');if(tmpCont
 let tmpOnDblClick=function(){let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;if(tmpRemote._distractionFreeMode){tmpSelf.toggleDistractionFree();}};// Double-tap for touch: detect two taps within 300ms
 let tmpLastTap=0;let tmpOnTouchEnd=function(pEvent){let tmpNow=Date.now();if(tmpNow-tmpLastTap<300){pEvent.preventDefault();let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;if(tmpRemote._distractionFreeMode){tmpSelf.toggleDistractionFree();}tmpLastTap=0;}else{tmpLastTap=tmpNow;}};tmpHotspot.addEventListener('dblclick',tmpOnDblClick);tmpHotspot.addEventListener('touchend',tmpOnTouchEnd);this._dfExitHandlers={element:tmpHotspot,dblclick:tmpOnDblClick,touchend:tmpOnTouchEnd};}/**
 	 * Remove exit hotspot event listeners.
-	 */_cleanupDFExitHotspot(){if(this._dfExitHandlers){this._dfExitHandlers.element.removeEventListener('dblclick',this._dfExitHandlers.dblclick);this._dfExitHandlers.element.removeEventListener('touchend',this._dfExitHandlers.touchend);this._dfExitHandlers=null;}}_buildImageHTML(pURL,pFileName){return'<img src="'+pURL+'" alt="'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'" '+'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '+'id="RetoldRemote-ImageViewer-Img" '+'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '+'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';}_buildVideoHTML(pURL,pFileName){let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilePath=tmpRemote.CurrentViewerFile;// Build the action menu (shown by default instead of the player)
+	 */_cleanupDFExitHotspot(){if(this._dfExitHandlers){this._dfExitHandlers.element.removeEventListener('dblclick',this._dfExitHandlers.dblclick);this._dfExitHandlers.element.removeEventListener('touchend',this._dfExitHandlers.touchend);this._dfExitHandlers=null;}}/**
+	 * Build a lightweight placeholder while probing image dimensions.
+	 */_buildImagePlaceholderHTML(pFileName){let tmpEscapedName=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);return'<div id="RetoldRemote-ImagePlaceholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--retold-text-dim);font-size:0.85rem;">'+'Loading '+tmpEscapedName+'\u2026</div>';}/**
+	 * Probe image dimensions, then decide how to display it:
+	 *   - ≤4096px: load direct content URL in the normal viewer
+	 *   - 4096–8192px: load a server preview in the normal viewer, show Explore button
+	 *   - >8192px: auto-launch the OpenSeadragon image explorer
+	 *
+	 * @param {string} pFilePath   - Relative file path
+	 * @param {string} pContentURL - Direct content URL (fallback)
+	 * @param {string} pFileName   - Display name
+	 */_probeAndShowImage(pFilePath,pContentURL,pFileName){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/image-preview?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{// If the probe failed or sharp isn't available, fall back to direct load
+if(!pResult||!pResult.Success){tmpSelf._insertImageTag(pContentURL,pFileName,false);return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);// >8192px: auto-launch the OpenSeadragon image explorer
+if(tmpLongest>8192){let tmpIEX=tmpSelf.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pFilePath);return;}// Fall through if explorer view isn't available
+}// 4096–8192px: use the server preview
+if(pResult.NeedsPreview&&pResult.CacheKey){let tmpPreviewURL='/api/media/image-preview-file/'+encodeURIComponent(pResult.CacheKey)+'/'+encodeURIComponent(pResult.OutputFilename);tmpSelf._insertImageTag(tmpPreviewURL,pFileName,true,pResult.OrigWidth,pResult.OrigHeight);return;}// ≤4096px: load the direct content URL
+tmpSelf._insertImageTag(pContentURL,pFileName,false);}).catch(()=>{// Probe failed — fall back to direct load
+tmpSelf._insertImageTag(pContentURL,pFileName,false);});}/**
+	 * Insert the actual <img> tag into the viewer body, replacing the placeholder.
+	 *
+	 * @param {string}  pURL         - Image URL to load
+	 * @param {string}  pFileName    - Display name
+	 * @param {boolean} pShowExplore - Whether to show the Explore button immediately
+	 * @param {number}  [pOrigWidth] - Original image width (for the badge)
+	 * @param {number}  [pOrigHeight]- Original image height (for the badge)
+	 */_insertImageTag(pURL,pFileName,pShowExplore,pOrigWidth,pOrigHeight){let tmpPlaceholder=document.getElementById('RetoldRemote-ImagePlaceholder');if(!tmpPlaceholder||!tmpPlaceholder.parentElement){return;}let tmpEscapedName=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);let tmpFragment=document.createDocumentFragment();// The image element
+let tmpImg=document.createElement('img');tmpImg.src=pURL;tmpImg.alt=tmpEscapedName;tmpImg.id='RetoldRemote-ImageViewer-Img';tmpImg.style.cssText='max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;';tmpImg.onload=function(){pict.views['RetoldRemote-ImageViewer'].initImage();};tmpImg.onclick=function(){pict.views['RetoldRemote-ImageViewer'].toggleZoom();};tmpFragment.appendChild(tmpImg);// Explore button (always present, initially hidden unless pShowExplore)
+let tmpBtn=document.createElement('button');tmpBtn.className='retold-remote-image-explore-btn';tmpBtn.id='RetoldRemote-ImageExploreBtn';tmpBtn.style.display=pShowExplore?'':'none';tmpBtn.title='Open in deep-zoom explorer (e)';tmpBtn.innerHTML='&#128269; Explore';tmpBtn.onclick=function(){pict.views['RetoldRemote-ImageExplorer'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile);};tmpFragment.appendChild(tmpBtn);// Dimension badge for large images
+if(pShowExplore&&pOrigWidth&&pOrigHeight){let tmpBadge=document.createElement('div');tmpBadge.id='RetoldRemote-LargeImageBadge';tmpBadge.className='retold-remote-image-large-badge';tmpBadge.textContent=pOrigWidth+' \u00d7 '+pOrigHeight+' px (preview)';tmpFragment.appendChild(tmpBadge);}tmpPlaceholder.parentElement.replaceChild(tmpFragment,tmpPlaceholder);}_buildImageHTML(pURL,pFileName){let tmpEscapedName=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);let tmpHTML='<img src="'+pURL+'" alt="'+tmpEscapedName+'" '+'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '+'id="RetoldRemote-ImageViewer-Img" '+'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '+'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';// Explore button (hidden by default, shown by ImageViewer for large images)
+tmpHTML+='<button class="retold-remote-image-explore-btn" id="RetoldRemote-ImageExploreBtn" '+'style="display:none" '+'onclick="pict.views[\'RetoldRemote-ImageExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Open in deep-zoom explorer (e)">'+'&#128269; Explore</button>';return tmpHTML;}_buildVideoHTML(pURL,pFileName){let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilePath=tmpRemote.CurrentViewerFile;// Build the action menu (shown by default instead of the player)
 let tmpHTML='<div class="retold-remote-video-action-menu" id="RetoldRemote-VideoActionMenu">';tmpHTML+='<div class="retold-remote-video-action-menu-title">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'</div>';// Frame preview container (loaded on demand via t key or automatically)
 if(tmpCapabilities.ffmpeg){tmpHTML+='<div id="RetoldRemote-VideoActionThumb" class="retold-remote-video-action-thumb-wrap"></div>';// Kick off frame extraction automatically
 setTimeout(()=>{this.loadVideoMenuFrame();},0);}// Explore option (e)
@@ -13082,7 +13805,7 @@ tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).ca
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":49,"pict-view":76}],135:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":49,"pict-view":76}],138:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-settings
 		{
 			padding: 12px;
@@ -13261,7 +13984,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 	 * @returns {string}
 	 */_escapeHTML(pStr){if(!pStr)return'';return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}/**
 	 * Re-run the filter/sort pipeline and refresh the gallery.
-	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],136:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],139:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-topbar
 		{
 			display: flex;
@@ -13412,8 +14135,8 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			top: 100%;
 			left: 0;
 			margin-top: 4px;
-			min-width: 200px;
-			max-width: 300px;
+			min-width: 220px;
+			max-width: 400px;
 			background: var(--retold-bg-secondary);
 			border: 1px solid var(--retold-border);
 			border-radius: 6px;
@@ -13466,6 +14189,15 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+		}
+		.retold-remote-topbar-overflow-item-prefix
+		{
+			color: var(--retold-text-dim);
+		}
+		.retold-remote-topbar-overflow-item:hover .retold-remote-topbar-overflow-item-prefix,
+		.retold-remote-topbar-overflow-item:active .retold-remote-topbar-overflow-item-prefix
+		{
+			color: var(--retold-text-muted);
 		}
 		.retold-remote-topbar-info
 		{
@@ -13723,10 +14455,10 @@ tmpBtn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 	 */updateLocation(){let tmpLocationEl=document.getElementById('RetoldRemote-TopBar-Location');if(!tmpLocationEl){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';// Build the home icon for the root crumb
 let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpHomeIcon=tmpIconProvider?tmpIconProvider.getIcon('home',16):'/';let tmpHomeCrumb='<span class="retold-remote-topbar-home-crumb" onclick="pict.PictApplication.loadFileList(\'\')" title="Home">'+tmpHomeIcon+'</span>';if(!tmpCurrentLocation){tmpLocationEl.innerHTML='<span class="retold-remote-topbar-location-inner">'+tmpHomeCrumb+'</span>';return;}let tmpParts=tmpCurrentLocation.split('/').filter(p=>p);// Shallow path (1 level): home / folder — no hamburger needed
 if(tmpParts.length<=1){let tmpInner=tmpHomeCrumb;for(let i=0;i<tmpParts.length;i++){let tmpPath=tmpParts.slice(0,i+1).join('/');tmpInner+='<span class="retold-remote-topbar-sep">/</span>';tmpInner+='<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\''+tmpPath+'\')">'+tmpParts[i]+'</span>';}tmpLocationEl.innerHTML='<span class="retold-remote-topbar-location-inner">'+tmpInner+'</span>';return;}// Deep path (2+ levels): show hamburger with intermediate folders
-let tmpFolderIcon=tmpIconProvider?tmpIconProvider.getIcon('folder',16):'';let tmpHomeIconSmall=tmpIconProvider?tmpIconProvider.getIcon('home',16):'/';// Build dropdown items: home first, then each intermediate folder
-let tmpDropdownHTML='';// Home item
-tmpDropdownHTML+='<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-icon">'+tmpHomeIconSmall+'</span>';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-label">Home</span>';tmpDropdownHTML+='</button>';// Intermediate folders (all except the last segment, which is shown in the breadcrumb)
-for(let i=0;i<tmpParts.length-1;i++){let tmpPath=tmpParts.slice(0,i+1).join('/');tmpDropdownHTML+='<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\''+tmpPath+'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-icon">'+tmpFolderIcon+'</span>';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-label">'+tmpParts[i]+'</span>';tmpDropdownHTML+='</button>';}// Assemble: [hamburger + dropdown] [inner: home / current folder]
+let tmpFolderIcon=tmpIconProvider?tmpIconProvider.getIcon('folder',16):'';let tmpHomeIconSmall=tmpIconProvider?tmpIconProvider.getIcon('home',16):'/';// Build dropdown items: deepest folder first, root last
+let tmpDropdownHTML='';// All folders from deepest to shallowest (includes current folder)
+for(let i=tmpParts.length-1;i>=0;i--){let tmpPath=tmpParts.slice(0,i+1).join('/');let tmpFolderName=tmpParts[i]+'/';let tmpPrefix='';if(i>0){tmpPrefix='/'+tmpParts.slice(0,i).join('/')+'/';}tmpDropdownHTML+='<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\''+tmpPath+'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-icon">'+tmpFolderIcon+'</span>';if(tmpPrefix){tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-label"><span class="retold-remote-topbar-overflow-item-prefix">'+tmpPrefix+'</span>'+tmpFolderName+'</span>';}else{tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-label">'+tmpFolderName+'</span>';}tmpDropdownHTML+='</button>';}// Home / root item at the bottom
+tmpDropdownHTML+='<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-icon">'+tmpHomeIconSmall+'</span>';tmpDropdownHTML+='<span class="retold-remote-topbar-overflow-item-label">Home</span>';tmpDropdownHTML+='</button>';// Assemble: [hamburger + dropdown] [inner: home / current folder]
 let tmpLastPart=tmpParts[tmpParts.length-1];let tmpLastPath=tmpParts.join('/');let tmpHTML='';// The overflow wrapper sits outside the truncation inner
 tmpHTML+='<span class="retold-remote-topbar-breadcrumb-overflow">';tmpHTML+='<button class="retold-remote-topbar-overflow-btn" onclick="pict.views[\'ContentEditor-TopBar\'].toggleBreadcrumbDropdown()" title="Navigate to parent folders">&#9776;</button>';tmpHTML+='<div class="retold-remote-topbar-overflow-dropdown" id="RetoldRemote-BreadcrumbDropdown">';tmpHTML+=tmpDropdownHTML;tmpHTML+='</div>';tmpHTML+='</span>';// The visible crumbs: home / current-folder
 tmpHTML+='<span class="retold-remote-topbar-location-inner">';tmpHTML+=tmpHomeCrumb;tmpHTML+='<span class="retold-remote-topbar-sep">/</span>';tmpHTML+='<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\''+tmpLastPath+'\')">'+tmpLastPart+'</span>';tmpHTML+='</span>';tmpLocationEl.innerHTML=tmpHTML;}/**
@@ -13793,8 +14525,8 @@ tmpBtn.title='Add to favorites (h)';}}/**
 	 * If no last-used collection, opens the picker dropdown.
 	 *
 	 * @param {Event} pEvent - Click event
-	 */addToCollection(pEvent){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(!tmpManager){return;}// Quick-add: if we have a last-used collection, add directly
-if(tmpRemote.LastUsedCollectionGUID){let tmpAdded=tmpManager.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);if(tmpAdded){return;}}// Fall through to picker dropdown
+	 */addToCollection(pEvent){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(!tmpManager){return;}// Quick-add: if we have an active or last-used collection, add directly
+let tmpQuickGUID=tmpManager.getQuickAddTargetGUID();if(tmpQuickGUID){let tmpAdded=tmpManager.addCurrentFileToCollection(tmpQuickGUID);if(tmpAdded){return;}}// Fall through to picker dropdown
 this.showAddToCollectionDropdown(pEvent);}/**
 	 * Show the add-to-collection picker dropdown.
 	 *
@@ -13802,12 +14534,14 @@ this.showAddToCollectionDropdown(pEvent);}/**
 	 */showAddToCollectionDropdown(pEvent){let tmpSelf=this;let tmpRemote=this.pict.AppData.RetoldRemote;let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];// Remove any existing dropdown
 this._closeAddToCollectionDropdown();let tmpBtn=document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn');if(!tmpBtn){return;}// Ensure we have the latest collections
 tmpManager.fetchCollections(()=>{let tmpCollections=tmpRemote.Collections||[];let tmpDropdown=document.createElement('div');tmpDropdown.className='retold-remote-addcoll-dropdown';tmpDropdown.id='RetoldRemote-AddToCollection-Dropdown';// "New Collection" option
-let tmpNewItem=document.createElement('button');tmpNewItem.className='retold-remote-addcoll-dropdown-item retold-remote-addcoll-dropdown-new';tmpNewItem.textContent='+ New Collection...';tmpNewItem.onclick=()=>{tmpSelf._closeAddToCollectionDropdown();let tmpName=prompt('Collection name:');if(tmpName&&tmpName.trim()){tmpManager.createCollection(tmpName.trim(),(pError,pCollection)=>{if(!pError&&pCollection){tmpManager.addCurrentFileToCollection(pCollection.GUID);}});}};tmpDropdown.appendChild(tmpNewItem);// Existing collections
-for(let i=0;i<tmpCollections.length;i++){let tmpCollection=tmpCollections[i];let tmpItem=document.createElement('button');tmpItem.className='retold-remote-addcoll-dropdown-item';tmpItem.textContent=tmpCollection.Name||'Untitled';tmpItem.onclick=()=>{tmpSelf._closeAddToCollectionDropdown();tmpManager.addCurrentFileToCollection(tmpCollection.GUID);};tmpDropdown.appendChild(tmpItem);}// Position relative to the button
+let tmpNewItem=document.createElement('button');tmpNewItem.className='retold-remote-addcoll-dropdown-item retold-remote-addcoll-dropdown-new';tmpNewItem.textContent='+ New Collection...';tmpNewItem.onclick=()=>{tmpSelf._closeAddToCollectionDropdown();let tmpName=prompt('Collection name:');if(tmpName&&tmpName.trim()){tmpManager.createCollection(tmpName.trim(),(pError,pCollection)=>{if(!pError&&pCollection){tmpManager.addPendingOrCurrentToCollection(pCollection.GUID);}});}else{// User cancelled — clear any pending clip context
+tmpManager.clearPendingClipContext();}};tmpDropdown.appendChild(tmpNewItem);// Existing collections
+for(let i=0;i<tmpCollections.length;i++){let tmpCollection=tmpCollections[i];let tmpItem=document.createElement('button');tmpItem.className='retold-remote-addcoll-dropdown-item';tmpItem.textContent=tmpCollection.Name||'Untitled';tmpItem.onclick=()=>{tmpSelf._closeAddToCollectionDropdown();tmpManager.addPendingOrCurrentToCollection(tmpCollection.GUID);};tmpDropdown.appendChild(tmpItem);}// Position relative to the button
 tmpBtn.style.position='relative';tmpBtn.appendChild(tmpDropdown);// Close on outside click
 setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pClickEvent=>{if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpBtn){tmpSelf._closeAddToCollectionDropdown();}});},10);});}/**
 	 * Close the add-to-collection dropdown.
-	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],137:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}// Clear any pending clip context that was never consumed
+let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],140:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-vlc-modal-backdrop
 		{
 			position: fixed;
@@ -14048,7 +14782,8 @@ setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pC
 			pointer-events: none;
 			border: 1px solid var(--retold-border);
 		}
-	`};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
+	`};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+if(/Macintosh/i.test(tmpUA)&&typeof navigator!=='undefined'&&navigator.maxTouchPoints>1){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
 let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
 let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
 let tmpHeader=document.createElement('div');tmpHeader.className='retold-remote-vlc-modal-header';tmpHeader.innerHTML='<span class="retold-remote-vlc-modal-title">VLC Protocol Setup</span>'+'<button class="retold-remote-vlc-modal-close" onclick="pict.views[\'RetoldRemote-VLCSetup\'].closeModal()">X</button>';// Body
@@ -14059,7 +14794,7 @@ tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="r
 tmpHTML+='<div class="retold-remote-vlc-setup-status">';tmpHTML+='<div class="retold-remote-vlc-setup-status-dot '+(this._detectPlatform()===tmpPlatform?'detected':'unknown')+'"></div>';tmpHTML+='<span>Detected platform: <b>'+this._getPlatformLabel(this._detectPlatform())+'</b></span>';tmpHTML+='</div>';// Platform tabs
 tmpHTML+='<div class="retold-remote-vlc-setup-platform-tabs">';tmpHTML+=this._buildPlatformTab('ios','iOS',tmpPlatform);tmpHTML+=this._buildPlatformTab('android','Android',tmpPlatform);tmpHTML+=this._buildPlatformTab('macos','macOS',tmpPlatform);tmpHTML+=this._buildPlatformTab('windows','Windows',tmpPlatform);tmpHTML+=this._buildPlatformTab('linux','Linux',tmpPlatform);tmpHTML+='</div>';// Platform-specific content
 tmpHTML+=this._buildIOSContent(tmpPlatform);tmpHTML+=this._buildAndroidContent(tmpPlatform);tmpHTML+=this._buildMacOSContent(tmpPlatform);tmpHTML+=this._buildWindowsContent(tmpPlatform);tmpHTML+=this._buildLinuxContent(tmpPlatform);// Test section
-tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Test</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Click below to test whether the vlc:// protocol handler is registered. VLC should open.';tmpHTML+='</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].testProtocol()">Test VLC Protocol</button>';tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;}_buildPlatformTab(pKey,pLabel,pActive){let tmpClass='retold-remote-vlc-setup-platform-tab';if(pKey===pActive){tmpClass+=' active';}return'<button class="'+tmpClass+'" onclick="pict.views[\'RetoldRemote-VLCSetup\'].switchPlatformTab(\''+pKey+'\')">'+pLabel+'</button>';}_getPlatformLabel(pKey){if(pKey==='ios')return'iOS';if(pKey==='android')return'Android';if(pKey==='macos')return'macOS';if(pKey==='windows')return'Windows';return'Linux';}_buildIOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='ios'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="ios">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (iOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for iOS registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Mobile</b> from the App Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Safari will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If Safari shows "Cannot Open Page", VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildAndroidContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='android'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="android">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Android)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for Android registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Android</b> from the Google Play Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Your browser will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If your browser shows an error, VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildMacOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='macos'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="macos">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (macOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on macOS does not register a vlc:// protocol handler by default. ';tmpHTML+='An AppleScript app bundle is needed to bridge vlc:// links to VLC. ';tmpHTML+='Run the command below in Terminal to create and register the handler automatically.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Automatic Setup</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Copy and paste this into Terminal:';tmpHTML+='</div>';let tmpScript=this._getMacSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates an AppleScript at <code>/tmp/VLCProtocol.applescript</code> that handles vlc:// URLs</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Compiles it into an app bundle at <code>/Applications/VLCProtocol.app</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Adds the vlc:// URL scheme to the app\'s Info.plist</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">4</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers the protocol handler with macOS Launch Services</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC installed at /Applications/VLC.app and Python 3 (included with macOS).</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildWindowsContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='windows'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="windows">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on Windows registers the vlc:// protocol handler during installation. ';tmpHTML+='If it is not working, you can re-register it by saving and running the registry file below.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option A: Reinstall VLC</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Reinstall VLC and ensure "Register VLC as handler for vlc:// protocol" is checked during installation.</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option B: Registry File</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Save this as <code>vlc-protocol.reg</code> and double-click to import. ';tmpHTML+='Adjust the VLC path if yours differs.';tmpHTML+='</div>';let tmpRegFile=this._getWindowsRegFile();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRegFile)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';tmpHTML+='This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';tmpHTML+='</div>';let tmpBatchScript=this._getWindowsBatchScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpBatchScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildLinuxContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='linux'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="linux">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Linux)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Register a vlc:// protocol handler using a .desktop file and xdg-mime. ';tmpHTML+='Run the command below in a terminal.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';let tmpScript=this._getLinuxSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a handler script at <code>~/.local/bin/vlc-protocol</code> that URL-decodes and opens VLC</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a .desktop file at <code>~/.local/share/applications/vlc-protocol.desktop</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers vlc:// as a URL scheme via <code>xdg-mime</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC and Python 3 installed.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_getMacSetupScript(){return["# Create the AppleScript handler","cat > /tmp/VLCProtocol.applescript << 'EOF'","on open location theURL","\tset theURL to text 7 thru -1 of theURL","\tset theURL to do shell script \"python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' \" & quoted form of theURL","\tdo shell script \"open -a VLC \" & quoted form of theURL","end open location","EOF","","# Compile into app bundle","osacompile -o /Applications/VLCProtocol.app /tmp/VLCProtocol.applescript","","# Add vlc:// URL scheme to Info.plist","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0 dict\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLName string 'VLC Protocol'\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string vlc\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","","# Register with Launch Services","/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \\","  -f /Applications/VLCProtocol.app","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_getWindowsRegFile(){return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\"URL:VLC Protocol\"","\"URL Protocol\"=\"\"","","[HKEY_CLASSES_ROOT\\vlc\\shell]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]","@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""].join('\n');}_getWindowsBatchScript(){return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler script","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","(","echo import sys, urllib.parse, subprocess","echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''","echo if url.startswith('vlc://'^): url = url[6:]","echo url = urllib.parse.unquote(url^)","echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",") > \"%APPDATA%\\VLCProtocol\\handler.py\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":76}],138:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
+tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Test</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Click below to test whether the vlc:// protocol handler is registered. VLC should open.';tmpHTML+='</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].testProtocol()">Test VLC Protocol</button>';tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;}_buildPlatformTab(pKey,pLabel,pActive){let tmpClass='retold-remote-vlc-setup-platform-tab';if(pKey===pActive){tmpClass+=' active';}return'<button class="'+tmpClass+'" onclick="pict.views[\'RetoldRemote-VLCSetup\'].switchPlatformTab(\''+pKey+'\')">'+pLabel+'</button>';}_getPlatformLabel(pKey){if(pKey==='ios')return'iOS';if(pKey==='android')return'Android';if(pKey==='macos')return'macOS';if(pKey==='windows')return'Windows';return'Linux';}_buildIOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='ios'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="ios">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (iOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for iOS registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Mobile</b> from the App Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Safari will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If Safari shows "Cannot Open Page", VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildAndroidContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='android'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="android">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Android)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for Android registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Android</b> from the Google Play Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Your browser will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If your browser shows an error, VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildMacOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='macos'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="macos">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (macOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on macOS does not register a vlc:// protocol handler by default. ';tmpHTML+='An AppleScript app bundle is needed to bridge vlc:// links to VLC. ';tmpHTML+='Run the command below in Terminal to create and register the handler automatically.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Automatic Setup</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Copy and paste this into Terminal:';tmpHTML+='</div>';let tmpScript=this._getMacSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates an AppleScript at <code>/tmp/VLCProtocol.applescript</code> that handles vlc:// URLs</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Compiles it into an app bundle at <code>/Applications/VLCProtocol.app</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Adds the vlc:// URL scheme to the app\'s Info.plist</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">4</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers the protocol handler with macOS Launch Services</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC installed at /Applications/VLC.app and Python 3 (included with macOS).</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildWindowsContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='windows'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="windows">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on Windows registers the vlc:// protocol handler during installation. ';tmpHTML+='If it is not working, you can re-register it by saving and running the registry file below.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option A: Reinstall VLC</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Reinstall VLC and ensure "Register VLC as handler for vlc:// protocol" is checked during installation.</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option B: Registry File</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Save this as <code>vlc-protocol.reg</code> and double-click to import. ';tmpHTML+='Adjust the VLC path if yours differs.';tmpHTML+='</div>';let tmpRegFile=this._getWindowsRegFile();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRegFile)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';tmpHTML+='This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';tmpHTML+='</div>';let tmpBatchScript=this._getWindowsBatchScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpBatchScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildLinuxContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='linux'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="linux">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Linux)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Register a vlc:// protocol handler using a .desktop file and xdg-mime. ';tmpHTML+='Run the command below in a terminal.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';let tmpScript=this._getLinuxSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a handler script at <code>~/.local/bin/vlc-protocol</code> that URL-decodes and opens VLC</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a .desktop file at <code>~/.local/share/applications/vlc-protocol.desktop</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers vlc:// as a URL scheme via <code>xdg-mime</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC and Python 3 installed.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_getMacSetupScript(){return["# Create the AppleScript handler","cat > /tmp/VLCProtocol.applescript << 'EOF'","on open location theURL","\tset theURL to text 7 thru -1 of theURL","\tset theURL to do shell script \"python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' \" & quoted form of theURL","\tdo shell script \"open -a VLC \" & quoted form of theURL","end open location","EOF","","# Compile into app bundle","osacompile -o /Applications/VLCProtocol.app /tmp/VLCProtocol.applescript","","# Add vlc:// URL scheme to Info.plist","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0 dict\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLName string 'VLC Protocol'\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string vlc\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","","# Register with Launch Services","/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \\","  -f /Applications/VLCProtocol.app","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_getWindowsRegFile(){return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\"URL:VLC Protocol\"","\"URL Protocol\"=\"\"","","[HKEY_CLASSES_ROOT\\vlc\\shell]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]","@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""].join('\n');}_getWindowsBatchScript(){return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler script","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","(","echo import sys, urllib.parse, subprocess","echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''","echo if url.startswith('vlc://'^): url = url[6:]","echo url = urllib.parse.unquote(url^)","echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",") > \"%APPDATA%\\VLCProtocol\\handler.py\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":76}],141:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
 		.retold-remote-vex
 		{
 			display: flex;
@@ -14286,16 +15021,60 @@ tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="r
 		.retold-remote-vex-timeline
 		{
 			display: flex;
-			align-items: center;
+			align-items: flex-end;
 			gap: 8px;
 			padding: 8px 16px;
 			background: var(--retold-bg-secondary);
 			border-top: 1px solid var(--retold-border);
 			flex-shrink: 0;
 		}
-		.retold-remote-vex-timeline-bar
+		.retold-remote-vex-timeline-column
 		{
 			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+			min-width: 0;
+		}
+		.retold-remote-vex-slider-track
+		{
+			position: relative;
+			height: 18px;
+			user-select: none;
+			-webkit-user-select: none;
+		}
+		.retold-remote-vex-slider-handle
+		{
+			position: absolute;
+			bottom: 0;
+			width: 14px;
+			height: 18px;
+			background: var(--retold-accent);
+			border-radius: 3px 3px 0 0;
+			cursor: ew-resize;
+			transform: translateX(-50%);
+			z-index: 2;
+			transition: background 0.15s;
+			touch-action: none;
+		}
+		.retold-remote-vex-slider-handle:hover,
+		.retold-remote-vex-slider-handle.dragging
+		{
+			background: var(--retold-text-primary);
+		}
+		.retold-remote-vex-slider-handle::after
+		{
+			content: '';
+			position: absolute;
+			top: 5px;
+			left: 4px;
+			width: 6px;
+			height: 8px;
+			border-left: 2px solid rgba(0, 0, 0, 0.3);
+			border-right: 2px solid rgba(0, 0, 0, 0.3);
+		}
+		.retold-remote-vex-timeline-bar
+		{
 			height: 24px;
 			background: var(--retold-bg-tertiary);
 			border-radius: 4px;
@@ -14327,6 +15106,130 @@ tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="r
 			font-size: 0.7rem;
 			color: var(--retold-text-dim);
 			white-space: nowrap;
+		}
+		/* Selection mode toggle button */
+		.retold-remote-vex-select-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-select-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-vex-select-btn.active
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+			border-color: var(--retold-accent);
+		}
+		/* Selection info display */
+		.retold-remote-vex-selection-info
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 0.75rem;
+			color: var(--retold-text-secondary);
+			font-family: var(--retold-font-mono, monospace);
+		}
+		.retold-remote-vex-selection-info-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-vex-clear-btn
+		{
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-dim);
+			font-size: 0.7rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-clear-btn:hover
+		{
+			color: #e06c75;
+			border-color: #e06c75;
+		}
+		/* Generate frames across range */
+		.retold-remote-vex-generate-controls
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.retold-remote-vex-generate-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-generate-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		/* Save segment to collection button */
+		.retold-remote-vex-save-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid #98c379;
+			border-radius: 3px;
+			background: transparent;
+			color: #98c379;
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-save-btn:hover
+		{
+			background: #98c379;
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-vex-range-frame-select
+		{
+			font-size: 0.75rem;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			padding: 2px 6px;
+			font-family: inherit;
+		}
+		/* Timeline selection overlay */
+		.retold-remote-vex-timeline-selection
+		{
+			position: absolute;
+			top: 0;
+			height: 100%;
+			background: color-mix(in srgb, var(--retold-accent) 20%, transparent);
+			border-left: 2px solid var(--retold-accent);
+			border-right: 2px solid var(--retold-accent);
+			pointer-events: none;
+			z-index: 1;
+			box-sizing: border-box;
+		}
+		.retold-remote-vex-timeline-bar.selecting
+		{
+			cursor: crosshair;
 		}
 		/* Frame preview overlay */
 		.retold-remote-vex-preview-backdrop
@@ -14401,17 +15304,135 @@ tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="r
 			color: #e06c75;
 			margin-bottom: 16px;
 		}
-	`};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=false;this._customFrames=[];}/**
+	`};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
+this._selectionModeActive=false;this._selectionStartTime=-1;this._selectionEndTime=-1;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// 'start', 'end', or null
+// Cached provider references (resolved lazily)
+this._fmt=null;this._provider=null;}/**
+	 * Get the FormattingUtilities provider (lazy-cached).
+	 * @returns {Object} FormattingUtilities provider
+	 */_getFmt(){if(!this._fmt){this._fmt=this.pict.providers['RetoldRemote-FormattingUtilities'];}return this._fmt;}/**
+	 * Get the RetoldRemote-Provider (lazy-cached).
+	 * @returns {Object} Provider
+	 */_getProvider(){if(!this._provider){this._provider=this.pict.providers['RetoldRemote-Provider'];}return this._provider;}/**
+	 * Build a frame image URL from a cache key and filename.
+	 *
+	 * @param {string} pCacheKey - Cache directory key
+	 * @param {string} pFilename - Frame filename
+	 * @returns {string} URL path
+	 */_buildFrameURL(pCacheKey,pFilename){return'/api/media/video-frame/'+encodeURIComponent(pCacheKey)+'/'+encodeURIComponent(pFilename);}/**
+	 * Get the encoded path parameter for API calls.
+	 *
+	 * @param {string} pPath - File path
+	 * @returns {string} Encoded path parameter
+	 */_getPathParam(pPath){let tmpProvider=this._getProvider();return tmpProvider?tmpProvider._getPathParam(pPath):encodeURIComponent(pPath);}// -----------------------------------------------------------------
+//  Selection mode
+// -----------------------------------------------------------------
+/**
+	 * Toggle selection mode on or off.
+	 * When on, timeline clicks/drags create a selection range.
+	 * When off, timeline clicks extract frames (existing behavior).
+	 */toggleSelectionMode(){this._selectionModeActive=!this._selectionModeActive;let tmpBtn=document.getElementById('RetoldRemote-VEX-SelectBtn');if(tmpBtn){if(this._selectionModeActive){tmpBtn.classList.add('active');}else{tmpBtn.classList.remove('active');}}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(tmpBar){if(this._selectionModeActive){tmpBar.classList.add('selecting');}else{tmpBar.classList.remove('selecting');}}}/**
+	 * Extract clientX from a mouse or touch event.
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 * @returns {number|null} clientX, or null if unavailable
+	 */_getClientX(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return pEvent.touches[0].clientX;}if(pEvent.changedTouches&&pEvent.changedTouches.length>0){return pEvent.changedTouches[0].clientX;}if(typeof pEvent.clientX==='number'){return pEvent.clientX;}return null;}/**
+	 * Convert a mouse/touch event on the timeline bar to a timestamp.
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 * @returns {number} Timestamp in seconds, clamped to [0, Duration]
+	 */_getTimelineTimestamp(pEvent){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return 0;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return 0;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));return tmpPercent*this._frameData.Duration;}/**
+	 * Set the selection start marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */setSelectionStart(pTime){this._selectionStartTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
+	 * Set the selection end marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */setSelectionEnd(pTime){this._selectionEndTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
+	 * Clear the selection range.
+	 */clearSelection(){this._selectionStartTime=-1;this._selectionEndTime=-1;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
+	 * Render (or remove) the selection overlay div inside the timeline bar.
+	 */_renderSelectionOverlay(){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Remove any existing overlay
+let tmpExisting=tmpBar.querySelector('.retold-remote-vex-timeline-selection');if(tmpExisting){tmpExisting.remove();}if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=this._frameData.Duration;let tmpLeftPercent=tmpStart/tmpDuration*100;let tmpWidthPercent=(tmpEnd-tmpStart)/tmpDuration*100;let tmpOverlay=document.createElement('div');tmpOverlay.className='retold-remote-vex-timeline-selection';tmpOverlay.style.left=tmpLeftPercent.toFixed(2)+'%';tmpOverlay.style.width=tmpWidthPercent.toFixed(2)+'%';tmpBar.appendChild(tmpOverlay);}/**
+	 * Update the selection info display with current selection range.
+	 */_updateSelectionInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-VEX-SelectionInfo');let tmpClearBtn=document.getElementById('RetoldRemote-VEX-ClearBtn');let tmpGenControls=document.getElementById('RetoldRemote-VEX-GenerateControls');if(!tmpInfoEl){return;}if(this._selectionStartTime<0||this._selectionEndTime<0){tmpInfoEl.style.display='none';if(tmpClearBtn){tmpClearBtn.style.display='none';}if(tmpGenControls){tmpGenControls.style.display='none';}return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=tmpEnd-tmpStart;let tmpFmt=this._getFmt();let tmpText='<span class="retold-remote-vex-selection-info-label">Selection:</span> '+tmpFmt.formatTimestamp(tmpStart)+' \u2013 '+tmpFmt.formatTimestamp(tmpEnd)+' ('+tmpFmt.formatTimestamp(tmpDuration)+')';tmpInfoEl.innerHTML=tmpText;tmpInfoEl.style.display='';if(tmpClearBtn){tmpClearBtn.style.display='';}if(tmpGenControls){tmpGenControls.style.display='';}}/**
+	 * Handle selection drag start (mousedown or touchstart on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragStart(pEvent){if(!this._selectionModeActive){return;}// Don't start drag on marker clicks
+let tmpMarker=pEvent.target.closest('.retold-remote-vex-timeline-marker');if(tmpMarker){return;}pEvent.preventDefault();this._isDraggingTimeline=true;let tmpTimestamp=this._getTimelineTimestamp(pEvent);this._selectionStartTime=tmpTimestamp;this._selectionEndTime=tmpTimestamp;this._renderSelectionOverlay();}/**
+	 * Handle selection drag move (mousemove or touchmove on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragMove(pEvent){if(!this._isDraggingTimeline){return;}pEvent.preventDefault();this._selectionEndTime=this._getTimelineTimestamp(pEvent);this._renderSelectionOverlay();}/**
+	 * Handle selection drag end (mouseup or touchend on window).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragEnd(pEvent){if(!this._isDraggingTimeline){return;}this._isDraggingTimeline=false;// If selection is too small (< 0.5s), clear it
+let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
+	 * Clean up window-level event listeners (mouseup/touchend).
+	 * Called when the explorer is closed or refreshed.
+	 */_cleanupWindowListeners(){if(this._boundDragEnd){window.removeEventListener('mouseup',this._boundDragEnd);window.removeEventListener('touchend',this._boundDragEnd);this._boundDragEnd=null;}}/**
+	 * Render (or clear) the slider handles in the slider track above
+	 * the timeline bar.  The handles sit at the start/end positions
+	 * of the current selection range.
+	 */_renderSliderHandles(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}// Clear existing handles
+tmpTrack.innerHTML='';if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){tmpTrack.style.display='none';return;}tmpTrack.style.display='';let tmpDuration=this._frameData.Duration;let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpStartPercent=tmpStart/tmpDuration*100;let tmpEndPercent=tmpEnd/tmpDuration*100;let tmpStartHandle=document.createElement('div');tmpStartHandle.className='retold-remote-vex-slider-handle';tmpStartHandle.id='RetoldRemote-VEX-HandleStart';tmpStartHandle.style.left=tmpStartPercent.toFixed(2)+'%';tmpStartHandle.title='Drag to adjust selection start';tmpTrack.appendChild(tmpStartHandle);let tmpEndHandle=document.createElement('div');tmpEndHandle.className='retold-remote-vex-slider-handle';tmpEndHandle.id='RetoldRemote-VEX-HandleEnd';tmpEndHandle.style.left=tmpEndPercent.toFixed(2)+'%';tmpEndHandle.title='Drag to adjust selection end';tmpTrack.appendChild(tmpEndHandle);}/**
+	 * Bind drag interaction to the slider handles (mouse + touch).
+	 * Uses the slider track element for coordinate computation.
+	 */_bindSliderHandleDrag(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}let tmpSelf=this;// Mouse handlers on the track (delegated — detect which handle)
+tmpTrack.addEventListener('mousedown',pEvent=>{if(pEvent.button!==0){return;}tmpSelf._onSliderDragStart(pEvent);});// Touch handlers on the track
+tmpTrack.addEventListener('touchstart',pEvent=>{tmpSelf._onSliderDragStart(pEvent);},{passive:false});}/**
+	 * Begin dragging a slider handle.
+	 *
+	 * @param {Event} pEvent - mousedown or touchstart
+	 */_onSliderDragStart(pEvent){let tmpTarget=pEvent.target;if(!tmpTarget.classList.contains('retold-remote-vex-slider-handle')){return;}pEvent.preventDefault();pEvent.stopPropagation();// Determine which handle
+if(tmpTarget.id==='RetoldRemote-VEX-HandleStart'){this._draggingHandle='start';}else if(tmpTarget.id==='RetoldRemote-VEX-HandleEnd'){this._draggingHandle='end';}else{return;}tmpTarget.classList.add('dragging');let tmpSelf=this;// Create window-level move/end handlers
+let tmpBoundMove=pMoveEvent=>{tmpSelf._onSliderDragMove(pMoveEvent);};let tmpBoundEnd=pEndEvent=>{tmpSelf._onSliderDragEnd(pEndEvent);window.removeEventListener('mousemove',tmpBoundMove);window.removeEventListener('mouseup',tmpBoundEnd);window.removeEventListener('touchmove',tmpBoundMove);window.removeEventListener('touchend',tmpBoundEnd);};window.addEventListener('mousemove',tmpBoundMove);window.addEventListener('mouseup',tmpBoundEnd);window.addEventListener('touchmove',tmpBoundMove,{passive:false});window.addEventListener('touchend',tmpBoundEnd);}/**
+	 * Handle slider handle drag move.
+	 *
+	 * @param {Event} pEvent - mousemove or touchmove
+	 */_onSliderDragMove(pEvent){if(!this._draggingHandle){return;}pEvent.preventDefault();// Compute timestamp from the timeline bar position
+let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));let tmpTimestamp=tmpPercent*this._frameData.Duration;if(this._draggingHandle==='start'){this._selectionStartTime=tmpTimestamp;}else{this._selectionEndTime=tmpTimestamp;}// Update the handle position directly (avoid full re-render for performance)
+let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.style.left=(tmpPercent*100).toFixed(2)+'%';}this._renderSelectionOverlay();this._updateSelectionInfo();}/**
+	 * Handle slider handle drag end.
+	 *
+	 * @param {Event} pEvent - mouseup or touchend
+	 */_onSliderDragEnd(pEvent){if(!this._draggingHandle){return;}// Remove dragging class from handles
+let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.classList.remove('dragging');}this._draggingHandle=null;// If the selection is too small (< 0.5s), clear it
+let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
+	 * Generate frames evenly spaced across the current selection range.
+	 * Uses the frame count from the GenerateControls dropdown.
+	 */generateSelectionFrames(){if(this._selectionStartTime<0||this._selectionEndTime<0){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpCountEl=document.getElementById('RetoldRemote-VEX-RangeFrameCount');let tmpCount=tmpCountEl?parseInt(tmpCountEl.value,10):5;if(tmpCount<1){tmpCount=5;}let tmpData=this._frameData;if(!tmpData||!tmpData.CacheKey){return;}// Calculate evenly-spaced timestamps within the selection range
+let tmpTimestamps=[];if(tmpCount===1){tmpTimestamps.push(tmpStart+(tmpEnd-tmpStart)/2);}else{let tmpStep=(tmpEnd-tmpStart)/(tmpCount-1);for(let i=0;i<tmpCount;i++){tmpTimestamps.push(tmpStart+tmpStep*i);}}let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Launch all frame extractions (insert placeholder immediately, replace on success)
+for(let i=0;i<tmpTimestamps.length;i++){let tmpTimestamp=tmpTimestamps[i];let tmpPlaceholderId='retold-vex-gen-'+Date.now()+'-'+i;tmpSelf._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(tmpSelf._fullResFrames){tmpURL+='&width=1920&height=1080';}// Use a closure to capture the correct placeholder id and timestamp
+(function(fPlaceholderId,fTimestamp){fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
+tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
+let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
+tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(fTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});})(tmpPlaceholderId,tmpTimestamp);}}/**
+	 * Save the current selection range as a video clip to the last-used
+	 * collection.  Mirrors the keyboard shortcut (s) behaviour.
+	 * If no last-used collection exists, opens the collection picker.
+	 */saveSelectionToCollection(){if(this._selectionStartTime<0||this._selectionEndTime<0){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpCollMgr=this.pict.providers['RetoldRemote-CollectionManager'];if(!tmpCollMgr){return;}let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addVideoClipToCollection(tmpQuickGUID,tmpStart,tmpEnd);}else{// Store the segment data so the dropdown callback can use it
+// instead of falling back to addCurrentFileToCollection
+tmpCollMgr.setPendingClipContext({Type:'video-clip',Start:tmpStart,End:tmpEnd});let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}/**
 	 * Show the video explorer for a given video file.
 	 *
 	 * @param {string} pFilePath - Relative file path
-	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='video-explorer';this._currentPath=pFilePath;this._frameData=null;this._selectedFrameIndex=-1;this._customFrames=[];// Update the hash
-let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore/'+tmpFragId;// Show viewer container, hide gallery
+	 * @param {number} [pSelectionStart] - Optional selection start time (seconds)
+	 * @param {number} [pSelectionEnd] - Optional selection end time (seconds)
+	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='video-explorer';this._currentPath=pFilePath;this._frameData=null;this._selectedFrameIndex=-1;this._customFrames=[];this._selectionModeActive=false;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// Apply passed-in selection range, or reset
+// _selectionFromCaller prevents _loadSavedCustomFrames from
+// overwriting an explicit selection (e.g. when opening a saved clip)
+if(typeof pSelectionStart==='number'&&pSelectionStart>=0&&typeof pSelectionEnd==='number'&&pSelectionEnd>=0){this._selectionStartTime=pSelectionStart;this._selectionEndTime=pSelectionEnd;this._selectionFromCaller=true;}else{this._selectionStartTime=-1;this._selectionEndTime=-1;this._selectionFromCaller=false;}// Clean up any window-level event listeners from previous session
+this._cleanupWindowListeners();// Update the hash
+let tmpFragProvider=this._getProvider();let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;window.location.hash='#/explore/'+tmpFragId;// Show viewer container, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');// Build initial UI with loading state
 let tmpHTML='<div class="retold-remote-vex">';// Header
-tmpHTML+='<div class="retold-remote-vex-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-vex-title">Video Explorer &mdash; '+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar (populated after frames load)
+tmpHTML+='<div class="retold-remote-vex-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';tmpHTML+='<div class="retold-remote-vex-title">Video Explorer &mdash; '+this._getFmt().escapeHTML(tmpFileName)+'</div>';tmpHTML+='</div>';// Info bar (populated after frames load)
 tmpHTML+='<div class="retold-remote-vex-info" id="RetoldRemote-VEX-Info" style="display:none;"></div>';// Controls bar
-tmpHTML+='<div class="retold-remote-vex-controls" id="RetoldRemote-VEX-Controls" style="display:none;">';tmpHTML+='<label>Frames:</label>';tmpHTML+='<select id="RetoldRemote-VEX-FrameCount" onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFrameCountChange(this.value)">';tmpHTML+='<option value="10"'+(this._frameCount===10?' selected':'')+'>10</option>';tmpHTML+='<option value="20"'+(this._frameCount===20?' selected':'')+'>20</option>';tmpHTML+='<option value="40"'+(this._frameCount===40?' selected':'')+'>40</option>';tmpHTML+='<option value="60"'+(this._frameCount===60?' selected':'')+'>60</option>';tmpHTML+='<option value="100"'+(this._frameCount===100?' selected':'')+'>100</option>';tmpHTML+='</select>';tmpHTML+='<label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;">';tmpHTML+='<input type="checkbox" id="RetoldRemote-VEX-FullRes"'+(this._fullResFrames?' checked':'')+' onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFullResChange(this.checked)">';tmpHTML+='Full Res Frames</label>';tmpHTML+='<button class="retold-remote-vex-refresh-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].refresh()">Refresh</button>';tmpHTML+='</div>';// Body (loading initially)
+tmpHTML+='<div class="retold-remote-vex-controls" id="RetoldRemote-VEX-Controls" style="display:none;">';tmpHTML+='<label>Frames:</label>';tmpHTML+='<select id="RetoldRemote-VEX-FrameCount" onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFrameCountChange(this.value)">';tmpHTML+='<option value="10"'+(this._frameCount===10?' selected':'')+'>10</option>';tmpHTML+='<option value="20"'+(this._frameCount===20?' selected':'')+'>20</option>';tmpHTML+='<option value="40"'+(this._frameCount===40?' selected':'')+'>40</option>';tmpHTML+='<option value="60"'+(this._frameCount===60?' selected':'')+'>60</option>';tmpHTML+='<option value="100"'+(this._frameCount===100?' selected':'')+'>100</option>';tmpHTML+='</select>';tmpHTML+='<label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;">';tmpHTML+='<input type="checkbox" id="RetoldRemote-VEX-FullRes"'+(this._fullResFrames?' checked':'')+' onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFullResChange(this.checked)">';tmpHTML+='Full Res Frames</label>';tmpHTML+='<button class="retold-remote-vex-refresh-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].refresh()">Refresh</button>';tmpHTML+='<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 4px;"></span>';tmpHTML+='<button class="retold-remote-vex-select-btn" id="RetoldRemote-VEX-SelectBtn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].toggleSelectionMode()">Select Range</button>';tmpHTML+='<span class="retold-remote-vex-selection-info" id="RetoldRemote-VEX-SelectionInfo" style="display:none;"></span>';tmpHTML+='<button class="retold-remote-vex-clear-btn" id="RetoldRemote-VEX-ClearBtn" style="display:none;" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].clearSelection()">Clear</button>';tmpHTML+='<span id="RetoldRemote-VEX-GenerateControls" style="display:none;">';tmpHTML+='<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 2px;"></span>';tmpHTML+='<select class="retold-remote-vex-range-frame-select" id="RetoldRemote-VEX-RangeFrameCount">';tmpHTML+='<option value="3">3</option>';tmpHTML+='<option value="5" selected>5</option>';tmpHTML+='<option value="10">10</option>';tmpHTML+='<option value="20">20</option>';tmpHTML+='</select>';tmpHTML+='<button class="retold-remote-vex-generate-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].generateSelectionFrames()">Generate Frames</button>';tmpHTML+='<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 2px;"></span>';tmpHTML+='<button class="retold-remote-vex-save-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].saveSelectionToCollection()" title="Save segment to collection (s)">Save Segment</button>';tmpHTML+='</span>';tmpHTML+='</div>';// Body (loading initially)
 tmpHTML+='<div class="retold-remote-vex-body" id="RetoldRemote-VEX-Body">';tmpHTML+='<div class="retold-remote-vex-loading">';tmpHTML+='<div class="retold-remote-vex-loading-spinner"></div>';tmpHTML+='Extracting frames from video...';tmpHTML+='</div>';tmpHTML+='</div>';// Timeline bar (populated after frames load)
 tmpHTML+='<div class="retold-remote-vex-timeline" id="RetoldRemote-VEX-Timeline" style="display:none;"></div>';tmpHTML+='</div>';if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Update topbar
 let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}// Fetch frames
@@ -14419,16 +15440,30 @@ this._fetchFrames(pFilePath);}/**
 	 * Fetch video frames from the server.
 	 *
 	 * @param {string} pFilePath - Relative file path
-	 */_fetchFrames(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);let tmpURL='/api/media/video-frames?path='+tmpPathParam+'&count='+this._frameCount;if(this._fullResFrames){tmpURL+='&width=1920&height=1080';}fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success){tmpSelf._showError(pData?pData.Error:'Unknown error');return;}tmpSelf._frameData=pData;tmpSelf._renderFrames();}).catch(pError=>{tmpSelf._showError(pError.message);});}/**
+	 */_fetchFrames(pFilePath){let tmpSelf=this;let tmpPathParam=this._getPathParam(pFilePath);let tmpURL='/api/media/video-frames?path='+tmpPathParam+'&count='+this._frameCount;if(this._fullResFrames){tmpURL+='&width=1920&height=1080';}fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success){tmpSelf._showError(pData?pData.Error:'Unknown error');return;}tmpSelf._frameData=pData;tmpSelf._renderFrames();// Load any previously saved custom frames
+tmpSelf._loadSavedCustomFrames();}).catch(pError=>{tmpSelf._showError(pError.message);});}/**
 	 * Render the extracted frames into the grid.
 	 */_renderFrames(){let tmpData=this._frameData;if(!tmpData){return;}// Populate info bar
-let tmpInfoBar=document.getElementById('RetoldRemote-VEX-Info');if(tmpInfoBar){let tmpInfoHTML='';tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted)+'</span></span>';if(tmpData.VideoWidth&&tmpData.VideoHeight){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Resolution</span> <span class="retold-remote-vex-info-value">'+tmpData.VideoWidth+'&times;'+tmpData.VideoHeight+'</span></span>';}if(tmpData.Codec){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.Codec)+'</span></span>';}if(tmpData.FileSize){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">'+this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpData.FileSize)+'</span></span>';}tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Frames</span> <span class="retold-remote-vex-info-value">'+tmpData.FrameCount+'</span></span>';tmpInfoBar.innerHTML=tmpInfoHTML;tmpInfoBar.style.display='';}// Show controls
+let tmpInfoBar=document.getElementById('RetoldRemote-VEX-Info');if(tmpInfoBar){let tmpInfoHTML='';tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">'+this._getFmt().escapeHTML(tmpData.DurationFormatted)+'</span></span>';if(tmpData.VideoWidth&&tmpData.VideoHeight){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Resolution</span> <span class="retold-remote-vex-info-value">'+tmpData.VideoWidth+'&times;'+tmpData.VideoHeight+'</span></span>';}if(tmpData.Codec){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">'+this._getFmt().escapeHTML(tmpData.Codec)+'</span></span>';}if(tmpData.FileSize){tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">'+this._getFmt().formatFileSize(tmpData.FileSize)+'</span></span>';}tmpInfoHTML+='<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Frames</span> <span class="retold-remote-vex-info-value">'+tmpData.FrameCount+'</span></span>';tmpInfoBar.innerHTML=tmpInfoHTML;tmpInfoBar.style.display='';}// Show controls
 let tmpControlsBar=document.getElementById('RetoldRemote-VEX-Controls');if(tmpControlsBar){tmpControlsBar.style.display='';}// Render the frame grid
-let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){let tmpGridHTML='<div class="retold-remote-vex-grid">';for(let i=0;i<tmpData.Frames.length;i++){let tmpFrame=tmpData.Frames[i];let tmpFrameURL='/api/media/video-frame/'+tmpData.CacheKey+'/'+tmpFrame.Filename;tmpGridHTML+='<div class="retold-remote-vex-frame" id="retold-vex-frame-'+i+'" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame('+i+')" ondblclick="pict.views[\'RetoldRemote-VideoExplorer\'].openFrameFullsize('+i+')">';tmpGridHTML+='<img src="'+tmpFrameURL+'" alt="Frame at '+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted)+'" loading="lazy">';tmpGridHTML+='<div class="retold-remote-vex-frame-info">';tmpGridHTML+='<span class="retold-remote-vex-frame-timestamp">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted)+'</span>';tmpGridHTML+='<span class="retold-remote-vex-frame-index">#'+(tmpFrame.Index+1)+'</span>';tmpGridHTML+='</div>';tmpGridHTML+='</div>';}tmpGridHTML+='</div>';tmpBody.innerHTML=tmpGridHTML;}// Render the timeline
+let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){let tmpGridHTML='<div class="retold-remote-vex-grid">';for(let i=0;i<tmpData.Frames.length;i++){let tmpFrame=tmpData.Frames[i];let tmpFrameURL=this._buildFrameURL(tmpData.CacheKey,tmpFrame.Filename);tmpGridHTML+='<div class="retold-remote-vex-frame" id="retold-vex-frame-'+i+'" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame('+i+')" ondblclick="pict.views[\'RetoldRemote-VideoExplorer\'].openFrameFullsize('+i+')">';tmpGridHTML+='<img src="'+tmpFrameURL+'" alt="Frame at '+this._getFmt().escapeHTML(tmpFrame.TimestampFormatted)+'" loading="lazy">';tmpGridHTML+='<div class="retold-remote-vex-frame-info">';tmpGridHTML+='<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().escapeHTML(tmpFrame.TimestampFormatted)+'</span>';tmpGridHTML+='<span class="retold-remote-vex-frame-index">#'+(tmpFrame.Index+1)+'</span>';tmpGridHTML+='</div>';tmpGridHTML+='</div>';}tmpGridHTML+='</div>';tmpBody.innerHTML=tmpGridHTML;}// Render the timeline
 this._renderTimeline();}/**
 	 * Render the timeline bar at the bottom.
-	 */_renderTimeline(){let tmpData=this._frameData;if(!tmpData||!tmpData.Duration){return;}let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(!tmpTimeline){return;}let tmpHTML='';tmpHTML+='<span class="retold-remote-vex-timeline-label">0:00</span>';tmpHTML+='<div class="retold-remote-vex-timeline-bar" id="RetoldRemote-VEX-TimelineBar" '+'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].onTimelineClick(event)">';for(let i=0;i<tmpData.Frames.length;i++){let tmpFrame=tmpData.Frames[i];let tmpPercent=tmpFrame.Timestamp/tmpData.Duration*100;let tmpSelectedClass=i===this._selectedFrameIndex?' selected':'';tmpHTML+='<div class="retold-remote-vex-timeline-marker'+tmpSelectedClass+'" '+'style="left:'+tmpPercent.toFixed(2)+'%;" '+'title="'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted)+'" '+'onclick="event.stopPropagation(); pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame('+i+')">'+'</div>';}// Also render markers for custom frames
-if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];let tmpPercent=tmpCustom.Timestamp/tmpData.Duration*100;tmpHTML+='<div class="retold-remote-vex-timeline-marker custom" '+'style="left:'+tmpPercent.toFixed(2)+'%;" '+'title="'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpCustom.TimestampFormatted)+'">'+'</div>';}}tmpHTML+='</div>';tmpHTML+='<span class="retold-remote-vex-timeline-label">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted)+'</span>';tmpTimeline.innerHTML=tmpHTML;tmpTimeline.style.display='';}/**
+	 */_renderTimeline(){let tmpData=this._frameData;if(!tmpData||!tmpData.Duration){return;}let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(!tmpTimeline){return;}let tmpHTML='';tmpHTML+='<span class="retold-remote-vex-timeline-label">0:00</span>';tmpHTML+='<div class="retold-remote-vex-timeline-column">';tmpHTML+='<div class="retold-remote-vex-slider-track" id="RetoldRemote-VEX-SliderTrack"></div>';tmpHTML+='<div class="retold-remote-vex-timeline-bar" id="RetoldRemote-VEX-TimelineBar">';for(let i=0;i<tmpData.Frames.length;i++){let tmpFrame=tmpData.Frames[i];let tmpPercent=tmpFrame.Timestamp/tmpData.Duration*100;let tmpSelectedClass=i===this._selectedFrameIndex?' selected':'';tmpHTML+='<div class="retold-remote-vex-timeline-marker'+tmpSelectedClass+'" '+'style="left:'+tmpPercent.toFixed(2)+'%;" '+'data-frame-index="'+i+'" '+'title="'+this._getFmt().escapeHTML(tmpFrame.TimestampFormatted)+'">'+'</div>';}// Also render markers for custom frames
+if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];let tmpPercent=tmpCustom.Timestamp/tmpData.Duration*100;tmpHTML+='<div class="retold-remote-vex-timeline-marker custom" '+'style="left:'+tmpPercent.toFixed(2)+'%;" '+'title="'+this._getFmt().escapeHTML(tmpCustom.TimestampFormatted)+'">'+'</div>';}}tmpHTML+='</div>';// close timeline-bar
+tmpHTML+='</div>';// close timeline-column
+tmpHTML+='<span class="retold-remote-vex-timeline-label">'+this._getFmt().escapeHTML(tmpData.DurationFormatted)+'</span>';tmpTimeline.innerHTML=tmpHTML;tmpTimeline.style.display='';// Bind event listeners (proper listeners instead of inline onclick)
+let tmpSelf=this;let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(tmpBar){// Click handler: extract frame (only when NOT in selection mode)
+tmpBar.addEventListener('click',pEvent=>{// If clicking on a marker, select that frame
+let tmpMarker=pEvent.target.closest('.retold-remote-vex-timeline-marker');if(tmpMarker&&tmpMarker.dataset.frameIndex!==undefined){pEvent.stopPropagation();tmpSelf.selectFrame(parseInt(tmpMarker.dataset.frameIndex,10));return;}// In selection mode, drag handles it — don't extract a frame
+if(tmpSelf._selectionModeActive){return;}tmpSelf.onTimelineClick(pEvent);});// Selection drag handlers (mouse)
+tmpBar.addEventListener('mousedown',pEvent=>{if(pEvent.button!==0){return;}tmpSelf._onSelectionDragStart(pEvent);});tmpBar.addEventListener('mousemove',pEvent=>{tmpSelf._onSelectionDragMove(pEvent);});// Selection drag handlers (touch)
+tmpBar.addEventListener('touchstart',pEvent=>{tmpSelf._onSelectionDragStart(pEvent);},{passive:false});tmpBar.addEventListener('touchmove',pEvent=>{tmpSelf._onSelectionDragMove(pEvent);},{passive:false});// Clean up previous window listeners before attaching new ones
+tmpSelf._cleanupWindowListeners();// Window-level end handlers (so drag works even if cursor leaves the bar)
+tmpSelf._boundDragEnd=pEvent=>{tmpSelf._onSelectionDragEnd(pEvent);};window.addEventListener('mouseup',tmpSelf._boundDragEnd);window.addEventListener('touchend',tmpSelf._boundDragEnd);// Apply selection mode cursor if active
+if(tmpSelf._selectionModeActive){tmpBar.classList.add('selecting');}}// Render any existing selection overlay and slider handles
+this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();// Bind slider handle drag events
+this._bindSliderHandleDrag();}/**
 	 * Select a frame by index (highlight it in grid and timeline).
 	 *
 	 * @param {number} pIndex - Frame index
@@ -14443,22 +15478,49 @@ this._updateTimelineSelection();}/**
 	 *
 	 * @param {MouseEvent} pEvent - The click event
 	 */onTimelineClick(pEvent){let tmpData=this._frameData;if(!tmpData||!tmpData.Duration||!tmpData.CacheKey){return;}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Calculate timestamp from click position
-let tmpRect=tmpBar.getBoundingClientRect();let tmpClickX=pEvent.clientX-tmpRect.left;let tmpPercent=Math.max(0,Math.min(1,tmpClickX/tmpRect.width));let tmpTimestamp=tmpPercent*tmpData.Duration;let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);// Build the URL — pass the same resolution settings as the initial extraction
+let tmpRect=tmpBar.getBoundingClientRect();let tmpClickX=pEvent.clientX-tmpRect.left;let tmpPercent=Math.max(0,Math.min(1,tmpClickX/tmpRect.width));let tmpTimestamp=tmpPercent*tmpData.Duration;let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Build the URL — pass the same resolution settings as the initial extraction
 let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(this._fullResFrames){tmpURL+='&width=1920&height=1080';}// Insert a placeholder into the grid immediately
 let tmpPlaceholderId='retold-vex-custom-'+Date.now();this._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
 tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
-let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){let tmpFrameURL='/api/media/video-frame/'+tmpData.CacheKey+'/'+pResult.Filename;let tmpEscFilename=tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
-tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});}/**
+let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
+tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(tmpTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});}/**
+	 * Load previously saved custom frames from the server and restore
+	 * them into the grid.  Called after batch frames are rendered.
+	 */_loadSavedCustomFrames(){let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);let tmpURL='/api/media/video-explorer-state?path='+tmpPathParam;fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success||!pData.State){return;}// Restore selection state if present — but only when the
+// caller did not already provide an explicit selection
+// (e.g. opening a saved clip from a collection)
+if(tmpSelf._selectionFromCaller){// Caller supplied selection — render it but do not overwrite
+tmpSelf._selectionFromCaller=false;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}else if(typeof pData.State.SelectionStartTime==='number'&&pData.State.SelectionStartTime>=0&&typeof pData.State.SelectionEndTime==='number'&&pData.State.SelectionEndTime>=0){tmpSelf._selectionStartTime=pData.State.SelectionStartTime;tmpSelf._selectionEndTime=pData.State.SelectionEndTime;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}// Restore custom frames
+if(!Array.isArray(pData.State.CustomFrames)||pData.State.CustomFrames.length===0){return;}let tmpSavedFrames=pData.State.CustomFrames;// Restore each saved custom frame into the grid
+for(let i=0;i<tmpSavedFrames.length;i++){let tmpFrame=tmpSavedFrames[i];// Use the frame's own CacheKey for the image URL
+let tmpCacheKey=tmpFrame.CacheKey||(tmpSelf._frameData?tmpSelf._frameData.CacheKey:'');let tmpFrameURL=tmpSelf._buildFrameURL(tmpCacheKey,tmpFrame.Filename);// Add to in-memory array
+tmpSelf._customFrames.push(tmpFrame);// Insert card into grid at correct position
+tmpSelf._insertRestoredCustomFrame(tmpFrame,tmpFrameURL);}// Re-render timeline to show all custom markers
+tmpSelf._renderTimeline();}).catch(pError=>{// Silent failure — explorer still works, just without restored custom frames
+});}/**
+	 * Save the current selection state to the server (fire-and-forget).
+	 * Called whenever the selection changes.
+	 */_saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}/**
+	 * Insert a DOM element into the frame grid at the correct chronological
+	 * position based on timestamp.  Shared helper for placeholder and
+	 * restored frame insertion.
+	 *
+	 * @param {HTMLElement} pElement - The element to insert
+	 * @param {number} pTimestamp - Timestamp in seconds for sort position
+	 */_insertFrameAtPosition(pElement,pTimestamp){let tmpGrid=document.querySelector('.retold-remote-vex-grid');if(!tmpGrid){return;}let tmpInsertBefore=null;let tmpChildren=tmpGrid.children;for(let i=0;i<tmpChildren.length;i++){let tmpChild=tmpChildren[i];let tmpTsEl=tmpChild.querySelector('.retold-remote-vex-frame-timestamp');if(tmpTsEl){let tmpChildTimestamp=this._parseTimestamp(tmpTsEl.textContent);if(tmpChildTimestamp>pTimestamp){tmpInsertBefore=tmpChild;break;}}}if(tmpInsertBefore){tmpGrid.insertBefore(pElement,tmpInsertBefore);}else{tmpGrid.appendChild(pElement);}}/**
+	 * Insert a fully-rendered custom frame card into the grid at its
+	 * correct chronological position.  Used when restoring saved state
+	 * (the image already exists on disk, so no loading placeholder needed).
+	 *
+	 * @param {Object} pFrame    - Saved custom frame object { Timestamp, TimestampFormatted, Filename, CacheKey }
+	 * @param {string} pFrameURL - Image URL for the frame
+	 */_insertRestoredCustomFrame(pFrame,pFrameURL){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';let tmpEscFilename=this._getFmt().escapeHTML(pFrame.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=this._getFmt().escapeHTML(pFrame.TimestampFormatted).replace(/'/g,"\\'");tmpEl.style.cursor='pointer';tmpEl.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpEl.innerHTML='<img src="'+pFrameURL+'" alt="Frame at '+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pFrame.Timestamp);}/**
 	 * Insert a loading placeholder frame card into the grid at the correct
 	 * chronological position based on timestamp.
 	 *
 	 * @param {number} pTimestamp    - Timestamp in seconds
 	 * @param {string} pPlaceholderId - DOM id for the placeholder element
-	 */_insertFramePlaceholder(pTimestamp,pPlaceholderId){let tmpGrid=document.querySelector('.retold-remote-vex-grid');if(!tmpGrid){return;}let tmpData=this._frameData;// Build the placeholder element
-let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';tmpEl.id=pPlaceholderId;tmpEl.innerHTML='<div class="retold-remote-vex-frame-loading">Extracting...</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(pTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';// Find the correct insertion position by comparing timestamps
-// The grid children correspond to tmpData.Frames (original batch) plus any previously inserted custom frames
-let tmpInsertBefore=null;let tmpChildren=tmpGrid.children;for(let i=0;i<tmpChildren.length;i++){let tmpChild=tmpChildren[i];// Get the timestamp from the info bar text
-let tmpTsEl=tmpChild.querySelector('.retold-remote-vex-frame-timestamp');if(tmpTsEl){let tmpChildTimestamp=this._parseTimestamp(tmpTsEl.textContent);if(tmpChildTimestamp>pTimestamp){tmpInsertBefore=tmpChild;break;}}}if(tmpInsertBefore){tmpGrid.insertBefore(tmpEl,tmpInsertBefore);}else{tmpGrid.appendChild(tmpEl);}// Scroll the new element into view
+	 */_insertFramePlaceholder(pTimestamp,pPlaceholderId){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';tmpEl.id=pPlaceholderId;tmpEl.innerHTML='<div class="retold-remote-vex-frame-loading">Extracting...</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().formatTimestamp(pTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pTimestamp);// Scroll the new element into view
 tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});}/**
 	 * Parse a formatted timestamp string back to seconds.
 	 * Handles "M:SS", "MM:SS", and "H:MM:SS" formats.
@@ -14466,20 +15528,25 @@ tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});}/**
 	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
 	 * @returns {number} Seconds
 	 */_parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}/**
-	 * Open a frame at full size in an inline preview overlay.
+	 * Open any frame in the preview overlay.
+	 * Unified entry point for both regular and custom frames.
+	 *
+	 * @param {Object} pFrameInfo - Frame descriptor { Type: 'regular'|'custom', Index, Filename, TimestampFormatted, CacheKey }
+	 */openFrame(pFrameInfo){if(!this._frameData||!pFrameInfo){return;}let tmpCacheKey=pFrameInfo.CacheKey||this._frameData.CacheKey;let tmpURL=this._buildFrameURL(tmpCacheKey,pFrameInfo.Filename);let tmpLabel=pFrameInfo.TimestampFormatted+'  \u00b7  '+(pFrameInfo.Type==='regular'?'#'+((pFrameInfo.Index||0)+1):'custom');this._showFramePreview(tmpURL,tmpLabel,pFrameInfo.Type,pFrameInfo.Index);}/**
+	 * Open a regular frame at full size (convenience wrapper for grid onclick).
 	 *
 	 * @param {number} pIndex - Frame index in the regular Frames array
-	 */openFrameFullsize(pIndex){if(!this._frameData||!this._frameData.Frames[pIndex]){return;}let tmpFrame=this._frameData.Frames[pIndex];let tmpURL='/api/media/video-frame/'+this._frameData.CacheKey+'/'+tmpFrame.Filename;let tmpLabel=tmpFrame.TimestampFormatted+'  \u00b7  #'+(tmpFrame.Index+1);this._showFramePreview(tmpURL,tmpLabel,'regular',pIndex);}/**
-	 * Open a custom frame (from timeline click) in the preview overlay.
+	 */openFrameFullsize(pIndex){if(!this._frameData||!this._frameData.Frames[pIndex]){return;}let tmpFrame=this._frameData.Frames[pIndex];this.openFrame({Type:'regular',Index:pIndex,Filename:tmpFrame.Filename,TimestampFormatted:tmpFrame.TimestampFormatted,CacheKey:this._frameData.CacheKey});}/**
+	 * Open a custom frame in the preview overlay (convenience wrapper).
 	 *
 	 * @param {string} pFilename - Custom frame filename
 	 * @param {string} pTimestamp - Formatted timestamp label
-	 */openCustomFrameFullsize(pFilename,pTimestamp){if(!this._frameData){return;}let tmpURL='/api/media/video-frame/'+this._frameData.CacheKey+'/'+pFilename;let tmpLabel=pTimestamp+'  \u00b7  custom';// Find the custom frame index for navigation
-let tmpCustomIndex=-1;for(let i=0;i<this._customFrames.length;i++){if(this._customFrames[i].Filename===pFilename){tmpCustomIndex=i;break;}}this._showFramePreview(tmpURL,tmpLabel,'custom',tmpCustomIndex);}/**
+	 */openCustomFrameFullsize(pFilename,pTimestamp){if(!this._frameData){return;}// Find the custom frame by filename
+let tmpCustomIndex=-1;let tmpCacheKey=this._frameData.CacheKey;for(let i=0;i<this._customFrames.length;i++){if(this._customFrames[i].Filename===pFilename){tmpCustomIndex=i;if(this._customFrames[i].CacheKey){tmpCacheKey=this._customFrames[i].CacheKey;}break;}}this.openFrame({Type:'custom',Index:tmpCustomIndex,Filename:pFilename,TimestampFormatted:pTimestamp,CacheKey:tmpCacheKey});}/**
 	 * Build a sorted list of all frames (regular + custom) for navigation.
 	 */_buildAllFramesList(){let tmpAllFrames=[];// Add regular frames
 if(this._frameData&&this._frameData.Frames){for(let i=0;i<this._frameData.Frames.length;i++){let tmpFrame=this._frameData.Frames[i];tmpAllFrames.push({Type:'regular',Index:i,Timestamp:tmpFrame.Timestamp,TimestampFormatted:tmpFrame.TimestampFormatted,Filename:tmpFrame.Filename,Label:tmpFrame.TimestampFormatted+'  \u00b7  #'+(tmpFrame.Index+1)});}}// Add custom frames
-if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];tmpAllFrames.push({Type:'custom',Index:i,Timestamp:tmpCustom.Timestamp,TimestampFormatted:tmpCustom.TimestampFormatted,Filename:tmpCustom.Filename,Label:tmpCustom.TimestampFormatted+'  \u00b7  custom'});}}// Sort by timestamp
+if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];tmpAllFrames.push({Type:'custom',Index:i,Timestamp:tmpCustom.Timestamp,TimestampFormatted:tmpCustom.TimestampFormatted,Filename:tmpCustom.Filename,CacheKey:tmpCustom.CacheKey||null,Label:tmpCustom.TimestampFormatted+'  \u00b7  custom'});}}// Sort by timestamp
 tmpAllFrames.sort((a,b)=>a.Timestamp-b.Timestamp);return tmpAllFrames;}/**
 	 * Show the frame preview overlay.
 	 *
@@ -14491,7 +15558,7 @@ tmpAllFrames.sort((a,b)=>a.Timestamp-b.Timestamp);return tmpAllFrames;}/**
 this._previewType=pType;this._previewIndex=pIndex;// Build all frames for prev/next navigation
 let tmpAllFrames=this._buildAllFramesList();this._previewAllFrames=tmpAllFrames;// Find current position in the unified list
 this._previewPosition=0;for(let i=0;i<tmpAllFrames.length;i++){if(tmpAllFrames[i].Type===pType&&tmpAllFrames[i].Index===pIndex){this._previewPosition=i;break;}}// Build the overlay
-let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vex-preview-backdrop';tmpBackdrop.id='RetoldRemote-VEX-Preview';tmpBackdrop.onclick=e=>{if(e.target===tmpBackdrop){this.closeFramePreview();}};let tmpHTML='';tmpHTML+='<div class="retold-remote-vex-preview-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel)+'</div>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';tmpHTML+='<img src="'+pURL+'" alt="'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel)+'">';tmpHTML+='</div>';tmpBackdrop.innerHTML=tmpHTML;document.body.appendChild(tmpBackdrop);// Bind keyboard handler (stopImmediatePropagation prevents the global handler from also firing)
+let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vex-preview-backdrop';tmpBackdrop.id='RetoldRemote-VEX-Preview';tmpBackdrop.onclick=e=>{if(e.target===tmpBackdrop){this.closeFramePreview();}};let tmpHTML='';tmpHTML+='<div class="retold-remote-vex-preview-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">'+this._getFmt().escapeHTML(pLabel)+'</div>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';tmpHTML+='<img src="'+pURL+'" alt="'+this._getFmt().escapeHTML(pLabel)+'">';tmpHTML+='</div>';tmpBackdrop.innerHTML=tmpHTML;document.body.appendChild(tmpBackdrop);// Bind keyboard handler (stopImmediatePropagation prevents the global handler from also firing)
 this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stopImmediatePropagation();this.closeFramePreview();break;case'ArrowLeft':case'k':e.preventDefault();e.stopImmediatePropagation();this.previewPrevFrame();break;case'ArrowRight':case'j':e.preventDefault();e.stopImmediatePropagation();this.previewNextFrame();break;}};document.addEventListener('keydown',this._previewKeyHandler);}/**
 	 * Close the frame preview overlay.
 	 */closeFramePreview(){let tmpBackdrop=document.getElementById('RetoldRemote-VEX-Preview');if(tmpBackdrop){tmpBackdrop.remove();}if(this._previewKeyHandler){document.removeEventListener('keydown',this._previewKeyHandler);this._previewKeyHandler=null;}}/**
@@ -14500,7 +15567,8 @@ this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stop
 	 * Navigate to the next frame in the preview.
 	 */previewNextFrame(){if(!this._previewAllFrames||this._previewPosition>=this._previewAllFrames.length-1){return;}this._previewPosition++;this._updatePreviewFrame();}/**
 	 * Update the preview to show the frame at the current position.
-	 */_updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}let tmpURL='/api/media/video-frame/'+this._frameData.CacheKey+'/'+tmpFrame.Filename;let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
+	 */_updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
+let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
 this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}/**
 	 * Handle frame count dropdown change.
 	 *
@@ -14515,9 +15583,9 @@ this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Ty
 let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-loading">'+'<div class="retold-remote-vex-loading-spinner"></div>'+'Extracting frames from video...'+'</div>';}// Hide timeline during loading
 let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimeline){tmpTimeline.style.display='none';}this._selectedFrameIndex=-1;this._customFrames=[];this._fetchFrames(this._currentPath);}/**
 	 * Navigate back to the video viewer.
-	 */goBack(){if(this._currentPath){let tmpApp=this.pict.views['RetoldRemote-MediaViewer'];if(tmpApp){tmpApp.showMedia(this._currentPath,'video');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}/**
+	 */goBack(){this._cleanupWindowListeners();if(this._currentPath){let tmpApp=this.pict.views['RetoldRemote-MediaViewer'];if(tmpApp){tmpApp.showMedia(this._currentPath,'video');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}/**
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"pict-view":76}]},{},[113])(113);});
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"pict-view":76}]},{},[113])(113);});
 //# sourceMappingURL=retold-remote.js.map

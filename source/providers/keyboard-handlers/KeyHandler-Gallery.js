@@ -123,21 +123,39 @@ function handleGalleryKey(pGalleryNav, pEvent)
 				if (tmpCollMgr)
 				{
 					let tmpCursorItem = tmpItems[tmpIndex];
-					if (tmpCursorItem && tmpRemote.LastUsedCollectionGUID)
+					let tmpQuickGUID = tmpCollMgr.getQuickAddTargetGUID();
+					if (tmpCursorItem && tmpQuickGUID)
 					{
-						// Quick-add the highlighted gallery item to the last-used collection
-						let tmpAddItem =
+						if (tmpCursorItem.Type === 'folder' || tmpCursorItem.Type === 'archive')
 						{
-							Type: (tmpCursorItem.Type === 'folder' || tmpCursorItem.Type === 'archive') ? 'folder' : 'file',
-							Path: tmpCursorItem.Path || '',
-							Hash: tmpCursorItem.Hash || '',
-							Label: ''
-						};
-						tmpCollMgr.addItemsToCollection(tmpRemote.LastUsedCollectionGUID, [tmpAddItem]);
+							// For folders, prompt user for folder reference vs folder contents
+							tmpCollMgr.showFolderChoicePrompt((pChoice) =>
+							{
+								let tmpAddItem =
+								{
+									Type: (pChoice === 'contents') ? 'folder-contents' : 'folder',
+									Path: tmpCursorItem.Path || '',
+									Label: ''
+								};
+								tmpCollMgr.addItemsToCollection(tmpQuickGUID, [tmpAddItem]);
+							});
+						}
+						else
+						{
+							// Quick-add the highlighted file item to the active collection
+							let tmpAddItem =
+							{
+								Type: 'file',
+								Path: tmpCursorItem.Path || '',
+								Hash: tmpCursorItem.Hash || '',
+								Label: ''
+							};
+							tmpCollMgr.addItemsToCollection(tmpQuickGUID, [tmpAddItem]);
+						}
 					}
 					else
 					{
-						// No last-used collection or no item — open the topbar dropdown
+						// No active or last-used collection, or no item — open the topbar dropdown
 						let tmpTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
 						if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
 						{
@@ -191,6 +209,17 @@ function handleGalleryKey(pGalleryNav, pEvent)
 				if (tmpFavCollManager)
 				{
 					tmpFavCollManager.toggleFavorite();
+				}
+			}
+			break;
+
+		case 'i':
+			pEvent.preventDefault();
+			{
+				let tmpLayout = pGalleryNav.pict.views['ContentEditor-Layout'];
+				if (tmpLayout)
+				{
+					tmpLayout.switchSidebarTab('info');
 				}
 			}
 			break;

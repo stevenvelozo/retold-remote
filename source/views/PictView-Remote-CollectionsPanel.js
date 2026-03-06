@@ -1024,7 +1024,29 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 			let tmpExt = tmpPath.replace(/^.*\./, '').toLowerCase();
 			let tmpMediaType = this.pict.PictApplication._getMediaType(tmpExt);
 
-			if (tmpMediaType === 'image' && tmpItem.Type === 'file')
+			if (tmpItem.Type === 'video-frame' && tmpItem.FrameCacheKey && tmpItem.FrameFilename)
+			{
+				// Show the actual video frame thumbnail
+				let tmpImg = document.createElement('img');
+				tmpImg.src = '/api/media/video-frame/' + encodeURIComponent(tmpItem.FrameCacheKey) + '/' + encodeURIComponent(tmpItem.FrameFilename);
+				tmpImg.alt = '';
+				tmpImg.loading = 'lazy';
+				tmpIconDiv.appendChild(tmpImg);
+			}
+			else if (tmpItem.Type === 'image-crop' && tmpItem.CropRegion)
+			{
+				// Show the source image thumbnail for crop items
+				let tmpImg = document.createElement('img');
+				let tmpMediaProvider = this.pict.providers['RetoldRemote-Provider'];
+				if (tmpMediaProvider)
+				{
+					tmpImg.src = tmpMediaProvider.getThumbnailURL(tmpPath, 48, 48);
+				}
+				tmpImg.alt = '';
+				tmpImg.loading = 'lazy';
+				tmpIconDiv.appendChild(tmpImg);
+			}
+			else if (tmpMediaType === 'image' && tmpItem.Type === 'file')
 			{
 				let tmpImg = document.createElement('img');
 				let tmpMediaProvider = this.pict.providers['RetoldRemote-Provider'];
@@ -1063,21 +1085,21 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 				tmpManager.removeItemFromCollection(pCollection.GUID, tmpItem.ID);
 			};
 
-			// Click to navigate — set up collection browsing context
+			// Click to navigate — use the centralized collection-item router
 			let tmpItemIndex = i;
 			tmpRow.onclick = () =>
 			{
-				if (tmpItem.Type === 'file' || tmpItem.Type === 'subfile' || tmpItem.Type === 'image-crop' ||
-					tmpItem.Type === 'video-clip' || tmpItem.Type === 'video-frame')
-				{
-					// Enter collection browsing mode so next/prev navigate through collection items
-					tmpRemote.BrowsingCollection = true;
-					tmpRemote.BrowsingCollectionIndex = tmpItemIndex;
-					tmpSelf.pict.PictApplication.navigateToFile(tmpItem.Path);
-				}
-				else if (tmpItem.Type === 'folder' || tmpItem.Type === 'folder-contents')
+				if (tmpItem.Type === 'folder' || tmpItem.Type === 'folder-contents')
 				{
 					tmpSelf.pict.PictApplication.loadFileList(tmpItem.Path);
+				}
+				else
+				{
+					let tmpNav = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
+					if (tmpNav)
+					{
+						tmpNav._navigateToCollectionItem(tmpItem, tmpItemIndex);
+					}
 				}
 			};
 
@@ -1458,6 +1480,8 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 				return '\uD83D\uDDC4';
 			case 'image-crop':
 				return '\u2702';
+			case 'audio-clip':
+				return '\uD83C\uDFB5';
 			case 'video-clip':
 			case 'video-frame':
 				return '\uD83C\uDFAC';

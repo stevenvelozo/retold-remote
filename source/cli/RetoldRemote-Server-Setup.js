@@ -42,10 +42,12 @@ const libRetoldRemoteArchiveService = require('../server/RetoldRemote-ArchiveSer
 const libRetoldRemoteVideoFrameService = require('../server/RetoldRemote-VideoFrameService.js');
 const libRetoldRemoteAudioWaveformService = require('../server/RetoldRemote-AudioWaveformService.js');
 const libRetoldRemoteEbookService = require('../server/RetoldRemote-EbookService.js');
+const libRetoldRemoteEpubMetadataService = require('../server/RetoldRemote-EpubMetadataService.js');
 const libRetoldRemoteCollectionService = require('../server/RetoldRemote-CollectionService.js');
 const libRetoldRemoteMetadataCache = require('../server/RetoldRemote-MetadataCache.js');
 const libRetoldRemoteFileOperationService = require('../server/RetoldRemote-FileOperationService.js');
 const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortService.js');
+const libRetoldRemoteImageService = require('../server/RetoldRemote-ImageService.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -105,7 +107,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	// Set up the path registry (for hashed filenames)
 	let tmpPathRegistry = new libRetoldRemotePathRegistry(tmpFable,
 	{
-		Enabled: tmpHashedFilenames
+		Enabled: tmpHashedFilenames,
+		ContentPath: tmpContentPath
 	});
 
 	if (tmpHashedFilenames)
@@ -154,6 +157,18 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 				ContentPath: tmpContentPath
 			});
 
+			// Set up the EPUB metadata extraction service
+			let tmpEpubMetadataService = new libRetoldRemoteEpubMetadataService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
+			// Set up the large-image preview and DZI tile service
+			let tmpImageService = new libRetoldRemoteImageService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
 			// Set up the metadata cache service
 			let tmpMetadataCache = new libRetoldRemoteMetadataCache(tmpFable,
 			{
@@ -195,6 +210,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Hash resolution middleware: if hashed filenames is enabled,
 			// intercept ?path= query params and resolve hashes to paths.
+			// Uses three-tier lookup (memory → Bibliograph → directory walk).
 			if (tmpHashedFilenames)
 			{
 				let libUrlMiddleware = require('url');
@@ -205,10 +221,10 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						let tmpPathParam = tmpParsedUrl.query && tmpParsedUrl.query.path;
 						if (tmpPathParam && /^[a-f0-9]{10}$/.test(tmpPathParam))
 						{
+							// Try synchronous in-memory first for speed
 							let tmpResolved = tmpPathRegistry.resolve(tmpPathParam);
 							if (tmpResolved !== null)
 							{
-								// Replace the hash with the resolved path in the query
 								tmpParsedUrl.query.path = tmpResolved;
 								delete tmpParsedUrl.search;
 								pRequest.url = libUrlMiddleware.format(tmpParsedUrl);
@@ -216,7 +232,26 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								{
 									pRequest.query.path = tmpResolved;
 								}
+								return fNext();
 							}
+
+							// Fall back to async three-tier resolve
+							tmpPathRegistry.resolveAsync(tmpPathParam,
+								(pError, pPath) =>
+								{
+									if (!pError && pPath)
+									{
+										tmpParsedUrl.query.path = pPath;
+										delete tmpParsedUrl.search;
+										pRequest.url = libUrlMiddleware.format(tmpParsedUrl);
+										if (pRequest.query)
+										{
+											pRequest.query.path = pPath;
+										}
+									}
+									return fNext();
+								});
+							return;
 						}
 						return fNext();
 					});
@@ -246,6 +281,33 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						}
 					});
 					return fNext();
+				});
+
+			// --- GET /api/resolve-hash/:hash ---
+			// Resolve a 10-char hex hash back to its relative path.
+			// Uses three-tier lookup: in-memory → Bibliograph → directory walk.
+			tmpServiceServer.get('/api/resolve-hash/:hash',
+				(pRequest, pResponse, fNext) =>
+				{
+					let tmpHash = pRequest.params.hash;
+					if (!tmpHash || !/^[a-f0-9]{10}$/.test(tmpHash))
+					{
+						pResponse.send(404, { Success: false, Error: 'Invalid hash.' });
+						return fNext();
+					}
+
+					tmpPathRegistry.resolveAsync(tmpHash,
+						(pError, pPath) =>
+						{
+							if (pError || !pPath)
+							{
+								pResponse.send(404, { Success: false, Error: 'Hash not found.' });
+								return fNext();
+							}
+
+							pResponse.send({ Success: true, Hash: tmpHash, Path: pPath });
+							return fNext();
+						});
 				});
 
 			// Response annotation middleware: when hashed filenames is enabled,
@@ -365,6 +427,24 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Connect AI sort service API routes
 			tmpAISortService.connectRoutes(tmpServiceServer);
 
+			// Initialize Bibliograph sources for path registry, explorer state and EPUB metadata
+			tmpPathRegistry.initialize(() =>
+			{
+				tmpFable.log.info('Path registry Bibliograph source initialized.');
+			});
+			tmpVideoFrameService.initializeState(() =>
+			{
+				tmpFable.log.info('Video explorer state Bibliograph source initialized.');
+			});
+			tmpAudioWaveformService.initializeState(() =>
+			{
+				tmpFable.log.info('Audio explorer state Bibliograph source initialized.');
+			});
+			tmpEpubMetadataService.initialize(() =>
+			{
+				tmpFable.log.info('EPUB metadata service initialized.');
+			});
+
 			// --- GET /api/media/metadata ---
 			// Get cached metadata (with ID3/format tags) for a single file.
 			tmpServiceServer.get('/api/media/metadata',
@@ -455,6 +535,72 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								pResponse.send({ Success: true, Files: pResults });
 								return fNext();
 							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/extended-metadata ---
+			// Get extended file metadata.  When extract=true, triggers probing
+			// if not already cached.  Otherwise returns cached data or
+			// { Success: false, Cached: false }.
+			tmpServiceServer.get('/api/media/extended-metadata',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpExtract = (tmpQuery.extract === 'true');
+
+						if (tmpExtract)
+						{
+							// Force extraction (probe + cache), then return
+							tmpMetadataCache.getMetadata(tmpRelPath,
+								(pError, pMetadata) =>
+								{
+									if (pError)
+									{
+										pResponse.send(404, { Success: false, Error: pError.message });
+										return fNext();
+									}
+									pResponse.send(pMetadata);
+									return fNext();
+								});
+						}
+						else
+						{
+							// Check cache only — do not trigger probing
+							tmpMetadataCache.checkCached(tmpRelPath,
+								(pError, pResult) =>
+								{
+									if (pError)
+									{
+										pResponse.send(404, { Success: false, Error: pError.message });
+										return fNext();
+									}
+									pResponse.send(pResult);
+									return fNext();
+								});
+						}
 					}
 					catch (pError)
 					{
@@ -625,9 +771,154 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								return fNext();
 							}
 
+							// Fire-and-forget: save the custom frame to explorer state
+							if (pResult && pResult.Success)
+							{
+								try
+								{
+									let tmpStatForSave = libFs.statSync(tmpAbsPath);
+									tmpVideoFrameService.saveExplorerState(tmpRelPath, tmpStatForSave.mtimeMs,
+										[{
+											Timestamp: pResult.Timestamp,
+											TimestampFormatted: pResult.TimestampFormatted,
+											Filename: pResult.Filename,
+											CacheKey: pResult.CacheKey || tmpCacheKey,
+											Size: pResult.Size
+										}],
+										(pSaveError) =>
+										{
+											if (pSaveError)
+											{
+												tmpFable.log.warn('Failed to save explorer state: ' + pSaveError.message);
+											}
+										});
+								}
+								catch (pStatError)
+								{
+									// Non-critical — don't block the response
+								}
+							}
+
 							pResponse.send(pResult);
 							return fNext();
 						});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/video-explorer-state ---
+			// Load saved custom frame state for the video explorer.
+			tmpServiceServer.get('/api/media/video-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						let tmpStat = libFs.statSync(tmpAbsPath);
+
+						tmpVideoFrameService.loadExplorerState(tmpRelPath, tmpStat.mtimeMs,
+							(pError, pState) =>
+							{
+								if (pError)
+								{
+									pResponse.send(400, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send(
+								{
+									Success: true,
+									State: pState
+								});
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- POST /api/media/video-explorer-state ---
+			// Save selection state from the video explorer.
+			tmpServiceServer.post('/api/media/video-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpBody = pRequest.body || {};
+						let tmpRelPath = tmpBody.Path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing Path in request body.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = tmpRelPath.replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						let tmpStat = libFs.statSync(tmpAbsPath);
+
+						let tmpSelectionData =
+						{
+							SelectionStartTime: typeof tmpBody.SelectionStartTime === 'number' ? tmpBody.SelectionStartTime : -1,
+							SelectionEndTime: typeof tmpBody.SelectionEndTime === 'number' ? tmpBody.SelectionEndTime : -1
+						};
+
+						tmpVideoFrameService.saveSelectionState(tmpRelPath, tmpStat.mtimeMs, tmpSelectionData,
+							(pError) =>
+							{
+								if (pError)
+								{
+									pResponse.send(400, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send({ Success: true });
+								return fNext();
+							});
 					}
 					catch (pError)
 					{
@@ -776,6 +1067,124 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					}
 				});
 
+			// --- GET /api/media/audio-explorer-state ---
+			// Load saved selection/view state for the audio explorer.
+			tmpServiceServer.get('/api/media/audio-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						let tmpStat = libFs.statSync(tmpAbsPath);
+
+						tmpAudioWaveformService.loadExplorerState(tmpRelPath, tmpStat.mtimeMs,
+							(pError, pState) =>
+							{
+								if (pError)
+								{
+									pResponse.send(400, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send(
+								{
+									Success: true,
+									State: pState
+								});
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- POST /api/media/audio-explorer-state ---
+			// Save selection/view state from the audio explorer.
+			tmpServiceServer.post('/api/media/audio-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpBody = pRequest.body || {};
+						let tmpRelPath = tmpBody.Path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing Path in request body.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = tmpRelPath.replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						let tmpStat = libFs.statSync(tmpAbsPath);
+
+						let tmpStateData =
+						{
+							Selections: tmpBody.Selections || [],
+							ViewStart: tmpBody.ViewStart,
+							ViewEnd: tmpBody.ViewEnd
+						};
+
+						tmpAudioWaveformService.saveExplorerState(tmpRelPath, tmpStat.mtimeMs, tmpStateData,
+							(pError) =>
+							{
+								if (pError)
+								{
+									pResponse.send(400, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send({ Success: true });
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
 			// --- GET /api/media/ebook-convert ---
 			// Convert an ebook (MOBI, AZW, etc.) to EPUB for in-browser reading.
 			tmpServiceServer.get('/api/media/ebook-convert',
@@ -871,6 +1280,487 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					}
 				});
 
+			// --- GET /api/media/ebook-metadata ---
+			// Extract and return cached EPUB metadata (TOC, spine, word counts, etc.)
+			tmpServiceServer.get('/api/media/ebook-metadata',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+
+						// For non-EPUB ebooks, convert first then parse the converted EPUB
+						let tmpExt = libPath.extname(tmpAbsPath).toLowerCase().replace('.', '');
+						if (tmpExt !== 'epub' && tmpEbookService.isConvertible(tmpExt))
+						{
+							tmpEbookService.convertToEpub(tmpAbsPath, tmpRelPath,
+								(pConvertError, pConvertResult) =>
+								{
+									if (pConvertError)
+									{
+										pResponse.send(400, { Success: false, Error: 'Ebook conversion failed: ' + pConvertError.message });
+										return fNext();
+									}
+
+									let tmpConvertedPath = tmpEbookService.getConvertedPath(pConvertResult.CacheKey, pConvertResult.OutputFilename);
+									if (!tmpConvertedPath)
+									{
+										pResponse.send(500, { Success: false, Error: 'Converted ebook not found.' });
+										return fNext();
+									}
+
+									tmpEpubMetadataService.extractMetadata(tmpConvertedPath, tmpRelPath,
+										(pMetaError, pMetadata) =>
+										{
+											if (pMetaError)
+											{
+												pResponse.send(400, { Success: false, Error: pMetaError.message });
+												return fNext();
+											}
+
+											pResponse.send({ Success: true, Metadata: pMetadata });
+											return fNext();
+										});
+								});
+						}
+						else
+						{
+							if (!libFs.existsSync(tmpAbsPath))
+							{
+								pResponse.send(404, { Success: false, Error: 'File not found.' });
+								return fNext();
+							}
+
+							tmpEpubMetadataService.extractMetadata(tmpAbsPath, tmpRelPath,
+								(pMetaError, pMetadata) =>
+								{
+									if (pMetaError)
+									{
+										pResponse.send(400, { Success: false, Error: pMetaError.message });
+										return fNext();
+									}
+
+									pResponse.send({ Success: true, Metadata: pMetadata });
+									return fNext();
+								});
+						}
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/ebook-cover/:cacheKey/:filename ---
+			// Serve a cached EPUB cover image.
+			tmpServiceServer.get('/api/media/ebook-cover/:cacheKey/:filename',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpCacheKey = pRequest.params.cacheKey;
+						let tmpFilename = pRequest.params.filename;
+
+						// Sanitize
+						if (!tmpCacheKey || !tmpFilename)
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing parameters.' });
+							return fNext();
+						}
+						if (tmpCacheKey.includes('..') || tmpCacheKey.includes('/') || tmpCacheKey.includes('\\'))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid cache key.' });
+							return fNext();
+						}
+
+						tmpFable.ParimeBinaryStorage.read('ebook-covers', tmpCacheKey,
+							(pReadError, pBuffer) =>
+							{
+								if (pReadError || !pBuffer || pBuffer.length === 0)
+								{
+									pResponse.send(404, { Success: false, Error: 'Cover not found.' });
+									return fNext();
+								}
+
+								// Determine content type from filename
+								let tmpExt = tmpFilename.split('.').pop().toLowerCase();
+								let tmpContentType = 'image/jpeg';
+								if (tmpExt === 'png') tmpContentType = 'image/png';
+								else if (tmpExt === 'gif') tmpContentType = 'image/gif';
+								else if (tmpExt === 'webp') tmpContentType = 'image/webp';
+								else if (tmpExt === 'svg') tmpContentType = 'image/svg+xml';
+
+								pResponse.writeHead(200,
+								{
+									'Content-Type': tmpContentType,
+									'Content-Length': pBuffer.length,
+									'Cache-Control': 'public, max-age=86400'
+								});
+								pResponse.write(pBuffer);
+								pResponse.end();
+								return fNext(false);
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/ebook-explorer-state ---
+			// Load saved ebook explorer state.
+			tmpServiceServer.get('/api/media/ebook-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						// Sanitize
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpStat;
+						try
+						{
+							tmpStat = libFs.statSync(tmpAbsPath);
+						}
+						catch (pStatError)
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						tmpEpubMetadataService.loadExplorerState(tmpRelPath, tmpStat.mtimeMs,
+							(pLoadError, pState) =>
+							{
+								if (pLoadError)
+								{
+									pResponse.send(500, { Success: false, Error: pLoadError.message });
+									return fNext();
+								}
+
+								pResponse.send({ Success: true, State: pState });
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- POST /api/media/ebook-explorer-state ---
+			// Save ebook explorer state.
+			tmpServiceServer.post('/api/media/ebook-explorer-state',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpBody = pRequest.body;
+						if (!tmpBody || !tmpBody.Path)
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing Path in body.' });
+							return fNext();
+						}
+
+						let tmpRelPath = tmpBody.Path.replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpStat;
+						try
+						{
+							tmpStat = libFs.statSync(tmpAbsPath);
+						}
+						catch (pStatError)
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						tmpEpubMetadataService.saveExplorerState(tmpRelPath, tmpStat.mtimeMs, tmpBody,
+							(pSaveError) =>
+							{
+								if (pSaveError)
+								{
+									pResponse.send(500, { Success: false, Error: pSaveError.message });
+									return fNext();
+								}
+
+								pResponse.send({ Success: true });
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/image-preview ---
+			// Generate and serve a downscaled preview of a large image.
+			tmpServiceServer.get('/api/media/image-preview',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing or invalid path.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						if (!tmpImageService.isAvailable())
+						{
+							pResponse.send(501, { Success: false, Error: 'Image service not available (sharp not installed).' });
+							return fNext();
+						}
+
+						let tmpMaxDim = parseInt(tmpQuery.maxDimension, 10) || 4096;
+
+						tmpImageService.generatePreview(tmpAbsPath, tmpRelPath, tmpMaxDim,
+							(pError, pResult) =>
+							{
+								if (pError)
+								{
+									pResponse.send(500, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send(pResult);
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/image-preview-file/:cacheKey/:filename ---
+			// Serve the actual preview image file.
+			tmpServiceServer.get('/api/media/image-preview-file/:cacheKey/:filename',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpCacheKey = pRequest.params.cacheKey;
+						let tmpFilename = pRequest.params.filename;
+						let tmpPath = tmpImageService.getPreviewPath(tmpCacheKey, tmpFilename);
+
+						if (!tmpPath)
+						{
+							pResponse.send(404, { Success: false, Error: 'Preview not found.' });
+							return fNext();
+						}
+
+						let tmpBuffer = libFs.readFileSync(tmpPath);
+						pResponse.writeHead(200,
+						{
+							'Content-Type': 'image/jpeg',
+							'Content-Length': tmpBuffer.length,
+							'Cache-Control': 'public, max-age=604800'
+						});
+						pResponse.end(tmpBuffer);
+						return fNext();
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/dzi ---
+			// Generate DZI tiles and return the metadata.
+			tmpServiceServer.get('/api/media/dzi',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing or invalid path.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						if (!tmpImageService.isAvailable())
+						{
+							pResponse.send(501, { Success: false, Error: 'Image service not available (sharp not installed).' });
+							return fNext();
+						}
+
+						tmpImageService.generateDziTiles(tmpAbsPath, tmpRelPath,
+							(pError, pResult) =>
+							{
+								if (pError)
+								{
+									pResponse.send(500, { Success: false, Error: pError.message });
+									return fNext();
+								}
+
+								pResponse.send(pResult);
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/dzi-descriptor/:cacheKey/:filename ---
+			// Serve the DZI XML descriptor file.
+			tmpServiceServer.get('/api/media/dzi-descriptor/:cacheKey/:filename',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpCacheKey = pRequest.params.cacheKey;
+						let tmpFilename = pRequest.params.filename;
+						let tmpPath = tmpImageService.getDziDescriptorPath(tmpCacheKey, tmpFilename);
+
+						if (!tmpPath)
+						{
+							pResponse.send(404, { Success: false, Error: 'DZI descriptor not found.' });
+							return fNext();
+						}
+
+						let tmpContent = libFs.readFileSync(tmpPath, 'utf8');
+						pResponse.writeHead(200,
+						{
+							'Content-Type': 'application/xml',
+							'Content-Length': Buffer.byteLength(tmpContent, 'utf8'),
+							'Cache-Control': 'public, max-age=604800'
+						});
+						pResponse.end(tmpContent);
+						return fNext();
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/dzi-tile/:cacheKey/:level/:tile ---
+			// Serve an individual DZI tile image.
+			tmpServiceServer.get('/api/media/dzi-tile/:cacheKey/:level/:tile',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpCacheKey = pRequest.params.cacheKey;
+						let tmpLevel = pRequest.params.level;
+						let tmpTile = pRequest.params.tile;
+						let tmpPath = tmpImageService.getDziTilePath(tmpCacheKey, tmpLevel, tmpTile);
+
+						if (!tmpPath)
+						{
+							pResponse.send(404, { Success: false, Error: 'Tile not found.' });
+							return fNext();
+						}
+
+						let tmpBuffer = libFs.readFileSync(tmpPath);
+						let tmpExt = libPath.extname(tmpTile).replace('.', '').toLowerCase();
+						let tmpMimeType = (tmpExt === 'png') ? 'image/png' : 'image/jpeg';
+
+						pResponse.writeHead(200,
+						{
+							'Content-Type': tmpMimeType,
+							'Content-Length': tmpBuffer.length,
+							'Cache-Control': 'public, max-age=604800'
+						});
+						pResponse.end(tmpBuffer);
+						return fNext();
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
 			// --- POST /api/media/open ---
 			// Open a media file with an external application (e.g. VLC).
 			tmpServiceServer.post('/api/media/open',
@@ -933,6 +1823,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Content-hashed URL rewrite: resolve /content-hashed/<hash>
 			// to /content/<resolved-path> so the static route serves the file.
 			// Uses server.pre() to rewrite BEFORE route matching.
+			// Resolves via three-tier lookup (memory → Bibliograph → walk).
 			if (tmpHashedFilenames)
 			{
 				tmpServiceServer.server.pre(
@@ -945,17 +1836,28 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						}
 
 						let tmpHash = tmpMatch[1];
-						let tmpResolvedPath = tmpPathRegistry.resolve(tmpHash);
 
-						if (!tmpResolvedPath)
+						// Try synchronous in-memory first for speed
+						let tmpResolvedPath = tmpPathRegistry.resolve(tmpHash);
+						if (tmpResolvedPath)
 						{
-							pResponse.send(404, { Error: 'Unknown hash.' });
-							return fNext(false);
+							pRequest.url = '/content/' + tmpResolvedPath;
+							return fNext();
 						}
 
-						// Rewrite URL to /content/<path> before route matching
-						pRequest.url = '/content/' + tmpResolvedPath;
-						return fNext();
+						// Fall back to async three-tier resolve
+						tmpPathRegistry.resolveAsync(tmpHash,
+							(pError, pPath) =>
+							{
+								if (pError || !pPath)
+								{
+									pResponse.send(404, { Error: 'Unknown hash.' });
+									return fNext(false);
+								}
+
+								pRequest.url = '/content/' + pPath;
+								return fNext();
+							});
 					});
 			}
 
@@ -973,6 +1875,51 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
 					let tmpPathParam = (tmpParsedUrl.query && tmpParsedUrl.query.path) || '';
 
+					let tmpProcessArchiveList = function (pPathParam)
+					{
+						let tmpArchiveInfo = tmpArchiveService.parseArchivePath(pPathParam);
+
+						if (!tmpArchiveInfo)
+						{
+							return fNext();
+						}
+
+						let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
+
+						if (!libFs.existsSync(tmpArchiveAbsPath))
+						{
+							pResponse.send(404, { Error: 'Archive not found.' });
+							return fNext(false);
+						}
+
+						tmpArchiveService.listContents(
+							tmpArchiveAbsPath, tmpArchiveInfo.innerPath, tmpArchiveInfo.archivePath,
+							(pError, pFileList) =>
+							{
+								if (pError)
+								{
+									pResponse.send(400, { Error: pError.message });
+									return fNext(false);
+								}
+
+								// Annotate with hashes if enabled
+								if (tmpHashedFilenames)
+								{
+									tmpPathRegistry.annotateFileList(pFileList);
+
+									// Register the archive inner path as a folder
+									let tmpFolderPath = tmpArchiveInfo.innerPath
+										? (tmpArchiveInfo.archivePath + '/' + tmpArchiveInfo.innerPath)
+										: tmpArchiveInfo.archivePath;
+									let tmpFolderHash = tmpPathRegistry.register(tmpFolderPath);
+									pResponse.header('X-Retold-Folder-Hash', tmpFolderHash);
+								}
+
+								pResponse.send(pFileList);
+								return fNext(false);
+							});
+					};
+
 					// Resolve hash to path if hashed filenames is enabled
 					// (server.pre runs before server.use middleware, so hash resolution hasn't happened yet)
 					if (tmpHashedFilenames && /^[a-f0-9]{10}$/.test(tmpPathParam))
@@ -980,51 +1927,19 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						let tmpResolved = tmpPathRegistry.resolve(tmpPathParam);
 						if (tmpResolved !== null)
 						{
-							tmpPathParam = tmpResolved;
+							return tmpProcessArchiveList(tmpResolved);
 						}
-					}
 
-					let tmpArchiveInfo = tmpArchiveService.parseArchivePath(tmpPathParam);
-
-					if (!tmpArchiveInfo)
-					{
-						return fNext();
-					}
-
-					let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
-
-					if (!libFs.existsSync(tmpArchiveAbsPath))
-					{
-						pResponse.send(404, { Error: 'Archive not found.' });
-						return fNext(false);
-					}
-
-					tmpArchiveService.listContents(
-						tmpArchiveAbsPath, tmpArchiveInfo.innerPath, tmpArchiveInfo.archivePath,
-						(pError, pFileList) =>
-						{
-							if (pError)
+						// Fall back to async three-tier resolve
+						tmpPathRegistry.resolveAsync(tmpPathParam,
+							(pError, pPath) =>
 							{
-								pResponse.send(400, { Error: pError.message });
-								return fNext(false);
-							}
+								tmpProcessArchiveList(pPath || tmpPathParam);
+							});
+						return;
+					}
 
-							// Annotate with hashes if enabled
-							if (tmpHashedFilenames)
-							{
-								tmpPathRegistry.annotateFileList(pFileList);
-
-								// Register the archive inner path as a folder
-								let tmpFolderPath = tmpArchiveInfo.innerPath
-									? (tmpArchiveInfo.archivePath + '/' + tmpArchiveInfo.innerPath)
-									: tmpArchiveInfo.archivePath;
-								let tmpFolderHash = tmpPathRegistry.register(tmpFolderPath);
-								pResponse.header('X-Retold-Folder-Hash', tmpFolderHash);
-							}
-
-							pResponse.send(pFileList);
-							return fNext(false);
-						});
+					tmpProcessArchiveList(tmpPathParam);
 				});
 
 			// Archive content serving: intercept /content/* requests that cross
@@ -1104,51 +2019,63 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
 					let tmpPathParam = (tmpParsedUrl.query && tmpParsedUrl.query.path) || '';
 
+					let tmpProcessArchiveMedia = function (pPathParam)
+					{
+						let tmpArchiveInfo = tmpArchiveService.parseArchivePath(pPathParam);
+
+						if (!tmpArchiveInfo || !tmpArchiveInfo.innerPath)
+						{
+							return fNext();
+						}
+
+						let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
+
+						tmpArchiveService.extractFile(
+							tmpArchiveAbsPath, tmpArchiveInfo.innerPath,
+							(pError, pCachedPath) =>
+							{
+								if (pError || !pCachedPath)
+								{
+									pResponse.send(404, { Error: 'Could not extract file from archive.' });
+									return fNext(false);
+								}
+
+								// Rewrite the path query param to point at the cached file
+								// relative to the content root.  The MediaService resolves
+								// paths relative to ContentPath, so we need to compute the
+								// relative path from contentPath to the cached file.
+								let tmpRelCached = libPath.relative(tmpContentPath, pCachedPath);
+
+								tmpParsedUrl.query.path = tmpRelCached;
+								delete tmpParsedUrl.search;
+								pRequest.url = libUrl.format(tmpParsedUrl);
+								if (pRequest.query)
+								{
+									pRequest.query.path = tmpRelCached;
+								}
+
+								return fNext();
+							});
+					};
+
 					// Resolve hash to path if hashed filenames is enabled
 					if (tmpHashedFilenames && /^[a-f0-9]{10}$/.test(tmpPathParam))
 					{
 						let tmpResolved = tmpPathRegistry.resolve(tmpPathParam);
 						if (tmpResolved !== null)
 						{
-							tmpPathParam = tmpResolved;
+							return tmpProcessArchiveMedia(tmpResolved);
 						}
+
+						tmpPathRegistry.resolveAsync(tmpPathParam,
+							(pError, pPath) =>
+							{
+								tmpProcessArchiveMedia(pPath || tmpPathParam);
+							});
+						return;
 					}
 
-					let tmpArchiveInfo = tmpArchiveService.parseArchivePath(tmpPathParam);
-
-					if (!tmpArchiveInfo || !tmpArchiveInfo.innerPath)
-					{
-						return fNext();
-					}
-
-					let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
-
-					tmpArchiveService.extractFile(
-						tmpArchiveAbsPath, tmpArchiveInfo.innerPath,
-						(pError, pCachedPath) =>
-						{
-							if (pError || !pCachedPath)
-							{
-								pResponse.send(404, { Error: 'Could not extract file from archive.' });
-								return fNext(false);
-							}
-
-							// Rewrite the path query param to point at the cached file
-							// relative to the content root.  The MediaService resolves
-							// paths relative to ContentPath, so we need to compute the
-							// relative path from contentPath to the cached file.
-							let tmpRelCached = libPath.relative(tmpContentPath, pCachedPath);
-
-							tmpParsedUrl.query.path = tmpRelCached;
-							delete tmpParsedUrl.search;
-							pRequest.url = libUrl.format(tmpParsedUrl);
-							if (pRequest.query)
-							{
-								pRequest.query.path = tmpRelCached;
-							}
-
-							return fNext();
-						});
+					tmpProcessArchiveMedia(tmpPathParam);
 				});
 
 			// Serve content files at /content/ (for direct media access)

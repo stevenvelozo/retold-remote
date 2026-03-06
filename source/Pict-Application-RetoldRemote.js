@@ -26,8 +26,10 @@ const libViewMediaViewer = require('./views/PictView-Remote-MediaViewer.js');
 const libViewImageViewer = require('./views/PictView-Remote-ImageViewer.js');
 const libViewVideoExplorer = require('./views/PictView-Remote-VideoExplorer.js');
 const libViewAudioExplorer = require('./views/PictView-Remote-AudioExplorer.js');
+const libViewImageExplorer = require('./views/PictView-Remote-ImageExplorer.js');
 const libViewVLCSetup = require('./views/PictView-Remote-VLCSetup.js');
 const libViewCollectionsPanel = require('./views/PictView-Remote-CollectionsPanel.js');
+const libViewFileInfoPanel = require('./views/PictView-Remote-FileInfoPanel.js');
 
 // Application configuration
 const _DefaultConfiguration = require('./Pict-Application-RetoldRemote-Configuration.json');
@@ -59,8 +61,10 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addView('RetoldRemote-SettingsPanel', libViewSettingsPanel.default_configuration, libViewSettingsPanel);
 		this.pict.addView('RetoldRemote-VideoExplorer', libViewVideoExplorer.default_configuration, libViewVideoExplorer);
 		this.pict.addView('RetoldRemote-AudioExplorer', libViewAudioExplorer.default_configuration, libViewAudioExplorer);
+		this.pict.addView('RetoldRemote-ImageExplorer', libViewImageExplorer.default_configuration, libViewImageExplorer);
 		this.pict.addView('RetoldRemote-VLCSetup', libViewVLCSetup.default_configuration, libViewVLCSetup);
 		this.pict.addView('RetoldRemote-CollectionsPanel', libViewCollectionsPanel.default_configuration, libViewCollectionsPanel);
+		this.pict.addView('RetoldRemote-FileInfoPanel', libViewFileInfoPanel.default_configuration, libViewFileInfoPanel);
 
 		// Add new providers
 		this.pict.addProvider('RetoldRemote-Provider', libProviderRetoldRemote.default_configuration, libProviderRetoldRemote);
@@ -103,7 +107,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			CurrentViewerMediaType: '',     // Media type of viewed file
 			HashedFilenames: true,         // From /api/remote/settings
 			ShowHiddenFiles: false,
-			DistractionFreeShowNav: true,
+			DistractionFreeShowNav: false,
 			ImageFitMode: 'auto',
 			SidebarCollapsed: false,
 			SidebarWidth: 250,
@@ -155,6 +159,8 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			FavoritesGUID: null,
 			FavoritesCollection: null,
 			FavoritesPathSet: {},			// path → itemID for O(1) favorited-state checks
+
+			CurrentFileMetadata: null,		// cached extended metadata for the currently viewed file
 
 			// AI Sort settings
 			AISortSettings:
@@ -637,6 +643,9 @@ class RetoldRemoteApplication extends libContentEditorApplication
 
 	/**
 	 * Override resolveHash to handle gallery and viewer routes.
+	 *
+	 * When a hash token (10-char hex) can't be resolved from the client-side
+	 * cache, we ask the server to walk the content directory and find it.
 	 */
 	resolveHash()
 	{
@@ -649,50 +658,31 @@ class RetoldRemoteApplication extends libContentEditorApplication
 
 		let tmpParts = tmpHash.split('/');
 		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpSelf = this;
 
-		if (tmpParts[0] === 'browse')
+		// Routes that take a path identifier in the second segment
+		let tmpPathRoutes = ['browse', 'view', 'explore', 'explore-audio', 'explore-image', 'edit'];
+		let tmpRoute = tmpParts[0];
+
+		if (tmpPathRoutes.indexOf(tmpRoute) >= 0 && tmpParts.length >= 2)
 		{
 			let tmpRawPath = tmpParts.slice(1).join('/');
-			// Resolve hash token to actual path if needed
-			let tmpPath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
-			let tmpCurrentPath = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
-			if (tmpPath !== tmpCurrentPath)
+			let tmpResolvedPath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
+
+			// If it still looks like an unresolved hash, ask the server
+			if (/^[a-f0-9]{10}$/.test(tmpResolvedPath))
 			{
-				this.loadFileList(tmpPath);
-			}
-		}
-		else if (tmpParts[0] === 'view' && tmpParts.length >= 2)
-		{
-			let tmpRawPath = tmpParts.slice(1).join('/');
-			// Resolve hash token to actual path if needed
-			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
-			if (this.pict.AppData.ContentEditor.CurrentFile === tmpFilePath)
-			{
+				tmpSelf._resolveHashFromServer(tmpResolvedPath,
+					(pResolvedPath) =>
+					{
+						tmpSelf._executeRoute(tmpRoute, pResolvedPath || tmpResolvedPath);
+					});
 				return;
 			}
-			this.navigateToFile(tmpFilePath);
+
+			this._executeRoute(tmpRoute, tmpResolvedPath);
 		}
-		else if (tmpParts[0] === 'explore' && tmpParts.length >= 2)
-		{
-			let tmpRawPath = tmpParts.slice(1).join('/');
-			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
-			let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
-			if (tmpVEX)
-			{
-				tmpVEX.showExplorer(tmpFilePath);
-			}
-		}
-		else if (tmpParts[0] === 'explore-audio' && tmpParts.length >= 2)
-		{
-			let tmpRawPath = tmpParts.slice(1).join('/');
-			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
-			let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
-			if (tmpAEX)
-			{
-				tmpAEX.showExplorer(tmpFilePath);
-			}
-		}
-		else if (tmpParts[0] === 'collection' && tmpParts.length >= 2)
+		else if (tmpRoute === 'collection' && tmpParts.length >= 2)
 		{
 			let tmpCollectionGUID = tmpParts[1];
 			let tmpCollManager = this.pict.providers['RetoldRemote-CollectionManager'];
@@ -704,12 +694,109 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				tmpCollManager.fetchCollection(tmpCollectionGUID);
 			}
 		}
-		else if (tmpParts[0] === 'edit' && tmpParts.length >= 2)
+	}
+
+	/**
+	 * Execute a resolved route action.
+	 *
+	 * @param {string} pRoute - Route type (browse, view, explore, etc.)
+	 * @param {string} pPath - Resolved file/folder path
+	 */
+	_executeRoute(pRoute, pPath)
+	{
+		switch (pRoute)
 		{
-			let tmpRawPath = tmpParts.slice(1).join('/');
-			let tmpFilePath = tmpFragProvider ? tmpFragProvider.resolveFragmentIdentifier(tmpRawPath) : tmpRawPath;
-			this.navigateToFile(tmpFilePath);
+			case 'browse':
+			{
+				let tmpCurrentPath = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
+				if (pPath !== tmpCurrentPath)
+				{
+					this.loadFileList(pPath);
+				}
+				break;
+			}
+			case 'view':
+			case 'edit':
+			{
+				if (this.pict.AppData.ContentEditor.CurrentFile !== pPath)
+				{
+					this.navigateToFile(pPath);
+				}
+				break;
+			}
+			case 'explore':
+			{
+				let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+				if (tmpVEX)
+				{
+					tmpVEX.showExplorer(pPath);
+				}
+				break;
+			}
+			case 'explore-audio':
+			{
+				let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
+				if (tmpAEX)
+				{
+					tmpAEX.showExplorer(pPath);
+				}
+				break;
+			}
+			case 'explore-image':
+			{
+				let tmpIEX = this.pict.views['RetoldRemote-ImageExplorer'];
+				if (tmpIEX)
+				{
+					tmpIEX.showExplorer(pPath);
+				}
+				break;
+			}
 		}
+	}
+
+	/**
+	 * Ask the server to resolve a hash token to a file path.
+	 * Falls back to returning null if the server can't resolve it.
+	 *
+	 * @param {string} pHash - 10-char hex hash
+	 * @param {Function} fCallback - Callback(pResolvedPath) — null if not found
+	 */
+	_resolveHashFromServer(pHash, fCallback)
+	{
+		let tmpSelf = this;
+
+		fetch('/api/resolve-hash/' + pHash)
+			.then((pResponse) =>
+			{
+				if (!pResponse.ok)
+				{
+					return fCallback(null);
+				}
+				return pResponse.json();
+			})
+			.then((pData) =>
+			{
+				if (pData && pData.Success && pData.Path)
+				{
+					// Register the mapping client-side for future use
+					let tmpProvider = tmpSelf.pict.providers['RetoldRemote-Provider'];
+					if (tmpProvider)
+					{
+						tmpProvider.registerHash(pData.Path, pHash);
+					}
+
+					// Also load the parent folder so the gallery has context
+					let tmpParent = pData.Path.replace(/\/[^/]+$/, '') || '';
+					tmpSelf.loadFileList(tmpParent);
+
+					return fCallback(pData.Path);
+				}
+				return fCallback(null);
+			})
+			.catch(() =>
+			{
+				return fCallback(null);
+			});
 	}
 
 	/**

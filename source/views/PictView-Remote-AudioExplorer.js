@@ -133,6 +133,34 @@ const _ViewConfiguration =
 			background: transparent;
 			color: var(--retold-accent);
 		}
+		/* Save segment to collection button */
+		.retold-remote-aex-save-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid #98c379;
+			border-radius: 3px;
+			background: transparent;
+			color: #98c379;
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-aex-save-btn:hover
+		{
+			background: #98c379;
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-aex-save-btn:disabled
+		{
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+		.retold-remote-aex-save-btn:disabled:hover
+		{
+			background: transparent;
+			color: #98c379;
+		}
 		.retold-remote-aex-body
 		{
 			flex: 1;
@@ -309,7 +337,14 @@ class RetoldRemoteAudioExplorerView extends libPictView
 	 *
 	 * @param {string} pFilePath - Relative file path
 	 */
-	showExplorer(pFilePath)
+	/**
+	 * Show the audio explorer for a given file.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 * @param {number} [pSelectionStart] - Optional selection start in seconds
+	 * @param {number} [pSelectionEnd] - Optional selection end in seconds
+	 */
+	showExplorer(pFilePath, pSelectionStart, pSelectionEnd)
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'audio-explorer';
@@ -318,9 +353,14 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		this._peaks = [];
 		this._viewStart = 0;
 		this._viewEnd = 1;
+		this._segmentURL = null;
+
+		// Store passed-in selection times (in seconds) to apply after waveform loads
+		this._pendingSelectionStartSec = (typeof pSelectionStart === 'number' && pSelectionStart >= 0) ? pSelectionStart : -1;
+		this._pendingSelectionEndSec = (typeof pSelectionEnd === 'number' && pSelectionEnd >= 0) ? pSelectionEnd : -1;
+
 		this._selectionStart = -1;
 		this._selectionEnd = -1;
-		this._segmentURL = null;
 
 		// Update the hash
 		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
@@ -356,6 +396,8 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		tmpHTML += '<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-ZoomSelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].zoomToSelection()" title="Zoom to Selection (Z)" disabled>Zoom to Selection</button>';
 		tmpHTML += '<button class="retold-remote-aex-btn" id="RetoldRemote-AEX-PlaySelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].playSelection()" title="Play Selection (Space)" disabled>&#9654; Play Selection</button>';
 		tmpHTML += '<button class="retold-remote-aex-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].clearSelection()" title="Clear Selection (Esc)">Clear Selection</button>';
+		tmpHTML += '<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 4px;"></span>';
+		tmpHTML += '<button class="retold-remote-aex-save-btn" id="RetoldRemote-AEX-SaveSelBtn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].saveSelectionToCollection()" title="Save segment to collection (s)" disabled>Save Segment</button>';
 		tmpHTML += '</div>';
 
 		// Body (loading initially)
@@ -537,6 +579,9 @@ class RetoldRemoteAudioExplorerView extends libPictView
 				this._resizeObserver.observe(tmpWrap);
 			}
 		}
+
+		// Load saved selection/view state
+		this._loadSavedState();
 	}
 
 	/**
@@ -873,6 +918,8 @@ class RetoldRemoteAudioExplorerView extends libPictView
 				tmpSelf._updateSelectionButtons();
 				tmpSelf._drawAll();
 				tmpSelf._updateTimeDisplay();
+				// Persist selection state
+				tmpSelf._saveState();
 			}
 		});
 
@@ -1023,6 +1070,12 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		{
 			tmpPlaySelBtn.disabled = !tmpHasSelection;
 		}
+
+		let tmpSaveSelBtn = document.getElementById('RetoldRemote-AEX-SaveSelBtn');
+		if (tmpSaveSelBtn)
+		{
+			tmpSaveSelBtn.disabled = !tmpHasSelection;
+		}
 	}
 
 	// --- User actions ---
@@ -1080,6 +1133,76 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		this._updateSelectionButtons();
 		this._drawAll();
 		this._updateTimeDisplay();
+		// Persist cleared state
+		this._saveState();
+	}
+
+	/**
+	 * Apply a pending selection that was passed in via showExplorer()
+	 * parameters (e.g. when navigating from a collection audio-clip item).
+	 * Converts seconds to normalized 0..1 values.
+	 */
+	_applyPendingSelection()
+	{
+		if (this._pendingSelectionStartSec < 0 || this._pendingSelectionEndSec < 0)
+		{
+			return;
+		}
+
+		if (!this._waveformData || !this._waveformData.Duration || this._waveformData.Duration <= 0)
+		{
+			return;
+		}
+
+		let tmpDuration = this._waveformData.Duration;
+		this._selectionStart = Math.min(this._pendingSelectionStartSec, this._pendingSelectionEndSec) / tmpDuration;
+		this._selectionEnd = Math.max(this._pendingSelectionStartSec, this._pendingSelectionEndSec) / tmpDuration;
+
+		// Clamp to 0..1
+		this._selectionStart = Math.max(0, Math.min(1, this._selectionStart));
+		this._selectionEnd = Math.max(0, Math.min(1, this._selectionEnd));
+
+		// Clear pending values
+		this._pendingSelectionStartSec = -1;
+		this._pendingSelectionEndSec = -1;
+	}
+
+	/**
+	 * Save the current selection range as an audio clip to the last-used
+	 * collection.  Mirrors the keyboard shortcut (s) behaviour.
+	 * If no last-used collection exists, opens the collection picker.
+	 */
+	saveSelectionToCollection()
+	{
+		if (this._selectionStart < 0 || this._selectionEnd < 0)
+		{
+			return;
+		}
+
+		let tmpCollMgr = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (!tmpCollMgr)
+		{
+			return;
+		}
+
+		let tmpQuickGUID = tmpCollMgr.getQuickAddTargetGUID();
+		if (tmpQuickGUID)
+		{
+			tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);
+		}
+		else
+		{
+			// Convert normalized selection (0..1) to seconds for the pending context
+			let tmpDuration = (this._waveformData && this._waveformData.Duration) ? this._waveformData.Duration : 0;
+			let tmpStartSec = Math.round(this._selectionStart * tmpDuration * 100) / 100;
+			let tmpEndSec = Math.round(this._selectionEnd * tmpDuration * 100) / 100;
+			tmpCollMgr.setPendingClipContext({ Type: 'audio-clip', Start: tmpStartSec, End: tmpEndSec });
+			let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+			if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
+			{
+				tmpTopBar.showAddToCollectionDropdown();
+			}
+		}
 	}
 
 	/**
@@ -1154,6 +1277,114 @@ class RetoldRemoteAudioExplorerView extends libPictView
 				tmpNav.closeViewer();
 			}
 		}
+	}
+
+	// --- Explorer State Persistence ---
+
+	/**
+	 * Fire-and-forget save of the current selection and view state.
+	 */
+	_saveState()
+	{
+		if (!this._currentPath || !this._waveformData)
+		{
+			return;
+		}
+
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpSelections = [];
+
+		if (this._selectionStart >= 0 && this._selectionEnd >= 0
+			&& Math.abs(this._selectionEnd - this._selectionStart) >= 0.001)
+		{
+			let tmpDuration = this._waveformData.Duration || 0;
+			let tmpStartNorm = Math.min(this._selectionStart, this._selectionEnd);
+			let tmpEndNorm = Math.max(this._selectionStart, this._selectionEnd);
+			let tmpStartSec = Math.round(tmpStartNorm * tmpDuration * 100) / 100;
+			let tmpEndSec = Math.round(tmpEndNorm * tmpDuration * 100) / 100;
+			let tmpFmt = this.pict.providers['RetoldRemote-FormattingUtilities'];
+
+			tmpSelections.push(
+			{
+				Start: tmpStartNorm,
+				End: tmpEndNorm,
+				StartSeconds: tmpStartSec,
+				EndSeconds: tmpEndSec,
+				Label: tmpFmt.formatTimestamp(tmpStartSec, true) + ' - ' + tmpFmt.formatTimestamp(tmpEndSec, true)
+			});
+		}
+
+		let tmpBody =
+		{
+			Path: this._currentPath,
+			Selections: tmpSelections,
+			ViewStart: this._viewStart,
+			ViewEnd: this._viewEnd
+		};
+
+		fetch('/api/media/audio-explorer-state',
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(tmpBody)
+		}).catch(() =>
+		{
+			// Non-critical — explorer works without persistence
+		});
+	}
+
+	/**
+	 * Load saved state after waveform renders.
+	 * Restores selection and view state if available.
+	 */
+	_loadSavedState()
+	{
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(this._currentPath) : encodeURIComponent(this._currentPath);
+
+		let tmpURL = '/api/media/audio-explorer-state?path=' + tmpPathParam;
+
+		fetch(tmpURL)
+			.then((pResponse) => pResponse.json())
+			.then((pData) =>
+			{
+				if (pData && pData.Success && pData.State)
+				{
+					let tmpState = pData.State;
+
+					// Restore view state
+					if (typeof tmpState.ViewStart === 'number' && typeof tmpState.ViewEnd === 'number')
+					{
+						tmpSelf._viewStart = tmpState.ViewStart;
+						tmpSelf._viewEnd = tmpState.ViewEnd;
+					}
+
+					// Restore selection (first selection if array)
+					if (Array.isArray(tmpState.Selections) && tmpState.Selections.length > 0)
+					{
+						let tmpSel = tmpState.Selections[0];
+						tmpSelf._selectionStart = tmpSel.Start;
+						tmpSelf._selectionEnd = tmpSel.End;
+					}
+				}
+
+				// If we were opened from a collection item with explicit times, apply those
+				tmpSelf._applyPendingSelection();
+
+				// Redraw with restored state
+				tmpSelf._updateSelectionButtons();
+				tmpSelf._drawAll();
+				tmpSelf._updateTimeDisplay();
+			})
+			.catch(() =>
+			{
+				// Still apply pending selection on network failure
+				tmpSelf._applyPendingSelection();
+				tmpSelf._updateSelectionButtons();
+				tmpSelf._drawAll();
+				tmpSelf._updateTimeDisplay();
+			});
 	}
 
 	/**

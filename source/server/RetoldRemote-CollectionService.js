@@ -458,6 +458,10 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 								VideoStart: (typeof tmpItem.VideoStart === 'number') ? tmpItem.VideoStart : null,
 								VideoEnd: (typeof tmpItem.VideoEnd === 'number') ? tmpItem.VideoEnd : null,
 								FrameTimestamp: (typeof tmpItem.FrameTimestamp === 'number') ? tmpItem.FrameTimestamp : null,
+								FrameCacheKey: tmpItem.FrameCacheKey || null,
+								FrameFilename: tmpItem.FrameFilename || null,
+								AudioStart: (typeof tmpItem.AudioStart === 'number') ? tmpItem.AudioStart : null,
+								AudioEnd: (typeof tmpItem.AudioEnd === 'number') ? tmpItem.AudioEnd : null,
 								// Operation fields (for operation-plan collections)
 								Operation: tmpItem.Operation || null,
 								DestinationPath: tmpItem.DestinationPath || null,

@@ -5,6 +5,7 @@ const libHandleViewerKey = require('./keyboard-handlers/KeyHandler-Viewer.js');
 const libHandleSidebarKey = require('./keyboard-handlers/KeyHandler-Sidebar.js');
 const libHandleVideoExplorerKey = require('./keyboard-handlers/KeyHandler-VideoExplorer.js');
 const libHandleAudioExplorerKey = require('./keyboard-handlers/KeyHandler-AudioExplorer.js');
+const libHandleImageExplorerKey = require('./keyboard-handlers/KeyHandler-ImageExplorer.js');
 
 const _DefaultProviderConfiguration =
 {
@@ -168,6 +169,10 @@ class GalleryNavigationProvider extends libPictProvider
 			else if (tmpActiveMode === 'audio-explorer')
 			{
 				tmpSelf._handleAudioExplorerKey(pEvent);
+			}
+			else if (tmpActiveMode === 'image-explorer')
+			{
+				tmpSelf._handleImageExplorerKey(pEvent);
 			}
 			else if (tmpActiveMode === 'viewer')
 			{
@@ -372,6 +377,14 @@ class GalleryNavigationProvider extends libPictProvider
 	}
 
 	/**
+	 * Handle keyboard events in image explorer mode.
+	 */
+	_handleImageExplorerKey(pEvent)
+	{
+		libHandleImageExplorerKey(this, pEvent);
+	}
+
+	/**
 	 * Move the gallery cursor to a new index and update the UI.
 	 *
 	 * @param {number} pNewIndex - The new cursor position
@@ -538,6 +551,11 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'gallery';
 
+		// Clear viewer file state so collection/favorites resolution
+		// falls through to the gallery cursor instead of a stale path
+		tmpRemote.CurrentViewerFile = '';
+		tmpRemote.CurrentViewerMediaType = '';
+
 		// Exit collection browsing mode
 		tmpRemote.BrowsingCollection = false;
 		tmpRemote.BrowsingCollectionIndex = -1;
@@ -577,6 +595,58 @@ class GalleryNavigationProvider extends libPictProvider
 	}
 
 	/**
+	 * Navigate to a collection item based on its type.  Video-frame items
+	 * are shown as images in the media viewer; video/audio clips open
+	 * their respective explorers; everything else uses navigateToFile.
+	 *
+	 * @param {object} pItem      - The collection item record
+	 * @param {number} pItemIndex - Index within ActiveCollection.Items
+	 */
+	_navigateToCollectionItem(pItem, pItemIndex)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.BrowsingCollection = true;
+		tmpRemote.BrowsingCollectionIndex = pItemIndex;
+
+		if (pItem.Type === 'video-clip')
+		{
+			let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+			if (tmpVEX)
+			{
+				tmpVEX.showExplorer(pItem.Path, pItem.VideoStart, pItem.VideoEnd);
+			}
+		}
+		else if (pItem.Type === 'audio-clip')
+		{
+			let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
+			if (tmpAEX)
+			{
+				tmpAEX.showExplorer(pItem.Path, pItem.AudioStart, pItem.AudioEnd);
+			}
+		}
+		else if (pItem.Type === 'video-frame' && pItem.FrameCacheKey && pItem.FrameFilename)
+		{
+			// Show the cached frame image directly in the viewer
+			let tmpFrameURL = '/api/media/video-frame/'
+				+ encodeURIComponent(pItem.FrameCacheKey) + '/'
+				+ encodeURIComponent(pItem.FrameFilename);
+			let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+			if (tmpViewer)
+			{
+				tmpViewer.showDirectImage(tmpFrameURL, pItem.Label || pItem.FrameFilename, pItem.Path);
+			}
+		}
+		else
+		{
+			let tmpApp = this.pict.PictApplication;
+			if (tmpApp && tmpApp.navigateToFile)
+			{
+				tmpApp.navigateToFile(pItem.Path);
+			}
+		}
+	}
+
+	/**
 	 * Navigate to the next file in the gallery list.
 	 * When browsing a collection, navigates through collection items instead.
 	 */
@@ -597,12 +667,7 @@ class GalleryNavigationProvider extends libPictProvider
 					tmpItem.Type === 'image-crop' || tmpItem.Type === 'video-clip' ||
 					tmpItem.Type === 'video-frame')
 				{
-					tmpRemote.BrowsingCollectionIndex = i;
-					let tmpApp = this.pict.PictApplication;
-					if (tmpApp && tmpApp.navigateToFile)
-					{
-						tmpApp.navigateToFile(tmpItem.Path);
-					}
+					this._navigateToCollectionItem(tmpItem, i);
 					return;
 				}
 			}
@@ -649,12 +714,7 @@ class GalleryNavigationProvider extends libPictProvider
 					tmpItem.Type === 'image-crop' || tmpItem.Type === 'video-clip' ||
 					tmpItem.Type === 'video-frame')
 				{
-					tmpRemote.BrowsingCollectionIndex = i;
-					let tmpApp = this.pict.PictApplication;
-					if (tmpApp && tmpApp.navigateToFile)
-					{
-						tmpApp.navigateToFile(tmpItem.Path);
-					}
+					this._navigateToCollectionItem(tmpItem, i);
 					return;
 				}
 			}
@@ -1079,6 +1139,22 @@ class GalleryNavigationProvider extends libPictProvider
 			{
 				tmpViewerHeader.style.display = '';
 			}
+
+			// Restore collections panel if it was open before DF mode
+			if (tmpRemote._collectionsPanelWasOpen)
+			{
+				let tmpCollWrap = document.getElementById('RetoldRemote-Collections-Wrap');
+				if (tmpCollWrap)
+				{
+					tmpCollWrap.classList.remove('collapsed');
+					if (tmpRemote.CollectionsPanelWidth)
+					{
+						tmpCollWrap.style.width = tmpRemote.CollectionsPanelWidth + 'px';
+					}
+				}
+				tmpRemote.CollectionsPanelOpen = true;
+				tmpRemote._collectionsPanelWasOpen = false;
+			}
 		}
 		else
 		{
@@ -1095,6 +1171,18 @@ class GalleryNavigationProvider extends libPictProvider
 				{
 					tmpViewerHeader.style.display = 'none';
 				}
+			}
+
+			// Hide collections panel if it's open
+			if (tmpRemote.CollectionsPanelOpen)
+			{
+				tmpRemote._collectionsPanelWasOpen = true;
+				let tmpCollWrap = document.getElementById('RetoldRemote-Collections-Wrap');
+				if (tmpCollWrap)
+				{
+					tmpCollWrap.classList.add('collapsed');
+				}
+				tmpRemote.CollectionsPanelOpen = false;
 			}
 		}
 
@@ -1277,24 +1365,49 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpContentPath = tmpProvider ? tmpProvider.getContentURL(tmpFilePath) : ('/content/' + encodeURIComponent(tmpFilePath));
 		let tmpStreamURL = window.location.origin + tmpContentPath;
-		// On Windows and mobile (iOS/Android), VLC handles the raw URL natively.
-		// On macOS/Linux our custom handlers URL-decode, so we encode.
+
+		// Detect platform for VLC URL format.
+		// iPadOS 13+ sends a macOS user agent — detect it via maxTouchPoints.
 		let tmpIsWindows = /Windows/.test(navigator.userAgent);
-		let tmpIsMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-		let tmpVLCURL = (tmpIsWindows || tmpIsMobile)
-			? ('vlc://' + tmpStreamURL)
-			: ('vlc://' + encodeURIComponent(tmpStreamURL));
+		let tmpIsIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+			|| (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+		let tmpIsAndroid = /Android/i.test(navigator.userAgent);
+		let tmpIsMobile = tmpIsIOS || tmpIsAndroid;
+
+		let tmpVLCURL;
+		if (tmpIsIOS)
+		{
+			// iOS/iPadOS: use vlc-x-callback for reliable app launching
+			tmpVLCURL = 'vlc-x-callback://x-callback-url/stream?url=' + encodeURIComponent(tmpStreamURL);
+		}
+		else if (tmpIsWindows || tmpIsAndroid)
+		{
+			// Windows and Android: VLC handles the raw URL natively
+			tmpVLCURL = 'vlc://' + tmpStreamURL;
+		}
+		else
+		{
+			// macOS/Linux: our custom handlers URL-decode, so we encode
+			tmpVLCURL = 'vlc://' + encodeURIComponent(tmpStreamURL);
+		}
 
 		this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');
 
-		// Use a temporary anchor element to trigger the protocol handler
-		// without navigating the current page away
-		let tmpLink = document.createElement('a');
-		tmpLink.href = tmpVLCURL;
-		tmpLink.style.display = 'none';
-		document.body.appendChild(tmpLink);
-		tmpLink.click();
-		document.body.removeChild(tmpLink);
+		// Use window.location for iOS (more reliable for custom URL schemes
+		// on iOS Safari than a programmatic anchor click), anchor for others.
+		if (tmpIsIOS)
+		{
+			window.location.href = tmpVLCURL;
+		}
+		else
+		{
+			let tmpLink = document.createElement('a');
+			tmpLink.href = tmpVLCURL;
+			tmpLink.style.display = 'none';
+			document.body.appendChild(tmpLink);
+			tmpLink.click();
+			document.body.removeChild(tmpLink);
+		}
 	}
 
 }

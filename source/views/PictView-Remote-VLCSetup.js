@@ -269,6 +269,11 @@ class RetoldRemoteVLCSetupView extends libPictView
 		{
 			return 'ios';
 		}
+		// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+		if (/Macintosh/i.test(tmpUA) && typeof navigator !== 'undefined' && navigator.maxTouchPoints > 1)
+		{
+			return 'ios';
+		}
 		if (/Android/i.test(tmpUA))
 		{
 			return 'android';

@@ -53,6 +53,81 @@ class CollectionManagerProvider extends libPictProvider
 		return this.pict.providers['RetoldRemote-ToastNotification'];
 	}
 
+	// -- Pending Clip Context ---------------------------------------------
+
+	/**
+	 * Set a pending clip context for the next add-to-collection action.
+	 *
+	 * When a segment save triggers the "create/pick collection" dropdown,
+	 * the specific segment data (start/end times, type) would be lost
+	 * because the dropdown generically calls addCurrentFileToCollection().
+	 * This stores the clip data so the dropdown callback can use it.
+	 *
+	 * @param {object} pContext - { Type: 'video-clip'|'audio-clip', Start: number, End: number }
+	 */
+	setPendingClipContext(pContext)
+	{
+		this._pendingClipContext = pContext || null;
+	}
+
+	/**
+	 * Clear any pending clip context (called after use or on navigation).
+	 */
+	clearPendingClipContext()
+	{
+		this._pendingClipContext = null;
+	}
+
+	/**
+	 * Add the pending clip (or current file) to a collection.
+	 *
+	 * If a pending clip context exists (from a segment save that triggered
+	 * the dropdown), dispatches to the appropriate clip-add method.
+	 * Otherwise falls back to addCurrentFileToCollection().
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @returns {boolean} true if the add was initiated
+	 */
+	addPendingOrCurrentToCollection(pGUID)
+	{
+		if (this._pendingClipContext)
+		{
+			let tmpCtx = this._pendingClipContext;
+			this._pendingClipContext = null;
+
+			if (tmpCtx.Type === 'video-clip')
+			{
+				return this.addVideoClipToCollection(pGUID, tmpCtx.Start, tmpCtx.End);
+			}
+			else if (tmpCtx.Type === 'audio-clip')
+			{
+				return this.addAudioClipToCollection(pGUID, tmpCtx.Start, tmpCtx.End);
+			}
+		}
+
+		return this.addCurrentFileToCollection(pGUID);
+	}
+
+	/**
+	 * Return the GUID of the collection that quick-add actions should
+	 * target.  If a collection is currently open in the side panel,
+	 * prefer it over the sticky last-used GUID.
+	 *
+	 * @returns {string|null} Collection GUID, or null if none available
+	 */
+	getQuickAddTargetGUID()
+	{
+		let tmpRemote = this._getRemote();
+
+		// If a collection is currently open (detail view), prefer it
+		if (tmpRemote.ActiveCollectionGUID && tmpRemote.CollectionsPanelMode === 'detail')
+		{
+			return tmpRemote.ActiveCollectionGUID;
+		}
+
+		return tmpRemote.LastUsedCollectionGUID || null;
+	}
+
 	// -- API Methods ------------------------------------------------------
 
 	/**
@@ -564,6 +639,85 @@ class CollectionManagerProvider extends libPictProvider
 		}
 	}
 
+	// -- Path Resolution --------------------------------------------------
+
+	/**
+	 * Resolve the current file path from multiple state sources.
+	 *
+	 * Checks in order:
+	 *   1. ContentEditor.CurrentFile (set when viewing a file)
+	 *   2. RetoldRemote.CurrentViewerFile (set in viewer mode)
+	 *   3. Gallery cursor item Path (the highlighted item in gallery mode)
+	 *
+	 * @returns {string} File path or empty string
+	 */
+	_resolveCurrentFilePath()
+	{
+		// 1. Content editor current file (most authoritative)
+		let tmpPath = this.pict.AppData.ContentEditor.CurrentFile;
+		if (tmpPath)
+		{
+			return tmpPath;
+		}
+
+		let tmpRemote = this._getRemote();
+
+		// 2. Viewer state (set when the media viewer is showing a file)
+		if (tmpRemote.CurrentViewerFile)
+		{
+			return tmpRemote.CurrentViewerFile;
+		}
+
+		// 3. Gallery cursor item (the highlighted item when browsing)
+		let tmpItems = tmpRemote.GalleryItems || [];
+		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
+		if (tmpItems.length > 0 && tmpItems[tmpIndex] && tmpItems[tmpIndex].Path)
+		{
+			return tmpItems[tmpIndex].Path;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Resolve the current item from multiple state sources.
+	 *
+	 * Like _resolveCurrentFilePath() but returns an object with { Path, Type }
+	 * so callers can detect when the cursor is on a folder.
+	 *
+	 * @returns {Object|null} Item with Path and Type, or null
+	 */
+	_resolveCurrentItem()
+	{
+		// 1. Content editor current file (always a file)
+		let tmpPath = this.pict.AppData.ContentEditor.CurrentFile;
+		if (tmpPath)
+		{
+			return { Path: tmpPath, Type: 'file' };
+		}
+
+		let tmpRemote = this._getRemote();
+
+		// 2. Viewer state (always a file)
+		if (tmpRemote.CurrentViewerFile)
+		{
+			return { Path: tmpRemote.CurrentViewerFile, Type: 'file' };
+		}
+
+		// 3. Gallery cursor item (could be a folder)
+		let tmpItems = tmpRemote.GalleryItems || [];
+		let tmpIndex = tmpRemote.GalleryCursorIndex || 0;
+		if (tmpItems.length > 0 && tmpItems[tmpIndex])
+		{
+			return {
+				Path: tmpItems[tmpIndex].Path || '',
+				Type: tmpItems[tmpIndex].Type || 'file'
+			};
+		}
+
+		return null;
+	}
+
 	// -- Favorites Methods ------------------------------------------------
 
 	/**
@@ -694,26 +848,26 @@ class CollectionManagerProvider extends libPictProvider
 	/**
 	 * Check if a file path is in favorites.
 	 *
-	 * @param {string} [pPath] - File path (defaults to currently viewed file)
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
 	 * @returns {boolean} True if favorited
 	 */
 	isFavorited(pPath)
 	{
 		let tmpRemote = this._getRemote();
-		let tmpFilePath = pPath || this.pict.AppData.ContentEditor.CurrentFile;
+		let tmpFilePath = pPath || this._resolveCurrentFilePath();
 		return !!(tmpRemote.FavoritesPathSet[tmpFilePath]);
 	}
 
 	/**
 	 * Toggle a file in/out of favorites.
 	 *
-	 * @param {string} [pPath] - File path (defaults to currently viewed file)
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
 	 */
 	toggleFavorite(pPath)
 	{
 		let tmpSelf = this;
 		let tmpRemote = this._getRemote();
-		let tmpFilePath = pPath || this.pict.AppData.ContentEditor.CurrentFile;
+		let tmpFilePath = pPath || this._resolveCurrentFilePath();
 
 		if (!tmpFilePath)
 		{
@@ -756,6 +910,47 @@ class CollectionManagerProvider extends libPictProvider
 		}
 		else
 		{
+			// Check if the current item is a folder
+			let tmpCurrentItem = this._resolveCurrentItem();
+			if (tmpCurrentItem && (tmpCurrentItem.Type === 'folder' || tmpCurrentItem.Type === 'archive'))
+			{
+				// Prompt user to choose folder reference vs folder contents
+				this.showFolderChoicePrompt((pChoice) =>
+				{
+					let tmpFolderItem =
+					{
+						Type: (pChoice === 'contents') ? 'folder-contents' : 'folder',
+						Path: tmpFilePath,
+						Label: '',
+						Note: ''
+					};
+
+					tmpSelf.addItemsToCollection(tmpRemote.FavoritesGUID, [tmpFolderItem], (pError, pData) =>
+					{
+						if (!pError && pData)
+						{
+							tmpRemote.FavoritesCollection = pData;
+							tmpSelf._rebuildFavoritesPathSet(pData);
+						}
+
+						let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
+						if (tmpTopBar && typeof tmpTopBar.updateFavoritesIcon === 'function')
+						{
+							tmpTopBar.updateFavoritesIcon();
+						}
+
+						tmpSelf._renderFavoritesPane();
+
+						let tmpToast = tmpSelf._getToast();
+						if (tmpToast)
+						{
+							tmpToast.showToast('Added to favorites');
+						}
+					});
+				});
+				return;
+			}
+
 			// Add to favorites — build item using same logic as addCurrentFileToCollection
 			let tmpItem =
 			{
@@ -828,23 +1023,59 @@ class CollectionManagerProvider extends libPictProvider
 	 * Add the currently viewed file to a collection.
 	 * If pGUID is not provided, uses the last-used collection.
 	 *
+	 * Context-aware: in the video explorer, adds a video-frame item with
+	 * the selected frame timestamp.  In the audio explorer, adds an audio
+	 * snippet.  Otherwise adds a file/subfile item.
+	 *
 	 * @param {string} [pGUID] - Collection GUID (omit for quick-add to last-used)
 	 * @returns {boolean} true if the add was initiated
 	 */
 	addCurrentFileToCollection(pGUID)
 	{
 		let tmpRemote = this._getRemote();
-		let tmpFilePath = this.pict.AppData.ContentEditor.CurrentFile;
-
-		if (!tmpFilePath)
-		{
-			return false;
-		}
-
 		let tmpTargetGUID = pGUID || tmpRemote.LastUsedCollectionGUID;
 		if (!tmpTargetGUID)
 		{
 			return false;
+		}
+
+		// If the video explorer is active, delegate to addVideoFrameToCollection
+		if (tmpRemote.ActiveMode === 'video-explorer')
+		{
+			return this.addVideoFrameToCollection(tmpTargetGUID);
+		}
+
+		// If the audio explorer is active, delegate to addAudioSnippetToCollection
+		if (tmpRemote.ActiveMode === 'audio-explorer')
+		{
+			return this.addAudioSnippetToCollection(tmpTargetGUID);
+		}
+
+		let tmpCurrentItem = this._resolveCurrentItem();
+
+		if (!tmpCurrentItem || !tmpCurrentItem.Path)
+		{
+			return false;
+		}
+
+		let tmpFilePath = tmpCurrentItem.Path;
+
+		// Check if the current item is a folder — prompt for folder vs contents
+		if (tmpCurrentItem.Type === 'folder' || tmpCurrentItem.Type === 'archive')
+		{
+			let tmpSelf = this;
+			this.showFolderChoicePrompt((pChoice) =>
+			{
+				let tmpFolderItem =
+				{
+					Type: (pChoice === 'contents') ? 'folder-contents' : 'folder',
+					Path: tmpFilePath,
+					Label: '',
+					Note: ''
+				};
+				tmpSelf.addItemsToCollection(tmpTargetGUID, [tmpFolderItem]);
+			});
+			return true;
 		}
 
 		// Build the item — detect archive subfiles and video timestamp context
@@ -924,12 +1155,16 @@ class CollectionManagerProvider extends libPictProvider
 			return false;
 		}
 
+		let tmpFileName = tmpVEX._currentPath.replace(/^.*\//, '');
+		let tmpTimestamp = tmpFrame.TimestampFormatted || this._formatTimestamp(tmpFrame.Timestamp);
 		let tmpItem =
 		{
 			Type: 'video-frame',
 			Path: tmpVEX._currentPath,
 			FrameTimestamp: tmpFrame.Timestamp,
-			Label: tmpFrame.TimestampFormatted || '',
+			FrameCacheKey: tmpVEX._frameData.CacheKey || null,
+			FrameFilename: tmpFrame.Filename || null,
+			Label: tmpFileName + ' @ ' + tmpTimestamp,
 			Note: ''
 		};
 
@@ -957,19 +1192,33 @@ class CollectionManagerProvider extends libPictProvider
 			return false;
 		}
 
-		let tmpFilePath = tmpRemote.CurrentViewerFile;
+		// Resolve file path: check video explorer first, then fall back to viewer file
+		let tmpFilePath = null;
+		if (tmpRemote.ActiveMode === 'video-explorer')
+		{
+			let tmpVEX = this.pict.views['RetoldRemote-VideoExplorer'];
+			if (tmpVEX && tmpVEX._currentPath)
+			{
+				tmpFilePath = tmpVEX._currentPath;
+			}
+		}
+		if (!tmpFilePath)
+		{
+			tmpFilePath = tmpRemote.CurrentViewerFile;
+		}
 		if (!tmpFilePath)
 		{
 			return false;
 		}
 
+		let tmpFileName = tmpFilePath.replace(/^.*\//, '');
 		let tmpItem =
 		{
 			Type: 'video-clip',
 			Path: tmpFilePath,
 			VideoStart: pStartTime,
 			VideoEnd: pEndTime,
-			Label: this._formatTimestamp(pStartTime) + ' - ' + this._formatTimestamp(pEndTime),
+			Label: tmpFileName + ': ' + this._formatTimestamp(pStartTime) + ' \u2013 ' + this._formatTimestamp(pEndTime),
 			Note: ''
 		};
 
@@ -1013,13 +1262,70 @@ class CollectionManagerProvider extends libPictProvider
 			tmpEnd = Math.round(tmpAEX._selectionEnd * tmpDuration * 100) / 100;
 		}
 
+		let tmpFileName = tmpAEX._currentPath.replace(/^.*\//, '');
 		let tmpItem =
 		{
-			Type: 'video-clip', // reuse video-clip type for audio time ranges
+			Type: 'audio-clip',
 			Path: tmpAEX._currentPath,
-			VideoStart: tmpStart,
-			VideoEnd: tmpEnd,
-			Label: this._formatTimestamp(tmpStart) + ' - ' + this._formatTimestamp(tmpEnd),
+			AudioStart: tmpStart,
+			AudioEnd: tmpEnd,
+			Label: tmpFileName + ': ' + this._formatTimestamp(tmpStart) + ' \u2013 ' + this._formatTimestamp(tmpEnd),
+			Note: ''
+		};
+
+		this.addItemsToCollection(tmpTargetGUID, [tmpItem]);
+		return true;
+	}
+
+	/**
+	 * Add an audio clip with explicit start/end timestamps in seconds.
+	 *
+	 * Unlike addAudioSnippetToCollection (which reads normalized selection
+	 * from the explorer view), this accepts absolute second values —
+	 * used by the pending-clip-context mechanism when saving a segment
+	 * triggers the collection picker dropdown.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {number} pStartTime - Start time in seconds
+	 * @param {number} pEndTime - End time in seconds
+	 * @returns {boolean} true if the add was initiated
+	 */
+	addAudioClipToCollection(pGUID, pStartTime, pEndTime)
+	{
+		let tmpRemote = this._getRemote();
+		let tmpTargetGUID = pGUID || tmpRemote.LastUsedCollectionGUID;
+		if (!tmpTargetGUID)
+		{
+			return false;
+		}
+
+		// Resolve file path: check audio explorer first, then fall back to viewer file
+		let tmpFilePath = null;
+		if (tmpRemote.ActiveMode === 'audio-explorer')
+		{
+			let tmpAEX = this.pict.views['RetoldRemote-AudioExplorer'];
+			if (tmpAEX && tmpAEX._currentPath)
+			{
+				tmpFilePath = tmpAEX._currentPath;
+			}
+		}
+		if (!tmpFilePath)
+		{
+			tmpFilePath = tmpRemote.CurrentViewerFile;
+		}
+		if (!tmpFilePath)
+		{
+			return false;
+		}
+
+		let tmpFileName = tmpFilePath.replace(/^.*\//, '');
+		let tmpItem =
+		{
+			Type: 'audio-clip',
+			Path: tmpFilePath,
+			AudioStart: pStartTime,
+			AudioEnd: pEndTime,
+			Label: tmpFileName + ': ' + this._formatTimestamp(pStartTime) + ' \u2013 ' + this._formatTimestamp(pEndTime),
 			Note: ''
 		};
 
@@ -1077,6 +1383,120 @@ class CollectionManagerProvider extends libPictProvider
 		};
 
 		this.addItemsToCollection(pGUID, [tmpItem]);
+	}
+
+	/**
+	 * Show a small inline dropdown prompting the user to choose between
+	 * adding a folder reference or the folder's contents.
+	 *
+	 * @param {Function} pCallback - Called with ('folder') or ('contents')
+	 */
+	showFolderChoicePrompt(pCallback)
+	{
+		let tmpSelf = this;
+
+		// Remove any existing folder choice dropdown
+		this.closeFolderChoicePrompt();
+
+		// Anchor to the add-to-collection button (star) or favorites button (heart)
+		let tmpAnchor = document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn')
+			|| document.getElementById('RetoldRemote-TopBar-FavoritesBtn');
+
+		// Build the dropdown
+		let tmpDropdown = document.createElement('div');
+		tmpDropdown.className = 'retold-remote-addcoll-dropdown';
+		tmpDropdown.id = 'RetoldRemote-FolderChoice-Dropdown';
+
+		// Header
+		let tmpHeader = document.createElement('div');
+		tmpHeader.className = 'retold-remote-addcoll-dropdown-item';
+		tmpHeader.style.fontWeight = '600';
+		tmpHeader.style.cursor = 'default';
+		tmpHeader.style.color = 'var(--retold-text-muted)';
+		tmpHeader.style.fontSize = '0.75rem';
+		tmpHeader.textContent = 'This is a folder:';
+		tmpDropdown.appendChild(tmpHeader);
+
+		// Option 1: Add folder reference
+		let tmpFolderBtn = document.createElement('button');
+		tmpFolderBtn.className = 'retold-remote-addcoll-dropdown-item';
+		tmpFolderBtn.textContent = '\uD83D\uDCC1 Add Folder';
+		tmpFolderBtn.onclick = function()
+		{
+			tmpSelf.closeFolderChoicePrompt();
+			pCallback('folder');
+		};
+		tmpDropdown.appendChild(tmpFolderBtn);
+
+		// Option 2: Add folder contents
+		let tmpContentsBtn = document.createElement('button');
+		tmpContentsBtn.className = 'retold-remote-addcoll-dropdown-item';
+		tmpContentsBtn.textContent = '\uD83D\uDCC2 Add Folder Contents';
+		tmpContentsBtn.onclick = function()
+		{
+			tmpSelf.closeFolderChoicePrompt();
+			pCallback('contents');
+		};
+		tmpDropdown.appendChild(tmpContentsBtn);
+
+		if (tmpAnchor)
+		{
+			tmpAnchor.style.position = 'relative';
+			tmpAnchor.appendChild(tmpDropdown);
+		}
+		else
+		{
+			// Fallback: position fixed near top-right
+			tmpDropdown.style.position = 'fixed';
+			tmpDropdown.style.top = '50px';
+			tmpDropdown.style.right = '20px';
+			document.body.appendChild(tmpDropdown);
+		}
+
+		// Close on outside click (deferred so the current click doesn't immediately close it)
+		setTimeout(function()
+		{
+			tmpSelf._boundCloseFolderChoice = function(pClickEvent)
+			{
+				if (!tmpDropdown.contains(pClickEvent.target) && pClickEvent.target !== tmpAnchor)
+				{
+					tmpSelf.closeFolderChoicePrompt();
+				}
+			};
+			document.addEventListener('click', tmpSelf._boundCloseFolderChoice);
+
+			// Close on Escape key
+			tmpSelf._boundCloseFolderChoiceKey = function(pKeyEvent)
+			{
+				if (pKeyEvent.key === 'Escape')
+				{
+					tmpSelf.closeFolderChoicePrompt();
+				}
+			};
+			document.addEventListener('keydown', tmpSelf._boundCloseFolderChoiceKey);
+		}, 10);
+	}
+
+	/**
+	 * Close the folder choice prompt dropdown.
+	 */
+	closeFolderChoicePrompt()
+	{
+		let tmpDropdown = document.getElementById('RetoldRemote-FolderChoice-Dropdown');
+		if (tmpDropdown)
+		{
+			tmpDropdown.remove();
+		}
+		if (this._boundCloseFolderChoice)
+		{
+			document.removeEventListener('click', this._boundCloseFolderChoice);
+			this._boundCloseFolderChoice = null;
+		}
+		if (this._boundCloseFolderChoiceKey)
+		{
+			document.removeEventListener('keydown', this._boundCloseFolderChoiceKey);
+			this._boundCloseFolderChoiceKey = null;
+		}
 	}
 
 	/**

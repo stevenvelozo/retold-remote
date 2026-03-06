@@ -35,7 +35,8 @@ class ToolDetector
 			vlc: this._detectVLC(),
 			p7zip: this._detectCommand('7z --help'),
 			audiowaveform: this._detectCommand('audiowaveform --version'),
-			ebook_convert: this._detectCommand('ebook-convert --version')
+			ebook_convert: this._detectCommand('ebook-convert --version'),
+			exiftool: this._detectCommand('exiftool -ver')
 		};
 
 		return this._capabilities;

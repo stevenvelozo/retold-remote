@@ -234,16 +234,60 @@ const _ViewConfiguration =
 		.retold-remote-vex-timeline
 		{
 			display: flex;
-			align-items: center;
+			align-items: flex-end;
 			gap: 8px;
 			padding: 8px 16px;
 			background: var(--retold-bg-secondary);
 			border-top: 1px solid var(--retold-border);
 			flex-shrink: 0;
 		}
-		.retold-remote-vex-timeline-bar
+		.retold-remote-vex-timeline-column
 		{
 			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+			min-width: 0;
+		}
+		.retold-remote-vex-slider-track
+		{
+			position: relative;
+			height: 18px;
+			user-select: none;
+			-webkit-user-select: none;
+		}
+		.retold-remote-vex-slider-handle
+		{
+			position: absolute;
+			bottom: 0;
+			width: 14px;
+			height: 18px;
+			background: var(--retold-accent);
+			border-radius: 3px 3px 0 0;
+			cursor: ew-resize;
+			transform: translateX(-50%);
+			z-index: 2;
+			transition: background 0.15s;
+			touch-action: none;
+		}
+		.retold-remote-vex-slider-handle:hover,
+		.retold-remote-vex-slider-handle.dragging
+		{
+			background: var(--retold-text-primary);
+		}
+		.retold-remote-vex-slider-handle::after
+		{
+			content: '';
+			position: absolute;
+			top: 5px;
+			left: 4px;
+			width: 6px;
+			height: 8px;
+			border-left: 2px solid rgba(0, 0, 0, 0.3);
+			border-right: 2px solid rgba(0, 0, 0, 0.3);
+		}
+		.retold-remote-vex-timeline-bar
+		{
 			height: 24px;
 			background: var(--retold-bg-tertiary);
 			border-radius: 4px;
@@ -275,6 +319,130 @@ const _ViewConfiguration =
 			font-size: 0.7rem;
 			color: var(--retold-text-dim);
 			white-space: nowrap;
+		}
+		/* Selection mode toggle button */
+		.retold-remote-vex-select-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-muted);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-select-btn:hover
+		{
+			color: var(--retold-text-primary);
+			border-color: var(--retold-accent);
+		}
+		.retold-remote-vex-select-btn.active
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+			border-color: var(--retold-accent);
+		}
+		/* Selection info display */
+		.retold-remote-vex-selection-info
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 0.75rem;
+			color: var(--retold-text-secondary);
+			font-family: var(--retold-font-mono, monospace);
+		}
+		.retold-remote-vex-selection-info-label
+		{
+			color: var(--retold-text-muted);
+		}
+		.retold-remote-vex-clear-btn
+		{
+			padding: 2px 8px;
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-text-dim);
+			font-size: 0.7rem;
+			cursor: pointer;
+			transition: color 0.15s, border-color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-clear-btn:hover
+		{
+			color: #e06c75;
+			border-color: #e06c75;
+		}
+		/* Generate frames across range */
+		.retold-remote-vex-generate-controls
+		{
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.retold-remote-vex-generate-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid var(--retold-accent);
+			border-radius: 3px;
+			background: transparent;
+			color: var(--retold-accent);
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-generate-btn:hover
+		{
+			background: var(--retold-accent);
+			color: var(--retold-bg-primary);
+		}
+		/* Save segment to collection button */
+		.retold-remote-vex-save-btn
+		{
+			padding: 3px 12px;
+			border: 1px solid #98c379;
+			border-radius: 3px;
+			background: transparent;
+			color: #98c379;
+			font-size: 0.75rem;
+			cursor: pointer;
+			transition: background 0.15s, color 0.15s;
+			font-family: inherit;
+		}
+		.retold-remote-vex-save-btn:hover
+		{
+			background: #98c379;
+			color: var(--retold-bg-primary);
+		}
+		.retold-remote-vex-range-frame-select
+		{
+			font-size: 0.75rem;
+			background: var(--retold-bg-tertiary);
+			color: var(--retold-text-primary);
+			border: 1px solid var(--retold-border);
+			border-radius: 3px;
+			padding: 2px 6px;
+			font-family: inherit;
+		}
+		/* Timeline selection overlay */
+		.retold-remote-vex-timeline-selection
+		{
+			position: absolute;
+			top: 0;
+			height: 100%;
+			background: color-mix(in srgb, var(--retold-accent) 20%, transparent);
+			border-left: 2px solid var(--retold-accent);
+			border-right: 2px solid var(--retold-accent);
+			pointer-events: none;
+			z-index: 1;
+			box-sizing: border-box;
+		}
+		.retold-remote-vex-timeline-bar.selecting
+		{
+			cursor: crosshair;
 		}
 		/* Frame preview overlay */
 		.retold-remote-vex-preview-backdrop
@@ -362,16 +530,748 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		this._frameData = null;
 		this._selectedFrameIndex = -1;
 		this._frameCount = 20;
-		this._fullResFrames = false;
+		this._fullResFrames = true;
 		this._customFrames = [];
+
+		// Selection mode and state for timeline range selection
+		this._selectionModeActive = false;
+		this._selectionStartTime = -1;
+		this._selectionEndTime = -1;
+		this._isSelectingRange = false;
+		this._isDraggingTimeline = false;
+		this._draggingHandle = null; // 'start', 'end', or null
+
+		// Cached provider references (resolved lazily)
+		this._fmt = null;
+		this._provider = null;
+	}
+
+	/**
+	 * Get the FormattingUtilities provider (lazy-cached).
+	 * @returns {Object} FormattingUtilities provider
+	 */
+	_getFmt()
+	{
+		if (!this._fmt)
+		{
+			this._fmt = this.pict.providers['RetoldRemote-FormattingUtilities'];
+		}
+		return this._fmt;
+	}
+
+	/**
+	 * Get the RetoldRemote-Provider (lazy-cached).
+	 * @returns {Object} Provider
+	 */
+	_getProvider()
+	{
+		if (!this._provider)
+		{
+			this._provider = this.pict.providers['RetoldRemote-Provider'];
+		}
+		return this._provider;
+	}
+
+	/**
+	 * Build a frame image URL from a cache key and filename.
+	 *
+	 * @param {string} pCacheKey - Cache directory key
+	 * @param {string} pFilename - Frame filename
+	 * @returns {string} URL path
+	 */
+	_buildFrameURL(pCacheKey, pFilename)
+	{
+		return '/api/media/video-frame/' + encodeURIComponent(pCacheKey) + '/' + encodeURIComponent(pFilename);
+	}
+
+	/**
+	 * Get the encoded path parameter for API calls.
+	 *
+	 * @param {string} pPath - File path
+	 * @returns {string} Encoded path parameter
+	 */
+	_getPathParam(pPath)
+	{
+		let tmpProvider = this._getProvider();
+		return tmpProvider ? tmpProvider._getPathParam(pPath) : encodeURIComponent(pPath);
+	}
+
+	// -----------------------------------------------------------------
+	//  Selection mode
+	// -----------------------------------------------------------------
+
+	/**
+	 * Toggle selection mode on or off.
+	 * When on, timeline clicks/drags create a selection range.
+	 * When off, timeline clicks extract frames (existing behavior).
+	 */
+	toggleSelectionMode()
+	{
+		this._selectionModeActive = !this._selectionModeActive;
+
+		let tmpBtn = document.getElementById('RetoldRemote-VEX-SelectBtn');
+		if (tmpBtn)
+		{
+			if (this._selectionModeActive)
+			{
+				tmpBtn.classList.add('active');
+			}
+			else
+			{
+				tmpBtn.classList.remove('active');
+			}
+		}
+
+		let tmpBar = document.getElementById('RetoldRemote-VEX-TimelineBar');
+		if (tmpBar)
+		{
+			if (this._selectionModeActive)
+			{
+				tmpBar.classList.add('selecting');
+			}
+			else
+			{
+				tmpBar.classList.remove('selecting');
+			}
+		}
+	}
+
+	/**
+	 * Extract clientX from a mouse or touch event.
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 * @returns {number|null} clientX, or null if unavailable
+	 */
+	_getClientX(pEvent)
+	{
+		if (pEvent.touches && pEvent.touches.length > 0)
+		{
+			return pEvent.touches[0].clientX;
+		}
+		if (pEvent.changedTouches && pEvent.changedTouches.length > 0)
+		{
+			return pEvent.changedTouches[0].clientX;
+		}
+		if (typeof pEvent.clientX === 'number')
+		{
+			return pEvent.clientX;
+		}
+		return null;
+	}
+
+	/**
+	 * Convert a mouse/touch event on the timeline bar to a timestamp.
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 * @returns {number} Timestamp in seconds, clamped to [0, Duration]
+	 */
+	_getTimelineTimestamp(pEvent)
+	{
+		let tmpBar = document.getElementById('RetoldRemote-VEX-TimelineBar');
+		if (!tmpBar || !this._frameData || !this._frameData.Duration)
+		{
+			return 0;
+		}
+
+		let tmpRect = tmpBar.getBoundingClientRect();
+		let tmpClientX = this._getClientX(pEvent);
+		if (tmpClientX === null)
+		{
+			return 0;
+		}
+
+		let tmpPercent = Math.max(0, Math.min(1, (tmpClientX - tmpRect.left) / tmpRect.width));
+		return tmpPercent * this._frameData.Duration;
+	}
+
+	/**
+	 * Set the selection start marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */
+	setSelectionStart(pTime)
+	{
+		this._selectionStartTime = pTime;
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+		this._saveState();
+	}
+
+	/**
+	 * Set the selection end marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */
+	setSelectionEnd(pTime)
+	{
+		this._selectionEndTime = pTime;
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+		this._saveState();
+	}
+
+	/**
+	 * Clear the selection range.
+	 */
+	clearSelection()
+	{
+		this._selectionStartTime = -1;
+		this._selectionEndTime = -1;
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+		this._saveState();
+	}
+
+	/**
+	 * Render (or remove) the selection overlay div inside the timeline bar.
+	 */
+	_renderSelectionOverlay()
+	{
+		let tmpBar = document.getElementById('RetoldRemote-VEX-TimelineBar');
+		if (!tmpBar)
+		{
+			return;
+		}
+
+		// Remove any existing overlay
+		let tmpExisting = tmpBar.querySelector('.retold-remote-vex-timeline-selection');
+		if (tmpExisting)
+		{
+			tmpExisting.remove();
+		}
+
+		if (this._selectionStartTime < 0 || this._selectionEndTime < 0 || !this._frameData || !this._frameData.Duration)
+		{
+			return;
+		}
+
+		let tmpStart = Math.min(this._selectionStartTime, this._selectionEndTime);
+		let tmpEnd = Math.max(this._selectionStartTime, this._selectionEndTime);
+		let tmpDuration = this._frameData.Duration;
+
+		let tmpLeftPercent = (tmpStart / tmpDuration) * 100;
+		let tmpWidthPercent = ((tmpEnd - tmpStart) / tmpDuration) * 100;
+
+		let tmpOverlay = document.createElement('div');
+		tmpOverlay.className = 'retold-remote-vex-timeline-selection';
+		tmpOverlay.style.left = tmpLeftPercent.toFixed(2) + '%';
+		tmpOverlay.style.width = tmpWidthPercent.toFixed(2) + '%';
+		tmpBar.appendChild(tmpOverlay);
+	}
+
+	/**
+	 * Update the selection info display with current selection range.
+	 */
+	_updateSelectionInfo()
+	{
+		let tmpInfoEl = document.getElementById('RetoldRemote-VEX-SelectionInfo');
+		let tmpClearBtn = document.getElementById('RetoldRemote-VEX-ClearBtn');
+		let tmpGenControls = document.getElementById('RetoldRemote-VEX-GenerateControls');
+
+		if (!tmpInfoEl)
+		{
+			return;
+		}
+
+		if (this._selectionStartTime < 0 || this._selectionEndTime < 0)
+		{
+			tmpInfoEl.style.display = 'none';
+			if (tmpClearBtn)
+			{
+				tmpClearBtn.style.display = 'none';
+			}
+			if (tmpGenControls)
+			{
+				tmpGenControls.style.display = 'none';
+			}
+			return;
+		}
+
+		let tmpStart = Math.min(this._selectionStartTime, this._selectionEndTime);
+		let tmpEnd = Math.max(this._selectionStartTime, this._selectionEndTime);
+		let tmpDuration = tmpEnd - tmpStart;
+
+		let tmpFmt = this._getFmt();
+		let tmpText = '<span class="retold-remote-vex-selection-info-label">Selection:</span> '
+			+ tmpFmt.formatTimestamp(tmpStart) + ' \u2013 ' + tmpFmt.formatTimestamp(tmpEnd)
+			+ ' (' + tmpFmt.formatTimestamp(tmpDuration) + ')';
+
+		tmpInfoEl.innerHTML = tmpText;
+		tmpInfoEl.style.display = '';
+		if (tmpClearBtn)
+		{
+			tmpClearBtn.style.display = '';
+		}
+		if (tmpGenControls)
+		{
+			tmpGenControls.style.display = '';
+		}
+	}
+
+	/**
+	 * Handle selection drag start (mousedown or touchstart on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */
+	_onSelectionDragStart(pEvent)
+	{
+		if (!this._selectionModeActive)
+		{
+			return;
+		}
+
+		// Don't start drag on marker clicks
+		let tmpMarker = pEvent.target.closest('.retold-remote-vex-timeline-marker');
+		if (tmpMarker)
+		{
+			return;
+		}
+
+		pEvent.preventDefault();
+		this._isDraggingTimeline = true;
+		let tmpTimestamp = this._getTimelineTimestamp(pEvent);
+		this._selectionStartTime = tmpTimestamp;
+		this._selectionEndTime = tmpTimestamp;
+		this._renderSelectionOverlay();
+	}
+
+	/**
+	 * Handle selection drag move (mousemove or touchmove on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */
+	_onSelectionDragMove(pEvent)
+	{
+		if (!this._isDraggingTimeline)
+		{
+			return;
+		}
+
+		pEvent.preventDefault();
+		this._selectionEndTime = this._getTimelineTimestamp(pEvent);
+		this._renderSelectionOverlay();
+	}
+
+	/**
+	 * Handle selection drag end (mouseup or touchend on window).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */
+	_onSelectionDragEnd(pEvent)
+	{
+		if (!this._isDraggingTimeline)
+		{
+			return;
+		}
+
+		this._isDraggingTimeline = false;
+
+		// If selection is too small (< 0.5s), clear it
+		let tmpRange = Math.abs(this._selectionEndTime - this._selectionStartTime);
+		if (tmpRange < 0.5)
+		{
+			this._selectionStartTime = -1;
+			this._selectionEndTime = -1;
+		}
+
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+		this._saveState();
+	}
+
+	/**
+	 * Clean up window-level event listeners (mouseup/touchend).
+	 * Called when the explorer is closed or refreshed.
+	 */
+	_cleanupWindowListeners()
+	{
+		if (this._boundDragEnd)
+		{
+			window.removeEventListener('mouseup', this._boundDragEnd);
+			window.removeEventListener('touchend', this._boundDragEnd);
+			this._boundDragEnd = null;
+		}
+	}
+
+	/**
+	 * Render (or clear) the slider handles in the slider track above
+	 * the timeline bar.  The handles sit at the start/end positions
+	 * of the current selection range.
+	 */
+	_renderSliderHandles()
+	{
+		let tmpTrack = document.getElementById('RetoldRemote-VEX-SliderTrack');
+		if (!tmpTrack)
+		{
+			return;
+		}
+
+		// Clear existing handles
+		tmpTrack.innerHTML = '';
+
+		if (this._selectionStartTime < 0 || this._selectionEndTime < 0
+			|| !this._frameData || !this._frameData.Duration)
+		{
+			tmpTrack.style.display = 'none';
+			return;
+		}
+
+		tmpTrack.style.display = '';
+
+		let tmpDuration = this._frameData.Duration;
+		let tmpStart = Math.min(this._selectionStartTime, this._selectionEndTime);
+		let tmpEnd = Math.max(this._selectionStartTime, this._selectionEndTime);
+
+		let tmpStartPercent = (tmpStart / tmpDuration) * 100;
+		let tmpEndPercent = (tmpEnd / tmpDuration) * 100;
+
+		let tmpStartHandle = document.createElement('div');
+		tmpStartHandle.className = 'retold-remote-vex-slider-handle';
+		tmpStartHandle.id = 'RetoldRemote-VEX-HandleStart';
+		tmpStartHandle.style.left = tmpStartPercent.toFixed(2) + '%';
+		tmpStartHandle.title = 'Drag to adjust selection start';
+		tmpTrack.appendChild(tmpStartHandle);
+
+		let tmpEndHandle = document.createElement('div');
+		tmpEndHandle.className = 'retold-remote-vex-slider-handle';
+		tmpEndHandle.id = 'RetoldRemote-VEX-HandleEnd';
+		tmpEndHandle.style.left = tmpEndPercent.toFixed(2) + '%';
+		tmpEndHandle.title = 'Drag to adjust selection end';
+		tmpTrack.appendChild(tmpEndHandle);
+	}
+
+	/**
+	 * Bind drag interaction to the slider handles (mouse + touch).
+	 * Uses the slider track element for coordinate computation.
+	 */
+	_bindSliderHandleDrag()
+	{
+		let tmpTrack = document.getElementById('RetoldRemote-VEX-SliderTrack');
+		if (!tmpTrack)
+		{
+			return;
+		}
+
+		let tmpSelf = this;
+
+		// Mouse handlers on the track (delegated — detect which handle)
+		tmpTrack.addEventListener('mousedown', (pEvent) =>
+		{
+			if (pEvent.button !== 0) { return; }
+			tmpSelf._onSliderDragStart(pEvent);
+		});
+
+		// Touch handlers on the track
+		tmpTrack.addEventListener('touchstart', (pEvent) =>
+		{
+			tmpSelf._onSliderDragStart(pEvent);
+		}, { passive: false });
+	}
+
+	/**
+	 * Begin dragging a slider handle.
+	 *
+	 * @param {Event} pEvent - mousedown or touchstart
+	 */
+	_onSliderDragStart(pEvent)
+	{
+		let tmpTarget = pEvent.target;
+		if (!tmpTarget.classList.contains('retold-remote-vex-slider-handle'))
+		{
+			return;
+		}
+
+		pEvent.preventDefault();
+		pEvent.stopPropagation();
+
+		// Determine which handle
+		if (tmpTarget.id === 'RetoldRemote-VEX-HandleStart')
+		{
+			this._draggingHandle = 'start';
+		}
+		else if (tmpTarget.id === 'RetoldRemote-VEX-HandleEnd')
+		{
+			this._draggingHandle = 'end';
+		}
+		else
+		{
+			return;
+		}
+
+		tmpTarget.classList.add('dragging');
+
+		let tmpSelf = this;
+
+		// Create window-level move/end handlers
+		let tmpBoundMove = (pMoveEvent) =>
+		{
+			tmpSelf._onSliderDragMove(pMoveEvent);
+		};
+
+		let tmpBoundEnd = (pEndEvent) =>
+		{
+			tmpSelf._onSliderDragEnd(pEndEvent);
+			window.removeEventListener('mousemove', tmpBoundMove);
+			window.removeEventListener('mouseup', tmpBoundEnd);
+			window.removeEventListener('touchmove', tmpBoundMove);
+			window.removeEventListener('touchend', tmpBoundEnd);
+		};
+
+		window.addEventListener('mousemove', tmpBoundMove);
+		window.addEventListener('mouseup', tmpBoundEnd);
+		window.addEventListener('touchmove', tmpBoundMove, { passive: false });
+		window.addEventListener('touchend', tmpBoundEnd);
+	}
+
+	/**
+	 * Handle slider handle drag move.
+	 *
+	 * @param {Event} pEvent - mousemove or touchmove
+	 */
+	_onSliderDragMove(pEvent)
+	{
+		if (!this._draggingHandle)
+		{
+			return;
+		}
+
+		pEvent.preventDefault();
+
+		// Compute timestamp from the timeline bar position
+		let tmpBar = document.getElementById('RetoldRemote-VEX-TimelineBar');
+		if (!tmpBar || !this._frameData || !this._frameData.Duration)
+		{
+			return;
+		}
+
+		let tmpRect = tmpBar.getBoundingClientRect();
+		let tmpClientX = this._getClientX(pEvent);
+		if (tmpClientX === null)
+		{
+			return;
+		}
+
+		let tmpPercent = Math.max(0, Math.min(1, (tmpClientX - tmpRect.left) / tmpRect.width));
+		let tmpTimestamp = tmpPercent * this._frameData.Duration;
+
+		if (this._draggingHandle === 'start')
+		{
+			this._selectionStartTime = tmpTimestamp;
+		}
+		else
+		{
+			this._selectionEndTime = tmpTimestamp;
+		}
+
+		// Update the handle position directly (avoid full re-render for performance)
+		let tmpHandle = document.getElementById(
+			this._draggingHandle === 'start' ? 'RetoldRemote-VEX-HandleStart' : 'RetoldRemote-VEX-HandleEnd'
+		);
+		if (tmpHandle)
+		{
+			tmpHandle.style.left = (tmpPercent * 100).toFixed(2) + '%';
+		}
+
+		this._renderSelectionOverlay();
+		this._updateSelectionInfo();
+	}
+
+	/**
+	 * Handle slider handle drag end.
+	 *
+	 * @param {Event} pEvent - mouseup or touchend
+	 */
+	_onSliderDragEnd(pEvent)
+	{
+		if (!this._draggingHandle)
+		{
+			return;
+		}
+
+		// Remove dragging class from handles
+		let tmpHandle = document.getElementById(
+			this._draggingHandle === 'start' ? 'RetoldRemote-VEX-HandleStart' : 'RetoldRemote-VEX-HandleEnd'
+		);
+		if (tmpHandle)
+		{
+			tmpHandle.classList.remove('dragging');
+		}
+
+		this._draggingHandle = null;
+
+		// If the selection is too small (< 0.5s), clear it
+		let tmpRange = Math.abs(this._selectionEndTime - this._selectionStartTime);
+		if (tmpRange < 0.5)
+		{
+			this._selectionStartTime = -1;
+			this._selectionEndTime = -1;
+		}
+
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+		this._saveState();
+	}
+
+	/**
+	 * Generate frames evenly spaced across the current selection range.
+	 * Uses the frame count from the GenerateControls dropdown.
+	 */
+	generateSelectionFrames()
+	{
+		if (this._selectionStartTime < 0 || this._selectionEndTime < 0)
+		{
+			return;
+		}
+
+		let tmpStart = Math.min(this._selectionStartTime, this._selectionEndTime);
+		let tmpEnd = Math.max(this._selectionStartTime, this._selectionEndTime);
+
+		let tmpCountEl = document.getElementById('RetoldRemote-VEX-RangeFrameCount');
+		let tmpCount = tmpCountEl ? parseInt(tmpCountEl.value, 10) : 5;
+		if (tmpCount < 1) { tmpCount = 5; }
+
+		let tmpData = this._frameData;
+		if (!tmpData || !tmpData.CacheKey)
+		{
+			return;
+		}
+
+		// Calculate evenly-spaced timestamps within the selection range
+		let tmpTimestamps = [];
+		if (tmpCount === 1)
+		{
+			tmpTimestamps.push(tmpStart + (tmpEnd - tmpStart) / 2);
+		}
+		else
+		{
+			let tmpStep = (tmpEnd - tmpStart) / (tmpCount - 1);
+			for (let i = 0; i < tmpCount; i++)
+			{
+				tmpTimestamps.push(tmpStart + (tmpStep * i));
+			}
+		}
+
+		let tmpSelf = this;
+		let tmpPathParam = this._getPathParam(this._currentPath);
+
+		// Launch all frame extractions (insert placeholder immediately, replace on success)
+		for (let i = 0; i < tmpTimestamps.length; i++)
+		{
+			let tmpTimestamp = tmpTimestamps[i];
+			let tmpPlaceholderId = 'retold-vex-gen-' + Date.now() + '-' + i;
+			tmpSelf._insertFramePlaceholder(tmpTimestamp, tmpPlaceholderId);
+
+			let tmpURL = '/api/media/video-frame-at?path=' + tmpPathParam
+				+ '&cacheKey=' + encodeURIComponent(tmpData.CacheKey)
+				+ '&timestamp=' + tmpTimestamp.toFixed(3);
+
+			if (tmpSelf._fullResFrames)
+			{
+				tmpURL += '&width=1920&height=1080';
+			}
+
+			// Use a closure to capture the correct placeholder id and timestamp
+			(function(fPlaceholderId, fTimestamp)
+			{
+				fetch(tmpURL)
+					.then((pResponse) => pResponse.json())
+					.then((pResult) =>
+					{
+						if (!pResult || !pResult.Success)
+						{
+							throw new Error(pResult ? pResult.Error : 'Extraction failed.');
+						}
+
+						// Store the custom frame
+						tmpSelf._customFrames.push(pResult);
+
+						// Replace the placeholder with the real frame
+						let tmpPlaceholder = document.getElementById(fPlaceholderId);
+						if (tmpPlaceholder)
+						{
+							let tmpFrameURL = tmpSelf._buildFrameURL(tmpData.CacheKey, pResult.Filename);
+							let tmpEscFilename = tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g, "\\'");
+							let tmpEscTimestamp = tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g, "\\'");
+							tmpPlaceholder.ondblclick = function() { pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename, tmpEscTimestamp); };
+							tmpPlaceholder.style.cursor = 'pointer';
+							tmpPlaceholder.innerHTML = '<img src="' + tmpFrameURL + '" alt="Frame at ' + tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted) + '" loading="lazy">'
+								+ '<div class="retold-remote-vex-frame-info">'
+								+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted) + '</span>'
+								+ '<span class="retold-remote-vex-frame-index">custom</span>'
+								+ '</div>';
+						}
+
+						// Re-render timeline to show the new custom marker
+						tmpSelf._renderTimeline();
+					})
+					.catch((pError) =>
+					{
+						let tmpPlaceholder = document.getElementById(fPlaceholderId);
+						if (tmpPlaceholder)
+						{
+							tmpPlaceholder.innerHTML = '<div class="retold-remote-vex-frame-loading">Failed: ' + tmpSelf._getFmt().escapeHTML(pError.message) + '</div>'
+								+ '<div class="retold-remote-vex-frame-info">'
+								+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._getFmt().formatTimestamp(fTimestamp) + '</span>'
+								+ '<span class="retold-remote-vex-frame-index">error</span>'
+								+ '</div>';
+						}
+					});
+			})(tmpPlaceholderId, tmpTimestamp);
+		}
+	}
+
+	/**
+	 * Save the current selection range as a video clip to the last-used
+	 * collection.  Mirrors the keyboard shortcut (s) behaviour.
+	 * If no last-used collection exists, opens the collection picker.
+	 */
+	saveSelectionToCollection()
+	{
+		if (this._selectionStartTime < 0 || this._selectionEndTime < 0)
+		{
+			return;
+		}
+
+		let tmpStart = Math.min(this._selectionStartTime, this._selectionEndTime);
+		let tmpEnd = Math.max(this._selectionStartTime, this._selectionEndTime);
+
+		let tmpCollMgr = this.pict.providers['RetoldRemote-CollectionManager'];
+		if (!tmpCollMgr)
+		{
+			return;
+		}
+
+		let tmpQuickGUID = tmpCollMgr.getQuickAddTargetGUID();
+		if (tmpQuickGUID)
+		{
+			tmpCollMgr.addVideoClipToCollection(tmpQuickGUID, tmpStart, tmpEnd);
+		}
+		else
+		{
+			// Store the segment data so the dropdown callback can use it
+			// instead of falling back to addCurrentFileToCollection
+			tmpCollMgr.setPendingClipContext({ Type: 'video-clip', Start: tmpStart, End: tmpEnd });
+			let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+			if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
+			{
+				tmpTopBar.showAddToCollectionDropdown();
+			}
+		}
 	}
 
 	/**
 	 * Show the video explorer for a given video file.
 	 *
 	 * @param {string} pFilePath - Relative file path
+	 * @param {number} [pSelectionStart] - Optional selection start time (seconds)
+	 * @param {number} [pSelectionEnd] - Optional selection end time (seconds)
 	 */
-	showExplorer(pFilePath)
+	showExplorer(pFilePath, pSelectionStart, pSelectionEnd)
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'video-explorer';
@@ -379,9 +1279,33 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		this._frameData = null;
 		this._selectedFrameIndex = -1;
 		this._customFrames = [];
+		this._selectionModeActive = false;
+		this._isSelectingRange = false;
+		this._isDraggingTimeline = false;
+		this._draggingHandle = null;
+
+		// Apply passed-in selection range, or reset
+		// _selectionFromCaller prevents _loadSavedCustomFrames from
+		// overwriting an explicit selection (e.g. when opening a saved clip)
+		if (typeof pSelectionStart === 'number' && pSelectionStart >= 0
+			&& typeof pSelectionEnd === 'number' && pSelectionEnd >= 0)
+		{
+			this._selectionStartTime = pSelectionStart;
+			this._selectionEndTime = pSelectionEnd;
+			this._selectionFromCaller = true;
+		}
+		else
+		{
+			this._selectionStartTime = -1;
+			this._selectionEndTime = -1;
+			this._selectionFromCaller = false;
+		}
+
+		// Clean up any window-level event listeners from previous session
+		this._cleanupWindowListeners();
 
 		// Update the hash
-		let tmpFragProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpFragProvider = this._getProvider();
 		let tmpFragId = tmpFragProvider ? tmpFragProvider.getFragmentIdentifier(pFilePath) : pFilePath;
 		window.location.hash = '#/explore/' + tmpFragId;
 
@@ -400,7 +1324,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		// Header
 		tmpHTML += '<div class="retold-remote-vex-header">';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';
-		tmpHTML += '<div class="retold-remote-vex-title">Video Explorer &mdash; ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-vex-title">Video Explorer &mdash; ' + this._getFmt().escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar (populated after frames load)
@@ -420,6 +1344,22 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpHTML += '<input type="checkbox" id="RetoldRemote-VEX-FullRes"' + (this._fullResFrames ? ' checked' : '') + ' onchange="pict.views[\'RetoldRemote-VideoExplorer\'].onFullResChange(this.checked)">';
 		tmpHTML += 'Full Res Frames</label>';
 		tmpHTML += '<button class="retold-remote-vex-refresh-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].refresh()">Refresh</button>';
+		tmpHTML += '<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 4px;"></span>';
+		tmpHTML += '<button class="retold-remote-vex-select-btn" id="RetoldRemote-VEX-SelectBtn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].toggleSelectionMode()">Select Range</button>';
+		tmpHTML += '<span class="retold-remote-vex-selection-info" id="RetoldRemote-VEX-SelectionInfo" style="display:none;"></span>';
+		tmpHTML += '<button class="retold-remote-vex-clear-btn" id="RetoldRemote-VEX-ClearBtn" style="display:none;" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].clearSelection()">Clear</button>';
+		tmpHTML += '<span id="RetoldRemote-VEX-GenerateControls" style="display:none;">';
+		tmpHTML += '<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 2px;"></span>';
+		tmpHTML += '<select class="retold-remote-vex-range-frame-select" id="RetoldRemote-VEX-RangeFrameCount">';
+		tmpHTML += '<option value="3">3</option>';
+		tmpHTML += '<option value="5" selected>5</option>';
+		tmpHTML += '<option value="10">10</option>';
+		tmpHTML += '<option value="20">20</option>';
+		tmpHTML += '</select>';
+		tmpHTML += '<button class="retold-remote-vex-generate-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].generateSelectionFrames()">Generate Frames</button>';
+		tmpHTML += '<span style="border-left:1px solid var(--retold-border);height:20px;margin:0 2px;"></span>';
+		tmpHTML += '<button class="retold-remote-vex-save-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].saveSelectionToCollection()" title="Save segment to collection (s)">Save Segment</button>';
+		tmpHTML += '</span>';
 		tmpHTML += '</div>';
 
 		// Body (loading initially)
@@ -459,8 +1399,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	_fetchFrames(pFilePath)
 	{
 		let tmpSelf = this;
-		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
-		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
+		let tmpPathParam = this._getPathParam(pFilePath);
 
 		let tmpURL = '/api/media/video-frames?path=' + tmpPathParam + '&count=' + this._frameCount;
 		if (this._fullResFrames)
@@ -480,6 +1419,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 
 				tmpSelf._frameData = pData;
 				tmpSelf._renderFrames();
+
+				// Load any previously saved custom frames
+				tmpSelf._loadSavedCustomFrames();
 			})
 			.catch((pError) =>
 			{
@@ -503,18 +1445,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		if (tmpInfoBar)
 		{
 			let tmpInfoHTML = '';
-			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted) + '</span></span>';
+			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Duration</span> <span class="retold-remote-vex-info-value">' + this._getFmt().escapeHTML(tmpData.DurationFormatted) + '</span></span>';
 			if (tmpData.VideoWidth && tmpData.VideoHeight)
 			{
 				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Resolution</span> <span class="retold-remote-vex-info-value">' + tmpData.VideoWidth + '&times;' + tmpData.VideoHeight + '</span></span>';
 			}
 			if (tmpData.Codec)
 			{
-				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.Codec) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Codec</span> <span class="retold-remote-vex-info-value">' + this._getFmt().escapeHTML(tmpData.Codec) + '</span></span>';
 			}
 			if (tmpData.FileSize)
 			{
-				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpData.FileSize) + '</span></span>';
+				tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Size</span> <span class="retold-remote-vex-info-value">' + this._getFmt().formatFileSize(tmpData.FileSize) + '</span></span>';
 			}
 			tmpInfoHTML += '<span class="retold-remote-vex-info-item"><span class="retold-remote-vex-info-label">Frames</span> <span class="retold-remote-vex-info-value">' + tmpData.FrameCount + '</span></span>';
 
@@ -538,12 +1480,12 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			for (let i = 0; i < tmpData.Frames.length; i++)
 			{
 				let tmpFrame = tmpData.Frames[i];
-				let tmpFrameURL = '/api/media/video-frame/' + tmpData.CacheKey + '/' + tmpFrame.Filename;
+				let tmpFrameURL = this._buildFrameURL(tmpData.CacheKey, tmpFrame.Filename);
 
 				tmpGridHTML += '<div class="retold-remote-vex-frame" id="retold-vex-frame-' + i + '" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame(' + i + ')" ondblclick="pict.views[\'RetoldRemote-VideoExplorer\'].openFrameFullsize(' + i + ')">';
-				tmpGridHTML += '<img src="' + tmpFrameURL + '" alt="Frame at ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '" loading="lazy">';
+				tmpGridHTML += '<img src="' + tmpFrameURL + '" alt="Frame at ' + this._getFmt().escapeHTML(tmpFrame.TimestampFormatted) + '" loading="lazy">';
 				tmpGridHTML += '<div class="retold-remote-vex-frame-info">';
-				tmpGridHTML += '<span class="retold-remote-vex-frame-timestamp">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '</span>';
+				tmpGridHTML += '<span class="retold-remote-vex-frame-timestamp">' + this._getFmt().escapeHTML(tmpFrame.TimestampFormatted) + '</span>';
 				tmpGridHTML += '<span class="retold-remote-vex-frame-index">#' + (tmpFrame.Index + 1) + '</span>';
 				tmpGridHTML += '</div>';
 				tmpGridHTML += '</div>';
@@ -576,8 +1518,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 
 		let tmpHTML = '';
 		tmpHTML += '<span class="retold-remote-vex-timeline-label">0:00</span>';
-		tmpHTML += '<div class="retold-remote-vex-timeline-bar" id="RetoldRemote-VEX-TimelineBar" '
-			+ 'onclick="pict.views[\'RetoldRemote-VideoExplorer\'].onTimelineClick(event)">';
+		tmpHTML += '<div class="retold-remote-vex-timeline-column">';
+		tmpHTML += '<div class="retold-remote-vex-slider-track" id="RetoldRemote-VEX-SliderTrack"></div>';
+		tmpHTML += '<div class="retold-remote-vex-timeline-bar" id="RetoldRemote-VEX-TimelineBar">';
 
 		for (let i = 0; i < tmpData.Frames.length; i++)
 		{
@@ -586,8 +1529,8 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			let tmpSelectedClass = (i === this._selectedFrameIndex) ? ' selected' : '';
 			tmpHTML += '<div class="retold-remote-vex-timeline-marker' + tmpSelectedClass + '" '
 				+ 'style="left:' + tmpPercent.toFixed(2) + '%;" '
-				+ 'title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.TimestampFormatted) + '" '
-				+ 'onclick="event.stopPropagation(); pict.views[\'RetoldRemote-VideoExplorer\'].selectFrame(' + i + ')">'
+				+ 'data-frame-index="' + i + '" '
+				+ 'title="' + this._getFmt().escapeHTML(tmpFrame.TimestampFormatted) + '">'
 				+ '</div>';
 		}
 
@@ -600,16 +1543,87 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpPercent = (tmpCustom.Timestamp / tmpData.Duration) * 100;
 				tmpHTML += '<div class="retold-remote-vex-timeline-marker custom" '
 					+ 'style="left:' + tmpPercent.toFixed(2) + '%;" '
-					+ 'title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpCustom.TimestampFormatted) + '">'
+					+ 'title="' + this._getFmt().escapeHTML(tmpCustom.TimestampFormatted) + '">'
 					+ '</div>';
 			}
 		}
 
-		tmpHTML += '</div>';
-		tmpHTML += '<span class="retold-remote-vex-timeline-label">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpData.DurationFormatted) + '</span>';
+		tmpHTML += '</div>'; // close timeline-bar
+		tmpHTML += '</div>'; // close timeline-column
+		tmpHTML += '<span class="retold-remote-vex-timeline-label">' + this._getFmt().escapeHTML(tmpData.DurationFormatted) + '</span>';
 
 		tmpTimeline.innerHTML = tmpHTML;
 		tmpTimeline.style.display = '';
+
+		// Bind event listeners (proper listeners instead of inline onclick)
+		let tmpSelf = this;
+		let tmpBar = document.getElementById('RetoldRemote-VEX-TimelineBar');
+		if (tmpBar)
+		{
+			// Click handler: extract frame (only when NOT in selection mode)
+			tmpBar.addEventListener('click', (pEvent) =>
+			{
+				// If clicking on a marker, select that frame
+				let tmpMarker = pEvent.target.closest('.retold-remote-vex-timeline-marker');
+				if (tmpMarker && tmpMarker.dataset.frameIndex !== undefined)
+				{
+					pEvent.stopPropagation();
+					tmpSelf.selectFrame(parseInt(tmpMarker.dataset.frameIndex, 10));
+					return;
+				}
+
+				// In selection mode, drag handles it — don't extract a frame
+				if (tmpSelf._selectionModeActive)
+				{
+					return;
+				}
+
+				tmpSelf.onTimelineClick(pEvent);
+			});
+
+			// Selection drag handlers (mouse)
+			tmpBar.addEventListener('mousedown', (pEvent) =>
+			{
+				if (pEvent.button !== 0) { return; }
+				tmpSelf._onSelectionDragStart(pEvent);
+			});
+			tmpBar.addEventListener('mousemove', (pEvent) =>
+			{
+				tmpSelf._onSelectionDragMove(pEvent);
+			});
+
+			// Selection drag handlers (touch)
+			tmpBar.addEventListener('touchstart', (pEvent) =>
+			{
+				tmpSelf._onSelectionDragStart(pEvent);
+			}, { passive: false });
+			tmpBar.addEventListener('touchmove', (pEvent) =>
+			{
+				tmpSelf._onSelectionDragMove(pEvent);
+			}, { passive: false });
+
+			// Clean up previous window listeners before attaching new ones
+			tmpSelf._cleanupWindowListeners();
+
+			// Window-level end handlers (so drag works even if cursor leaves the bar)
+			tmpSelf._boundDragEnd = (pEvent) => { tmpSelf._onSelectionDragEnd(pEvent); };
+			window.addEventListener('mouseup', tmpSelf._boundDragEnd);
+			window.addEventListener('touchend', tmpSelf._boundDragEnd);
+
+			// Apply selection mode cursor if active
+			if (tmpSelf._selectionModeActive)
+			{
+				tmpBar.classList.add('selecting');
+			}
+		}
+
+		// Render any existing selection overlay and slider handles
+		this._renderSelectionOverlay();
+		this._renderSliderHandles();
+		this._updateSelectionInfo();
+
+		// Bind slider handle drag events
+		this._bindSliderHandleDrag();
 	}
 
 	/**
@@ -695,8 +1709,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		let tmpTimestamp = tmpPercent * tmpData.Duration;
 
 		let tmpSelf = this;
-		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
-		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(this._currentPath) : encodeURIComponent(this._currentPath);
+		let tmpPathParam = this._getPathParam(this._currentPath);
 
 		// Build the URL — pass the same resolution settings as the initial extraction
 		let tmpURL = '/api/media/video-frame-at?path=' + tmpPathParam
@@ -728,14 +1741,14 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpPlaceholder = document.getElementById(tmpPlaceholderId);
 				if (tmpPlaceholder)
 				{
-					let tmpFrameURL = '/api/media/video-frame/' + tmpData.CacheKey + '/' + pResult.Filename;
-					let tmpEscFilename = tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.Filename).replace(/'/g, "\\'");
-					let tmpEscTimestamp = tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted).replace(/'/g, "\\'");
+					let tmpFrameURL = tmpSelf._buildFrameURL(tmpData.CacheKey, pResult.Filename);
+					let tmpEscFilename = tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g, "\\'");
+					let tmpEscTimestamp = tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g, "\\'");
 					tmpPlaceholder.ondblclick = function() { pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename, tmpEscTimestamp); };
 					tmpPlaceholder.style.cursor = 'pointer';
-					tmpPlaceholder.innerHTML = '<img src="' + tmpFrameURL + '" alt="Frame at ' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted) + '" loading="lazy">'
+					tmpPlaceholder.innerHTML = '<img src="' + tmpFrameURL + '" alt="Frame at ' + tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted) + '" loading="lazy">'
 						+ '<div class="retold-remote-vex-frame-info">'
-						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pResult.TimestampFormatted) + '</span>'
+						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted) + '</span>'
 						+ '<span class="retold-remote-vex-frame-index">custom</span>'
 						+ '</div>';
 				}
@@ -748,9 +1761,9 @@ class RetoldRemoteVideoExplorerView extends libPictView
 				let tmpPlaceholder = document.getElementById(tmpPlaceholderId);
 				if (tmpPlaceholder)
 				{
-					tmpPlaceholder.innerHTML = '<div class="retold-remote-vex-frame-loading">Failed: ' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message) + '</div>'
+					tmpPlaceholder.innerHTML = '<div class="retold-remote-vex-frame-loading">Failed: ' + tmpSelf._getFmt().escapeHTML(pError.message) + '</div>'
 						+ '<div class="retold-remote-vex-frame-info">'
-						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(tmpTimestamp) + '</span>'
+						+ '<span class="retold-remote-vex-frame-timestamp">' + tmpSelf._getFmt().formatTimestamp(tmpTimestamp) + '</span>'
 						+ '<span class="retold-remote-vex-frame-index">error</span>'
 						+ '</div>';
 				}
@@ -758,13 +1771,113 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	}
 
 	/**
-	 * Insert a loading placeholder frame card into the grid at the correct
-	 * chronological position based on timestamp.
-	 *
-	 * @param {number} pTimestamp    - Timestamp in seconds
-	 * @param {string} pPlaceholderId - DOM id for the placeholder element
+	 * Load previously saved custom frames from the server and restore
+	 * them into the grid.  Called after batch frames are rendered.
 	 */
-	_insertFramePlaceholder(pTimestamp, pPlaceholderId)
+	_loadSavedCustomFrames()
+	{
+		let tmpSelf = this;
+		let tmpPathParam = this._getPathParam(this._currentPath);
+
+		let tmpURL = '/api/media/video-explorer-state?path=' + tmpPathParam;
+
+		fetch(tmpURL)
+			.then((pResponse) => pResponse.json())
+			.then((pData) =>
+			{
+				if (!pData || !pData.Success || !pData.State)
+				{
+					return;
+				}
+
+				// Restore selection state if present — but only when the
+				// caller did not already provide an explicit selection
+				// (e.g. opening a saved clip from a collection)
+				if (tmpSelf._selectionFromCaller)
+				{
+					// Caller supplied selection — render it but do not overwrite
+					tmpSelf._selectionFromCaller = false;
+					tmpSelf._renderSelectionOverlay();
+					tmpSelf._renderSliderHandles();
+					tmpSelf._updateSelectionInfo();
+				}
+				else if (typeof pData.State.SelectionStartTime === 'number' && pData.State.SelectionStartTime >= 0
+					&& typeof pData.State.SelectionEndTime === 'number' && pData.State.SelectionEndTime >= 0)
+				{
+					tmpSelf._selectionStartTime = pData.State.SelectionStartTime;
+					tmpSelf._selectionEndTime = pData.State.SelectionEndTime;
+					tmpSelf._renderSelectionOverlay();
+					tmpSelf._renderSliderHandles();
+					tmpSelf._updateSelectionInfo();
+				}
+
+				// Restore custom frames
+				if (!Array.isArray(pData.State.CustomFrames) || pData.State.CustomFrames.length === 0)
+				{
+					return;
+				}
+
+				let tmpSavedFrames = pData.State.CustomFrames;
+
+				// Restore each saved custom frame into the grid
+				for (let i = 0; i < tmpSavedFrames.length; i++)
+				{
+					let tmpFrame = tmpSavedFrames[i];
+					// Use the frame's own CacheKey for the image URL
+					let tmpCacheKey = tmpFrame.CacheKey || (tmpSelf._frameData ? tmpSelf._frameData.CacheKey : '');
+					let tmpFrameURL = tmpSelf._buildFrameURL(tmpCacheKey, tmpFrame.Filename);
+
+					// Add to in-memory array
+					tmpSelf._customFrames.push(tmpFrame);
+
+					// Insert card into grid at correct position
+					tmpSelf._insertRestoredCustomFrame(tmpFrame, tmpFrameURL);
+				}
+
+				// Re-render timeline to show all custom markers
+				tmpSelf._renderTimeline();
+			})
+			.catch((pError) =>
+			{
+				// Silent failure — explorer still works, just without restored custom frames
+			});
+	}
+
+	/**
+	 * Save the current selection state to the server (fire-and-forget).
+	 * Called whenever the selection changes.
+	 */
+	_saveState()
+	{
+		if (!this._currentPath)
+		{
+			return;
+		}
+
+		let tmpBody =
+		{
+			Path: this._currentPath,
+			SelectionStartTime: this._selectionStartTime,
+			SelectionEndTime: this._selectionEndTime
+		};
+
+		fetch('/api/media/video-explorer-state',
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(tmpBody)
+		}).catch(() => {});
+	}
+
+	/**
+	 * Insert a DOM element into the frame grid at the correct chronological
+	 * position based on timestamp.  Shared helper for placeholder and
+	 * restored frame insertion.
+	 *
+	 * @param {HTMLElement} pElement - The element to insert
+	 * @param {number} pTimestamp - Timestamp in seconds for sort position
+	 */
+	_insertFrameAtPosition(pElement, pTimestamp)
 	{
 		let tmpGrid = document.querySelector('.retold-remote-vex-grid');
 		if (!tmpGrid)
@@ -772,27 +1885,12 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			return;
 		}
 
-		let tmpData = this._frameData;
-
-		// Build the placeholder element
-		let tmpEl = document.createElement('div');
-		tmpEl.className = 'retold-remote-vex-frame custom-frame';
-		tmpEl.id = pPlaceholderId;
-		tmpEl.innerHTML = '<div class="retold-remote-vex-frame-loading">Extracting...</div>'
-			+ '<div class="retold-remote-vex-frame-info">'
-			+ '<span class="retold-remote-vex-frame-timestamp">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatTimestamp(pTimestamp) + '</span>'
-			+ '<span class="retold-remote-vex-frame-index">custom</span>'
-			+ '</div>';
-
-		// Find the correct insertion position by comparing timestamps
-		// The grid children correspond to tmpData.Frames (original batch) plus any previously inserted custom frames
 		let tmpInsertBefore = null;
 		let tmpChildren = tmpGrid.children;
 
 		for (let i = 0; i < tmpChildren.length; i++)
 		{
 			let tmpChild = tmpChildren[i];
-			// Get the timestamp from the info bar text
 			let tmpTsEl = tmpChild.querySelector('.retold-remote-vex-frame-timestamp');
 			if (tmpTsEl)
 			{
@@ -807,12 +1905,60 @@ class RetoldRemoteVideoExplorerView extends libPictView
 
 		if (tmpInsertBefore)
 		{
-			tmpGrid.insertBefore(tmpEl, tmpInsertBefore);
+			tmpGrid.insertBefore(pElement, tmpInsertBefore);
 		}
 		else
 		{
-			tmpGrid.appendChild(tmpEl);
+			tmpGrid.appendChild(pElement);
 		}
+	}
+
+	/**
+	 * Insert a fully-rendered custom frame card into the grid at its
+	 * correct chronological position.  Used when restoring saved state
+	 * (the image already exists on disk, so no loading placeholder needed).
+	 *
+	 * @param {Object} pFrame    - Saved custom frame object { Timestamp, TimestampFormatted, Filename, CacheKey }
+	 * @param {string} pFrameURL - Image URL for the frame
+	 */
+	_insertRestoredCustomFrame(pFrame, pFrameURL)
+	{
+		let tmpEl = document.createElement('div');
+		tmpEl.className = 'retold-remote-vex-frame custom-frame';
+
+		let tmpEscFilename = this._getFmt().escapeHTML(pFrame.Filename).replace(/'/g, "\\'");
+		let tmpEscTimestamp = this._getFmt().escapeHTML(pFrame.TimestampFormatted).replace(/'/g, "\\'");
+
+		tmpEl.style.cursor = 'pointer';
+		tmpEl.ondblclick = function() { pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename, tmpEscTimestamp); };
+		tmpEl.innerHTML = '<img src="' + pFrameURL + '" alt="Frame at ' + this._getFmt().escapeHTML(pFrame.TimestampFormatted) + '" loading="lazy">'
+			+ '<div class="retold-remote-vex-frame-info">'
+			+ '<span class="retold-remote-vex-frame-timestamp">' + this._getFmt().escapeHTML(pFrame.TimestampFormatted) + '</span>'
+			+ '<span class="retold-remote-vex-frame-index">custom</span>'
+			+ '</div>';
+
+		this._insertFrameAtPosition(tmpEl, pFrame.Timestamp);
+	}
+
+	/**
+	 * Insert a loading placeholder frame card into the grid at the correct
+	 * chronological position based on timestamp.
+	 *
+	 * @param {number} pTimestamp    - Timestamp in seconds
+	 * @param {string} pPlaceholderId - DOM id for the placeholder element
+	 */
+	_insertFramePlaceholder(pTimestamp, pPlaceholderId)
+	{
+		let tmpEl = document.createElement('div');
+		tmpEl.className = 'retold-remote-vex-frame custom-frame';
+		tmpEl.id = pPlaceholderId;
+		tmpEl.innerHTML = '<div class="retold-remote-vex-frame-loading">Extracting...</div>'
+			+ '<div class="retold-remote-vex-frame-info">'
+			+ '<span class="retold-remote-vex-frame-timestamp">' + this._getFmt().formatTimestamp(pTimestamp) + '</span>'
+			+ '<span class="retold-remote-vex-frame-index">custom</span>'
+			+ '</div>';
+
+		this._insertFrameAtPosition(tmpEl, pTimestamp);
 
 		// Scroll the new element into view
 		tmpEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -841,7 +1987,28 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	}
 
 	/**
-	 * Open a frame at full size in an inline preview overlay.
+	 * Open any frame in the preview overlay.
+	 * Unified entry point for both regular and custom frames.
+	 *
+	 * @param {Object} pFrameInfo - Frame descriptor { Type: 'regular'|'custom', Index, Filename, TimestampFormatted, CacheKey }
+	 */
+	openFrame(pFrameInfo)
+	{
+		if (!this._frameData || !pFrameInfo)
+		{
+			return;
+		}
+
+		let tmpCacheKey = pFrameInfo.CacheKey || this._frameData.CacheKey;
+		let tmpURL = this._buildFrameURL(tmpCacheKey, pFrameInfo.Filename);
+		let tmpLabel = pFrameInfo.TimestampFormatted + '  \u00b7  '
+			+ (pFrameInfo.Type === 'regular' ? '#' + ((pFrameInfo.Index || 0) + 1) : 'custom');
+
+		this._showFramePreview(tmpURL, tmpLabel, pFrameInfo.Type, pFrameInfo.Index);
+	}
+
+	/**
+	 * Open a regular frame at full size (convenience wrapper for grid onclick).
 	 *
 	 * @param {number} pIndex - Frame index in the regular Frames array
 	 */
@@ -853,14 +2020,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		}
 
 		let tmpFrame = this._frameData.Frames[pIndex];
-		let tmpURL = '/api/media/video-frame/' + this._frameData.CacheKey + '/' + tmpFrame.Filename;
-		let tmpLabel = tmpFrame.TimestampFormatted + '  \u00b7  #' + (tmpFrame.Index + 1);
-
-		this._showFramePreview(tmpURL, tmpLabel, 'regular', pIndex);
+		this.openFrame(
+		{
+			Type: 'regular',
+			Index: pIndex,
+			Filename: tmpFrame.Filename,
+			TimestampFormatted: tmpFrame.TimestampFormatted,
+			CacheKey: this._frameData.CacheKey
+		});
 	}
 
 	/**
-	 * Open a custom frame (from timeline click) in the preview overlay.
+	 * Open a custom frame in the preview overlay (convenience wrapper).
 	 *
 	 * @param {string} pFilename - Custom frame filename
 	 * @param {string} pTimestamp - Formatted timestamp label
@@ -872,21 +2043,30 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			return;
 		}
 
-		let tmpURL = '/api/media/video-frame/' + this._frameData.CacheKey + '/' + pFilename;
-		let tmpLabel = pTimestamp + '  \u00b7  custom';
-
-		// Find the custom frame index for navigation
+		// Find the custom frame by filename
 		let tmpCustomIndex = -1;
+		let tmpCacheKey = this._frameData.CacheKey;
 		for (let i = 0; i < this._customFrames.length; i++)
 		{
 			if (this._customFrames[i].Filename === pFilename)
 			{
 				tmpCustomIndex = i;
+				if (this._customFrames[i].CacheKey)
+				{
+					tmpCacheKey = this._customFrames[i].CacheKey;
+				}
 				break;
 			}
 		}
 
-		this._showFramePreview(tmpURL, tmpLabel, 'custom', tmpCustomIndex);
+		this.openFrame(
+		{
+			Type: 'custom',
+			Index: tmpCustomIndex,
+			Filename: pFilename,
+			TimestampFormatted: pTimestamp,
+			CacheKey: tmpCacheKey
+		});
 	}
 
 	/**
@@ -925,6 +2105,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 					Timestamp: tmpCustom.Timestamp,
 					TimestampFormatted: tmpCustom.TimestampFormatted,
 					Filename: tmpCustom.Filename,
+					CacheKey: tmpCustom.CacheKey || null,
 					Label: tmpCustom.TimestampFormatted + '  \u00b7  custom'
 				});
 			}
@@ -981,11 +2162,11 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpHTML += '<div class="retold-remote-vex-preview-header">';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';
-		tmpHTML += '<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel) + '</div>';
+		tmpHTML += '<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">' + this._getFmt().escapeHTML(pLabel) + '</div>';
 		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';
 		tmpHTML += '</div>';
 		tmpHTML += '<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';
-		tmpHTML += '<img src="' + pURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pLabel) + '">';
+		tmpHTML += '<img src="' + pURL + '" alt="' + this._getFmt().escapeHTML(pLabel) + '">';
 		tmpHTML += '</div>';
 
 		tmpBackdrop.innerHTML = tmpHTML;
@@ -1075,12 +2256,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			return;
 		}
 
-		let tmpURL = '/api/media/video-frame/' + this._frameData.CacheKey + '/' + tmpFrame.Filename;
+		// For custom frames, use the frame's own CacheKey (may differ from current batch)
+		let tmpCacheKey = this._frameData.CacheKey;
+		if (tmpFrame.Type === 'custom' && tmpFrame.CacheKey)
+		{
+			tmpCacheKey = tmpFrame.CacheKey;
+		}
+		let tmpURL = this._buildFrameURL(tmpCacheKey, tmpFrame.Filename);
 
 		let tmpBody = document.getElementById('RetoldRemote-VEX-PreviewBody');
 		if (tmpBody)
 		{
-			tmpBody.innerHTML = '<img src="' + tmpURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFrame.Label) + '">';
+			tmpBody.innerHTML = '<img src="' + tmpURL + '" alt="' + this._getFmt().escapeHTML(tmpFrame.Label) + '">';
 		}
 
 		let tmpTitle = document.getElementById('RetoldRemote-VEX-PreviewTitle');
@@ -1153,6 +2340,8 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	 */
 	goBack()
 	{
+		this._cleanupWindowListeners();
+
 		if (this._currentPath)
 		{
 			let tmpApp = this.pict.views['RetoldRemote-MediaViewer'];
@@ -1182,7 +2371,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		if (tmpBody)
 		{
 			tmpBody.innerHTML = '<div class="retold-remote-vex-error">'
-				+ '<div class="retold-remote-vex-error-message">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage || 'An error occurred.') + '</div>'
+				+ '<div class="retold-remote-vex-error-message">' + this._getFmt().escapeHTML(pMessage || 'An error occurred.') + '</div>'
 				+ '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'
 				+ '</div>';
 		}

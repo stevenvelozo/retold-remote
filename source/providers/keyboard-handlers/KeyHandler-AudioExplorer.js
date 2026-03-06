@@ -50,15 +50,16 @@ function handleAudioExplorerKey(pGalleryNav, pEvent)
 			break;
 
 		case 'a':
+		case 's':
 			pEvent.preventDefault();
 			{
-				let tmpRemote = pGalleryNav.pict.AppData.RetoldRemote;
 				let tmpCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
 				if (tmpCollMgr)
 				{
-					if (tmpRemote.LastUsedCollectionGUID)
+					let tmpQuickGUID = tmpCollMgr.getQuickAddTargetGUID();
+					if (tmpQuickGUID)
 					{
-						tmpCollMgr.addAudioSnippetToCollection(tmpRemote.LastUsedCollectionGUID);
+						tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);
 					}
 					else
 					{

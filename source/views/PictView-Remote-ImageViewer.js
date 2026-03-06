@@ -35,6 +35,39 @@ const _ViewConfiguration =
 		{
 			opacity: 1;
 		}
+		.retold-remote-image-explore-btn
+		{
+			position: absolute;
+			bottom: 16px;
+			right: 16px;
+			background: rgba(40, 44, 52, 0.85);
+			color: #abb2bf;
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			padding: 6px 14px;
+			border-radius: 6px;
+			font-size: 0.82rem;
+			cursor: pointer;
+			z-index: 20;
+			transition: background 0.2s, color 0.2s;
+		}
+		.retold-remote-image-explore-btn:hover
+		{
+			background: rgba(97, 175, 239, 0.3);
+			color: #fff;
+		}
+		.retold-remote-image-large-badge
+		{
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			background: rgba(40, 44, 52, 0.85);
+			color: #e5c07b;
+			padding: 4px 10px;
+			border-radius: 4px;
+			font-size: 0.72rem;
+			pointer-events: none;
+			z-index: 20;
+		}
 	`
 };
 
@@ -53,6 +86,11 @@ class RetoldRemoteImageViewerView extends libPictView
 	/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
+	 *
+	 * The MediaViewer handles probe-before-load logic (preview URLs
+	 * for large images, auto-launch of OpenSeadragon for >8192px).
+	 * This method just sets up display and always shows the Explore
+	 * button so the user can press `e` on any image.
 	 */
 	initImage()
 	{
@@ -85,6 +123,21 @@ class RetoldRemoteImageViewerView extends libPictView
 			}, 100);
 		};
 		window.addEventListener('resize', this._resizeHandler);
+
+		// Always show the Explore button so `e` works on any image
+		this._showExploreButton();
+	}
+
+	/**
+	 * Show the explore button for opening the deep-zoom explorer.
+	 */
+	_showExploreButton()
+	{
+		let tmpBtn = document.getElementById('RetoldRemote-ImageExploreBtn');
+		if (tmpBtn)
+		{
+			tmpBtn.style.display = '';
+		}
 	}
 
 	/**

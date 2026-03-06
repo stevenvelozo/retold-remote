@@ -20,6 +20,8 @@ const libPath = require('path');
 const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 
+const AUDIO_EXPLORER_STATE_SOURCE = 'retold-remote-audio-explorer-state';
+
 const _DefaultServiceConfiguration =
 {
 	"ContentPath": ".",
@@ -50,7 +52,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 		// Detect audiowaveform availability
 		this.hasAudiowaveform = this._detectCommand('audiowaveform --version');
 
-		this.fable.log.info('Audio Waveform Service: using ParimeBinaryStorage (categories: audio-waveforms, audio-segments)');
+		this.fable.log.info('Audio Waveform Service: waveforms/segments in ParimeBinaryStorage, state in Bibliograph');
 		this.fable.log.info(`  audiowaveform tool: ${this.hasAudiowaveform ? 'available' : 'not found (using ffprobe fallback)'}`);
 	}
 
@@ -658,6 +660,97 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 		}
 
 		return null;
+	}
+
+	// --- Explorer State Persistence (Bibliograph) ---
+
+	/**
+	 * Create the Bibliograph source for audio explorer state.
+	 * Must be called after Parime initialization completes.
+	 *
+	 * @param {Function} fCallback - Callback(pError)
+	 */
+	initializeState(fCallback)
+	{
+		this.fable.Bibliograph.createSource(AUDIO_EXPLORER_STATE_SOURCE,
+			(pError) =>
+			{
+				if (pError)
+				{
+					this.fable.log.warn('Audio explorer state source creation notice: ' + pError.message);
+				}
+				return fCallback();
+			});
+	}
+
+	/**
+	 * Build a Bibliograph record key for audio explorer state.
+	 *
+	 * @param {string} pRelPath - Relative path to the audio file
+	 * @param {number} pMtimeMs - Modification time in ms
+	 * @returns {string} 16-character hex hash
+	 */
+	_buildExplorerStateKey(pRelPath, pMtimeMs)
+	{
+		let tmpInput = `audio-explorer:${pRelPath}:${pMtimeMs}`;
+		return libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
+	}
+
+	/**
+	 * Load saved explorer state for an audio file from Bibliograph.
+	 *
+	 * @param {string} pRelPath - Relative path to the audio file
+	 * @param {number} pMtimeMs - Modification time in ms
+	 * @param {function} fCallback - Callback(pError, pState) where pState is the record or null
+	 */
+	loadExplorerState(pRelPath, pMtimeMs, fCallback)
+	{
+		let tmpKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
+
+		this.fable.Bibliograph.read(AUDIO_EXPLORER_STATE_SOURCE, tmpKey,
+			(pError, pRecord) =>
+			{
+				if (pError || !pRecord)
+				{
+					return fCallback(null, null);
+				}
+
+				return fCallback(null, pRecord);
+			});
+	}
+
+	/**
+	 * Save explorer state for an audio file to Bibliograph.
+	 *
+	 * @param {string} pRelPath - Relative path to the audio file
+	 * @param {number} pMtimeMs - Modification time in ms
+	 * @param {Object} pStateData - State object { Selections, ViewStart, ViewEnd }
+	 * @param {function} fCallback - Callback(pError)
+	 */
+	saveExplorerState(pRelPath, pMtimeMs, pStateData, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
+
+		let tmpState =
+		{
+			Path: pRelPath,
+			ModifiedMs: pMtimeMs,
+			Selections: pStateData.Selections || [],
+			ViewStart: (typeof pStateData.ViewStart === 'number') ? pStateData.ViewStart : 0,
+			ViewEnd: (typeof pStateData.ViewEnd === 'number') ? pStateData.ViewEnd : 1,
+			UpdatedAt: new Date().toISOString()
+		};
+
+		this.fable.Bibliograph.write(AUDIO_EXPLORER_STATE_SOURCE, tmpKey, tmpState,
+			(pError) =>
+			{
+				if (pError)
+				{
+					tmpSelf.fable.log.error('Audio Explorer State: failed to save state for ' + pRelPath + ': ' + pError.message);
+				}
+				return fCallback(pError);
+			});
 	}
 }
 

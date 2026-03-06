@@ -101,7 +101,15 @@ const _FallbackExtensionMap =
 	// Video
 	'.mp4': 'file-video', '.avi': 'file-video', '.mov': 'file-video',
 	'.mkv': 'file-video', '.webm': 'file-video', '.wmv': 'file-video',
-	'.flv': 'file-video', '.m4v': 'file-video',
+	'.flv': 'file-video', '.m4v': 'file-video', '.ogv': 'file-video',
+	'.mpg': 'file-video', '.mpeg': 'file-video', '.mpe': 'file-video',
+	'.mpv': 'file-video', '.m2v': 'file-video', '.ts': 'file-video',
+	'.mts': 'file-video', '.m2ts': 'file-video', '.vob': 'file-video',
+	'.3gp': 'file-video', '.3g2': 'file-video', '.f4v': 'file-video',
+	'.rm': 'file-video', '.rmvb': 'file-video', '.divx': 'file-video',
+	'.asf': 'file-video', '.mxf': 'file-video', '.dv': 'file-video',
+	'.nsv': 'file-video', '.nuv': 'file-video', '.y4m': 'file-video',
+	'.wtv': 'file-video', '.swf': 'file-video', '.dat': 'file-video',
 
 	// Ebooks
 	'.epub': 'file-text', '.mobi': 'file-text'
@@ -698,6 +706,39 @@ class RetoldRemoteIconProvider extends libPictProvider
 	onAfterInitialize()
 	{
 		this.injectCSS();
+
+		// Ensure all video/audio extensions from the shared extension maps are
+		// registered in the icon extension map.  The base map imported from
+		// pict-section-filebrowser only covers a handful of common formats;
+		// this fills in the gaps (mpg, mpeg, ts, mts, 3gp, etc.)
+		let tmpVideoExts = Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);
+		for (let i = 0; i < tmpVideoExts.length; i++)
+		{
+			let tmpKey = '.' + tmpVideoExts[i];
+			if (!this._extensionMap[tmpKey])
+			{
+				this._extensionMap[tmpKey] = 'file-video';
+			}
+		}
+		let tmpAudioExts = Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);
+		for (let i = 0; i < tmpAudioExts.length; i++)
+		{
+			let tmpKey = '.' + tmpAudioExts[i];
+			if (!this._extensionMap[tmpKey])
+			{
+				this._extensionMap[tmpKey] = 'file-audio';
+			}
+		}
+		let tmpImageExts = Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);
+		for (let i = 0; i < tmpImageExts.length; i++)
+		{
+			let tmpKey = '.' + tmpImageExts[i];
+			if (!this._extensionMap[tmpKey])
+			{
+				this._extensionMap[tmpKey] = 'file-image';
+			}
+		}
+
 		return super.onAfterInitialize();
 	}
 }

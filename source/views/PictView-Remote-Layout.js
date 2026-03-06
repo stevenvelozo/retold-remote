@@ -502,6 +502,7 @@ const _ViewConfiguration =
 							<div class="content-editor-sidebar-tabs">
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
 								<button class="content-editor-sidebar-tab" data-tab="favorites" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('favorites')">Favorites</button>
+								<button class="content-editor-sidebar-tab" data-tab="info" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('info')">Info</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
 								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
@@ -509,6 +510,7 @@ const _ViewConfiguration =
 							<div class="content-editor-sidebar-pane" data-pane="favorites" id="RetoldRemote-Favorites-Container" style="display:none">
 								<div id="RetoldRemote-Favorites-Body"></div>
 							</div>
+							<div class="content-editor-sidebar-pane" data-pane="info" id="RetoldRemote-Info-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
@@ -687,6 +689,16 @@ class RetoldRemoteLayoutView extends libPictView
 		if (pTab === 'favorites')
 		{
 			this.renderFavoritesList();
+		}
+
+		// Info tab: render the file info panel
+		if (pTab === 'info')
+		{
+			let tmpInfoView = this.pict.views['RetoldRemote-FileInfoPanel'];
+			if (tmpInfoView)
+			{
+				tmpInfoView.render();
+			}
 		}
 
 		// Collections tab: move the collections container into the mobile pane

@@ -62,6 +62,51 @@ function handleViewerKey(pGalleryNav, pEvent)
 				pEvent.preventDefault();
 				pGalleryNav._streamWithVLC();
 				return;
+
+			case 'a':
+				pEvent.preventDefault();
+				{
+					let tmpMenuCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+					if (tmpMenuCollMgr)
+					{
+						let tmpMenuQuickGUID = tmpMenuCollMgr.getQuickAddTargetGUID();
+						if (tmpMenuQuickGUID)
+						{
+							tmpMenuCollMgr.addCurrentFileToCollection(tmpMenuQuickGUID);
+						}
+						else
+						{
+							let tmpMenuTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
+							if (tmpMenuTopBar && typeof tmpMenuTopBar.showAddToCollectionDropdown === 'function')
+							{
+								tmpMenuTopBar.showAddToCollectionDropdown();
+							}
+						}
+					}
+				}
+				return;
+
+			case 'b':
+				pEvent.preventDefault();
+				{
+					let tmpMenuCollManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+					if (tmpMenuCollManager)
+					{
+						tmpMenuCollManager.togglePanel();
+					}
+				}
+				return;
+
+			case 'h':
+				pEvent.preventDefault();
+				{
+					let tmpMenuFavManager = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
+					if (tmpMenuFavManager)
+					{
+						tmpMenuFavManager.toggleFavorite();
+					}
+				}
+				return;
 		}
 		return;
 	}
@@ -137,15 +182,15 @@ function handleViewerKey(pGalleryNav, pEvent)
 				let tmpCollMgr = pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];
 				if (tmpCollMgr)
 				{
-					let tmpRemote = pGalleryNav.pict.AppData.RetoldRemote;
-					if (tmpRemote.LastUsedCollectionGUID)
+					let tmpQuickGUID = tmpCollMgr.getQuickAddTargetGUID();
+					if (tmpQuickGUID)
 					{
 						// Quick-add the currently viewed file
-						tmpCollMgr.addCurrentFileToCollection(tmpRemote.LastUsedCollectionGUID);
+						tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);
 					}
 					else
 					{
-						// No last-used collection — open the picker
+						// No active or last-used collection — open the picker
 						let tmpTopBar = pGalleryNav.pict.views['ContentEditor-TopBar'];
 						if (tmpTopBar && typeof tmpTopBar.showAddToCollectionDropdown === 'function')
 						{
@@ -170,6 +215,37 @@ function handleViewerKey(pGalleryNav, pEvent)
 		case 'd':
 			pEvent.preventDefault();
 			pGalleryNav._toggleDistractionFree();
+			break;
+
+		case 'e':
+			pEvent.preventDefault();
+			{
+				let tmpMediaType = tmpRemote.CurrentViewerMediaType;
+				if (tmpMediaType === 'video')
+				{
+					let tmpVEX = pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];
+					if (tmpVEX)
+					{
+						tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);
+					}
+				}
+				else if (tmpMediaType === 'audio')
+				{
+					let tmpAEX = pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];
+					if (tmpAEX)
+					{
+						tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);
+					}
+				}
+				else if (tmpMediaType === 'image')
+				{
+					let tmpIEX = pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];
+					if (tmpIEX)
+					{
+						tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);
+					}
+				}
+			}
 			break;
 
 		case '1':

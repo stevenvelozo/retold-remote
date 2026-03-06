@@ -561,26 +561,32 @@ class RetoldRemoteMediaViewerView extends libPictView
 		let tmpDFHotspotDisplay = tmpRemote._distractionFreeMode ? '' : ' style="display:none"';
 		tmpHTML += '<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"' + tmpDFHotspotDisplay + '></div>';
 
-		switch (pMediaType)
+		// For images, probe size first to decide what URL to use
+		if (pMediaType === 'image')
 		{
-			case 'image':
-				tmpHTML += this._buildImageHTML(tmpContentURL, tmpFileName);
-				break;
-			case 'video':
-				tmpHTML += this._buildVideoHTML(tmpContentURL, tmpFileName);
-				break;
-			case 'audio':
-				tmpHTML += this._buildAudioHTML(tmpContentURL, tmpFileName);
-				break;
-			case 'text':
-				tmpHTML += this._buildTextHTML(tmpContentURL, tmpFileName, pFilePath);
-				break;
-			case 'document':
-				tmpHTML += this._buildDocumentHTML(tmpContentURL, tmpFileName, pFilePath);
-				break;
-			default:
-				tmpHTML += this._buildFallbackHTML(tmpContentURL, tmpFileName);
-				break;
+			// Show a placeholder while we probe
+			tmpHTML += this._buildImagePlaceholderHTML(tmpFileName);
+		}
+		else
+		{
+			switch (pMediaType)
+			{
+				case 'video':
+					tmpHTML += this._buildVideoHTML(tmpContentURL, tmpFileName);
+					break;
+				case 'audio':
+					tmpHTML += this._buildAudioHTML(tmpContentURL, tmpFileName);
+					break;
+				case 'text':
+					tmpHTML += this._buildTextHTML(tmpContentURL, tmpFileName, pFilePath);
+					break;
+				case 'document':
+					tmpHTML += this._buildDocumentHTML(tmpContentURL, tmpFileName, pFilePath);
+					break;
+				default:
+					tmpHTML += this._buildFallbackHTML(tmpContentURL, tmpFileName);
+					break;
+			}
 		}
 
 		// File info overlay (hidden by default)
@@ -594,6 +600,12 @@ class RetoldRemoteMediaViewerView extends libPictView
 		if (tmpViewerContainer)
 		{
 			tmpViewerContainer.innerHTML = tmpHTML;
+		}
+
+		// For images, probe dimensions and decide how to display
+		if (pMediaType === 'image')
+		{
+			this._probeAndShowImage(pFilePath, tmpContentURL, tmpFileName);
 		}
 
 		// Fetch and populate file info
@@ -619,6 +631,88 @@ class RetoldRemoteMediaViewerView extends libPictView
 		this._setupSwipeNavigation();
 
 		// Set up distraction-free exit hotspot (double-click/tap top-left)
+		this._setupDFExitHotspot();
+
+		// Update topbar
+		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
+		if (tmpTopBar)
+		{
+			tmpTopBar.updateInfo();
+		}
+	}
+
+	/**
+	 * Show an image in the viewer from a direct URL, bypassing the
+	 * content-path and probe logic.  Used for video-frame collection
+	 * items whose images live at a cache URL rather than a file path.
+	 *
+	 * @param {string} pURL          - Direct image URL
+	 * @param {string} pDisplayTitle - Title to show in the viewer header
+	 * @param {string} [pFilePath]   - Original file path (for state tracking)
+	 */
+	showDirectImage(pURL, pDisplayTitle, pFilePath)
+	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		tmpRemote.ActiveMode = 'viewer';
+		tmpRemote.CurrentViewerFile = pFilePath || '';
+		tmpRemote.CurrentViewerMediaType = 'image';
+		tmpRemote.VideoMenuActive = false;
+
+		// Show viewer, hide gallery
+		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
+		let tmpViewerContainer = document.getElementById('RetoldRemote-Viewer-Container');
+
+		if (tmpGalleryContainer) tmpGalleryContainer.style.display = 'none';
+		if (tmpViewerContainer) tmpViewerContainer.style.display = 'block';
+
+		let tmpEscapedTitle = this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pDisplayTitle);
+
+		// Build the viewer HTML (same chrome as showMedia, but with a direct <img>)
+		let tmpHTML = '<div class="retold-remote-viewer">';
+
+		// Header with nav
+		tmpHTML += '<div class="retold-remote-viewer-header">';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';
+		tmpHTML += '<div class="retold-remote-viewer-title">' + tmpEscapedTitle + '</div>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';
+		tmpHTML += '</div>';
+
+		// Body with the frame image
+		tmpHTML += '<div class="retold-remote-viewer-body">';
+
+		// Distraction-free toggle
+		let tmpDFActive = tmpRemote._distractionFreeMode ? ' active' : '';
+		tmpHTML += '<button class="retold-remote-df-toggle' + tmpDFActive + '" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';
+
+		// Exit hotspot for distraction-free mode
+		let tmpDFHotspotDisplay = tmpRemote._distractionFreeMode ? '' : ' style="display:none"';
+		tmpHTML += '<div class="retold-remote-df-exit-hotspot" id="RetoldRemote-DF-ExitHotspot"' + tmpDFHotspotDisplay + '></div>';
+
+		// Direct image tag — no probing needed for cached frame images
+		tmpHTML += '<img id="RetoldRemote-ImageViewer-Img" src="' + pURL + '" alt="' + tmpEscapedTitle + '"'
+			+ ' style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;"'
+			+ ' onload="if (pict.views[\'RetoldRemote-ImageViewer\']) pict.views[\'RetoldRemote-ImageViewer\'].initImage();"'
+			+ ' onclick="if (pict.views[\'RetoldRemote-ImageViewer\']) pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom();"'
+			+ ' />';
+
+		// File info overlay (hidden by default)
+		tmpHTML += '<div class="retold-remote-fileinfo-overlay" id="RetoldRemote-FileInfo-Overlay">';
+		tmpHTML += '<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Frame: ' + tmpEscapedTitle + '</span></div>';
+		tmpHTML += '</div>';
+
+		tmpHTML += '</div>'; // end body
+		tmpHTML += '</div>'; // end viewer
+
+		if (tmpViewerContainer)
+		{
+			tmpViewerContainer.innerHTML = tmpHTML;
+		}
+
+		// Set up swipe navigation and DF exit
+		this._setupSwipeNavigation();
 		this._setupDFExitHotspot();
 
 		// Update topbar
@@ -758,10 +852,12 @@ class RetoldRemoteMediaViewerView extends libPictView
 			if (tmpActive)
 			{
 				tmpToggle.classList.add('active');
+				tmpToggle.style.display = 'none';
 			}
 			else
 			{
 				tmpToggle.classList.remove('active');
+				tmpToggle.style.display = '';
 			}
 		}
 
@@ -844,13 +940,150 @@ class RetoldRemoteMediaViewerView extends libPictView
 		}
 	}
 
+	/**
+	 * Build a lightweight placeholder while probing image dimensions.
+	 */
+	_buildImagePlaceholderHTML(pFileName)
+	{
+		let tmpEscapedName = this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);
+		return '<div id="RetoldRemote-ImagePlaceholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--retold-text-dim);font-size:0.85rem;">'
+			+ 'Loading ' + tmpEscapedName + '\u2026</div>';
+	}
+
+	/**
+	 * Probe image dimensions, then decide how to display it:
+	 *   - ≤4096px: load direct content URL in the normal viewer
+	 *   - 4096–8192px: load a server preview in the normal viewer, show Explore button
+	 *   - >8192px: auto-launch the OpenSeadragon image explorer
+	 *
+	 * @param {string} pFilePath   - Relative file path
+	 * @param {string} pContentURL - Direct content URL (fallback)
+	 * @param {string} pFileName   - Display name
+	 */
+	_probeAndShowImage(pFilePath, pContentURL, pFileName)
+	{
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
+
+		fetch('/api/media/image-preview?path=' + tmpPathParam)
+			.then((pResponse) => pResponse.json())
+			.then((pResult) =>
+			{
+				// If the probe failed or sharp isn't available, fall back to direct load
+				if (!pResult || !pResult.Success)
+				{
+					tmpSelf._insertImageTag(pContentURL, pFileName, false);
+					return;
+				}
+
+				let tmpLongest = Math.max(pResult.OrigWidth || 0, pResult.OrigHeight || 0);
+
+				// >8192px: auto-launch the OpenSeadragon image explorer
+				if (tmpLongest > 8192)
+				{
+					let tmpIEX = tmpSelf.pict.views['RetoldRemote-ImageExplorer'];
+					if (tmpIEX)
+					{
+						tmpIEX.showExplorer(pFilePath);
+						return;
+					}
+					// Fall through if explorer view isn't available
+				}
+
+				// 4096–8192px: use the server preview
+				if (pResult.NeedsPreview && pResult.CacheKey)
+				{
+					let tmpPreviewURL = '/api/media/image-preview-file/' +
+						encodeURIComponent(pResult.CacheKey) + '/' +
+						encodeURIComponent(pResult.OutputFilename);
+					tmpSelf._insertImageTag(tmpPreviewURL, pFileName, true,
+						pResult.OrigWidth, pResult.OrigHeight);
+					return;
+				}
+
+				// ≤4096px: load the direct content URL
+				tmpSelf._insertImageTag(pContentURL, pFileName, false);
+			})
+			.catch(() =>
+			{
+				// Probe failed — fall back to direct load
+				tmpSelf._insertImageTag(pContentURL, pFileName, false);
+			});
+	}
+
+	/**
+	 * Insert the actual <img> tag into the viewer body, replacing the placeholder.
+	 *
+	 * @param {string}  pURL         - Image URL to load
+	 * @param {string}  pFileName    - Display name
+	 * @param {boolean} pShowExplore - Whether to show the Explore button immediately
+	 * @param {number}  [pOrigWidth] - Original image width (for the badge)
+	 * @param {number}  [pOrigHeight]- Original image height (for the badge)
+	 */
+	_insertImageTag(pURL, pFileName, pShowExplore, pOrigWidth, pOrigHeight)
+	{
+		let tmpPlaceholder = document.getElementById('RetoldRemote-ImagePlaceholder');
+		if (!tmpPlaceholder || !tmpPlaceholder.parentElement)
+		{
+			return;
+		}
+
+		let tmpEscapedName = this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);
+		let tmpFragment = document.createDocumentFragment();
+
+		// The image element
+		let tmpImg = document.createElement('img');
+		tmpImg.src = pURL;
+		tmpImg.alt = tmpEscapedName;
+		tmpImg.id = 'RetoldRemote-ImageViewer-Img';
+		tmpImg.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;';
+		tmpImg.onload = function () { pict.views['RetoldRemote-ImageViewer'].initImage(); };
+		tmpImg.onclick = function () { pict.views['RetoldRemote-ImageViewer'].toggleZoom(); };
+		tmpFragment.appendChild(tmpImg);
+
+		// Explore button (always present, initially hidden unless pShowExplore)
+		let tmpBtn = document.createElement('button');
+		tmpBtn.className = 'retold-remote-image-explore-btn';
+		tmpBtn.id = 'RetoldRemote-ImageExploreBtn';
+		tmpBtn.style.display = pShowExplore ? '' : 'none';
+		tmpBtn.title = 'Open in deep-zoom explorer (e)';
+		tmpBtn.innerHTML = '&#128269; Explore';
+		tmpBtn.onclick = function ()
+		{
+			pict.views['RetoldRemote-ImageExplorer'].showExplorer(
+				pict.AppData.RetoldRemote.CurrentViewerFile);
+		};
+		tmpFragment.appendChild(tmpBtn);
+
+		// Dimension badge for large images
+		if (pShowExplore && pOrigWidth && pOrigHeight)
+		{
+			let tmpBadge = document.createElement('div');
+			tmpBadge.id = 'RetoldRemote-LargeImageBadge';
+			tmpBadge.className = 'retold-remote-image-large-badge';
+			tmpBadge.textContent = pOrigWidth + ' \u00d7 ' + pOrigHeight + ' px (preview)';
+			tmpFragment.appendChild(tmpBadge);
+		}
+
+		tmpPlaceholder.parentElement.replaceChild(tmpFragment, tmpPlaceholder);
+	}
+
 	_buildImageHTML(pURL, pFileName)
 	{
-		return '<img src="' + pURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName) + '" '
+		let tmpEscapedName = this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);
+		let tmpHTML = '<img src="' + pURL + '" alt="' + tmpEscapedName + '" '
 			+ 'style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;" '
 			+ 'id="RetoldRemote-ImageViewer-Img" '
 			+ 'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '
 			+ 'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';
+		// Explore button (hidden by default, shown by ImageViewer for large images)
+		tmpHTML += '<button class="retold-remote-image-explore-btn" id="RetoldRemote-ImageExploreBtn" '
+			+ 'style="display:none" '
+			+ 'onclick="pict.views[\'RetoldRemote-ImageExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
+			+ 'title="Open in deep-zoom explorer (e)">'
+			+ '&#128269; Explore</button>';
+		return tmpHTML;
 	}
 
 	_buildVideoHTML(pURL, pFileName)
