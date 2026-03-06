@@ -9187,7 +9187,7 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;if(typeof tmpSettings.ListShowExtension==='boolean')tmpRemote.ListShowExtension=tmpSettings.ListShowExtension;if(typeof tmpSettings.ListShowSize==='boolean')tmpRemote.ListShowSize=tmpSettings.ListShowSize;if(typeof tmpSettings.ListShowDate==='boolean')tmpRemote.ListShowDate=tmpSettings.ListShowDate;if(typeof tmpSettings.CollectionsPanelOpen==='boolean')tmpRemote.CollectionsPanelOpen=tmpSettings.CollectionsPanelOpen;if(tmpSettings.CollectionsPanelWidth)tmpRemote.CollectionsPanelWidth=tmpSettings.CollectionsPanelWidth;if(tmpSettings.LastUsedCollectionGUID)tmpRemote.LastUsedCollectionGUID=tmpSettings.LastUsedCollectionGUID;if(tmpSettings.FavoritesGUID)tmpRemote.FavoritesGUID=tmpSettings.FavoritesGUID;if(tmpSettings.AISortSettings&&typeof tmpSettings.AISortSettings==='object'){if(tmpSettings.AISortSettings.AIEndpoint)tmpRemote.AISortSettings.AIEndpoint=tmpSettings.AISortSettings.AIEndpoint;if(tmpSettings.AISortSettings.AIModel)tmpRemote.AISortSettings.AIModel=tmpSettings.AISortSettings.AIModel;if(tmpSettings.AISortSettings.AIProvider)tmpRemote.AISortSettings.AIProvider=tmpSettings.AISortSettings.AIProvider;if(tmpSettings.AISortSettings.NamingTemplate)tmpRemote.AISortSettings.NamingTemplate=tmpSettings.AISortSettings.NamingTemplate;}}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":111,"./RetoldRemote-ExtensionMaps.js":114,"./providers/Pict-Provider-AISortManager.js":115,"./providers/Pict-Provider-CollectionManager.js":116,"./providers/Pict-Provider-FormattingUtilities.js":117,"./providers/Pict-Provider-GalleryFilterSort.js":118,"./providers/Pict-Provider-GalleryNavigation.js":119,"./providers/Pict-Provider-RetoldRemote.js":120,"./providers/Pict-Provider-RetoldRemoteIcons.js":121,"./providers/Pict-Provider-RetoldRemoteTheme.js":122,"./providers/Pict-Provider-ToastNotification.js":123,"./views/PictView-Remote-AudioExplorer.js":130,"./views/PictView-Remote-CollectionsPanel.js":131,"./views/PictView-Remote-FileInfoPanel.js":132,"./views/PictView-Remote-Gallery.js":133,"./views/PictView-Remote-ImageExplorer.js":134,"./views/PictView-Remote-ImageViewer.js":135,"./views/PictView-Remote-Layout.js":136,"./views/PictView-Remote-MediaViewer.js":137,"./views/PictView-Remote-SettingsPanel.js":138,"./views/PictView-Remote-TopBar.js":139,"./views/PictView-Remote-VLCSetup.js":140,"./views/PictView-Remote-VideoExplorer.js":141,"pict-section-filebrowser":54,"retold-content-system":97}],113:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":111,"./RetoldRemote-ExtensionMaps.js":114,"./providers/Pict-Provider-AISortManager.js":118,"./providers/Pict-Provider-CollectionManager.js":119,"./providers/Pict-Provider-FormattingUtilities.js":120,"./providers/Pict-Provider-GalleryFilterSort.js":121,"./providers/Pict-Provider-GalleryNavigation.js":122,"./providers/Pict-Provider-RetoldRemote.js":123,"./providers/Pict-Provider-RetoldRemoteIcons.js":124,"./providers/Pict-Provider-RetoldRemoteTheme.js":125,"./providers/Pict-Provider-ToastNotification.js":126,"./views/PictView-Remote-AudioExplorer.js":136,"./views/PictView-Remote-CollectionsPanel.js":137,"./views/PictView-Remote-FileInfoPanel.js":138,"./views/PictView-Remote-Gallery.js":139,"./views/PictView-Remote-ImageExplorer.js":140,"./views/PictView-Remote-ImageViewer.js":141,"./views/PictView-Remote-Layout.js":142,"./views/PictView-Remote-MediaViewer.js":143,"./views/PictView-Remote-SettingsPanel.js":144,"./views/PictView-Remote-TopBar.js":145,"./views/PictView-Remote-VLCSetup.js":146,"./views/PictView-Remote-VideoExplorer.js":147,"pict-section-filebrowser":54,"retold-content-system":97}],113:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
@@ -9202,6 +9202,192 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
  * @param {string} pExtension - Extension with or without leading dot (e.g. '.png' or 'png')
  * @returns {string} 'image', 'video', 'audio', 'document', or 'other'
  */function getCategory(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(ImageExtensions[tmpExt])return'image';if(VideoExtensions[tmpExt])return'video';if(AudioExtensions[tmpExt])return'audio';if(DocumentExtensions[tmpExt])return'document';return'other';}module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;},{}],115:[function(require,module,exports){/**
+ * CollectionManager — Add Items Mixin
+ *
+ * Convenience methods for adding various media types to collections.
+ * Handles context detection (video explorer, audio explorer, viewer,
+ * gallery cursor) and builds the correct item objects.
+ *
+ * Mixed into CollectionManagerProvider.prototype via Object.assign().
+ * All methods have access to this._getRemote(), this._getToast(), etc.
+ *
+ * @license MIT
+ */module.exports={// -- Convenience Methods ----------------------------------------------
+/**
+	 * Add the currently viewed file to a collection.
+	 * If pGUID is not provided, uses the last-used collection.
+	 *
+	 * Context-aware: in the video explorer, adds a video-frame item with
+	 * the selected frame timestamp.  In the audio explorer, adds an audio
+	 * snippet.  Otherwise adds a file/subfile item.
+	 *
+	 * @param {string} [pGUID] - Collection GUID (omit for quick-add to last-used)
+	 * @returns {boolean} true if the add was initiated
+	 */addCurrentFileToCollection:function addCurrentFileToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// If the video explorer is active, delegate to addVideoFrameToCollection
+if(tmpRemote.ActiveMode==='video-explorer'){return this.addVideoFrameToCollection(tmpTargetGUID);}// If the audio explorer is active, delegate to addAudioSnippetToCollection
+if(tmpRemote.ActiveMode==='audio-explorer'){return this.addAudioSnippetToCollection(tmpTargetGUID);}let tmpCurrentItem=this._resolveCurrentItem();if(!tmpCurrentItem||!tmpCurrentItem.Path){return false;}let tmpFilePath=tmpCurrentItem.Path;// Check if the current item is a folder — prompt for folder vs contents
+if(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive'){let tmpSelf=this;this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpTargetGUID,[tmpFolderItem]);});return true;}// Build the item — detect archive subfiles and video timestamp context
+let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile — path contains an archive extension followed by /
+let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// If we're viewing a video with the player active, capture current timestamp as video-frame
+if(tmpRemote.ActiveMode==='viewer'&&tmpRemote.CurrentViewerMediaType==='video'&&!tmpRemote.VideoMenuActive){let tmpVideo=document.getElementById('RetoldRemote-VideoPlayer');if(tmpVideo&&!isNaN(tmpVideo.currentTime)&&tmpVideo.currentTime>0){tmpItem.Type='video-frame';tmpItem.FrameTimestamp=Math.round(tmpVideo.currentTime*100)/100;}}// If we have a hash for this file, include it
+let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;},/**
+	 * Add a video frame from the video explorer to a collection.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @returns {boolean} true if the add was initiated
+	 */addVideoFrameToCollection:function addVideoFrameToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(!tmpVEX||!tmpVEX._currentPath||!tmpVEX._frameData){return false;}let tmpFrameIndex=tmpVEX._selectedFrameIndex;if(tmpFrameIndex<0){// No frame selected — use first frame
+tmpFrameIndex=0;}let tmpFrame=tmpVEX._frameData.Frames[tmpFrameIndex];if(!tmpFrame){return false;}let tmpFileName=tmpVEX._currentPath.replace(/^.*\//,'');let tmpTimestamp=tmpFrame.TimestampFormatted||this._formatTimestamp(tmpFrame.Timestamp);let tmpItem={Type:'video-frame',Path:tmpVEX._currentPath,FrameTimestamp:tmpFrame.Timestamp,FrameCacheKey:tmpVEX._frameData.CacheKey||null,FrameFilename:tmpFrame.Filename||null,Label:tmpFileName+' @ '+tmpTimestamp,Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;},/**
+	 * Add a video clip (time range) to a collection from the video player.
+	 *
+	 * Uses the current playback position and a duration offset, or explicit
+	 * start/end timestamps.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {number} pStartTime - Start time in seconds
+	 * @param {number} pEndTime - End time in seconds
+	 * @returns {boolean} true if the add was initiated
+	 */addVideoClipToCollection:function addVideoClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check video explorer first, then fall back to viewer file
+let tmpFilePath=null;if(tmpRemote.ActiveMode==='video-explorer'){let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX&&tmpVEX._currentPath){tmpFilePath=tmpVEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'video-clip',Path:tmpFilePath,VideoStart:pStartTime,VideoEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;},/**
+	 * Add an audio snippet (selected range) from the audio explorer.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @returns {boolean} true if the add was initiated
+	 */addAudioSnippetToCollection:function addAudioSnippetToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX||!tmpAEX._currentPath||!tmpAEX._waveformData){return false;}let tmpDuration=tmpAEX._waveformData.Duration||0;if(tmpDuration<=0){return false;}// Convert normalized selection (0..1) to seconds
+let tmpStart=0;let tmpEnd=tmpDuration;if(tmpAEX._selectionStart>=0&&tmpAEX._selectionEnd>=0){tmpStart=Math.round(tmpAEX._selectionStart*tmpDuration*100)/100;tmpEnd=Math.round(tmpAEX._selectionEnd*tmpDuration*100)/100;}let tmpFileName=tmpAEX._currentPath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpAEX._currentPath,AudioStart:tmpStart,AudioEnd:tmpEnd,Label:tmpFileName+': '+this._formatTimestamp(tmpStart)+' \u2013 '+this._formatTimestamp(tmpEnd),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;},/**
+	 * Add an audio clip with explicit start/end timestamps in seconds.
+	 *
+	 * Unlike addAudioSnippetToCollection (which reads normalized selection
+	 * from the explorer view), this accepts absolute second values —
+	 * used by the pending-clip-context mechanism when saving a segment
+	 * triggers the collection picker dropdown.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {number} pStartTime - Start time in seconds
+	 * @param {number} pEndTime - End time in seconds
+	 * @returns {boolean} true if the add was initiated
+	 */addAudioClipToCollection:function addAudioClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check audio explorer first, then fall back to viewer file
+let tmpFilePath=null;if(tmpRemote.ActiveMode==='audio-explorer'){let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX&&tmpAEX._currentPath){tmpFilePath=tmpAEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpFilePath,AudioStart:pStartTime,AudioEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;},/**
+	 * Format a timestamp in seconds to a human-readable string.
+	 *
+	 * @param {number} pSeconds - Timestamp in seconds
+	 * @returns {string} Formatted string like "1:23" or "1:01:23"
+	 */_formatTimestamp:function _formatTimestamp(pSeconds){if(typeof pSeconds!=='number'||isNaN(pSeconds)){return'0:00';}let tmpTotalSeconds=Math.floor(pSeconds);let tmpHours=Math.floor(tmpTotalSeconds/3600);let tmpMinutes=Math.floor(tmpTotalSeconds%3600/60);let tmpSecs=tmpTotalSeconds%60;if(tmpHours>0){return tmpHours+':'+(tmpMinutes<10?'0':'')+tmpMinutes+':'+(tmpSecs<10?'0':'')+tmpSecs;}return tmpMinutes+':'+(tmpSecs<10?'0':'')+tmpSecs;},/**
+	 * Add the currently browsed folder to a collection.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {string} pMode - "folder" (add folder reference) or "contents" (add folder contents wildcard)
+	 */addCurrentFolderToCollection:function addCurrentFolderToCollection(pGUID,pMode){let tmpRemote=this._getRemote();let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentPath||!pGUID){return;}let tmpItem={Type:pMode==='contents'?'folder-contents':'folder',Path:tmpCurrentPath,Label:'',Note:''};this.addItemsToCollection(pGUID,[tmpItem]);},/**
+	 * Show a small inline dropdown prompting the user to choose between
+	 * adding a folder reference or the folder's contents.
+	 *
+	 * @param {Function} pCallback - Called with ('folder') or ('contents')
+	 */showFolderChoicePrompt:function showFolderChoicePrompt(pCallback){let tmpSelf=this;// Remove any existing folder choice dropdown
+this.closeFolderChoicePrompt();// Anchor to the add-to-collection button (star) or favorites button (heart)
+let tmpAnchor=document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn')||document.getElementById('RetoldRemote-TopBar-FavoritesBtn');// Build the dropdown
+let tmpDropdown=document.createElement('div');tmpDropdown.className='retold-remote-addcoll-dropdown';tmpDropdown.id='RetoldRemote-FolderChoice-Dropdown';// Header
+let tmpHeader=document.createElement('div');tmpHeader.className='retold-remote-addcoll-dropdown-item';tmpHeader.style.fontWeight='600';tmpHeader.style.cursor='default';tmpHeader.style.color='var(--retold-text-muted)';tmpHeader.style.fontSize='0.75rem';tmpHeader.textContent='This is a folder:';tmpDropdown.appendChild(tmpHeader);// Option 1: Add folder reference
+let tmpFolderBtn=document.createElement('button');tmpFolderBtn.className='retold-remote-addcoll-dropdown-item';tmpFolderBtn.textContent='\uD83D\uDCC1 Add Folder';tmpFolderBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('folder');};tmpDropdown.appendChild(tmpFolderBtn);// Option 2: Add folder contents
+let tmpContentsBtn=document.createElement('button');tmpContentsBtn.className='retold-remote-addcoll-dropdown-item';tmpContentsBtn.textContent='\uD83D\uDCC2 Add Folder Contents';tmpContentsBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('contents');};tmpDropdown.appendChild(tmpContentsBtn);if(tmpAnchor){tmpAnchor.style.position='relative';tmpAnchor.appendChild(tmpDropdown);}else{// Fallback: position fixed near top-right
+tmpDropdown.style.position='fixed';tmpDropdown.style.top='50px';tmpDropdown.style.right='20px';document.body.appendChild(tmpDropdown);}// Close on outside click (deferred so the current click doesn't immediately close it)
+setTimeout(function(){tmpSelf._boundCloseFolderChoice=function(pClickEvent){if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpAnchor){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('click',tmpSelf._boundCloseFolderChoice);// Close on Escape key
+tmpSelf._boundCloseFolderChoiceKey=function(pKeyEvent){if(pKeyEvent.key==='Escape'){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('keydown',tmpSelf._boundCloseFolderChoiceKey);},10);},/**
+	 * Close the folder choice prompt dropdown.
+	 */closeFolderChoicePrompt:function closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}};},{}],116:[function(require,module,exports){/**
+ * CollectionManager — Favorites Mixin
+ *
+ * Manages the Favorites collection: a special system collection
+ * (CollectionType === 'favorites') that powers the heart toggle button.
+ *
+ * Mixed into CollectionManagerProvider.prototype via Object.assign().
+ * All methods have access to this._getRemote(), this._getToast(), etc.
+ *
+ * @license MIT
+ */module.exports={// -- Favorites Methods ------------------------------------------------
+/**
+	 * Ensure the favorites collection exists.
+	 * If FavoritesGUID is set, loads it.  Otherwise searches existing
+	 * collections for CollectionType === 'favorites'.  If not found,
+	 * creates one with a well-known GUID.
+	 *
+	 * @param {Function} [fCallback] - Optional callback(pError)
+	 */ensureFavoritesCollection:function ensureFavoritesCollection(fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpRemote=this._getRemote();// If we already have a GUID, just load it
+if(tmpRemote.FavoritesGUID){return this._loadFavoritesCollection(tmpRemote.FavoritesGUID,tmpCallback);}// Search existing collections for a favorites-type collection
+let tmpCollections=tmpRemote.Collections||[];for(let i=0;i<tmpCollections.length;i++){if(tmpCollections[i].CollectionType==='favorites'){tmpRemote.FavoritesGUID=tmpCollections[i].GUID;this.pict.PictApplication.saveSettings();return this._loadFavoritesCollection(tmpCollections[i].GUID,tmpCallback);}}// Not found — create one
+let tmpGUID='favorites-default';fetch('/api/collections/'+encodeURIComponent(tmpGUID),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Name:'Favorites',CollectionType:'favorites',Icon:'heart'})}).then(pResponse=>pResponse.json()).then(pData=>{tmpRemote.FavoritesGUID=tmpGUID;tmpSelf.pict.PictApplication.saveSettings();tmpSelf._loadFavoritesCollection(tmpGUID,tmpCallback);}).catch(pError=>{tmpSelf.log.error('Failed to create favorites collection: '+pError.message);return tmpCallback(pError);});},/**
+	 * Load the favorites collection and rebuild the path set.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {Function} [fCallback] - Optional callback(pError)
+	 */_loadFavoritesCollection:function _loadFavoritesCollection(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/collections/'+encodeURIComponent(pGUID)).then(pResponse=>{if(!pResponse.ok){throw new Error('Favorites collection not found');}return pResponse.json();}).then(pData=>{let tmpRemote=tmpSelf._getRemote();tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);// Update heart icon in topbar
+let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}// Update favorites pane if visible
+tmpSelf._renderFavoritesPane();return tmpCallback(null);}).catch(pError=>{tmpSelf.log.error('Failed to load favorites collection: '+pError.message);return tmpCallback(pError);});},/**
+	 * Rebuild the FavoritesPathSet from a collection's Items array.
+	 *
+	 * @param {Object} pCollection - Collection object with Items array
+	 */_rebuildFavoritesPathSet:function _rebuildFavoritesPathSet(pCollection){let tmpRemote=this._getRemote();tmpRemote.FavoritesPathSet={};if(!pCollection||!Array.isArray(pCollection.Items)){return;}for(let i=0;i<pCollection.Items.length;i++){let tmpItem=pCollection.Items[i];if(tmpItem.Path){tmpRemote.FavoritesPathSet[tmpItem.Path]=tmpItem.ID;}}},/**
+	 * Check if a file path is in favorites.
+	 *
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
+	 * @returns {boolean} True if favorited
+	 */isFavorited:function isFavorited(pPath){let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();return!!tmpRemote.FavoritesPathSet[tmpFilePath];},/**
+	 * Toggle a file in/out of favorites.
+	 *
+	 * @param {string} [pPath] - File path (defaults to resolved current file)
+	 */toggleFavorite:function toggleFavorite(pPath){let tmpSelf=this;let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();if(!tmpFilePath){return;}if(!tmpRemote.FavoritesGUID){// Favorites collection not ready yet
+return;}if(this.isFavorited(tmpFilePath)){// Remove from favorites
+let tmpItemID=tmpRemote.FavoritesPathSet[tmpFilePath];this.removeItemFromCollection(tmpRemote.FavoritesGUID,tmpItemID,(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
+let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Removed from favorites');}});}else{// Check if the current item is a folder
+let tmpCurrentItem=this._resolveCurrentItem();if(tmpCurrentItem&&(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive')){// Prompt user to choose folder reference vs folder contents
+this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpFolderItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});});return;}// Add to favorites — build item using same logic as addCurrentFileToCollection
+let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile
+let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// Include hash if available
+let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
+let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});}},/**
+	 * Render the favorites pane if the favorites tab is active.
+	 */_renderFavoritesPane:function _renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}};},{}],117:[function(require,module,exports){/**
+ * CollectionManager — Operation Plan Mixin
+ *
+ * Methods for creating, executing, and undoing file-operation plans
+ * (sort plans).  These are special collections of type 'operation-plan'
+ * that batch move/copy/rename operations.
+ *
+ * Mixed into CollectionManagerProvider.prototype via Object.assign().
+ * All methods have access to this._getRemote(), this._getToast(), etc.
+ *
+ * @license MIT
+ */module.exports={// -- Operation Plan Methods -------------------------------------------
+/**
+	 * Create an operation-plan collection with pre-populated items.
+	 *
+	 * @param {string} pName - Plan name
+	 * @param {Array} pItems - Items with Operation and DestinationPath set
+	 * @param {Function} [fCallback] - Optional callback(pError, pCollection)
+	 */createOperationPlan:function createOperationPlan(pName,pItems,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpGUID=this.fable.getUUID();let tmpCollectionData={Name:pName||'Sort Plan',CollectionType:'operation-plan',Items:pItems||[]};fetch('/api/collections/'+encodeURIComponent(tmpGUID),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpCollectionData)}).then(pResponse=>pResponse.json()).then(pData=>{let tmpRemote=tmpSelf._getRemote();// Open the panel and navigate to this collection
+tmpRemote.ActiveCollectionGUID=tmpGUID;tmpRemote.ActiveCollection=pData;tmpRemote.CollectionsPanelMode='detail';if(!tmpRemote.CollectionsPanelOpen){tmpSelf.togglePanel();}else{let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}}// Refresh the list
+tmpSelf.fetchCollections();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Sort plan created: '+(pData.Name||pName));}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to create operation plan: '+pError.message);return tmpCallback(pError);});},/**
+	 * Execute all pending operations in a collection.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {Function} [fCallback] - Optional callback(pError, pResult)
+	 */executeCollectionOperations:function executeCollectionOperations(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/collections/'+encodeURIComponent(pGUID)+'/execute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(pResponse=>pResponse.json()).then(pData=>{let tmpRemote=tmpSelf._getRemote();if(pData.Collection&&tmpRemote.ActiveCollectionGUID===pGUID){tmpRemote.ActiveCollection=pData.Collection;}let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}let tmpToast=tmpSelf._getToast();if(tmpToast){if(pData.TotalFailed>0){tmpToast.showToast('Moved '+pData.TotalMoved+' files ('+pData.TotalFailed+' failed)');}else{tmpToast.showToast('Successfully moved '+pData.TotalMoved+' files');}}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to execute operations: '+pError.message);let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Failed to execute operations: '+pError.message);}return tmpCallback(pError);});},/**
+	 * Undo the last batch of operations for a collection.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {Function} [fCallback] - Optional callback(pError, pResult)
+	 */undoCollectionOperations:function undoCollectionOperations(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.OperationBatchGUID){let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('No batch to undo');}return tmpCallback(new Error('No batch to undo'));}fetch('/api/files/undo-batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({BatchGUID:tmpCollection.OperationBatchGUID})}).then(pResponse=>pResponse.json()).then(pData=>{// Reset operation statuses back to pending
+if(tmpCollection.Items){for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].OperationStatus==='completed'){tmpCollection.Items[i].OperationStatus='pending';}}}tmpCollection.OperationBatchGUID=null;// Save updated collection
+tmpSelf.updateCollection(tmpCollection);let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Undo complete: '+pData.TotalReversed+' files restored');}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to undo operations: '+pError.message);let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Failed to undo: '+pError.message);}return tmpCallback(pError);});},/**
+	 * Update a single item's destination path in the active collection.
+	 *
+	 * @param {string} pItemID - Item ID
+	 * @param {string} pNewDestPath - New destination path
+	 */setItemDestination:function setItemDestination(pItemID,pNewDestPath){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].DestinationPath=pNewDestPath;break;}}// Save to server in background
+this.updateCollection(tmpCollection);},/**
+	 * Skip an item's operation (set status to 'skipped').
+	 *
+	 * @param {string} pItemID - Item ID
+	 */skipItemOperation:function skipItemOperation(pItemID){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].OperationStatus='skipped';break;}}let tmpPanel=this._getPanelView();if(tmpPanel){tmpPanel.renderContent();}// Save to server in background
+this.updateCollection(tmpCollection);}};},{}],118:[function(require,module,exports){/**
  * Retold Remote -- AI Sort Manager Provider
  *
  * Client-side state management and API communication for the
@@ -9273,7 +9459,7 @@ let tmpCollManager=tmpSelf._getCollectionManager();if(tmpCollManager){let tmpRem
 	 * Whether a generation is currently in progress.
 	 *
 	 * @returns {boolean}
-	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":46}],116:[function(require,module,exports){/**
+	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":46}],119:[function(require,module,exports){/**
  * Retold Remote -- Collection Manager Provider
  *
  * Client-side state management and API communication for the
@@ -9284,8 +9470,15 @@ let tmpCollManager=tmpSelf._getCollectionManager();if(tmpCollManager){let tmpRem
  * mutated directly followed by explicit render calls -- matching the
  * existing retold-remote state management pattern.
  *
+ * Large method groups are broken out into mixin modules and mixed into
+ * the prototype via Object.assign():
+ *
+ *   CollectionManager-Favorites.js     — favorites heart toggle
+ *   CollectionManager-AddItems.js      — add file/frame/clip helpers
+ *   CollectionManager-OperationPlan.js — sort-plan create/execute/undo
+ *
  * @license MIT
- */const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-CollectionManager',AutoInitialize:true,AutoSolveWithApp:false};class CollectionManagerProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// -- State Accessors --------------------------------------------------
+ */const libPictProvider=require('pict-provider');const _CollectionManagerFavorites=require('./CollectionManager-Favorites');const _CollectionManagerAddItems=require('./CollectionManager-AddItems');const _CollectionManagerOperationPlan=require('./CollectionManager-OperationPlan');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-CollectionManager',AutoInitialize:true,AutoSolveWithApp:false};class CollectionManagerProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// -- State Accessors --------------------------------------------------
 /**
 	 * Shortcut to the RetoldRemote AppData namespace.
 	 */_getRemote(){return this.pict.AppData.RetoldRemote;}/**
@@ -9421,129 +9614,8 @@ let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorInde
 	 */_resolveCurrentItem(){// 1. Content editor current file (always a file)
 let tmpPath=this.pict.AppData.ContentEditor.CurrentFile;if(tmpPath){return{Path:tmpPath,Type:'file'};}let tmpRemote=this._getRemote();// 2. Viewer state (always a file)
 if(tmpRemote.CurrentViewerFile){return{Path:tmpRemote.CurrentViewerFile,Type:'file'};}// 3. Gallery cursor item (could be a folder)
-let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpItems.length>0&&tmpItems[tmpIndex]){return{Path:tmpItems[tmpIndex].Path||'',Type:tmpItems[tmpIndex].Type||'file'};}return null;}// -- Favorites Methods ------------------------------------------------
+let tmpItems=tmpRemote.GalleryItems||[];let tmpIndex=tmpRemote.GalleryCursorIndex||0;if(tmpItems.length>0&&tmpItems[tmpIndex]){return{Path:tmpItems[tmpIndex].Path||'',Type:tmpItems[tmpIndex].Type||'file'};}return null;}// -- Sorting & Search -------------------------------------------------
 /**
-	 * Ensure the favorites collection exists.
-	 * If FavoritesGUID is set, loads it.  Otherwise searches existing
-	 * collections for CollectionType === 'favorites'.  If not found,
-	 * creates one with a well-known GUID.
-	 *
-	 * @param {Function} [fCallback] - Optional callback(pError)
-	 */ensureFavoritesCollection(fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpRemote=this._getRemote();// If we already have a GUID, just load it
-if(tmpRemote.FavoritesGUID){return this._loadFavoritesCollection(tmpRemote.FavoritesGUID,tmpCallback);}// Search existing collections for a favorites-type collection
-let tmpCollections=tmpRemote.Collections||[];for(let i=0;i<tmpCollections.length;i++){if(tmpCollections[i].CollectionType==='favorites'){tmpRemote.FavoritesGUID=tmpCollections[i].GUID;this.pict.PictApplication.saveSettings();return this._loadFavoritesCollection(tmpCollections[i].GUID,tmpCallback);}}// Not found — create one
-let tmpGUID='favorites-default';fetch('/api/collections/'+encodeURIComponent(tmpGUID),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Name:'Favorites',CollectionType:'favorites',Icon:'heart'})}).then(pResponse=>pResponse.json()).then(pData=>{tmpRemote.FavoritesGUID=tmpGUID;tmpSelf.pict.PictApplication.saveSettings();tmpSelf._loadFavoritesCollection(tmpGUID,tmpCallback);}).catch(pError=>{tmpSelf.log.error('Failed to create favorites collection: '+pError.message);return tmpCallback(pError);});}/**
-	 * Load the favorites collection and rebuild the path set.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {Function} [fCallback] - Optional callback(pError)
-	 */_loadFavoritesCollection(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/collections/'+encodeURIComponent(pGUID)).then(pResponse=>{if(!pResponse.ok){throw new Error('Favorites collection not found');}return pResponse.json();}).then(pData=>{let tmpRemote=tmpSelf._getRemote();tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);// Update heart icon in topbar
-let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}// Update favorites pane if visible
-tmpSelf._renderFavoritesPane();return tmpCallback(null);}).catch(pError=>{tmpSelf.log.error('Failed to load favorites collection: '+pError.message);return tmpCallback(pError);});}/**
-	 * Rebuild the FavoritesPathSet from a collection's Items array.
-	 *
-	 * @param {Object} pCollection - Collection object with Items array
-	 */_rebuildFavoritesPathSet(pCollection){let tmpRemote=this._getRemote();tmpRemote.FavoritesPathSet={};if(!pCollection||!Array.isArray(pCollection.Items)){return;}for(let i=0;i<pCollection.Items.length;i++){let tmpItem=pCollection.Items[i];if(tmpItem.Path){tmpRemote.FavoritesPathSet[tmpItem.Path]=tmpItem.ID;}}}/**
-	 * Check if a file path is in favorites.
-	 *
-	 * @param {string} [pPath] - File path (defaults to resolved current file)
-	 * @returns {boolean} True if favorited
-	 */isFavorited(pPath){let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();return!!tmpRemote.FavoritesPathSet[tmpFilePath];}/**
-	 * Toggle a file in/out of favorites.
-	 *
-	 * @param {string} [pPath] - File path (defaults to resolved current file)
-	 */toggleFavorite(pPath){let tmpSelf=this;let tmpRemote=this._getRemote();let tmpFilePath=pPath||this._resolveCurrentFilePath();if(!tmpFilePath){return;}if(!tmpRemote.FavoritesGUID){// Favorites collection not ready yet
-return;}if(this.isFavorited(tmpFilePath)){// Remove from favorites
-let tmpItemID=tmpRemote.FavoritesPathSet[tmpFilePath];this.removeItemFromCollection(tmpRemote.FavoritesGUID,tmpItemID,(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
-let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Removed from favorites');}});}else{// Check if the current item is a folder
-let tmpCurrentItem=this._resolveCurrentItem();if(tmpCurrentItem&&(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive')){// Prompt user to choose folder reference vs folder contents
-this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpFolderItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});});return;}// Add to favorites — build item using same logic as addCurrentFileToCollection
-let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile
-let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// Include hash if available
-let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
-let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});}}/**
-	 * Render the favorites pane if the favorites tab is active.
-	 */_renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}// -- Convenience Methods ----------------------------------------------
-/**
-	 * Add the currently viewed file to a collection.
-	 * If pGUID is not provided, uses the last-used collection.
-	 *
-	 * Context-aware: in the video explorer, adds a video-frame item with
-	 * the selected frame timestamp.  In the audio explorer, adds an audio
-	 * snippet.  Otherwise adds a file/subfile item.
-	 *
-	 * @param {string} [pGUID] - Collection GUID (omit for quick-add to last-used)
-	 * @returns {boolean} true if the add was initiated
-	 */addCurrentFileToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// If the video explorer is active, delegate to addVideoFrameToCollection
-if(tmpRemote.ActiveMode==='video-explorer'){return this.addVideoFrameToCollection(tmpTargetGUID);}// If the audio explorer is active, delegate to addAudioSnippetToCollection
-if(tmpRemote.ActiveMode==='audio-explorer'){return this.addAudioSnippetToCollection(tmpTargetGUID);}let tmpCurrentItem=this._resolveCurrentItem();if(!tmpCurrentItem||!tmpCurrentItem.Path){return false;}let tmpFilePath=tmpCurrentItem.Path;// Check if the current item is a folder — prompt for folder vs contents
-if(tmpCurrentItem.Type==='folder'||tmpCurrentItem.Type==='archive'){let tmpSelf=this;this.showFolderChoicePrompt(pChoice=>{let tmpFolderItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpFilePath,Label:'',Note:''};tmpSelf.addItemsToCollection(tmpTargetGUID,[tmpFolderItem]);});return true;}// Build the item — detect archive subfiles and video timestamp context
-let tmpItem={Type:'file',Path:tmpFilePath,Label:'',Note:''};// Detect archive subfile — path contains an archive extension followed by /
-let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.gz|tar\.bz2|tar\.xz))\/(.*)/i);if(tmpArchiveMatch){tmpItem.Type='subfile';tmpItem.ArchivePath=tmpArchiveMatch[1];}// If we're viewing a video with the player active, capture current timestamp as video-frame
-if(tmpRemote.ActiveMode==='viewer'&&tmpRemote.CurrentViewerMediaType==='video'&&!tmpRemote.VideoMenuActive){let tmpVideo=document.getElementById('RetoldRemote-VideoPlayer');if(tmpVideo&&!isNaN(tmpVideo.currentTime)&&tmpVideo.currentTime>0){tmpItem.Type='video-frame';tmpItem.FrameTimestamp=Math.round(tmpVideo.currentTime*100)/100;}}// If we have a hash for this file, include it
-let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
-	 * Add a video frame from the video explorer to a collection.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @returns {boolean} true if the add was initiated
-	 */addVideoFrameToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(!tmpVEX||!tmpVEX._currentPath||!tmpVEX._frameData){return false;}let tmpFrameIndex=tmpVEX._selectedFrameIndex;if(tmpFrameIndex<0){// No frame selected — use first frame
-tmpFrameIndex=0;}let tmpFrame=tmpVEX._frameData.Frames[tmpFrameIndex];if(!tmpFrame){return false;}let tmpFileName=tmpVEX._currentPath.replace(/^.*\//,'');let tmpTimestamp=tmpFrame.TimestampFormatted||this._formatTimestamp(tmpFrame.Timestamp);let tmpItem={Type:'video-frame',Path:tmpVEX._currentPath,FrameTimestamp:tmpFrame.Timestamp,FrameCacheKey:tmpVEX._frameData.CacheKey||null,FrameFilename:tmpFrame.Filename||null,Label:tmpFileName+' @ '+tmpTimestamp,Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
-	 * Add a video clip (time range) to a collection from the video player.
-	 *
-	 * Uses the current playback position and a duration offset, or explicit
-	 * start/end timestamps.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {number} pStartTime - Start time in seconds
-	 * @param {number} pEndTime - End time in seconds
-	 * @returns {boolean} true if the add was initiated
-	 */addVideoClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check video explorer first, then fall back to viewer file
-let tmpFilePath=null;if(tmpRemote.ActiveMode==='video-explorer'){let tmpVEX=this.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX&&tmpVEX._currentPath){tmpFilePath=tmpVEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'video-clip',Path:tmpFilePath,VideoStart:pStartTime,VideoEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
-	 * Add an audio snippet (selected range) from the audio explorer.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @returns {boolean} true if the add was initiated
-	 */addAudioSnippetToCollection(pGUID){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX||!tmpAEX._currentPath||!tmpAEX._waveformData){return false;}let tmpDuration=tmpAEX._waveformData.Duration||0;if(tmpDuration<=0){return false;}// Convert normalized selection (0..1) to seconds
-let tmpStart=0;let tmpEnd=tmpDuration;if(tmpAEX._selectionStart>=0&&tmpAEX._selectionEnd>=0){tmpStart=Math.round(tmpAEX._selectionStart*tmpDuration*100)/100;tmpEnd=Math.round(tmpAEX._selectionEnd*tmpDuration*100)/100;}let tmpFileName=tmpAEX._currentPath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpAEX._currentPath,AudioStart:tmpStart,AudioEnd:tmpEnd,Label:tmpFileName+': '+this._formatTimestamp(tmpStart)+' \u2013 '+this._formatTimestamp(tmpEnd),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
-	 * Add an audio clip with explicit start/end timestamps in seconds.
-	 *
-	 * Unlike addAudioSnippetToCollection (which reads normalized selection
-	 * from the explorer view), this accepts absolute second values —
-	 * used by the pending-clip-context mechanism when saving a segment
-	 * triggers the collection picker dropdown.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {number} pStartTime - Start time in seconds
-	 * @param {number} pEndTime - End time in seconds
-	 * @returns {boolean} true if the add was initiated
-	 */addAudioClipToCollection(pGUID,pStartTime,pEndTime){let tmpRemote=this._getRemote();let tmpTargetGUID=pGUID||tmpRemote.LastUsedCollectionGUID;if(!tmpTargetGUID){return false;}// Resolve file path: check audio explorer first, then fall back to viewer file
-let tmpFilePath=null;if(tmpRemote.ActiveMode==='audio-explorer'){let tmpAEX=this.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX&&tmpAEX._currentPath){tmpFilePath=tmpAEX._currentPath;}}if(!tmpFilePath){tmpFilePath=tmpRemote.CurrentViewerFile;}if(!tmpFilePath){return false;}let tmpFileName=tmpFilePath.replace(/^.*\//,'');let tmpItem={Type:'audio-clip',Path:tmpFilePath,AudioStart:pStartTime,AudioEnd:pEndTime,Label:tmpFileName+': '+this._formatTimestamp(pStartTime)+' \u2013 '+this._formatTimestamp(pEndTime),Note:''};this.addItemsToCollection(tmpTargetGUID,[tmpItem]);return true;}/**
-	 * Format a timestamp in seconds to a human-readable string.
-	 *
-	 * @param {number} pSeconds - Timestamp in seconds
-	 * @returns {string} Formatted string like "1:23" or "1:01:23"
-	 */_formatTimestamp(pSeconds){if(typeof pSeconds!=='number'||isNaN(pSeconds)){return'0:00';}let tmpTotalSeconds=Math.floor(pSeconds);let tmpHours=Math.floor(tmpTotalSeconds/3600);let tmpMinutes=Math.floor(tmpTotalSeconds%3600/60);let tmpSecs=tmpTotalSeconds%60;if(tmpHours>0){return tmpHours+':'+(tmpMinutes<10?'0':'')+tmpMinutes+':'+(tmpSecs<10?'0':'')+tmpSecs;}return tmpMinutes+':'+(tmpSecs<10?'0':'')+tmpSecs;}/**
-	 * Add the currently browsed folder to a collection.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {string} pMode - "folder" (add folder reference) or "contents" (add folder contents wildcard)
-	 */addCurrentFolderToCollection(pGUID,pMode){let tmpRemote=this._getRemote();let tmpCurrentPath=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';if(!tmpCurrentPath||!pGUID){return;}let tmpItem={Type:pMode==='contents'?'folder-contents':'folder',Path:tmpCurrentPath,Label:'',Note:''};this.addItemsToCollection(pGUID,[tmpItem]);}/**
-	 * Show a small inline dropdown prompting the user to choose between
-	 * adding a folder reference or the folder's contents.
-	 *
-	 * @param {Function} pCallback - Called with ('folder') or ('contents')
-	 */showFolderChoicePrompt(pCallback){let tmpSelf=this;// Remove any existing folder choice dropdown
-this.closeFolderChoicePrompt();// Anchor to the add-to-collection button (star) or favorites button (heart)
-let tmpAnchor=document.getElementById('RetoldRemote-TopBar-AddToCollectionBtn')||document.getElementById('RetoldRemote-TopBar-FavoritesBtn');// Build the dropdown
-let tmpDropdown=document.createElement('div');tmpDropdown.className='retold-remote-addcoll-dropdown';tmpDropdown.id='RetoldRemote-FolderChoice-Dropdown';// Header
-let tmpHeader=document.createElement('div');tmpHeader.className='retold-remote-addcoll-dropdown-item';tmpHeader.style.fontWeight='600';tmpHeader.style.cursor='default';tmpHeader.style.color='var(--retold-text-muted)';tmpHeader.style.fontSize='0.75rem';tmpHeader.textContent='This is a folder:';tmpDropdown.appendChild(tmpHeader);// Option 1: Add folder reference
-let tmpFolderBtn=document.createElement('button');tmpFolderBtn.className='retold-remote-addcoll-dropdown-item';tmpFolderBtn.textContent='\uD83D\uDCC1 Add Folder';tmpFolderBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('folder');};tmpDropdown.appendChild(tmpFolderBtn);// Option 2: Add folder contents
-let tmpContentsBtn=document.createElement('button');tmpContentsBtn.className='retold-remote-addcoll-dropdown-item';tmpContentsBtn.textContent='\uD83D\uDCC2 Add Folder Contents';tmpContentsBtn.onclick=function(){tmpSelf.closeFolderChoicePrompt();pCallback('contents');};tmpDropdown.appendChild(tmpContentsBtn);if(tmpAnchor){tmpAnchor.style.position='relative';tmpAnchor.appendChild(tmpDropdown);}else{// Fallback: position fixed near top-right
-tmpDropdown.style.position='fixed';tmpDropdown.style.top='50px';tmpDropdown.style.right='20px';document.body.appendChild(tmpDropdown);}// Close on outside click (deferred so the current click doesn't immediately close it)
-setTimeout(function(){tmpSelf._boundCloseFolderChoice=function(pClickEvent){if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpAnchor){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('click',tmpSelf._boundCloseFolderChoice);// Close on Escape key
-tmpSelf._boundCloseFolderChoiceKey=function(pKeyEvent){if(pKeyEvent.key==='Escape'){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('keydown',tmpSelf._boundCloseFolderChoiceKey);},10);}/**
-	 * Close the folder choice prompt dropdown.
-	 */closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}/**
 	 * Sort a collection's Items array in place (client-side mirror of server logic).
 	 *
 	 * @param {Array} pItems - Items array
@@ -9566,39 +9638,8 @@ fetch('/api/collections/'+encodeURIComponent(tmpCollection.GUID),{method:'PUT',h
 	 *
 	 * @param {string} pQuery - Search query
 	 * @returns {Array} Filtered collection summaries
-	 */searchCollections(pQuery){let tmpRemote=this._getRemote();let tmpQuery=(pQuery||'').toLowerCase();if(!tmpQuery){return tmpRemote.Collections;}return tmpRemote.Collections.filter(pCollection=>{let tmpName=(pCollection.Name||'').toLowerCase();let tmpDesc=(pCollection.Description||'').toLowerCase();let tmpTags=(pCollection.Tags||[]).join(' ').toLowerCase();return tmpName.indexOf(tmpQuery)>=0||tmpDesc.indexOf(tmpQuery)>=0||tmpTags.indexOf(tmpQuery)>=0;});}// -- Operation Plan Methods -------------------------------------------
-/**
-	 * Create an operation-plan collection with pre-populated items.
-	 *
-	 * @param {string} pName - Plan name
-	 * @param {Array} pItems - Items with Operation and DestinationPath set
-	 * @param {Function} [fCallback] - Optional callback(pError, pCollection)
-	 */createOperationPlan(pName,pItems,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpGUID=this.fable.getUUID();let tmpCollectionData={Name:pName||'Sort Plan',CollectionType:'operation-plan',Items:pItems||[]};fetch('/api/collections/'+encodeURIComponent(tmpGUID),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpCollectionData)}).then(pResponse=>pResponse.json()).then(pData=>{let tmpRemote=tmpSelf._getRemote();// Open the panel and navigate to this collection
-tmpRemote.ActiveCollectionGUID=tmpGUID;tmpRemote.ActiveCollection=pData;tmpRemote.CollectionsPanelMode='detail';if(!tmpRemote.CollectionsPanelOpen){tmpSelf.togglePanel();}else{let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}}// Refresh the list
-tmpSelf.fetchCollections();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Sort plan created: '+(pData.Name||pName));}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to create operation plan: '+pError.message);return tmpCallback(pError);});}/**
-	 * Execute all pending operations in a collection.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {Function} [fCallback] - Optional callback(pError, pResult)
-	 */executeCollectionOperations(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};fetch('/api/collections/'+encodeURIComponent(pGUID)+'/execute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(pResponse=>pResponse.json()).then(pData=>{let tmpRemote=tmpSelf._getRemote();if(pData.Collection&&tmpRemote.ActiveCollectionGUID===pGUID){tmpRemote.ActiveCollection=pData.Collection;}let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}let tmpToast=tmpSelf._getToast();if(tmpToast){if(pData.TotalFailed>0){tmpToast.showToast('Moved '+pData.TotalMoved+' files ('+pData.TotalFailed+' failed)');}else{tmpToast.showToast('Successfully moved '+pData.TotalMoved+' files');}}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to execute operations: '+pError.message);let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Failed to execute operations: '+pError.message);}return tmpCallback(pError);});}/**
-	 * Undo the last batch of operations for a collection.
-	 *
-	 * @param {string} pGUID - Collection GUID
-	 * @param {Function} [fCallback] - Optional callback(pError, pResult)
-	 */undoCollectionOperations(pGUID,fCallback){let tmpSelf=this;let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.OperationBatchGUID){let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('No batch to undo');}return tmpCallback(new Error('No batch to undo'));}fetch('/api/files/undo-batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({BatchGUID:tmpCollection.OperationBatchGUID})}).then(pResponse=>pResponse.json()).then(pData=>{// Reset operation statuses back to pending
-if(tmpCollection.Items){for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].OperationStatus==='completed'){tmpCollection.Items[i].OperationStatus='pending';}}}tmpCollection.OperationBatchGUID=null;// Save updated collection
-tmpSelf.updateCollection(tmpCollection);let tmpPanel=tmpSelf._getPanelView();if(tmpPanel){tmpPanel.renderContent();}let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Undo complete: '+pData.TotalReversed+' files restored');}return tmpCallback(null,pData);}).catch(pError=>{tmpSelf.log.error('Failed to undo operations: '+pError.message);let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Failed to undo: '+pError.message);}return tmpCallback(pError);});}/**
-	 * Update a single item's destination path in the active collection.
-	 *
-	 * @param {string} pItemID - Item ID
-	 * @param {string} pNewDestPath - New destination path
-	 */setItemDestination(pItemID,pNewDestPath){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].DestinationPath=pNewDestPath;break;}}// Save to server in background
-this.updateCollection(tmpCollection);}/**
-	 * Skip an item's operation (set status to 'skipped').
-	 *
-	 * @param {string} pItemID - Item ID
-	 */skipItemOperation(pItemID){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].OperationStatus='skipped';break;}}let tmpPanel=this._getPanelView();if(tmpPanel){tmpPanel.renderContent();}// Save to server in background
-this.updateCollection(tmpCollection);}}CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"pict-provider":46}],117:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
+	 */searchCollections(pQuery){let tmpRemote=this._getRemote();let tmpQuery=(pQuery||'').toLowerCase();if(!tmpQuery){return tmpRemote.Collections;}return tmpRemote.Collections.filter(pCollection=>{let tmpName=(pCollection.Name||'').toLowerCase();let tmpDesc=(pCollection.Description||'').toLowerCase();let tmpTags=(pCollection.Tags||[]).join(' ').toLowerCase();return tmpName.indexOf(tmpQuery)>=0||tmpDesc.indexOf(tmpQuery)>=0||tmpTags.indexOf(tmpQuery)>=0;});}}// -- Mix in method groups from sub-modules --------------------------------
+Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerAddItems);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerOperationPlan);CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"./CollectionManager-AddItems":115,"./CollectionManager-Favorites":116,"./CollectionManager-OperationPlan":117,"pict-provider":46}],120:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
 	 * Escape HTML special characters for safe insertion into markup.
 	 *
 	 * @param {string} pText - Raw text to escape
@@ -9620,7 +9661,7 @@ this.updateCollection(tmpCollection);}}CollectionManagerProvider.default_configu
 	 * @param {number} pSeconds - Duration in seconds
 	 * @param {boolean} pIncludeMilliseconds - If true, append tenths of a second
 	 * @returns {string} Formatted string like "1:23" or "1:02:34.5"
-	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":46}],118:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
+	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":46}],121:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
 // Pipeline
 // ──────────────────────────────────────────────
 /**
@@ -9714,7 +9755,7 @@ if(tmpRemote.SearchQuery){let tmpSearchLabel='Search: "'+tmpRemote.SearchQuery+'
 	 * Delete a saved preset.
 	 *
 	 * @param {number} pIndex - index into FilterPresets array
-	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46}],119:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
+	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46}],122:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
 	 * Calculate how many columns are in the current gallery grid by
 	 * inspecting the rendered DOM.  In list mode this is always 1.
 	 */recalculateColumns(){let tmpRemote=this.pict.AppData.RetoldRemote;// List mode is always a single column
@@ -9895,7 +9936,7 @@ tmpVLCURL='vlc-x-callback://x-callback-url/stream?url='+encodeURIComponent(tmpSt
 tmpVLCURL='vlc://'+tmpStreamURL;}else{// macOS/Linux: our custom handlers URL-decode, so we encode
 tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);}this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use window.location for iOS (more reliable for custom URL schemes
 // on iOS Safari than a programmatic anchor click), anchor for others.
-if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":124,"./keyboard-handlers/KeyHandler-Gallery.js":125,"./keyboard-handlers/KeyHandler-ImageExplorer.js":126,"./keyboard-handlers/KeyHandler-Sidebar.js":127,"./keyboard-handlers/KeyHandler-VideoExplorer.js":128,"./keyboard-handlers/KeyHandler-Viewer.js":129,"pict-provider":46}],120:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":128,"./keyboard-handlers/KeyHandler-Gallery.js":129,"./keyboard-handlers/KeyHandler-ImageExplorer.js":130,"./keyboard-handlers/KeyHandler-Sidebar.js":131,"./keyboard-handlers/KeyHandler-VideoExplorer.js":132,"./keyboard-handlers/KeyHandler-Viewer.js":133,"pict-provider":46}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -9977,7 +10018,7 @@ if(pData&&pData.Hash&&pData.Path){this.registerHash(pData.Path,pData.Hash);}fCal
 	 *
 	 * @param {string} pExtension - Lowercase extension
 	 * @returns {boolean}
-	 */_isImageExtension(pExtension){let tmpImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};return!!tmpImageExtensions[pExtension];}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"pict-provider":46}],121:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
+	 */_isImageExtension(pExtension){let tmpImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true};return!!tmpImageExtensions[pExtension];}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"pict-provider":46}],124:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
 // DEFAULT DARK-THEME COLOR PALETTE
 //
 // Designed for retold-remote's dark navy background (#16162B).
@@ -10122,23 +10163,17 @@ return this.getIcon('file',tmpSize);}/**
 // registered in the icon extension map.  The base map imported from
 // pict-section-filebrowser only covers a handful of common formats;
 // this fills in the gaps (mpg, mpeg, ts, mts, 3gp, etc.)
-let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":56}],122:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
+let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":114,"pict-provider":46,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":56}],125:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ThemeDefinitions=require('./RetoldRemote-ThemeDefinitions');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
  * Theme provider for retold-remote.
  *
  * Manages 15 themes (5 grey-only + 10 fun) via CSS custom properties.
  * Injects a <style id="retold-remote-theme"> block into <head> with
  * :root { --retold-* } variables.  Calls the icon provider's setColors()
  * to keep SVG icons in sync with the active theme.
- */class RetoldRemoteThemeProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._themes={};this._themeOrder=[];this._currentTheme='twilight';this._buildThemes();}_buildThemes(){let tmpSelf=this;// ===================================================================
-// GREY-ONLY THEMES (pure greyscale, no hue)
-// ===================================================================
-tmpSelf._addTheme('daylight',{Name:'Daylight',Category:'Grey',Description:'Bright white, dark text',Variables:{'--retold-bg-primary':'#FFFFFF','--retold-bg-secondary':'#F0F0F0','--retold-bg-tertiary':'#E8E8E8','--retold-bg-panel':'#F5F5F5','--retold-bg-viewer':'#FAFAFA','--retold-bg-hover':'#E0E0E0','--retold-bg-selected':'#C8C8C8','--retold-bg-thumb':'#F0F0F0','--retold-text-primary':'#1A1A1A','--retold-text-secondary':'#333333','--retold-text-muted':'#666666','--retold-text-dim':'#888888','--retold-text-placeholder':'#AAAAAA','--retold-accent':'#444444','--retold-accent-hover':'#222222','--retold-border':'#D0D0D0','--retold-border-light':'#E0E0E0','--retold-danger':'#CC0000','--retold-danger-muted':'#884444','--retold-scrollbar':'#C0C0C0','--retold-scrollbar-hover':'#A0A0A0','--retold-selection-bg':'rgba(68, 68, 68, 0.2)','--retold-focus-outline':'#444444','--retold-font-family':"'Segoe UI', system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#333333',Accent:'#444444',Muted:'#888888',Light:'#E8E8E8',WarmBeige:'#F0F0F0',TealTint:'#E0E0E0',Lavender:'#EBEBEB',AmberTint:'#F0EDE8',PdfFill:'#F0E0E0',PdfText:'#CC0000'}});tmpSelf._addTheme('afternoon',{Name:'Afternoon',Category:'Grey',Description:'Warm light grey, softer contrast',Variables:{'--retold-bg-primary':'#E8E4E0','--retold-bg-secondary':'#DAD6D2','--retold-bg-tertiary':'#D0CCC8','--retold-bg-panel':'#DDD9D5','--retold-bg-viewer':'#F0ECE8','--retold-bg-hover':'#CCC8C4','--retold-bg-selected':'#B8B4B0','--retold-bg-thumb':'#DAD6D2','--retold-text-primary':'#2A2A2A','--retold-text-secondary':'#404040','--retold-text-muted':'#707070','--retold-text-dim':'#909090','--retold-text-placeholder':'#B0B0B0','--retold-accent':'#555555','--retold-accent-hover':'#333333','--retold-border':'#C0BCB8','--retold-border-light':'#D0CCC8','--retold-danger':'#AA3333','--retold-danger-muted':'#886655','--retold-scrollbar':'#B8B4B0','--retold-scrollbar-hover':'#A0A09C','--retold-selection-bg':'rgba(85, 85, 85, 0.2)','--retold-focus-outline':'#555555','--retold-font-family':"Georgia, 'Times New Roman', serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#404040',Accent:'#555555',Muted:'#909090',Light:'#D0CCC8',WarmBeige:'#DAD6D2',TealTint:'#CCC8C4',Lavender:'#D2D0CE',AmberTint:'#D8D2C8',PdfFill:'#D8C8C0',PdfText:'#AA3333'}});tmpSelf._addTheme('evening',{Name:'Evening',Category:'Grey',Description:'Medium grey, transitional',Variables:{'--retold-bg-primary':'#484848','--retold-bg-secondary':'#3C3C3C','--retold-bg-tertiary':'#424242','--retold-bg-panel':'#454545','--retold-bg-viewer':'#363636','--retold-bg-hover':'#525252','--retold-bg-selected':'#606060','--retold-bg-thumb':'#3C3C3C','--retold-text-primary':'#E0E0E0','--retold-text-secondary':'#D0D0D0','--retold-text-muted':'#A0A0A0','--retold-text-dim':'#888888','--retold-text-placeholder':'#707070','--retold-accent':'#C0C0C0','--retold-accent-hover':'#E0E0E0','--retold-border':'#585858','--retold-border-light':'#606060','--retold-danger':'#FF6666','--retold-danger-muted':'#AA6666','--retold-scrollbar':'#585858','--retold-scrollbar-hover':'#686868','--retold-selection-bg':'rgba(192, 192, 192, 0.25)','--retold-focus-outline':'#C0C0C0','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#D0D0D0',Accent:'#C0C0C0',Muted:'#888888',Light:'#424242',WarmBeige:'#484848',TealTint:'#3E3E3E',Lavender:'#444444',AmberTint:'#4A4640',PdfFill:'#4A3C3C',PdfText:'#FF6666'}});tmpSelf._addTheme('twilight',{Name:'Twilight',Category:'Grey',Description:'Dark grey, low light (default)',Variables:{'--retold-bg-primary':'#1E1E1E','--retold-bg-secondary':'#181818','--retold-bg-tertiary':'#252525','--retold-bg-panel':'#202020','--retold-bg-viewer':'#141414','--retold-bg-hover':'#2E2E2E','--retold-bg-selected':'#404040','--retold-bg-thumb':'#181818','--retold-text-primary':'#E0E0E0','--retold-text-secondary':'#C8C8C8','--retold-text-muted':'#909090','--retold-text-dim':'#707070','--retold-text-placeholder':'#585858','--retold-accent':'#A0A0A0','--retold-accent-hover':'#C0C0C0','--retold-border':'#333333','--retold-border-light':'#404040','--retold-danger':'#FF6666','--retold-danger-muted':'#AA6666','--retold-scrollbar':'#404040','--retold-scrollbar-hover':'#505050','--retold-selection-bg':'rgba(160, 160, 160, 0.25)','--retold-focus-outline':'#A0A0A0','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#C8C8C8',Accent:'#A0A0A0',Muted:'#707070',Light:'#252525',WarmBeige:'#2A2A2A',TealTint:'#222222',Lavender:'#282828',AmberTint:'#2E2A24',PdfFill:'#2E2224',PdfText:'#E06060'}});tmpSelf._addTheme('night',{Name:'Night',Category:'Grey',Description:'Near-black, minimal contrast',Variables:{'--retold-bg-primary':'#0A0A0A','--retold-bg-secondary':'#060606','--retold-bg-tertiary':'#0E0E0E','--retold-bg-panel':'#0C0C0C','--retold-bg-viewer':'#040404','--retold-bg-hover':'#161616','--retold-bg-selected':'#252525','--retold-bg-thumb':'#060606','--retold-text-primary':'#888888','--retold-text-secondary':'#707070','--retold-text-muted':'#555555','--retold-text-dim':'#444444','--retold-text-placeholder':'#333333','--retold-accent':'#666666','--retold-accent-hover':'#808080','--retold-border':'#1A1A1A','--retold-border-light':'#222222','--retold-danger':'#AA4444','--retold-danger-muted':'#663333','--retold-scrollbar':'#1A1A1A','--retold-scrollbar-hover':'#2A2A2A','--retold-selection-bg':'rgba(102, 102, 102, 0.2)','--retold-focus-outline':'#666666','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#707070',Accent:'#666666',Muted:'#444444',Light:'#0E0E0E',WarmBeige:'#121212',TealTint:'#0C0C0C',Lavender:'#101010',AmberTint:'#141210',PdfFill:'#141010',PdfText:'#AA4444'}});// ===================================================================
-// FUN THEMES
-// ===================================================================
-tmpSelf._addTheme('neo-tokyo',{Name:'Neo-Tokyo',Category:'Fun',Description:'Neon pink on dark navy',Variables:{'--retold-bg-primary':'#0D0D2B','--retold-bg-secondary':'#080820','--retold-bg-tertiary':'#121235','--retold-bg-panel':'#0F0F28','--retold-bg-viewer':'#060615','--retold-bg-hover':'#1A1A42','--retold-bg-selected':'#2A1845','--retold-bg-thumb':'#080820','--retold-text-primary':'#E8E0F0','--retold-text-secondary':'#D0C8E0','--retold-text-muted':'#9088A8','--retold-text-dim':'#6860A0','--retold-text-placeholder':'#504888','--retold-accent':'#FF2D8A','--retold-accent-hover':'#FF5AA0','--retold-border':'#2A2050','--retold-border-light':'#382868','--retold-danger':'#FF4466','--retold-danger-muted':'#AA3355','--retold-scrollbar':'#2A2050','--retold-scrollbar-hover':'#3A3068','--retold-selection-bg':'rgba(255, 45, 138, 0.25)','--retold-focus-outline':'#FF2D8A','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0C8E0',Accent:'#FF2D8A',Muted:'#6860A0',Light:'#121235',WarmBeige:'#141438',TealTint:'#100E30',Lavender:'#141232',AmberTint:'#1A1228',PdfFill:'#1A1028',PdfText:'#FF4466'}});tmpSelf._addTheme('cyberpunk',{Name:'Cyberpunk',Category:'Fun',Description:'Electric green on black',Variables:{'--retold-bg-primary':'#0A0E0A','--retold-bg-secondary':'#060806','--retold-bg-tertiary':'#0E120E','--retold-bg-panel':'#0C100C','--retold-bg-viewer':'#040604','--retold-bg-hover':'#142014','--retold-bg-selected':'#1A3A1A','--retold-bg-thumb':'#060806','--retold-text-primary':'#C8FFC8','--retold-text-secondary':'#A0D8A0','--retold-text-muted':'#608860','--retold-text-dim':'#406040','--retold-text-placeholder':'#305030','--retold-accent':'#00FF41','--retold-accent-hover':'#44FF77','--retold-border':'#1A2A1A','--retold-border-light':'#224022','--retold-danger':'#FF3333','--retold-danger-muted':'#AA2222','--retold-scrollbar':'#1A2A1A','--retold-scrollbar-hover':'#2A4A2A','--retold-selection-bg':'rgba(0, 255, 65, 0.2)','--retold-focus-outline':'#00FF41','--retold-font-family':"'Lucida Console', 'Courier New', monospace",'--retold-font-mono':"'Lucida Console', 'Courier New', monospace"},IconColors:{Primary:'#A0D8A0',Accent:'#00FF41',Muted:'#406040',Light:'#0E120E',WarmBeige:'#101610',TealTint:'#0C140C',Lavender:'#0E120E',AmberTint:'#141810',PdfFill:'#181010',PdfText:'#FF3333'}});tmpSelf._addTheme('hotdog',{Name:'Hotdog',Category:'Fun',Description:'Red and mustard yellow, garish',Variables:{'--retold-bg-primary':'#8B0000','--retold-bg-secondary':'#6B0000','--retold-bg-tertiary':'#7B0000','--retold-bg-panel':'#750000','--retold-bg-viewer':'#550000','--retold-bg-hover':'#AA1111','--retold-bg-selected':'#BB3300','--retold-bg-thumb':'#6B0000','--retold-text-primary':'#FFD700','--retold-text-secondary':'#FFC000','--retold-text-muted':'#CC9900','--retold-text-dim':'#AA7700','--retold-text-placeholder':'#886600','--retold-accent':'#FFD700','--retold-accent-hover':'#FFEE44','--retold-border':'#AA2222','--retold-border-light':'#BB3333','--retold-danger':'#FFFF00','--retold-danger-muted':'#CCCC00','--retold-scrollbar':'#AA2222','--retold-scrollbar-hover':'#CC3333','--retold-selection-bg':'rgba(255, 215, 0, 0.3)','--retold-focus-outline':'#FFD700','--retold-font-family':"Impact, 'Arial Black', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#FFC000',Accent:'#FFD700',Muted:'#AA7700',Light:'#7B0000',WarmBeige:'#800000',TealTint:'#6B0000',Lavender:'#780000',AmberTint:'#7A1000',PdfFill:'#6B0000',PdfText:'#FFFF00'}});tmpSelf._addTheme('1970s-console',{Name:'1970s Console',Category:'Fun',Description:'Amber phosphor on brown-black',Variables:{'--retold-bg-primary':'#1A1000','--retold-bg-secondary':'#140C00','--retold-bg-tertiary':'#1E1400','--retold-bg-panel':'#1C1200','--retold-bg-viewer':'#100A00','--retold-bg-hover':'#2A1C00','--retold-bg-selected':'#3A2800','--retold-bg-thumb':'#140C00','--retold-text-primary':'#FFAA00','--retold-text-secondary':'#DD8800','--retold-text-muted':'#AA6600','--retold-text-dim':'#884400','--retold-text-placeholder':'#663300','--retold-accent':'#FFCC00','--retold-accent-hover':'#FFDD44','--retold-border':'#2A1800','--retold-border-light':'#3A2200','--retold-danger':'#FF4400','--retold-danger-muted':'#AA3300','--retold-scrollbar':'#2A1800','--retold-scrollbar-hover':'#3A2800','--retold-selection-bg':'rgba(255, 204, 0, 0.2)','--retold-focus-outline':'#FFCC00','--retold-font-family':"'Courier New', 'Lucida Console', monospace",'--retold-font-mono':"'Courier New', 'Lucida Console', monospace"},IconColors:{Primary:'#DD8800',Accent:'#FFCC00',Muted:'#884400',Light:'#1E1400',WarmBeige:'#201800',TealTint:'#1A1000',Lavender:'#1C1200',AmberTint:'#221800',PdfFill:'#201000',PdfText:'#FF4400'}});tmpSelf._addTheme('1980s-console',{Name:'1980s Console',Category:'Fun',Description:'Green phosphor on black',Variables:{'--retold-bg-primary':'#001200','--retold-bg-secondary':'#000E00','--retold-bg-tertiary':'#001600','--retold-bg-panel':'#001400','--retold-bg-viewer':'#000A00','--retold-bg-hover':'#002200','--retold-bg-selected':'#003800','--retold-bg-thumb':'#000E00','--retold-text-primary':'#00FF00','--retold-text-secondary':'#00CC00','--retold-text-muted':'#009900','--retold-text-dim':'#006600','--retold-text-placeholder':'#004400','--retold-accent':'#00FF66','--retold-accent-hover':'#44FF88','--retold-border':'#002A00','--retold-border-light':'#003A00','--retold-danger':'#FF0000','--retold-danger-muted':'#AA0000','--retold-scrollbar':'#002A00','--retold-scrollbar-hover':'#004400','--retold-selection-bg':'rgba(0, 255, 102, 0.2)','--retold-focus-outline':'#00FF66','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#00CC00',Accent:'#00FF66',Muted:'#006600',Light:'#001600',WarmBeige:'#001A00',TealTint:'#001200',Lavender:'#001400',AmberTint:'#001800',PdfFill:'#140000',PdfText:'#FF0000'}});tmpSelf._addTheme('1990s-website',{Name:'1990s Web Site',Category:'Fun',Description:'Blue links on grey, beveled',Variables:{'--retold-bg-primary':'#C0C0C0','--retold-bg-secondary':'#B0B0B0','--retold-bg-tertiary':'#A8A8A8','--retold-bg-panel':'#B8B8B8','--retold-bg-viewer':'#D0D0D0','--retold-bg-hover':'#B8B8D0','--retold-bg-selected':'#000080','--retold-bg-thumb':'#B0B0B0','--retold-text-primary':'#000000','--retold-text-secondary':'#000080','--retold-text-muted':'#404040','--retold-text-dim':'#606060','--retold-text-placeholder':'#808080','--retold-accent':'#0000FF','--retold-accent-hover':'#0000CC','--retold-border':'#808080','--retold-border-light':'#A0A0A0','--retold-danger':'#FF0000','--retold-danger-muted':'#990000','--retold-scrollbar':'#808080','--retold-scrollbar-hover':'#606060','--retold-selection-bg':'rgba(0, 0, 128, 0.3)','--retold-focus-outline':'#0000FF','--retold-font-family':"'Times New Roman', Times, serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#000080',Accent:'#0000FF',Muted:'#606060',Light:'#A8A8A8',WarmBeige:'#B0B0B0',TealTint:'#A0A0A0',Lavender:'#ABABD0',AmberTint:'#B8B0A0',PdfFill:'#C0A0A0',PdfText:'#FF0000'}});tmpSelf._addTheme('early-2000s',{Name:'Early 2000s Web',Category:'Fun',Description:'Teal and silver, Web 2.0',Variables:{'--retold-bg-primary':'#E8F4F8','--retold-bg-secondary':'#D0E8EE','--retold-bg-tertiary':'#C0DDE6','--retold-bg-panel':'#D8EEF2','--retold-bg-viewer':'#F0F8FA','--retold-bg-hover':'#B0D4E0','--retold-bg-selected':'#88C4D8','--retold-bg-thumb':'#D0E8EE','--retold-text-primary':'#1A3A4A','--retold-text-secondary':'#2A4A5A','--retold-text-muted':'#5A7A8A','--retold-text-dim':'#7A9AAA','--retold-text-placeholder':'#9ABACA','--retold-accent':'#0099CC','--retold-accent-hover':'#00AADD','--retold-border':'#A0C8D8','--retold-border-light':'#B8D8E4','--retold-danger':'#CC3300','--retold-danger-muted':'#994422','--retold-scrollbar':'#A0C8D8','--retold-scrollbar-hover':'#88B8CC','--retold-selection-bg':'rgba(0, 153, 204, 0.2)','--retold-focus-outline':'#0099CC','--retold-font-family':"Verdana, Geneva, Tahoma, sans-serif",'--retold-font-mono':"'Lucida Console', Monaco, monospace"},IconColors:{Primary:'#2A4A5A',Accent:'#0099CC',Muted:'#7A9AAA',Light:'#C0DDE6',WarmBeige:'#D0E8EE',TealTint:'#B0D8E4',Lavender:'#C8DCE6',AmberTint:'#D8E0D0',PdfFill:'#E0C8C0',PdfText:'#CC3300'}});tmpSelf._addTheme('synthwave',{Name:'Synthwave',Category:'Fun',Description:'Purple and pink neon',Variables:{'--retold-bg-primary':'#1A0A2E','--retold-bg-secondary':'#140824','--retold-bg-tertiary':'#200E38','--retold-bg-panel':'#1C0C32','--retold-bg-viewer':'#100620','--retold-bg-hover':'#2A1848','--retold-bg-selected':'#3A2060','--retold-bg-thumb':'#140824','--retold-text-primary':'#E8C0F8','--retold-text-secondary':'#D0A8E8','--retold-text-muted':'#9878B8','--retold-text-dim':'#7858A8','--retold-text-placeholder':'#584088','--retold-accent':'#FF71CE','--retold-accent-hover':'#FF99DD','--retold-border':'#302050','--retold-border-light':'#402868','--retold-danger':'#FF4488','--retold-danger-muted':'#AA3366','--retold-scrollbar':'#302050','--retold-scrollbar-hover':'#402868','--retold-selection-bg':'rgba(255, 113, 206, 0.25)','--retold-focus-outline':'#FF71CE','--retold-font-family':"'Trebuchet MS', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0A8E8',Accent:'#FF71CE',Muted:'#7858A8',Light:'#200E38',WarmBeige:'#221040',TealTint:'#1A0C30',Lavender:'#1E0E36',AmberTint:'#241028',PdfFill:'#241020',PdfText:'#FF4488'}});tmpSelf._addTheme('solarized-dark',{Name:'Solarized Dark',Category:'Fun',Description:"Schoonover's classic palette",Variables:{'--retold-bg-primary':'#002B36','--retold-bg-secondary':'#073642','--retold-bg-tertiary':'#003B4A','--retold-bg-panel':'#00303C','--retold-bg-viewer':'#001E28','--retold-bg-hover':'#0A4858','--retold-bg-selected':'#155868','--retold-bg-thumb':'#073642','--retold-text-primary':'#FDF6E3','--retold-text-secondary':'#EEE8D5','--retold-text-muted':'#93A1A1','--retold-text-dim':'#839496','--retold-text-placeholder':'#657B83','--retold-accent':'#268BD2','--retold-accent-hover':'#45A0E0','--retold-border':'#0A4050','--retold-border-light':'#125868','--retold-danger':'#DC322F','--retold-danger-muted':'#AA2A28','--retold-scrollbar':'#0A4050','--retold-scrollbar-hover':'#125868','--retold-selection-bg':'rgba(38, 139, 210, 0.25)','--retold-focus-outline':'#268BD2','--retold-font-family':"'Source Code Pro', 'Fira Code', monospace",'--retold-font-mono':"'Source Code Pro', 'Fira Code', monospace"},IconColors:{Primary:'#EEE8D5',Accent:'#268BD2',Muted:'#839496',Light:'#003B4A',WarmBeige:'#073642',TealTint:'#004050',Lavender:'#003848',AmberTint:'#0A3A30',PdfFill:'#0A3028',PdfText:'#DC322F'}});tmpSelf._addTheme('forest',{Name:'Forest',Category:'Fun',Description:'Deep greens and earth browns',Variables:{'--retold-bg-primary':'#1A2018','--retold-bg-secondary':'#141A12','--retold-bg-tertiary':'#1E2620','--retold-bg-panel':'#1C221A','--retold-bg-viewer':'#101410','--retold-bg-hover':'#283828','--retold-bg-selected':'#344834','--retold-bg-thumb':'#141A12','--retold-text-primary':'#D0DCC8','--retold-text-secondary':'#B0C4A8','--retold-text-muted':'#809878','--retold-text-dim':'#607858','--retold-text-placeholder':'#486040','--retold-accent':'#6AAF5C','--retold-accent-hover':'#88CC78','--retold-border':'#2A3A28','--retold-border-light':'#3A4A38','--retold-danger':'#CC4422','--retold-danger-muted':'#884422','--retold-scrollbar':'#2A3A28','--retold-scrollbar-hover':'#3A4A38','--retold-selection-bg':'rgba(106, 175, 92, 0.25)','--retold-focus-outline':'#6AAF5C','--retold-font-family':"'Palatino Linotype', 'Book Antiqua', Palatino, serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#B0C4A8',Accent:'#6AAF5C',Muted:'#607858',Light:'#1E2620',WarmBeige:'#22281E',TealTint:'#1A221A',Lavender:'#1E2420',AmberTint:'#262218',PdfFill:'#261A18',PdfText:'#CC4422'}});// ===================================================================
-// DEBUG THEME (unique color per container for layout debugging)
-// ===================================================================
-tmpSelf._addTheme('mobile-debug',{Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}});}/**
+ *
+ * Theme definitions live in RetoldRemote-ThemeDefinitions.js.
+ */class RetoldRemoteThemeProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._themes={};this._themeOrder=[];this._currentTheme='twilight';// Load theme definitions from the data module
+for(let i=0;i<_ThemeDefinitions.length;i++){let tmpDef=_ThemeDefinitions[i];this._addTheme(tmpDef.Key,tmpDef);}}/**
 	 * Register a theme in the internal map and order list.
 	 */_addTheme(pKey,pTheme){this._themes[pKey]=pTheme;this._themeOrder.push(pKey);}/**
 	 * Apply a theme by key.  Injects CSS variables into a dedicated <style>
@@ -10164,7 +10199,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pThemeKey
 	 * @returns {Object|null}
-	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"pict-provider":46}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
+	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"./RetoldRemote-ThemeDefinitions":127,"pict-provider":46}],126:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
 	 * Show a brief overlay indicator inside the viewer body.
 	 *
 	 * Reuses the #RetoldRemote-FitIndicator element, creating it if needed.
@@ -10179,12 +10214,33 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pMessage - Text to display
 	 * @param {number} pDuration - Milliseconds before removal (default 2000)
-	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":46}],124:[function(require,module,exports){/**
+	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":46}],127:[function(require,module,exports){/**
+ * Theme definitions for retold-remote.
+ *
+ * Pure data module — 15 themes (5 grey-only, 10 fun, 1 debug).
+ * Each theme has:
+ *   - Name:        Display name
+ *   - Category:    'Grey', 'Fun', or 'Debug'
+ *   - Description: Short description
+ *   - Variables:   Object of CSS custom property name → value
+ *   - IconColors:  Object of icon color role → hex value
+ *
+ * @license MIT
+ */const _ThemeDefinitions=[// ===================================================================
+// GREY-ONLY THEMES (pure greyscale, no hue)
+// ===================================================================
+{Key:'daylight',Name:'Daylight',Category:'Grey',Description:'Bright white, dark text',Variables:{'--retold-bg-primary':'#FFFFFF','--retold-bg-secondary':'#F0F0F0','--retold-bg-tertiary':'#E8E8E8','--retold-bg-panel':'#F5F5F5','--retold-bg-viewer':'#FAFAFA','--retold-bg-hover':'#E0E0E0','--retold-bg-selected':'#C8C8C8','--retold-bg-thumb':'#F0F0F0','--retold-text-primary':'#1A1A1A','--retold-text-secondary':'#333333','--retold-text-muted':'#666666','--retold-text-dim':'#888888','--retold-text-placeholder':'#AAAAAA','--retold-accent':'#444444','--retold-accent-hover':'#222222','--retold-border':'#D0D0D0','--retold-border-light':'#E0E0E0','--retold-danger':'#CC0000','--retold-danger-muted':'#884444','--retold-scrollbar':'#C0C0C0','--retold-scrollbar-hover':'#A0A0A0','--retold-selection-bg':'rgba(68, 68, 68, 0.2)','--retold-focus-outline':'#444444','--retold-font-family':"'Segoe UI', system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#333333',Accent:'#444444',Muted:'#888888',Light:'#E8E8E8',WarmBeige:'#F0F0F0',TealTint:'#E0E0E0',Lavender:'#EBEBEB',AmberTint:'#F0EDE8',PdfFill:'#F0E0E0',PdfText:'#CC0000'}},{Key:'afternoon',Name:'Afternoon',Category:'Grey',Description:'Warm light grey, softer contrast',Variables:{'--retold-bg-primary':'#E8E4E0','--retold-bg-secondary':'#DAD6D2','--retold-bg-tertiary':'#D0CCC8','--retold-bg-panel':'#DDD9D5','--retold-bg-viewer':'#F0ECE8','--retold-bg-hover':'#CCC8C4','--retold-bg-selected':'#B8B4B0','--retold-bg-thumb':'#DAD6D2','--retold-text-primary':'#2A2A2A','--retold-text-secondary':'#404040','--retold-text-muted':'#707070','--retold-text-dim':'#909090','--retold-text-placeholder':'#B0B0B0','--retold-accent':'#555555','--retold-accent-hover':'#333333','--retold-border':'#C0BCB8','--retold-border-light':'#D0CCC8','--retold-danger':'#AA3333','--retold-danger-muted':'#886655','--retold-scrollbar':'#B8B4B0','--retold-scrollbar-hover':'#A0A09C','--retold-selection-bg':'rgba(85, 85, 85, 0.2)','--retold-focus-outline':'#555555','--retold-font-family':"Georgia, 'Times New Roman', serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#404040',Accent:'#555555',Muted:'#909090',Light:'#D0CCC8',WarmBeige:'#DAD6D2',TealTint:'#CCC8C4',Lavender:'#D2D0CE',AmberTint:'#D8D2C8',PdfFill:'#D8C8C0',PdfText:'#AA3333'}},{Key:'evening',Name:'Evening',Category:'Grey',Description:'Medium grey, transitional',Variables:{'--retold-bg-primary':'#484848','--retold-bg-secondary':'#3C3C3C','--retold-bg-tertiary':'#424242','--retold-bg-panel':'#454545','--retold-bg-viewer':'#363636','--retold-bg-hover':'#525252','--retold-bg-selected':'#606060','--retold-bg-thumb':'#3C3C3C','--retold-text-primary':'#E0E0E0','--retold-text-secondary':'#D0D0D0','--retold-text-muted':'#A0A0A0','--retold-text-dim':'#888888','--retold-text-placeholder':'#707070','--retold-accent':'#C0C0C0','--retold-accent-hover':'#E0E0E0','--retold-border':'#585858','--retold-border-light':'#606060','--retold-danger':'#FF6666','--retold-danger-muted':'#AA6666','--retold-scrollbar':'#585858','--retold-scrollbar-hover':'#686868','--retold-selection-bg':'rgba(192, 192, 192, 0.25)','--retold-focus-outline':'#C0C0C0','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#D0D0D0',Accent:'#C0C0C0',Muted:'#888888',Light:'#424242',WarmBeige:'#484848',TealTint:'#3E3E3E',Lavender:'#444444',AmberTint:'#4A4640',PdfFill:'#4A3C3C',PdfText:'#FF6666'}},{Key:'twilight',Name:'Twilight',Category:'Grey',Description:'Dark grey, low light (default)',Variables:{'--retold-bg-primary':'#1E1E1E','--retold-bg-secondary':'#181818','--retold-bg-tertiary':'#252525','--retold-bg-panel':'#202020','--retold-bg-viewer':'#141414','--retold-bg-hover':'#2E2E2E','--retold-bg-selected':'#404040','--retold-bg-thumb':'#181818','--retold-text-primary':'#E0E0E0','--retold-text-secondary':'#C8C8C8','--retold-text-muted':'#909090','--retold-text-dim':'#707070','--retold-text-placeholder':'#585858','--retold-accent':'#A0A0A0','--retold-accent-hover':'#C0C0C0','--retold-border':'#333333','--retold-border-light':'#404040','--retold-danger':'#FF6666','--retold-danger-muted':'#AA6666','--retold-scrollbar':'#404040','--retold-scrollbar-hover':'#505050','--retold-selection-bg':'rgba(160, 160, 160, 0.25)','--retold-focus-outline':'#A0A0A0','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#C8C8C8',Accent:'#A0A0A0',Muted:'#707070',Light:'#252525',WarmBeige:'#2A2A2A',TealTint:'#222222',Lavender:'#282828',AmberTint:'#2E2A24',PdfFill:'#2E2224',PdfText:'#E06060'}},{Key:'night',Name:'Night',Category:'Grey',Description:'Near-black, minimal contrast',Variables:{'--retold-bg-primary':'#0A0A0A','--retold-bg-secondary':'#060606','--retold-bg-tertiary':'#0E0E0E','--retold-bg-panel':'#0C0C0C','--retold-bg-viewer':'#040404','--retold-bg-hover':'#161616','--retold-bg-selected':'#252525','--retold-bg-thumb':'#060606','--retold-text-primary':'#888888','--retold-text-secondary':'#707070','--retold-text-muted':'#555555','--retold-text-dim':'#444444','--retold-text-placeholder':'#333333','--retold-accent':'#666666','--retold-accent-hover':'#808080','--retold-border':'#1A1A1A','--retold-border-light':'#222222','--retold-danger':'#AA4444','--retold-danger-muted':'#663333','--retold-scrollbar':'#1A1A1A','--retold-scrollbar-hover':'#2A2A2A','--retold-selection-bg':'rgba(102, 102, 102, 0.2)','--retold-focus-outline':'#666666','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Fira Code', 'Consolas', monospace"},IconColors:{Primary:'#707070',Accent:'#666666',Muted:'#444444',Light:'#0E0E0E',WarmBeige:'#121212',TealTint:'#0C0C0C',Lavender:'#101010',AmberTint:'#141210',PdfFill:'#141010',PdfText:'#AA4444'}},// ===================================================================
+// FUN THEMES
+// ===================================================================
+{Key:'neo-tokyo',Name:'Neo-Tokyo',Category:'Fun',Description:'Neon pink on dark navy',Variables:{'--retold-bg-primary':'#0D0D2B','--retold-bg-secondary':'#080820','--retold-bg-tertiary':'#121235','--retold-bg-panel':'#0F0F28','--retold-bg-viewer':'#060615','--retold-bg-hover':'#1A1A42','--retold-bg-selected':'#2A1845','--retold-bg-thumb':'#080820','--retold-text-primary':'#E8E0F0','--retold-text-secondary':'#D0C8E0','--retold-text-muted':'#9088A8','--retold-text-dim':'#6860A0','--retold-text-placeholder':'#504888','--retold-accent':'#FF2D8A','--retold-accent-hover':'#FF5AA0','--retold-border':'#2A2050','--retold-border-light':'#382868','--retold-danger':'#FF4466','--retold-danger-muted':'#AA3355','--retold-scrollbar':'#2A2050','--retold-scrollbar-hover':'#3A3068','--retold-selection-bg':'rgba(255, 45, 138, 0.25)','--retold-focus-outline':'#FF2D8A','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0C8E0',Accent:'#FF2D8A',Muted:'#6860A0',Light:'#121235',WarmBeige:'#141438',TealTint:'#100E30',Lavender:'#141232',AmberTint:'#1A1228',PdfFill:'#1A1028',PdfText:'#FF4466'}},{Key:'cyberpunk',Name:'Cyberpunk',Category:'Fun',Description:'Electric green on black',Variables:{'--retold-bg-primary':'#0A0E0A','--retold-bg-secondary':'#060806','--retold-bg-tertiary':'#0E120E','--retold-bg-panel':'#0C100C','--retold-bg-viewer':'#040604','--retold-bg-hover':'#142014','--retold-bg-selected':'#1A3A1A','--retold-bg-thumb':'#060806','--retold-text-primary':'#C8FFC8','--retold-text-secondary':'#A0D8A0','--retold-text-muted':'#608860','--retold-text-dim':'#406040','--retold-text-placeholder':'#305030','--retold-accent':'#00FF41','--retold-accent-hover':'#44FF77','--retold-border':'#1A2A1A','--retold-border-light':'#224022','--retold-danger':'#FF3333','--retold-danger-muted':'#AA2222','--retold-scrollbar':'#1A2A1A','--retold-scrollbar-hover':'#2A4A2A','--retold-selection-bg':'rgba(0, 255, 65, 0.2)','--retold-focus-outline':'#00FF41','--retold-font-family':"'Lucida Console', 'Courier New', monospace",'--retold-font-mono':"'Lucida Console', 'Courier New', monospace"},IconColors:{Primary:'#A0D8A0',Accent:'#00FF41',Muted:'#406040',Light:'#0E120E',WarmBeige:'#101610',TealTint:'#0C140C',Lavender:'#0E120E',AmberTint:'#141810',PdfFill:'#181010',PdfText:'#FF3333'}},{Key:'hotdog',Name:'Hotdog',Category:'Fun',Description:'Red and mustard yellow, garish',Variables:{'--retold-bg-primary':'#8B0000','--retold-bg-secondary':'#6B0000','--retold-bg-tertiary':'#7B0000','--retold-bg-panel':'#750000','--retold-bg-viewer':'#550000','--retold-bg-hover':'#AA1111','--retold-bg-selected':'#BB3300','--retold-bg-thumb':'#6B0000','--retold-text-primary':'#FFD700','--retold-text-secondary':'#FFC000','--retold-text-muted':'#CC9900','--retold-text-dim':'#AA7700','--retold-text-placeholder':'#886600','--retold-accent':'#FFD700','--retold-accent-hover':'#FFEE44','--retold-border':'#AA2222','--retold-border-light':'#BB3333','--retold-danger':'#FFFF00','--retold-danger-muted':'#CCCC00','--retold-scrollbar':'#AA2222','--retold-scrollbar-hover':'#CC3333','--retold-selection-bg':'rgba(255, 215, 0, 0.3)','--retold-focus-outline':'#FFD700','--retold-font-family':"Impact, 'Arial Black', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#FFC000',Accent:'#FFD700',Muted:'#AA7700',Light:'#7B0000',WarmBeige:'#800000',TealTint:'#6B0000',Lavender:'#780000',AmberTint:'#7A1000',PdfFill:'#6B0000',PdfText:'#FFFF00'}},{Key:'1970s-console',Name:'1970s Console',Category:'Fun',Description:'Amber phosphor on brown-black',Variables:{'--retold-bg-primary':'#1A1000','--retold-bg-secondary':'#140C00','--retold-bg-tertiary':'#1E1400','--retold-bg-panel':'#1C1200','--retold-bg-viewer':'#100A00','--retold-bg-hover':'#2A1C00','--retold-bg-selected':'#3A2800','--retold-bg-thumb':'#140C00','--retold-text-primary':'#FFAA00','--retold-text-secondary':'#DD8800','--retold-text-muted':'#AA6600','--retold-text-dim':'#884400','--retold-text-placeholder':'#663300','--retold-accent':'#FFCC00','--retold-accent-hover':'#FFDD44','--retold-border':'#2A1800','--retold-border-light':'#3A2200','--retold-danger':'#FF4400','--retold-danger-muted':'#AA3300','--retold-scrollbar':'#2A1800','--retold-scrollbar-hover':'#3A2800','--retold-selection-bg':'rgba(255, 204, 0, 0.2)','--retold-focus-outline':'#FFCC00','--retold-font-family':"'Courier New', 'Lucida Console', monospace",'--retold-font-mono':"'Courier New', 'Lucida Console', monospace"},IconColors:{Primary:'#DD8800',Accent:'#FFCC00',Muted:'#884400',Light:'#1E1400',WarmBeige:'#201800',TealTint:'#1A1000',Lavender:'#1C1200',AmberTint:'#221800',PdfFill:'#201000',PdfText:'#FF4400'}},{Key:'1980s-console',Name:'1980s Console',Category:'Fun',Description:'Green phosphor on black',Variables:{'--retold-bg-primary':'#001200','--retold-bg-secondary':'#000E00','--retold-bg-tertiary':'#001600','--retold-bg-panel':'#001400','--retold-bg-viewer':'#000A00','--retold-bg-hover':'#002200','--retold-bg-selected':'#003800','--retold-bg-thumb':'#000E00','--retold-text-primary':'#00FF00','--retold-text-secondary':'#00CC00','--retold-text-muted':'#009900','--retold-text-dim':'#006600','--retold-text-placeholder':'#004400','--retold-accent':'#00FF66','--retold-accent-hover':'#44FF88','--retold-border':'#002A00','--retold-border-light':'#003A00','--retold-danger':'#FF0000','--retold-danger-muted':'#AA0000','--retold-scrollbar':'#002A00','--retold-scrollbar-hover':'#004400','--retold-selection-bg':'rgba(0, 255, 102, 0.2)','--retold-focus-outline':'#00FF66','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#00CC00',Accent:'#00FF66',Muted:'#006600',Light:'#001600',WarmBeige:'#001A00',TealTint:'#001200',Lavender:'#001400',AmberTint:'#001800',PdfFill:'#140000',PdfText:'#FF0000'}},{Key:'1990s-website',Name:'1990s Web Site',Category:'Fun',Description:'Blue links on grey, beveled',Variables:{'--retold-bg-primary':'#C0C0C0','--retold-bg-secondary':'#B0B0B0','--retold-bg-tertiary':'#A8A8A8','--retold-bg-panel':'#B8B8B8','--retold-bg-viewer':'#D0D0D0','--retold-bg-hover':'#B8B8D0','--retold-bg-selected':'#000080','--retold-bg-thumb':'#B0B0B0','--retold-text-primary':'#000000','--retold-text-secondary':'#000080','--retold-text-muted':'#404040','--retold-text-dim':'#606060','--retold-text-placeholder':'#808080','--retold-accent':'#0000FF','--retold-accent-hover':'#0000CC','--retold-border':'#808080','--retold-border-light':'#A0A0A0','--retold-danger':'#FF0000','--retold-danger-muted':'#990000','--retold-scrollbar':'#808080','--retold-scrollbar-hover':'#606060','--retold-selection-bg':'rgba(0, 0, 128, 0.3)','--retold-focus-outline':'#0000FF','--retold-font-family':"'Times New Roman', Times, serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#000080',Accent:'#0000FF',Muted:'#606060',Light:'#A8A8A8',WarmBeige:'#B0B0B0',TealTint:'#A0A0A0',Lavender:'#ABABD0',AmberTint:'#B8B0A0',PdfFill:'#C0A0A0',PdfText:'#FF0000'}},{Key:'early-2000s',Name:'Early 2000s Web',Category:'Fun',Description:'Teal and silver, Web 2.0',Variables:{'--retold-bg-primary':'#E8F4F8','--retold-bg-secondary':'#D0E8EE','--retold-bg-tertiary':'#C0DDE6','--retold-bg-panel':'#D8EEF2','--retold-bg-viewer':'#F0F8FA','--retold-bg-hover':'#B0D4E0','--retold-bg-selected':'#88C4D8','--retold-bg-thumb':'#D0E8EE','--retold-text-primary':'#1A3A4A','--retold-text-secondary':'#2A4A5A','--retold-text-muted':'#5A7A8A','--retold-text-dim':'#7A9AAA','--retold-text-placeholder':'#9ABACA','--retold-accent':'#0099CC','--retold-accent-hover':'#00AADD','--retold-border':'#A0C8D8','--retold-border-light':'#B8D8E4','--retold-danger':'#CC3300','--retold-danger-muted':'#994422','--retold-scrollbar':'#A0C8D8','--retold-scrollbar-hover':'#88B8CC','--retold-selection-bg':'rgba(0, 153, 204, 0.2)','--retold-focus-outline':'#0099CC','--retold-font-family':"Verdana, Geneva, Tahoma, sans-serif",'--retold-font-mono':"'Lucida Console', Monaco, monospace"},IconColors:{Primary:'#2A4A5A',Accent:'#0099CC',Muted:'#7A9AAA',Light:'#C0DDE6',WarmBeige:'#D0E8EE',TealTint:'#B0D8E4',Lavender:'#C8DCE6',AmberTint:'#D8E0D0',PdfFill:'#E0C8C0',PdfText:'#CC3300'}},{Key:'synthwave',Name:'Synthwave',Category:'Fun',Description:'Purple and pink neon',Variables:{'--retold-bg-primary':'#1A0A2E','--retold-bg-secondary':'#140824','--retold-bg-tertiary':'#200E38','--retold-bg-panel':'#1C0C32','--retold-bg-viewer':'#100620','--retold-bg-hover':'#2A1848','--retold-bg-selected':'#3A2060','--retold-bg-thumb':'#140824','--retold-text-primary':'#E8C0F8','--retold-text-secondary':'#D0A8E8','--retold-text-muted':'#9878B8','--retold-text-dim':'#7858A8','--retold-text-placeholder':'#584088','--retold-accent':'#FF71CE','--retold-accent-hover':'#FF99DD','--retold-border':'#302050','--retold-border-light':'#402868','--retold-danger':'#FF4488','--retold-danger-muted':'#AA3366','--retold-scrollbar':'#302050','--retold-scrollbar-hover':'#402868','--retold-selection-bg':'rgba(255, 113, 206, 0.25)','--retold-focus-outline':'#FF71CE','--retold-font-family':"'Trebuchet MS', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0A8E8',Accent:'#FF71CE',Muted:'#7858A8',Light:'#200E38',WarmBeige:'#221040',TealTint:'#1A0C30',Lavender:'#1E0E36',AmberTint:'#241028',PdfFill:'#241020',PdfText:'#FF4488'}},{Key:'solarized-dark',Name:'Solarized Dark',Category:'Fun',Description:"Schoonover's classic palette",Variables:{'--retold-bg-primary':'#002B36','--retold-bg-secondary':'#073642','--retold-bg-tertiary':'#003B4A','--retold-bg-panel':'#00303C','--retold-bg-viewer':'#001E28','--retold-bg-hover':'#0A4858','--retold-bg-selected':'#155868','--retold-bg-thumb':'#073642','--retold-text-primary':'#FDF6E3','--retold-text-secondary':'#EEE8D5','--retold-text-muted':'#93A1A1','--retold-text-dim':'#839496','--retold-text-placeholder':'#657B83','--retold-accent':'#268BD2','--retold-accent-hover':'#45A0E0','--retold-border':'#0A4050','--retold-border-light':'#125868','--retold-danger':'#DC322F','--retold-danger-muted':'#AA2A28','--retold-scrollbar':'#0A4050','--retold-scrollbar-hover':'#125868','--retold-selection-bg':'rgba(38, 139, 210, 0.25)','--retold-focus-outline':'#268BD2','--retold-font-family':"'Source Code Pro', 'Fira Code', monospace",'--retold-font-mono':"'Source Code Pro', 'Fira Code', monospace"},IconColors:{Primary:'#EEE8D5',Accent:'#268BD2',Muted:'#839496',Light:'#003B4A',WarmBeige:'#073642',TealTint:'#004050',Lavender:'#003848',AmberTint:'#0A3A30',PdfFill:'#0A3028',PdfText:'#DC322F'}},{Key:'forest',Name:'Forest',Category:'Fun',Description:'Deep greens and earth browns',Variables:{'--retold-bg-primary':'#1A2018','--retold-bg-secondary':'#141A12','--retold-bg-tertiary':'#1E2620','--retold-bg-panel':'#1C221A','--retold-bg-viewer':'#101410','--retold-bg-hover':'#283828','--retold-bg-selected':'#344834','--retold-bg-thumb':'#141A12','--retold-text-primary':'#D0DCC8','--retold-text-secondary':'#B0C4A8','--retold-text-muted':'#809878','--retold-text-dim':'#607858','--retold-text-placeholder':'#486040','--retold-accent':'#6AAF5C','--retold-accent-hover':'#88CC78','--retold-border':'#2A3A28','--retold-border-light':'#3A4A38','--retold-danger':'#CC4422','--retold-danger-muted':'#884422','--retold-scrollbar':'#2A3A28','--retold-scrollbar-hover':'#3A4A38','--retold-selection-bg':'rgba(106, 175, 92, 0.25)','--retold-focus-outline':'#6AAF5C','--retold-font-family':"'Palatino Linotype', 'Book Antiqua', Palatino, serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#B0C4A8',Accent:'#6AAF5C',Muted:'#607858',Light:'#1E2620',WarmBeige:'#22281E',TealTint:'#1A221A',Lavender:'#1E2420',AmberTint:'#262218',PdfFill:'#261A18',PdfText:'#CC4422'}},// ===================================================================
+// DEBUG THEME (unique color per container for layout debugging)
+// ===================================================================
+{Key:'mobile-debug',Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}}];module.exports=_ThemeDefinitions;},{}],128:[function(require,module,exports){/**
  * Audio explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleAudioExplorerKey;},{}],125:[function(require,module,exports){/**
+ */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleAudioExplorerKey;},{}],129:[function(require,module,exports){/**
  * Gallery mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10194,12 +10250,12 @@ pGalleryNav._showFilterBar();let tmpGalleryView=pGalleryNav.pict.views['RetoldRe
 pGalleryNav._showFilterBar();setTimeout(()=>{let tmpSortSelect=document.getElementById('RetoldRemote-Gallery-Sort');if(tmpSortSelect){tmpSortSelect.focus();}},50);}break;case'c':pEvent.preventDefault();pGalleryNav._toggleSettingsPanel();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpCursorItem=tmpItems[tmpIndex];let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpCursorItem&&tmpQuickGUID){if(tmpCursorItem.Type==='folder'||tmpCursorItem.Type==='archive'){// For folders, prompt user for folder reference vs folder contents
 tmpCollMgr.showFolderChoicePrompt(pChoice=>{let tmpAddItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpCursorItem.Path||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);});}else{// Quick-add the highlighted file item to the active collection
 let tmpAddItem={Type:'file',Path:tmpCursorItem.Path||'',Hash:tmpCursorItem.Hash||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);}}else{// No active or last-used collection, or no item — open the topbar dropdown
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],126:[function(require,module,exports){/**
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],130:[function(require,module,exports){/**
  * Image explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();tmpIEX.goBack();break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleImageExplorerKey;},{}],127:[function(require,module,exports){/**
+ */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();tmpIEX.goBack();break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleImageExplorerKey;},{}],131:[function(require,module,exports){/**
  * Sidebar file list keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10207,7 +10263,7 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
  */function handleSidebarKey(pGalleryNav,pEvent){let tmpRows=document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');let tmpCount=tmpRows.length;if(tmpCount===0){// Nothing in the sidebar, bail back to gallery
 pGalleryNav._blurSidebar();return;}switch(pEvent.key){case'ArrowDown':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.min(pGalleryNav._sidebarCursorIndex+1,tmpCount-1));break;case'ArrowUp':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.max(pGalleryNav._sidebarCursorIndex-1,0));break;case'Home':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(0);break;case'End':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(tmpCount-1);break;case'Enter':pEvent.preventDefault();{// Click the focused row to open it (folder or file)
 let tmpRow=tmpRows[pGalleryNav._sidebarCursorIndex];if(tmpRow){// Fire the dblclick handler which opens folders / selects files
-let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],128:[function(require,module,exports){/**
+let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],132:[function(require,module,exports){/**
  * Video explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10217,7 +10273,7 @@ if(tmpVEX._previewKeyHandler){tmpVEX.closeFramePreview();}else{tmpVEX.goBack();}
 let tmpSelVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(!tmpSelVEX||tmpSelVEX._selectionStartTime<0||tmpSelVEX._selectionEndTime<0){// No selection active \u2014 do nothing
 break;}let tmpSelCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpSelCollMgr){let tmpStart=Math.min(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpEnd=Math.max(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpSelQuickGUID=tmpSelCollMgr.getQuickAddTargetGUID();if(tmpSelQuickGUID){tmpSelCollMgr.addVideoClipToCollection(tmpSelQuickGUID,tmpStart,tmpEnd);}else{let tmpSelTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpSelTopBar&&typeof tmpSelTopBar.showAddToCollectionDropdown==='function'){tmpSelTopBar.showAddToCollectionDropdown();}}}}break;case'[':pEvent.preventDefault();{// Set selection start marker at currently selected frame's timestamp
 let tmpStartVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpStartVEX&&tmpStartVEX._frameData&&tmpStartVEX._frameData.Frames&&tmpStartVEX._selectedFrameIndex>=0&&tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex]){let tmpTimestamp=tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex].Timestamp;tmpStartVEX.setSelectionStart(tmpTimestamp);}}break;case']':pEvent.preventDefault();{// Set selection end marker at currently selected frame's timestamp
-let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleVideoExplorerKey;},{}],129:[function(require,module,exports){/**
+let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleVideoExplorerKey;},{}],133:[function(require,module,exports){/**
  * Viewer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10225,296 +10281,84 @@ let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&
  */function handleViewerKey(pGalleryNav,pEvent){let tmpRemote=pGalleryNav.pict.AppData.RetoldRemote;// Video action menu mode — intercept keys for menu options
 if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();return;case'a':pEvent.preventDefault();{let tmpMenuCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollMgr){let tmpMenuQuickGUID=tmpMenuCollMgr.getQuickAddTargetGUID();if(tmpMenuQuickGUID){tmpMenuCollMgr.addCurrentFileToCollection(tmpMenuQuickGUID);}else{let tmpMenuTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpMenuTopBar&&typeof tmpMenuTopBar.showAddToCollectionDropdown==='function'){tmpMenuTopBar.showAddToCollectionDropdown();}}}}return;case'b':pEvent.preventDefault();{let tmpMenuCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollManager){tmpMenuCollManager.togglePanel();}}return;case'h':pEvent.preventDefault();{let tmpMenuFavManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuFavManager){tmpMenuFavManager.toggleFavorite();}}return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();break;case'f':pEvent.preventDefault();pGalleryNav._toggleFullscreen();break;case'i':pEvent.preventDefault();pGalleryNav._toggleFileInfo();break;case' ':pEvent.preventDefault();pGalleryNav._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();pGalleryNav._zoomIn();break;case'-':pEvent.preventDefault();pGalleryNav._zoomOut();break;case'0':pEvent.preventDefault();pGalleryNav._zoomReset();break;case'z':pEvent.preventDefault();pGalleryNav._cycleFitMode();break;case'Enter':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){// Quick-add the currently viewed file
 tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{// No active or last-used collection — open the picker
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],130:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-aex
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.retold-remote-aex-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			z-index: 5;
-		}
-		.retold-remote-aex-nav-btn
-		{
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.8rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-aex-nav-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-aex-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			text-align: center;
-		}
-		.retold-remote-aex-info
-		{
-			display: flex;
-			align-items: center;
-			gap: 16px;
-			padding: 8px 16px;
-			background: var(--retold-bg-tertiary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-			flex-wrap: wrap;
-		}
-		.retold-remote-aex-info-item
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-		}
-		.retold-remote-aex-info-label
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-aex-info-value
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-aex-controls
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			flex-wrap: wrap;
-		}
-		.retold-remote-aex-controls label
-		{
-			font-size: 0.75rem;
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-aex-controls select,
-		.retold-remote-aex-controls input
-		{
-			font-size: 0.75rem;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			padding: 2px 6px;
-			font-family: inherit;
-		}
-		.retold-remote-aex-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-accent);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-aex-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-aex-btn:disabled
-		{
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
-		.retold-remote-aex-btn:disabled:hover
-		{
-			background: transparent;
-			color: var(--retold-accent);
-		}
-		/* Save segment to collection button */
-		.retold-remote-aex-save-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid #98c379;
-			border-radius: 3px;
-			background: transparent;
-			color: #98c379;
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-aex-save-btn:hover
-		{
-			background: #98c379;
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-aex-save-btn:disabled
-		{
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
-		.retold-remote-aex-save-btn:disabled:hover
-		{
-			background: transparent;
-			color: #98c379;
-		}
-		.retold-remote-aex-body
-		{
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-			position: relative;
-		}
-		.retold-remote-aex-loading
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.9rem;
-		}
-		.retold-remote-aex-loading-spinner
-		{
-			width: 32px;
-			height: 32px;
-			border: 3px solid var(--retold-border);
-			border-top-color: var(--retold-accent);
-			border-radius: 50%;
-			animation: retold-aex-spin 0.8s linear infinite;
-			margin-bottom: 16px;
-		}
-		@keyframes retold-aex-spin
-		{
-			to { transform: rotate(360deg); }
-		}
-		.retold-remote-aex-canvas-wrap
-		{
-			flex: 1;
-			position: relative;
-			min-height: 150px;
-			cursor: crosshair;
-		}
-		.retold-remote-aex-canvas-wrap canvas
-		{
-			width: 100%;
-			height: 100%;
-			display: block;
-		}
-		.retold-remote-aex-overview-wrap
-		{
-			height: 48px;
-			position: relative;
-			background: var(--retold-bg-tertiary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			cursor: pointer;
-		}
-		.retold-remote-aex-overview-wrap canvas
-		{
-			width: 100%;
-			height: 100%;
-			display: block;
-		}
-		.retold-remote-aex-overview-viewport
-		{
-			position: absolute;
-			top: 0;
-			height: 100%;
-			background: rgba(255, 255, 255, 0.08);
-			border-left: 2px solid var(--retold-accent);
-			border-right: 2px solid var(--retold-accent);
-			pointer-events: none;
-		}
-		/* Time display bar */
-		.retold-remote-aex-time-bar
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 6px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			font-family: var(--retold-font-mono, monospace);
-		}
-		.retold-remote-aex-time-label
-		{
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-aex-time-value
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-aex-time-selection
-		{
-			color: var(--retold-accent);
-		}
-		/* Playback bar */
-		.retold-remote-aex-playback
-		{
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-aex-playback audio
-		{
-			flex: 1;
-			height: 32px;
-			max-width: 400px;
-		}
-		.retold-remote-aex-playback-label
-		{
-			font-size: 0.72rem;
-			color: var(--retold-text-dim);
-		}
-		/* Error state */
-		.retold-remote-aex-error
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.85rem;
-			text-align: center;
-			padding: 40px;
-		}
-		.retold-remote-aex-error-message
-		{
-			color: #e06c75;
-			margin-bottom: 16px;
-		}
-	`};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],134:[function(require,module,exports){/**
+ * MediaViewer — Code Viewer Mixin
+ *
+ * Syntax-highlighted code display using pict-section-code and CodeJar.
+ * Maps file extensions to highlight languages and renders read-only
+ * code with line numbers.
+ *
+ * Mixed into RetoldRemoteMediaViewerView.prototype via Object.assign().
+ * All methods access state through `this` (the view instance).
+ *
+ * @license MIT
+ */const libPictSectionCode=require('pict-section-code');module.exports={_buildTextHTML:function _buildTextHTML(pURL,pFileName,pFilePath){return'<div class="retold-remote-code-viewer-container" id="RetoldRemote-CodeViewer-Container">'+'<div class="retold-remote-code-viewer-loading">Loading...</div>'+'</div>';},/**
+	 * Map a file extension to a pict-section-code highlight language.
+	 *
+	 * @param {string} pExtension - File extension (no dot)
+	 * @returns {string} One of: javascript, json, html, css, sql
+	 */_getHighlightLanguage:function _getHighlightLanguage(pExtension){let tmpJSExtensions={'js':true,'mjs':true,'cjs':true,'ts':true,'tsx':true,'jsx':true};if(tmpJSExtensions[pExtension])return'javascript';if(pExtension==='json')return'json';let tmpHTMLExtensions={'html':true,'htm':true,'xml':true,'svg':true};if(tmpHTMLExtensions[pExtension])return'html';let tmpCSSExtensions={'css':true,'scss':true,'sass':true,'less':true};if(tmpCSSExtensions[pExtension])return'css';if(pExtension==='sql')return'sql';// Default to javascript highlighting for other text files
+return'javascript';},/**
+	 * Load text content and display it using pict-section-code for
+	 * syntax highlighting and line numbers.
+	 *
+	 * @param {string} pURL       - Content URL to fetch
+	 * @param {string} pFilePath  - Full file path (used to derive extension)
+	 */_loadCodeViewer:function _loadCodeViewer(pURL,pFilePath){let tmpSelf=this;let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();fetch(pURL).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.text();}).then(pText=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(!tmpContainer){return;}let tmpLanguage=tmpSelf._getHighlightLanguage(tmpExtension);// Destroy any previous CodeJar instance
+if(tmpSelf._activeCodeJar){tmpSelf._activeCodeJar.destroy();tmpSelf._activeCodeJar=null;}// Check that CodeJar is available
+if(typeof window==='undefined'||typeof window.CodeJar!=='function'){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">CodeJar not loaded; showing plain text.</div>';let tmpPre=document.createElement('pre');tmpPre.style.cssText='padding:16px 20px; margin:0; color:var(--retold-text-primary); font-family:monospace; white-space:pre; tab-size:4; overflow:auto; height:100%;';tmpPre.textContent=pText;tmpContainer.appendChild(tmpPre);return;}// Build the editor DOM (mirrors pict-section-code _buildEditorDOM)
+tmpContainer.innerHTML='';let tmpWrap=document.createElement('div');tmpWrap.className='pict-code-editor-wrap';let tmpLineNumbers=document.createElement('div');tmpLineNumbers.className='pict-code-line-numbers';tmpWrap.appendChild(tmpLineNumbers);let tmpEditor=document.createElement('div');tmpEditor.className='pict-code-editor language-'+tmpLanguage;tmpWrap.appendChild(tmpEditor);tmpContainer.appendChild(tmpWrap);// Create the highlight function from pict-section-code
+let tmpHighlight=libPictSectionCode.createHighlighter(tmpLanguage);// Instantiate CodeJar
+tmpSelf._activeCodeJar=window.CodeJar(tmpEditor,tmpHighlight,{tab:'\t',catchTab:false,addClosing:false});// Reset inline styles that CodeJar forces
+tmpEditor.style.whiteSpace='pre';tmpEditor.style.overflowWrap='normal';// Set the content
+tmpSelf._activeCodeJar.updateCode(pText);// Make it read-only
+tmpEditor.setAttribute('contenteditable','false');// Render line numbers
+let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}};},{"pict-section-code":49}],135:[function(require,module,exports){/**
+ * MediaViewer — Ebook Viewer Mixin
+ *
+ * EPUB/MOBI rendering using epub.js, table of contents,
+ * page navigation, and MOBI-to-EPUB server-side conversion.
+ *
+ * Mixed into RetoldRemoteMediaViewerView.prototype via Object.assign().
+ * All methods access state through `this` (the view instance).
+ *
+ * @license MIT
+ */module.exports={/**
+	 * Build the HTML shell for the ebook reader.
+	 */_buildEbookHTML:function _buildEbookHTML(pURL,pFileName,pFilePath){return'<div class="retold-remote-ebook-wrap">'+'<div class="retold-remote-ebook-toc collapsed" id="RetoldRemote-EbookTOC"></div>'+'<div class="retold-remote-ebook-reader">'+'<div class="retold-remote-ebook-content" id="RetoldRemote-EbookContent">'+'<div class="retold-remote-ebook-loading">Loading ebook...</div>'+'</div>'+'<div class="retold-remote-ebook-controls">'+'<button class="retold-remote-ebook-toc-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleEbookTOC()">&#9776; TOC</button>'+'<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookPrevPage()">&larr; Prev</button>'+'<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookNextPage()">Next &rarr;</button>'+'</div>'+'</div>'+'</div>';},/**
+	 * Load and render an ebook using epub.js.
+	 * For EPUB files, fetch directly. For MOBI files, convert server-side first.
+	 *
+	 * @param {string} pContentURL - Content URL for the file
+	 * @param {string} pFilePath   - Relative file path
+	 */_loadEbookViewer:function _loadEbookViewer(pContentURL,pFilePath){let tmpSelf=this;let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExtension==='mobi'){// Convert MOBI to EPUB server-side first
+let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};if(!tmpCapabilities.ebook_convert){let tmpContent=document.getElementById('RetoldRemote-EbookContent');if(tmpContent){tmpContent.innerHTML='<div class="retold-remote-ebook-loading">'+'MOBI viewing requires Calibre (ebook-convert) on the server.<br>'+'<a href="'+pContentURL+'" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'+'</div>';}return;}let tmpContent=document.getElementById('RetoldRemote-EbookContent');if(tmpContent){tmpContent.innerHTML='<div class="retold-remote-ebook-loading">Converting MOBI to EPUB...</div>';}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/ebook-convert?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success){throw new Error(pData?pData.Error:'Conversion failed.');}// Fetch the converted EPUB and render
+let tmpEpubURL='/api/media/ebook/'+pData.CacheKey+'/'+pData.OutputFilename;tmpSelf._renderEpub(tmpEpubURL);}).catch(pError=>{let tmpEl=document.getElementById('RetoldRemote-EbookContent');if(tmpEl){tmpEl.innerHTML='<div class="retold-remote-ebook-loading">Failed to convert: '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)+'<br><a href="'+pContentURL+'" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'+'</div>';}});}else{// EPUB — render directly
+this._renderEpub(pContentURL);}},/**
+	 * Initialize epub.js and render an EPUB into the viewer container.
+	 *
+	 * @param {string} pEpubURL - URL to fetch the EPUB from
+	 */_renderEpub:function _renderEpub(pEpubURL){let tmpSelf=this;// Check that epub.js is available
+if(typeof window==='undefined'||typeof window.ePub!=='function'){let tmpEl=document.getElementById('RetoldRemote-EbookContent');if(tmpEl){tmpEl.innerHTML='<div class="retold-remote-ebook-loading">epub.js library not loaded.</div>';}return;}// Destroy any previous book instance
+if(this._activeBook){try{this._activeBook.destroy();}catch(e){/* ignore */}this._activeBook=null;this._activeRendition=null;}let tmpContentEl=document.getElementById('RetoldRemote-EbookContent');if(!tmpContentEl){return;}// Clear loading message
+tmpContentEl.innerHTML='';// Fetch the EPUB as an ArrayBuffer and open with epub.js
+fetch(pEpubURL).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.arrayBuffer();}).then(pBuffer=>{let tmpBook=window.ePub(pBuffer);tmpSelf._activeBook=tmpBook;let tmpRendition=tmpBook.renderTo(tmpContentEl,{width:'100%',height:'100%',spread:'none'});tmpSelf._activeRendition=tmpRendition;tmpRendition.display();// Apply theme for dark backgrounds
+tmpRendition.themes.default({'body':{'color':'var(--retold-text-primary, #d4d4d4)','background':'var(--retold-bg-primary, #1e1e1e)','font-family':'Georgia, "Times New Roman", serif','line-height':'1.6','padding':'20px 40px'},'a':{'color':'var(--retold-accent, #569cd6)'}});// Load table of contents
+tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).catch(pError=>{if(tmpContentEl){tmpContentEl.innerHTML='<div class="retold-remote-ebook-loading">Failed to load ebook: '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)+'</div>';}});},/**
+	 * Render the table of contents for the ebook.
+	 *
+	 * @param {Array} pToc - epub.js navigation TOC array
+	 */_renderEbookTOC:function _renderEbookTOC(pToc){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(!tmpTocEl||!pToc){return;}let tmpSelf=this;let tmpHTML='';let tmpBuildItems=function(pItems,pDepth){for(let i=0;i<pItems.length;i++){let tmpItem=pItems[i];let tmpIndentClass=pDepth>0?' indent-'+Math.min(pDepth,2):'';tmpHTML+='<button class="retold-remote-ebook-toc-item'+tmpIndentClass+'" '+'data-href="'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.href)+'" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.label.trim())+'</button>';if(tmpItem.subitems&&tmpItem.subitems.length>0){tmpBuildItems(tmpItem.subitems,pDepth+1);}}};tmpBuildItems(pToc,0);tmpTocEl.innerHTML=tmpHTML;},/**
+	 * Navigate to a chapter in the ebook by href.
+	 *
+	 * @param {string} pHref - Chapter href from the TOC
+	 */ebookGoToChapter:function ebookGoToChapter(pHref){if(this._activeRendition&&pHref){this._activeRendition.display(pHref);}},/**
+	 * Go to the previous page in the ebook.
+	 */ebookPrevPage:function ebookPrevPage(){if(this._activeRendition){this._activeRendition.prev();}},/**
+	 * Go to the next page in the ebook.
+	 */ebookNextPage:function ebookNextPage(){if(this._activeRendition){this._activeRendition.next();}},/**
+	 * Toggle the table of contents sidebar.
+	 */toggleEbookTOC:function toggleEbookTOC(){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(tmpTocEl){tmpTocEl.classList.toggle('collapsed');}}};},{}],136:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
 this._viewStart=0;// Start of visible range (0..1)
 this._viewEnd=1;// End of visible range (0..1)
 this._minZoom=0.005;// Minimum visible range (0.5% of total)
@@ -10642,7 +10486,7 @@ tmpSelf._applyPendingSelection();tmpSelf._updateSelectionButtons();tmpSelf._draw
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":76}],131:[function(require,module,exports){/**
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":76}],137:[function(require,module,exports){/**
  * Retold Remote -- Collections Panel View
  *
  * Right-side flyout panel for managing user-defined collections.
@@ -10656,524 +10500,7 @@ tmpSelf._applyPendingSelection();tmpSelf._updateSelectionButtons();tmpSelf._draw
  *   edit   — metadata editing for a collection
  *
  * @license MIT
- */const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-CollectionsPanel",DefaultRenderable:"RetoldRemote-CollectionsPanel",DefaultDestinationAddress:"#RetoldRemote-Collections-Container",AutoRender:false,CSS:/*css*/`
-		/* ---- Collections Panel Container ---- */
-		.retold-remote-collections-panel
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-			overflow: hidden;
-		}
-		.retold-remote-collections-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			background: var(--retold-bg-secondary);
-			flex-shrink: 0;
-		}
-		.retold-remote-collections-header-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			font-weight: 600;
-			color: var(--retold-text-primary);
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-		.retold-remote-collections-header-btn
-		{
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 26px;
-			height: 26px;
-			padding: 0;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.82rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-			flex-shrink: 0;
-		}
-		.retold-remote-collections-header-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		/* ---- Search ---- */
-		.retold-remote-collections-search
-		{
-			padding: 6px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-collections-search input
-		{
-			width: 100%;
-			padding: 5px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.78rem;
-			font-family: inherit;
-			box-sizing: border-box;
-			outline: none;
-		}
-		.retold-remote-collections-search input:focus
-		{
-			border-color: var(--retold-accent);
-		}
-		/* ---- Collection List ---- */
-		.retold-remote-collections-body
-		{
-			flex: 1;
-			overflow-y: auto;
-			overflow-x: hidden;
-		}
-		.retold-remote-collections-empty
-		{
-			padding: 24px 16px;
-			text-align: center;
-			font-size: 0.78rem;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-collection-card
-		{
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding: 10px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			cursor: pointer;
-			transition: background 0.15s;
-		}
-		.retold-remote-collection-card:hover
-		{
-			background: rgba(128, 128, 128, 0.08);
-		}
-		.retold-remote-collection-card-icon
-		{
-			flex-shrink: 0;
-			width: 32px;
-			height: 32px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 4px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-accent);
-			font-size: 1rem;
-		}
-		.retold-remote-collection-card-info
-		{
-			flex: 1;
-			min-width: 0;
-		}
-		.retold-remote-collection-card-name
-		{
-			font-size: 0.82rem;
-			font-weight: 500;
-			color: var(--retold-text-primary);
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-		.retold-remote-collection-card-meta
-		{
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			margin-top: 2px;
-		}
-		/* ---- Detail mode ---- */
-		.retold-remote-collections-detail-controls
-		{
-			display: flex;
-			align-items: center;
-			gap: 6px;
-			padding: 6px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-collections-sort-select
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.72rem;
-			font-family: inherit;
-			flex: 1;
-		}
-		.retold-remote-collections-sort-dir
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			font-family: inherit;
-		}
-		.retold-remote-collections-sort-dir:hover
-		{
-			border-color: var(--retold-accent);
-			color: var(--retold-text-primary);
-		}
-		/* ---- Item rows ---- */
-		.retold-remote-collection-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 6px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			cursor: pointer;
-			transition: background 0.15s;
-			position: relative;
-		}
-		.retold-remote-collection-item:hover
-		{
-			background: rgba(128, 128, 128, 0.08);
-		}
-		.retold-remote-collection-item-drag
-		{
-			flex-shrink: 0;
-			width: 16px;
-			cursor: grab;
-			color: var(--retold-text-dim);
-			font-size: 0.68rem;
-			text-align: center;
-			user-select: none;
-		}
-		.retold-remote-collection-item-icon
-		{
-			flex-shrink: 0;
-			width: 24px;
-			height: 24px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: var(--retold-text-muted);
-			font-size: 0.82rem;
-		}
-		.retold-remote-collection-item-icon img
-		{
-			width: 24px;
-			height: 24px;
-			object-fit: cover;
-			border-radius: 2px;
-		}
-		.retold-remote-collection-item-name
-		{
-			flex: 1;
-			min-width: 0;
-			font-size: 0.78rem;
-			color: var(--retold-text-secondary);
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-		.retold-remote-collection-item-type
-		{
-			flex-shrink: 0;
-			font-size: 0.62rem;
-			padding: 1px 4px;
-			border-radius: 2px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-dim);
-			text-transform: uppercase;
-		}
-		.retold-remote-collection-item-remove
-		{
-			flex-shrink: 0;
-			display: none;
-			width: 20px;
-			height: 20px;
-			align-items: center;
-			justify-content: center;
-			border: none;
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-dim);
-			font-size: 0.82rem;
-			cursor: pointer;
-			padding: 0;
-		}
-		.retold-remote-collection-item:hover .retold-remote-collection-item-remove
-		{
-			display: inline-flex;
-		}
-		.retold-remote-collection-item-remove:hover
-		{
-			color: var(--retold-danger-muted, #e55);
-			background: rgba(200, 50, 50, 0.1);
-		}
-		/* ---- Operation Plan mode ---- */
-		.retold-remote-collections-op-controls
-		{
-			flex-direction: column;
-			gap: 6px;
-		}
-		.retold-remote-collections-op-summary
-		{
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-			padding: 4px 0;
-		}
-		.retold-remote-collections-op-buttons
-		{
-			display: flex;
-			gap: 6px;
-		}
-		.retold-remote-collections-op-execute-btn
-		{
-			flex: 1;
-			padding: 6px 12px;
-			border: none;
-			border-radius: 3px;
-			background: var(--retold-accent, #4a90d9);
-			color: #fff;
-			font-size: 0.78rem;
-			font-weight: 600;
-			cursor: pointer;
-		}
-		.retold-remote-collections-op-execute-btn:hover
-		{
-			opacity: 0.9;
-		}
-		.retold-remote-collections-op-execute-btn:disabled
-		{
-			opacity: 0.5;
-			cursor: default;
-		}
-		.retold-remote-collections-op-undo-btn
-		{
-			padding: 6px 12px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-secondary);
-			font-size: 0.78rem;
-			cursor: pointer;
-		}
-		.retold-remote-collections-op-undo-btn:hover
-		{
-			background: var(--retold-bg-tertiary);
-		}
-		.retold-remote-collection-op-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 4px;
-			padding: 6px 8px;
-			border-bottom: 1px solid var(--retold-border);
-			font-size: 0.75rem;
-			flex-wrap: wrap;
-		}
-		.retold-remote-collection-op-item.op-status-completed
-		{
-			opacity: 0.6;
-		}
-		.retold-remote-collection-op-item.op-status-skipped
-		{
-			opacity: 0.4;
-			text-decoration: line-through;
-		}
-		.retold-remote-collection-op-item.op-status-failed
-		{
-			background: rgba(200, 50, 50, 0.05);
-		}
-		.retold-remote-collection-op-status
-		{
-			flex-shrink: 0;
-			width: 16px;
-			text-align: center;
-			font-size: 0.8rem;
-		}
-		.op-status-completed .retold-remote-collection-op-status
-		{
-			color: var(--retold-success, #4a4);
-		}
-		.op-status-failed .retold-remote-collection-op-status
-		{
-			color: var(--retold-danger-muted, #e55);
-		}
-		.op-status-pending .retold-remote-collection-op-status
-		{
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-collection-op-source
-		{
-			flex: 1;
-			min-width: 0;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-collection-op-arrow
-		{
-			flex-shrink: 0;
-			color: var(--retold-text-dim);
-			padding: 0 2px;
-		}
-		.retold-remote-collection-op-dest
-		{
-			flex: 2;
-			min-width: 0;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-collection-op-dest-input
-		{
-			width: 100%;
-			padding: 2px 4px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 2px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.75rem;
-			font-family: inherit;
-			box-sizing: border-box;
-		}
-		.retold-remote-collection-op-badge
-		{
-			flex-shrink: 0;
-			font-size: 0.6rem;
-			padding: 1px 4px;
-			border-radius: 2px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-dim);
-			text-transform: uppercase;
-			font-weight: 600;
-			letter-spacing: 0.3px;
-		}
-		.retold-remote-collection-op-error
-		{
-			width: 100%;
-			font-size: 0.68rem;
-			color: var(--retold-danger-muted, #e55);
-			padding: 2px 0 0 20px;
-		}
-		/* ---- Edit mode ---- */
-		.retold-remote-collections-edit
-		{
-			padding: 12px;
-		}
-		.retold-remote-collections-edit-group
-		{
-			margin-bottom: 12px;
-		}
-		.retold-remote-collections-edit-label
-		{
-			font-size: 0.7rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			color: var(--retold-text-dim);
-			margin-bottom: 4px;
-		}
-		.retold-remote-collections-edit-input
-		{
-			width: 100%;
-			padding: 6px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.82rem;
-			font-family: inherit;
-			box-sizing: border-box;
-		}
-		.retold-remote-collections-edit-input:focus
-		{
-			border-color: var(--retold-accent);
-			outline: none;
-		}
-		.retold-remote-collections-edit-textarea
-		{
-			width: 100%;
-			min-height: 80px;
-			padding: 6px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.78rem;
-			font-family: inherit;
-			box-sizing: border-box;
-			resize: vertical;
-		}
-		.retold-remote-collections-edit-textarea:focus
-		{
-			border-color: var(--retold-accent);
-			outline: none;
-		}
-		.retold-remote-collections-edit-actions
-		{
-			display: flex;
-			gap: 8px;
-			margin-top: 16px;
-		}
-		.retold-remote-collections-edit-btn
-		{
-			padding: 6px 14px;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-secondary);
-			font-size: 0.78rem;
-			cursor: pointer;
-			font-family: inherit;
-		}
-		.retold-remote-collections-edit-btn:hover
-		{
-			border-color: var(--retold-accent);
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-collections-edit-btn-primary
-		{
-			background: var(--retold-accent);
-			border-color: var(--retold-accent);
-			color: #fff;
-		}
-		.retold-remote-collections-edit-btn-primary:hover
-		{
-			opacity: 0.9;
-		}
-		.retold-remote-collections-edit-btn-danger
-		{
-			border-color: var(--retold-danger-muted, #e55);
-			color: var(--retold-danger-muted, #e55);
-			margin-top: 16px;
-		}
-		.retold-remote-collections-edit-btn-danger:hover
-		{
-			background: rgba(200, 50, 50, 0.1);
-		}
-		/* ---- Drag-and-drop feedback ---- */
-		.retold-remote-collection-item.dragging
-		{
-			opacity: 0.4;
-		}
-		.retold-remote-collection-item.drag-over
-		{
-			border-top: 2px solid var(--retold-accent);
-		}
-	`,Templates:[{Hash:"RetoldRemote-CollectionsPanel",Template:/*html*/`<div class="retold-remote-collections-panel" id="RetoldRemote-CollectionsPanel-Root"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-CollectionsPanel",TemplateHash:"RetoldRemote-CollectionsPanel",DestinationAddress:"#RetoldRemote-Collections-Container"}]};class RetoldRemoteCollectionsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._draggedItemId=null;}onAfterRender(){super.onAfterRender();this.renderContent();}/**
+ */const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-CollectionsPanel",DefaultRenderable:"RetoldRemote-CollectionsPanel",DefaultDestinationAddress:"#RetoldRemote-Collections-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-CollectionsPanel",Template:/*html*/`<div class="retold-remote-collections-panel" id="RetoldRemote-CollectionsPanel-Root"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-CollectionsPanel",TemplateHash:"RetoldRemote-CollectionsPanel",DestinationAddress:"#RetoldRemote-Collections-Container"}]};class RetoldRemoteCollectionsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._draggedItemId=null;}onAfterRender(){super.onAfterRender();this.renderContent();}/**
 	 * Main render dispatch — renders the appropriate mode content
 	 * into the panel root.
 	 */renderContent(){let tmpRoot=document.getElementById('RetoldRemote-CollectionsPanel-Root');if(!tmpRoot){return;}let tmpRemote=this.pict.AppData.RetoldRemote;switch(tmpRemote.CollectionsPanelMode){case'detail':this._renderDetailMode(tmpRoot);break;case'edit':this._renderEditMode(tmpRoot);break;case'list':default:this._renderListMode(tmpRoot);break;}}// -- List Mode --------------------------------------------------------
@@ -11228,159 +10555,7 @@ let tmpDeleteBtn=document.createElement('button');tmpDeleteBtn.className='retold
 	 */_createEditGroup(pLabel,pType,pValue,pId){let tmpGroup=document.createElement('div');tmpGroup.className='retold-remote-collections-edit-group';let tmpLabel=document.createElement('div');tmpLabel.className='retold-remote-collections-edit-label';tmpLabel.textContent=pLabel;let tmpInput;if(pType==='textarea'){tmpInput=document.createElement('textarea');tmpInput.className='retold-remote-collections-edit-textarea';}else{tmpInput=document.createElement('input');tmpInput.className='retold-remote-collections-edit-input';tmpInput.type='text';}tmpInput.value=pValue;tmpInput.id='retold-remote-'+pId;tmpGroup.appendChild(tmpLabel);tmpGroup.appendChild(tmpInput);return tmpGroup;}// -- Helpers ----------------------------------------------------------
 /**
 	 * Get a text icon character for an item type.
-	 */_getTypeIcon(pType,pMediaType){switch(pType){case'folder':case'folder-contents':return'\uD83D\uDCC1';case'subfile':return'\uD83D\uDDC4';case'image-crop':return'\u2702';case'audio-clip':return'\uD83C\uDFB5';case'video-clip':case'video-frame':return'\uD83C\uDFAC';default:break;}switch(pMediaType){case'image':return'\uD83D\uDDBC';case'video':return'\uD83C\uDFAC';case'audio':return'\uD83C\uDFB5';case'document':return'\uD83D\uDCC4';default:return'\uD83D\uDCC4';}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":76}],132:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-info
-		{
-			padding: 12px;
-			font-size: 0.78rem;
-			overflow-y: auto;
-		}
-		.retold-remote-info-filename
-		{
-			font-size: 0.85rem;
-			font-weight: 700;
-			color: var(--retold-text-primary);
-			word-break: break-all;
-			margin-bottom: 2px;
-		}
-		.retold-remote-info-path
-		{
-			font-size: 0.7rem;
-			color: var(--retold-text-dim);
-			word-break: break-all;
-			margin-bottom: 12px;
-		}
-		.retold-remote-info-section
-		{
-			margin-bottom: 14px;
-		}
-		.retold-remote-info-section-title
-		{
-			font-size: 0.68rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			color: var(--retold-text-dim);
-			margin-bottom: 6px;
-			padding-bottom: 3px;
-			border-bottom: 1px solid var(--retold-border);
-		}
-		.retold-remote-info-row
-		{
-			display: flex;
-			justify-content: space-between;
-			align-items: baseline;
-			padding: 2px 0;
-			gap: 8px;
-		}
-		.retold-remote-info-label
-		{
-			font-size: 0.72rem;
-			color: var(--retold-text-dim);
-			flex-shrink: 0;
-		}
-		.retold-remote-info-value
-		{
-			font-size: 0.72rem;
-			color: var(--retold-text-secondary);
-			text-align: right;
-			word-break: break-all;
-		}
-		.retold-remote-info-value-mono
-		{
-			font-family: monospace;
-			font-size: 0.68rem;
-		}
-		.retold-remote-info-extract-btn
-		{
-			display: block;
-			width: 100%;
-			padding: 10px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 4px;
-			background: var(--retold-bg-secondary);
-			color: var(--retold-accent);
-			font-size: 0.78rem;
-			font-family: inherit;
-			cursor: pointer;
-			text-align: center;
-			transition: background 0.15s, color 0.15s;
-			margin-bottom: 14px;
-		}
-		.retold-remote-info-extract-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-info-extract-btn:disabled
-		{
-			opacity: 0.5;
-			cursor: wait;
-		}
-		.retold-remote-info-empty
-		{
-			padding: 24px 12px;
-			text-align: center;
-			color: var(--retold-text-dim);
-			font-size: 0.78rem;
-		}
-		.retold-remote-info-chapter-row
-		{
-			display: flex;
-			align-items: baseline;
-			padding: 2px 0;
-			gap: 6px;
-			font-size: 0.72rem;
-		}
-		.retold-remote-info-chapter-time
-		{
-			color: var(--retold-accent);
-			font-family: monospace;
-			font-size: 0.68rem;
-			flex-shrink: 0;
-		}
-		.retold-remote-info-chapter-title
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-info-tag-row
-		{
-			display: flex;
-			align-items: baseline;
-			padding: 1px 0;
-			gap: 6px;
-			font-size: 0.7rem;
-		}
-		.retold-remote-info-tag-key
-		{
-			color: var(--retold-text-dim);
-			flex-shrink: 0;
-			font-family: monospace;
-			font-size: 0.66rem;
-		}
-		.retold-remote-info-tag-value
-		{
-			color: var(--retold-text-secondary);
-			word-break: break-all;
-		}
-		.retold-remote-info-gps-link
-		{
-			color: var(--retold-accent);
-			text-decoration: none;
-			font-size: 0.72rem;
-		}
-		.retold-remote-info-gps-link:hover
-		{
-			text-decoration: underline;
-		}
-		.retold-remote-info-spinner
-		{
-			text-align: center;
-			padding: 16px;
-			color: var(--retold-text-dim);
-			font-size: 0.75rem;
-		}
-	`,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
+	 */_getTypeIcon(pType,pMediaType){switch(pType){case'folder':case'folder-contents':return'\uD83D\uDCC1';case'subfile':return'\uD83D\uDDC4';case'image-crop':return'\u2702';case'audio-clip':return'\uD83C\uDFB5';case'video-clip':case'video-frame':return'\uD83C\uDFAC';default:break;}switch(pMediaType){case'image':return'\uD83D\uDDBC';case'video':return'\uD83C\uDFAC';case'audio':return'\uD83C\uDFB5';case'document':return'\uD83D\uDCC4';default:return'\uD83D\uDCC4';}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":76}],138:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:``,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
 	 * Determine the currently selected file path and fetch metadata.
 	 */_refreshForCurrentFile(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpPath='';// Try content editor current file first
 if(this.pict.AppData.ContentEditor&&this.pict.AppData.ContentEditor.CurrentFile){tmpPath=this.pict.AppData.ContentEditor.CurrentFile;}// Fall back to viewer state
@@ -11419,698 +10594,7 @@ tmpHTML+=`<button class="retold-remote-info-extract-btn" onclick="pict.views['Re
 // Formatting utilities
 // ---------------------------------------------------------------
 _row(pLabel,pValue){return`<div class="retold-remote-info-row"><span class="retold-remote-info-label">${this._esc(String(pLabel))}</span><span class="retold-remote-info-value">${this._esc(String(pValue))}</span></div>`;}_esc(pStr){if(!pStr){return'';}return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatSize(pBytes){if(!pBytes&&pBytes!==0){return'unknown';}let tmpBytes=parseInt(pBytes,10);if(tmpBytes<1024){return tmpBytes+' B';}if(tmpBytes<1024*1024){return(tmpBytes/1024).toFixed(1)+' KB';}if(tmpBytes<1024*1024*1024){return(tmpBytes/(1024*1024)).toFixed(1)+' MB';}return(tmpBytes/(1024*1024*1024)).toFixed(2)+' GB';}_formatDuration(pSeconds){if(!pSeconds&&pSeconds!==0){return'unknown';}let tmpSec=Math.floor(pSeconds);let tmpHours=Math.floor(tmpSec/3600);let tmpMins=Math.floor(tmpSec%3600/60);let tmpRem=tmpSec%60;if(tmpHours>0){return`${tmpHours}:${String(tmpMins).padStart(2,'0')}:${String(tmpRem).padStart(2,'0')}`;}return`${tmpMins}:${String(tmpRem).padStart(2,'0')}`;}_formatBitrate(pBits){if(!pBits){return'unknown';}let tmpBits=parseInt(pBits,10);if(tmpBits<1000){return tmpBits+' bps';}if(tmpBits<1000000){return(tmpBits/1000).toFixed(0)+' kbps';}return(tmpBits/1000000).toFixed(1)+' Mbps';}_formatFrameRate(pRate){if(!pRate){return'unknown';}// ffprobe returns frame rate as "24000/1001" or "30/1"
-if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],133:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-gallery-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			margin-bottom: 8px;
-			flex-wrap: wrap;
-		}
-		.retold-remote-gallery-filter
-		{
-			display: flex;
-			gap: 4px;
-		}
-		.retold-remote-gallery-filter-btn
-		{
-			padding: 3px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-gallery-filter-btn:hover
-		{
-			color: var(--retold-text-secondary);
-			border-color: var(--retold-scrollbar-hover);
-		}
-		.retold-remote-gallery-filter-btn.active
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		.retold-remote-gallery-filter-toggle
-		{
-			position: relative;
-		}
-		.retold-remote-gallery-filter-toggle.has-filters
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-gallery-filter-count
-		{
-			display: inline-block;
-			min-width: 14px;
-			height: 14px;
-			line-height: 14px;
-			padding: 0 3px;
-			border-radius: 7px;
-			background: var(--retold-accent);
-			color: var(--retold-bg-tertiary);
-			font-size: 0.58rem;
-			font-weight: 700;
-			text-align: center;
-			margin-left: 4px;
-		}
-		/* Sort dropdown */
-		.retold-remote-gallery-sort
-		{
-			display: flex;
-			align-items: center;
-		}
-		.retold-remote-gallery-sort-select
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			font-family: inherit;
-		}
-		.retold-remote-gallery-sort-select:focus
-		{
-			outline: none;
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-gallery-search
-		{
-			flex: 1;
-			max-width: 300px;
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-			font-size: 0.78rem;
-			font-family: inherit;
-		}
-		.retold-remote-gallery-search:focus
-		{
-			outline: none;
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-gallery-search::placeholder
-		{
-			color: var(--retold-text-placeholder);
-		}
-		.retold-remote-gallery-search-options
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			flex-shrink: 0;
-		}
-		.retold-remote-gallery-search-option
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 3px;
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			cursor: pointer;
-			white-space: nowrap;
-			user-select: none;
-		}
-		.retold-remote-gallery-search-option:hover
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-gallery-search-option input[type="checkbox"]
-		{
-			margin: 0;
-			cursor: pointer;
-			accent-color: var(--retold-accent);
-		}
-		.retold-remote-gallery-search-option.active
-		{
-			color: var(--retold-accent);
-		}
-		.retold-remote-gallery-search-regex-error
-		{
-			font-size: 0.68rem;
-			color: #e06c75;
-			white-space: nowrap;
-		}
-		/* Filter chips */
-		.retold-remote-filter-chips
-		{
-			display: flex;
-			flex-wrap: wrap;
-			gap: 6px;
-			margin-bottom: 8px;
-			align-items: center;
-		}
-		.retold-remote-filter-chip
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			padding: 2px 8px;
-			border: 1px solid var(--retold-border-light);
-			border-radius: 12px;
-			background: rgba(128, 128, 128, 0.08);
-			color: var(--retold-text-secondary);
-			font-size: 0.68rem;
-		}
-		.retold-remote-filter-chip-remove
-		{
-			background: none;
-			border: none;
-			color: var(--retold-text-muted);
-			font-size: 0.82rem;
-			cursor: pointer;
-			padding: 0 2px;
-			line-height: 1;
-		}
-		.retold-remote-filter-chip-remove:hover
-		{
-			color: var(--retold-danger);
-		}
-		.retold-remote-filter-chip-clear
-		{
-			background: none;
-			border: none;
-			color: var(--retold-text-dim);
-			font-size: 0.68rem;
-			cursor: pointer;
-			padding: 2px 4px;
-		}
-		.retold-remote-filter-chip-clear:hover
-		{
-			color: var(--retold-danger);
-		}
-		/* Filter panel */
-		.retold-remote-filter-panel
-		{
-			margin-bottom: 12px;
-			padding: 12px;
-			border: 1px solid var(--retold-border);
-			border-radius: 6px;
-			background: var(--retold-bg-panel);
-		}
-		.retold-remote-filter-panel-grid
-		{
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 12px 24px;
-		}
-		.retold-remote-filter-section
-		{
-			margin-bottom: 0;
-		}
-		.retold-remote-filter-section-title
-		{
-			font-size: 0.68rem;
-			font-weight: 600;
-			color: var(--retold-text-muted);
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			margin-bottom: 6px;
-		}
-		.retold-remote-filter-ext-list
-		{
-			display: flex;
-			flex-wrap: wrap;
-			gap: 2px 10px;
-		}
-		.retold-remote-filter-ext-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 4px;
-			font-size: 0.72rem;
-			color: var(--retold-text-secondary);
-			cursor: pointer;
-		}
-		.retold-remote-filter-ext-item input
-		{
-			accent-color: var(--retold-accent);
-		}
-		.retold-remote-filter-ext-count
-		{
-			color: var(--retold-text-dim);
-			font-size: 0.65rem;
-		}
-		.retold-remote-filter-row
-		{
-			display: flex;
-			align-items: center;
-			gap: 6px;
-		}
-		.retold-remote-filter-input
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.72rem;
-			width: 100px;
-			font-family: inherit;
-		}
-		.retold-remote-filter-input:focus
-		{
-			outline: none;
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-filter-label
-		{
-			color: var(--retold-text-dim);
-			font-size: 0.68rem;
-		}
-		.retold-remote-filter-actions
-		{
-			grid-column: 1 / -1;
-			display: flex;
-			gap: 8px;
-			align-items: center;
-			padding-top: 8px;
-			border-top: 1px solid var(--retold-border);
-			margin-top: 8px;
-		}
-		.retold-remote-filter-preset-row
-		{
-			display: flex;
-			gap: 6px;
-			align-items: center;
-			flex-wrap: wrap;
-		}
-		.retold-remote-filter-preset-select
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.72rem;
-			min-width: 100px;
-			font-family: inherit;
-		}
-		.retold-remote-filter-preset-input
-		{
-			padding: 3px 6px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.72rem;
-			width: 120px;
-			font-family: inherit;
-		}
-		.retold-remote-filter-preset-input:focus
-		{
-			outline: none;
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-filter-btn-sm
-		{
-			padding: 2px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.68rem;
-			cursor: pointer;
-			font-family: inherit;
-		}
-		.retold-remote-filter-btn-sm:hover
-		{
-			color: var(--retold-text-secondary);
-			border-color: var(--retold-scrollbar-hover);
-		}
-		/* Grid layout */
-		.retold-remote-grid
-		{
-			display: grid;
-			gap: 12px;
-		}
-		.retold-remote-grid.size-small
-		{
-			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-		}
-		.retold-remote-grid.size-medium
-		{
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		}
-		.retold-remote-grid.size-large
-		{
-			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		}
-		/* Tile */
-		.retold-remote-tile
-		{
-			background: var(--retold-bg-tertiary);
-			border: 2px solid transparent;
-			border-radius: 6px;
-			cursor: pointer;
-			overflow: hidden;
-			transition: border-color 0.15s, transform 0.1s;
-		}
-		.retold-remote-tile:hover
-		{
-			border-color: var(--retold-border-light);
-		}
-		.retold-remote-tile.selected
-		{
-			border-color: var(--retold-accent);
-			box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.3);
-		}
-		.retold-remote-tile-thumb
-		{
-			position: relative;
-			width: 100%;
-			padding-bottom: 75%; /* 4:3 aspect ratio */
-			background: var(--retold-bg-thumb);
-			overflow: hidden;
-		}
-		.retold-remote-tile-thumb img
-		{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-		.retold-remote-tile-thumb-icon
-		{
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			font-size: 2rem;
-			color: var(--retold-text-placeholder);
-		}
-		.retold-remote-tile-badge
-		{
-			position: absolute;
-			top: 6px;
-			right: 6px;
-			padding: 1px 6px;
-			border-radius: 3px;
-			font-size: 0.6rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-		}
-		.retold-remote-tile-badge-image { background: rgba(102, 194, 184, 0.8); color: #fff; }
-		.retold-remote-tile-badge-video { background: rgba(180, 102, 194, 0.8); color: #fff; }
-		.retold-remote-tile-badge-audio { background: rgba(194, 160, 102, 0.8); color: #fff; }
-		.retold-remote-tile-badge-document { background: rgba(194, 102, 102, 0.8); color: #fff; }
-		.retold-remote-tile-badge-folder { background: rgba(102, 140, 194, 0.8); color: #fff; }
-		.retold-remote-tile-duration
-		{
-			position: absolute;
-			bottom: 6px;
-			right: 6px;
-			padding: 1px 6px;
-			border-radius: 3px;
-			background: rgba(0, 0, 0, 0.7);
-			font-size: 0.65rem;
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-tile-label
-		{
-			padding: 6px 8px 2px 8px;
-			font-size: 0.75rem;
-			font-weight: 500;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-tile-meta
-		{
-			padding: 0 8px 6px 8px;
-			font-size: 0.65rem;
-			color: var(--retold-text-dim);
-		}
-		/* List mode */
-		.retold-remote-list
-		{
-			display: flex;
-			flex-direction: column;
-			gap: 2px;
-		}
-		.retold-remote-list-row
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 6px 10px;
-			border-radius: 4px;
-			cursor: pointer;
-			transition: background 0.1s;
-		}
-		.retold-remote-list-row:hover
-		{
-			background: var(--retold-bg-hover);
-		}
-		.retold-remote-list-row.selected
-		{
-			background: var(--retold-bg-selected);
-		}
-		.retold-remote-list-icon
-		{
-			flex-shrink: 0;
-			width: 24px;
-			text-align: center;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-list-name
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-list-ext
-		{
-			flex-shrink: 0;
-			width: 42px;
-			text-align: right;
-			font-size: 0.65rem;
-			color: var(--retold-text-dim);
-			text-transform: uppercase;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-list-size
-		{
-			flex-shrink: 0;
-			width: 56px;
-			text-align: right;
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			white-space: nowrap;
-		}
-		.retold-remote-list-date
-		{
-			flex-shrink: 0;
-			width: 72px;
-			text-align: right;
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			white-space: nowrap;
-		}
-		/* Long-press tooltip */
-		.retold-remote-longpress-tooltip
-		{
-			position: fixed;
-			z-index: 10000;
-			max-width: 80vw;
-			padding: 6px 12px;
-			border-radius: 4px;
-			background: var(--retold-bg-secondary);
-			border: 1px solid var(--retold-border);
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-			color: var(--retold-text-primary);
-			font-size: 0.78rem;
-			word-break: break-all;
-			pointer-events: none;
-		}
-		/* Column toggle buttons in filter panel */
-		.retold-remote-filter-col-toggles
-		{
-			display: flex;
-			flex-wrap: wrap;
-			gap: 6px;
-		}
-		.retold-remote-filter-col-toggle
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			padding: 3px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			font-family: inherit;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			user-select: none;
-		}
-		.retold-remote-filter-col-toggle:hover
-		{
-			color: var(--retold-text-secondary);
-			border-color: var(--retold-scrollbar-hover);
-		}
-		.retold-remote-filter-col-toggle.active
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		/* Empty state */
-		.retold-remote-empty
-		{
-			text-align: center;
-			padding: 60px 20px;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-empty-icon
-		{
-			font-size: 3rem;
-			margin-bottom: 12px;
-		}
-		/* Help panel flyout */
-		#RetoldRemote-Help-Panel
-		{
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			z-index: 9999;
-		}
-		.retold-remote-help-backdrop
-		{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-			display: flex;
-			align-items: flex-start;
-			justify-content: flex-end;
-		}
-		.retold-remote-help-flyout
-		{
-			width: 340px;
-			max-height: calc(100vh - 32px);
-			margin: 16px;
-			background: var(--retold-bg-panel);
-			border: 1px solid var(--retold-border);
-			border-radius: 8px;
-			overflow-y: auto;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-			animation: retold-help-slide-in 0.15s ease-out;
-		}
-		@keyframes retold-help-slide-in
-		{
-			from { transform: translateX(20px); opacity: 0; }
-			to { transform: translateX(0); opacity: 1; }
-		}
-		.retold-remote-help-header
-		{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 14px 16px 10px 16px;
-			border-bottom: 1px solid var(--retold-border);
-		}
-		.retold-remote-help-title
-		{
-			font-size: 0.88rem;
-			font-weight: 600;
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-help-close
-		{
-			background: none;
-			border: none;
-			color: var(--retold-text-dim);
-			font-size: 1.2rem;
-			cursor: pointer;
-			padding: 0 4px;
-			line-height: 1;
-		}
-		.retold-remote-help-close:hover
-		{
-			color: var(--retold-danger);
-		}
-		.retold-remote-help-section
-		{
-			padding: 12px 16px 8px 16px;
-		}
-		.retold-remote-help-section + .retold-remote-help-section
-		{
-			border-top: 1px solid var(--retold-border);
-		}
-		.retold-remote-help-section-title
-		{
-			font-size: 0.65rem;
-			font-weight: 600;
-			color: var(--retold-accent);
-			text-transform: uppercase;
-			letter-spacing: 0.8px;
-			margin-bottom: 8px;
-		}
-		.retold-remote-help-row
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 3px 0;
-		}
-		.retold-remote-help-key
-		{
-			display: inline-block;
-			min-width: 72px;
-			padding: 2px 8px;
-			border: 1px solid var(--retold-border-light);
-			border-radius: 4px;
-			background: rgba(255, 255, 255, 0.04);
-			color: var(--retold-text-secondary);
-			font-family: var(--retold-font-mono, monospace);
-			font-size: 0.72rem;
-			text-align: center;
-			white-space: nowrap;
-		}
-		.retold-remote-help-desc
-		{
-			color: var(--retold-text-muted);
-			font-size: 0.74rem;
-		}
-		.retold-remote-help-footer
-		{
-			padding: 10px 16px;
-			border-top: 1px solid var(--retold-border);
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			text-align: center;
-		}
-		.retold-remote-help-footer strong
-		{
-			color: var(--retold-accent);
-		}
-	`,Templates:[],Renderables:[]};class RetoldRemoteGalleryView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._intersectionObserver=null;}// ──────────────────────────────────────────────
+if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":76}],139:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:``,Templates:[],Renderables:[]};class RetoldRemoteGalleryView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._intersectionObserver=null;}// ──────────────────────────────────────────────
 // Gallery rendering
 // ──────────────────────────────────────────────
 /**
@@ -12244,152 +10728,7 @@ pEvent.preventDefault();}_hideLongPressTooltip(){if(this._longPressTooltipEl){if
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":76}],134:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-iex
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.retold-remote-iex-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			z-index: 5;
-		}
-		.retold-remote-iex-nav-btn
-		{
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.8rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-iex-nav-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-iex-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			text-align: center;
-		}
-		.retold-remote-iex-info
-		{
-			display: flex;
-			align-items: center;
-			gap: 16px;
-			padding: 8px 16px;
-			background: var(--retold-bg-tertiary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-iex-info-item
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-		}
-		.retold-remote-iex-info-label
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-iex-info-value
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-iex-body
-		{
-			flex: 1;
-			position: relative;
-			overflow: hidden;
-			background: var(--retold-bg-primary);
-		}
-		#RetoldRemote-IEX-Viewer
-		{
-			width: 100%;
-			height: 100%;
-		}
-		.retold-remote-iex-loading
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.85rem;
-			gap: 12px;
-		}
-		.retold-remote-iex-error
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			gap: 16px;
-			padding: 20px;
-		}
-		.retold-remote-iex-error-message
-		{
-			color: var(--retold-text-muted);
-			font-size: 0.85rem;
-			text-align: center;
-		}
-		.retold-remote-iex-controls
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 6px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-iex-controls button
-		{
-			padding: 3px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.75rem;
-			cursor: pointer;
-			font-family: inherit;
-			transition: color 0.15s, border-color 0.15s;
-		}
-		.retold-remote-iex-controls button:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-iex-zoom-label
-		{
-			min-width: 40px;
-			text-align: center;
-			color: var(--retold-text-secondary);
-		}
-	`};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;}/**
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":76}],140:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;}/**
 	 * Show the image explorer for a given image file.
 	 *
 	 * @param {string} pFilePath - Relative file path
@@ -12480,68 +10819,7 @@ if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.style.display='none';}let tmpBody=document.getElementById('RetoldRemote-IEX-Body');if(tmpBody){let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpBody.innerHTML='<div class="retold-remote-iex-error">'+'<div class="retold-remote-iex-error-message">'+tmpFmt.escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()">Back to Image</button>'+'</div>';}}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":76}],135:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
-		#RetoldRemote-ImageViewer-Img
-		{
-			image-orientation: from-image;
-			transition: width 0.15s ease, height 0.15s ease;
-			display: block;
-		}
-		.retold-remote-fit-indicator
-		{
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: rgba(0, 0, 0, 0.7);
-			color: #fff;
-			padding: 8px 18px;
-			border-radius: 6px;
-			font-size: 0.82rem;
-			pointer-events: none;
-			z-index: 20;
-			opacity: 0;
-			transition: opacity 0.3s ease;
-			white-space: nowrap;
-		}
-		.retold-remote-fit-indicator.visible
-		{
-			opacity: 1;
-		}
-		.retold-remote-image-explore-btn
-		{
-			position: absolute;
-			bottom: 16px;
-			right: 16px;
-			background: rgba(40, 44, 52, 0.85);
-			color: #abb2bf;
-			border: 1px solid rgba(255, 255, 255, 0.15);
-			padding: 6px 14px;
-			border-radius: 6px;
-			font-size: 0.82rem;
-			cursor: pointer;
-			z-index: 20;
-			transition: background 0.2s, color 0.2s;
-		}
-		.retold-remote-image-explore-btn:hover
-		{
-			background: rgba(97, 175, 239, 0.3);
-			color: #fff;
-		}
-		.retold-remote-image-large-badge
-		{
-			position: absolute;
-			top: 16px;
-			right: 16px;
-			background: rgba(40, 44, 52, 0.85);
-			color: #e5c07b;
-			padding: 4px 10px;
-			border-radius: 4px;
-			font-size: 0.72rem;
-			pointer-events: none;
-			z-index: 20;
-		}
-	`};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
+	 */_showError(pMessage){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.style.display='none';}let tmpBody=document.getElementById('RetoldRemote-IEX-Body');if(tmpBody){let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpBody.innerHTML='<div class="retold-remote-iex-error">'+'<div class="retold-remote-iex-error-message">'+tmpFmt.escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()">Back to Image</button>'+'</div>';}}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":76}],141:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
 	 *
@@ -12587,486 +10865,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 * @param {string} pMode - The mode identifier
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator(tmpLabel,1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":76}],136:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
-		#ContentEditor-Application-Container
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100vh;
-			height: 100dvh;
-			background: var(--retold-bg-primary);
-			color: var(--retold-text-primary);
-			font-family: var(--retold-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
-		}
-		#ContentEditor-TopBar-Container
-		{
-			flex-shrink: 0;
-		}
-		.content-editor-body
-		{
-			display: flex;
-			flex: 1;
-			min-height: 0;
-			overflow: hidden;
-		}
-		/* Sidebar */
-		.content-editor-sidebar-wrap
-		{
-			display: flex;
-			flex-shrink: 0;
-			position: relative;
-			transition: width 0.2s ease;
-		}
-		.content-editor-sidebar-inner
-		{
-			display: flex;
-			flex-direction: column;
-			flex: 1;
-			min-width: 0;
-			min-height: 0;
-			overflow: hidden;
-		}
-		.content-editor-sidebar-tabs
-		{
-			display: flex;
-			flex-shrink: 0;
-			border-bottom: 1px solid var(--retold-border);
-			background: var(--retold-bg-secondary);
-		}
-		.content-editor-sidebar-tab
-		{
-			flex: 1;
-			padding: 7px 0;
-			border: none;
-			background: transparent;
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: var(--retold-text-muted);
-			cursor: pointer;
-			border-bottom: 2px solid transparent;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.content-editor-sidebar-tab:hover
-		{
-			color: var(--retold-text-secondary);
-		}
-		.content-editor-sidebar-tab.active
-		{
-			color: var(--retold-accent);
-			border-bottom-color: var(--retold-accent);
-		}
-		.content-editor-sidebar-pane
-		{
-			flex: 1;
-			overflow-y: auto;
-			overflow-x: hidden;
-			min-width: 0;
-			min-height: 0;
-		}
-		#ContentEditor-Sidebar-Container
-		{
-			background: var(--retold-bg-tertiary);
-		}
-		/* Collapsed state */
-		.content-editor-sidebar-wrap.collapsed
-		{
-			width: 0 !important;
-		}
-		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner
-		{
-			visibility: hidden;
-		}
-		.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle
-		{
-			display: none;
-		}
-		/* Resize handle */
-		.content-editor-resize-handle
-		{
-			flex-shrink: 0;
-			width: 5px;
-			cursor: col-resize;
-			background: transparent;
-			border-right: 1px solid var(--retold-border);
-			transition: background 0.15s;
-		}
-		.content-editor-resize-handle:hover,
-		.content-editor-resize-handle.dragging
-		{
-			background: var(--retold-accent);
-			border-right-color: var(--retold-accent);
-		}
-		/* File browser overrides for sidebar */
-		#ContentEditor-Sidebar-Container .pict-filebrowser
-		{
-			border: none;
-			border-radius: 0;
-			background: transparent;
-			color: var(--retold-text-secondary);
-		}
-		#ContentEditor-Sidebar-Container .pict-filebrowser-browse-pane
-		{
-			display: none;
-		}
-		#ContentEditor-Sidebar-Container .pict-filebrowser-view-pane
-		{
-			display: none;
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-col-size,
-		#ContentEditor-Sidebar-Container .pict-fb-detail-col-modified,
-		#ContentEditor-Sidebar-Container .pict-fb-detail-size,
-		#ContentEditor-Sidebar-Container .pict-fb-detail-modified
-		{
-			display: none;
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-header
-		{
-			display: none;
-		}
-		/* Hide the ugly white + button from the breadcrumb bar */
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-addfolder
-		{
-			display: none;
-		}
-		/* Subtle add-folder button at bottom of file list */
-		.retold-remote-sidebar-addfolder
-		{
-			display: block;
-			width: 100%;
-			padding: 8px 12px;
-			margin-top: 4px;
-			border: 1px dashed var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-dim);
-			font-size: 0.72rem;
-			font-family: inherit;
-			cursor: pointer;
-			text-align: center;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-		}
-		.retold-remote-sidebar-addfolder:hover
-		{
-			color: var(--retold-text-muted);
-			border-color: var(--retold-text-dim);
-			background: rgba(128, 128, 128, 0.06);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-row
-		{
-			color: var(--retold-text-secondary);
-			border-bottom-color: var(--retold-border);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-row:hover
-		{
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-primary);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-row.selected
-		{
-			background: var(--retold-bg-selected);
-			color: var(--retold-accent);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-row.sidebar-focused
-		{
-			outline: 2px solid var(--retold-accent);
-			outline-offset: -2px;
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-primary);
-		}
-		.content-editor-sidebar-inner.keyboard-focused
-		{
-			box-shadow: inset 0 0 0 1px var(--retold-accent);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-bar
-		{
-			background: var(--retold-bg-secondary);
-			border-bottom-color: var(--retold-border);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb
-		{
-			color: var(--retold-text-muted);
-			background: transparent;
-			border-bottom: none;
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-link
-		{
-			color: var(--retold-accent);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment
-		{
-			color: var(--retold-accent);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-segment:hover
-		{
-			background: var(--retold-bg-hover);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-separator
-		{
-			color: var(--retold-text-dim);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-breadcrumb-current
-		{
-			color: var(--retold-text-primary);
-		}
-		/* Insert button: hidden by default, visible on row hover for ALL files */
-		#ContentEditor-Sidebar-Container .pict-fb-insert-btn
-		{
-			display: none;
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-muted);
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			font-size: 0.72rem;
-			padding: 1px 6px;
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-insert-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-			border-color: var(--retold-accent);
-		}
-		#ContentEditor-Sidebar-Container .pict-fb-detail-row:hover .pict-fb-insert-btn
-		{
-			display: inline-block;
-		}
-		/* Main content area */
-		#RetoldRemote-Content-Container
-		{
-			flex: 1;
-			overflow-y: auto;
-			position: relative;
-		}
-		#RetoldRemote-Gallery-Container
-		{
-			padding: 12px;
-			padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-			min-height: 100%;
-		}
-		#RetoldRemote-Viewer-Container
-		{
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: var(--retold-bg-viewer);
-			display: none;
-		}
-		/* Also hide the editor container from the parent */
-		#ContentEditor-Editor-Container
-		{
-			display: none;
-		}
-
-		/* ---- Favorites Pane ---- */
-		.retold-remote-favorites-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 12px;
-			border-bottom: 1px solid var(--retold-border);
-			cursor: pointer;
-			transition: background 0.15s;
-			min-height: 36px;
-		}
-		.retold-remote-favorites-item:hover
-		{
-			background: var(--retold-bg-hover);
-		}
-		.retold-remote-favorites-item-icon
-		{
-			flex-shrink: 0;
-			display: inline-flex;
-			align-items: center;
-		}
-		.retold-remote-favorites-item-name
-		{
-			flex: 1;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-favorites-item-remove
-		{
-			flex-shrink: 0;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 24px;
-			height: 24px;
-			border: none;
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-dim);
-			font-size: 0.82rem;
-			cursor: pointer;
-			opacity: 0;
-			transition: opacity 0.15s, color 0.15s, background 0.15s;
-		}
-		.retold-remote-favorites-item:hover .retold-remote-favorites-item-remove
-		{
-			opacity: 1;
-		}
-		.retold-remote-favorites-item-remove:hover
-		{
-			color: #e74c3c;
-			background: rgba(231, 76, 60, 0.15);
-		}
-		.retold-remote-favorites-empty
-		{
-			padding: 24px 16px;
-			text-align: center;
-			color: var(--retold-text-dim);
-			font-size: 0.82rem;
-		}
-
-		/* ---- Right-side Collections Panel ---- */
-		.retold-remote-collections-wrap
-		{
-			display: flex;
-			flex-shrink: 0;
-			position: relative;
-			transition: width 0.2s ease;
-			border-left: 1px solid var(--retold-border);
-		}
-		.retold-remote-collections-wrap.collapsed
-		{
-			width: 0 !important;
-			border-left: none;
-		}
-		.retold-remote-collections-wrap.collapsed .retold-remote-collections-inner
-		{
-			visibility: hidden;
-		}
-		.retold-remote-collections-wrap.collapsed .retold-remote-collections-resize-handle
-		{
-			display: none;
-		}
-		.retold-remote-collections-inner
-		{
-			display: flex;
-			flex-direction: column;
-			flex: 1;
-			min-width: 0;
-			min-height: 0;
-			overflow: hidden;
-			background: var(--retold-bg-primary);
-		}
-		.retold-remote-collections-resize-handle
-		{
-			position: absolute;
-			left: 0;
-			top: 0;
-			bottom: 0;
-			width: 5px;
-			cursor: col-resize;
-			z-index: 10;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.retold-remote-collections-resize-handle:hover
-		{
-			background: var(--retold-accent);
-			opacity: 0.3;
-		}
-
-		/* ============================================================
-		   MOBILE: Sidebar becomes a top drawer
-		   ============================================================ */
-		@media (max-width: 600px)
-		{
-			.content-editor-body
-			{
-				flex-direction: column;
-			}
-
-			/* Sidebar becomes a top section with a height instead of width */
-			.content-editor-sidebar-wrap
-			{
-				width: 100% !important;
-				height: 33vh;
-				height: 33dvh;
-				transition: height 0.2s ease;
-				flex-direction: column;
-			}
-
-			.content-editor-sidebar-wrap.collapsed
-			{
-				width: 100% !important;
-				height: 0 !important;
-			}
-
-			/* Resize handle becomes horizontal bar at the bottom of the drawer */
-			.content-editor-resize-handle
-			{
-				width: 100%;
-				height: 8px;
-				cursor: row-resize;
-				border-right: none;
-				border-bottom: 1px solid var(--retold-border);
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
-			.content-editor-resize-handle::after
-			{
-				content: '';
-				display: block;
-				width: 36px;
-				height: 3px;
-				border-radius: 2px;
-				background: var(--retold-text-placeholder);
-				opacity: 0.5;
-			}
-
-			.content-editor-resize-handle:hover::after,
-			.content-editor-resize-handle.dragging::after
-			{
-				background: var(--retold-accent);
-				opacity: 1;
-			}
-
-			/* Sidebar inner fills the drawer */
-			.content-editor-sidebar-inner
-			{
-				flex: 1;
-				min-height: 0;
-			}
-
-			/* Content takes remaining space */
-			#RetoldRemote-Content-Container
-			{
-				flex: 1;
-				min-height: 0;
-			}
-
-			/* Gallery: don't force min-height on small screens */
-			#RetoldRemote-Gallery-Container
-			{
-				min-height: auto;
-			}
-
-			/* Show collections tab on mobile */
-			.content-editor-sidebar-tab-collections
-			{
-				display: block !important;
-			}
-
-			/* Collections right-side panel: hidden on mobile (content moves to sidebar tab) */
-			.retold-remote-collections-wrap,
-			.retold-remote-collections-wrap.collapsed
-			{
-				display: none !important;
-				height: 0 !important;
-			}
-		}
-	`,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":76}],142:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
 				<div id="ContentEditor-TopBar-Container"></div>
 				<div class="content-editor-body">
 					<div class="content-editor-sidebar-wrap" style="width: 250px;">
@@ -13134,495 +10933,7 @@ let tmpEscapedPath=tmpPath.replace(/'/g,"\\'");tmpHTML+='<div class="retold-remo
 	 */_setupCollectionsResizeHandle(){let tmpHandle=document.querySelector('.retold-remote-collections-resize-handle');let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(!tmpHandle||!tmpWrap){return;}let tmpSelf=this;let tmpStartX=0;let tmpStartWidth=0;function onDragStart(pEvent){if(tmpWrap.classList.contains('collapsed')){return;}pEvent.preventDefault();tmpSelf._collectionsDragging=true;tmpHandle.classList.add('dragging');let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;tmpStartX=tmpClientX;tmpStartWidth=tmpWrap.getBoundingClientRect().width;document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);}function onDragMove(pEvent){if(!tmpSelf._collectionsDragging){return;}pEvent.preventDefault();let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;// Dragging left (negative deltaX) increases width
 let tmpDelta=tmpStartX-tmpClientX;let tmpNewWidth=Math.max(150,Math.min(600,tmpStartWidth+tmpDelta));tmpWrap.style.width=tmpNewWidth+'px';}function onDragEnd(){if(!tmpSelf._collectionsDragging){return;}tmpSelf._collectionsDragging=false;tmpHandle.classList.remove('dragging');let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelWidth=tmpWrap.getBoundingClientRect().width;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Recalculate gallery columns
 let tmpGalleryNav=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpGalleryNav&&typeof tmpGalleryNav.recalculateColumns==='function'){tmpGalleryNav.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onDragStart);tmpHandle.addEventListener('touchstart',onDragStart,{passive:false});// Double-click collapses the collections panel
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":76}],137:[function(require,module,exports){const libPictView=require('pict-view');const libPictSectionCode=require('pict-section-code');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-viewer
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.retold-remote-viewer-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			z-index: 5;
-		}
-		.retold-remote-viewer-nav-btn
-		{
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.8rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-viewer-nav-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-viewer-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			text-align: center;
-		}
-		.retold-remote-viewer-body
-		{
-			flex: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			overflow: auto;
-			position: relative;
-		}
-		/* File info overlay */
-		.retold-remote-fileinfo-overlay
-		{
-			position: absolute;
-			top: 48px;
-			right: 16px;
-			background: var(--retold-bg-secondary);
-			border: 1px solid var(--retold-border);
-			border-radius: 6px;
-			padding: 16px;
-			color: var(--retold-text-secondary);
-			font-size: 0.78rem;
-			z-index: 10;
-			min-width: 200px;
-			display: none;
-		}
-		.retold-remote-fileinfo-row
-		{
-			display: flex;
-			justify-content: space-between;
-			padding: 3px 0;
-		}
-		.retold-remote-fileinfo-label
-		{
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-fileinfo-value
-		{
-			color: var(--retold-text-primary);
-		}
-		/* Code viewer container */
-		.retold-remote-code-viewer-container
-		{
-			width: 100%;
-			height: 100%;
-			overflow: hidden;
-		}
-		.retold-remote-code-viewer-loading
-		{
-			padding: 16px 20px;
-			color: var(--retold-text-dim);
-			font-style: italic;
-			font-size: 0.82rem;
-		}
-		/* pict-section-code dark theme overrides */
-		.retold-remote-code-viewer-container .pict-code-editor-wrap
-		{
-			border: none;
-			border-radius: 0;
-			height: 100%;
-			font-family: var(--retold-font-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace);
-			font-size: 0.82rem;
-			line-height: 1.6;
-		}
-		.retold-remote-code-viewer-container .pict-code-line-numbers
-		{
-			background: var(--retold-bg-secondary);
-			border-right: 1px solid var(--retold-border);
-			color: var(--retold-text-dim);
-			font-size: 0.78rem;
-			line-height: 1.6;
-			padding: 10px 0;
-		}
-		.retold-remote-code-viewer-container .pict-code-editor
-		{
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-			padding: 10px 10px 10px 12px;
-			tab-size: 4;
-			-moz-tab-size: 4;
-			caret-color: var(--retold-accent);
-			border-radius: 0;
-		}
-		/* Syntax highlighting colors for dark themes */
-		.retold-remote-code-viewer-container .pict-code-editor .keyword { color: #C678DD; }
-		.retold-remote-code-viewer-container .pict-code-editor .string { color: #98C379; }
-		.retold-remote-code-viewer-container .pict-code-editor .number { color: #D19A66; }
-		.retold-remote-code-viewer-container .pict-code-editor .comment { color: #5C6370; font-style: italic; }
-		.retold-remote-code-viewer-container .pict-code-editor .operator { color: #56B6C2; }
-		.retold-remote-code-viewer-container .pict-code-editor .punctuation { color: #ABB2BF; }
-		.retold-remote-code-viewer-container .pict-code-editor .function-name { color: #61AFEF; }
-		.retold-remote-code-viewer-container .pict-code-editor .property { color: #E06C75; }
-		.retold-remote-code-viewer-container .pict-code-editor .tag { color: #E06C75; }
-		.retold-remote-code-viewer-container .pict-code-editor .attr-name { color: #D19A66; }
-		.retold-remote-code-viewer-container .pict-code-editor .attr-value { color: #98C379; }
-		/* Video wrap with stats bar */
-		.retold-remote-video-wrap
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			max-width: 100%;
-			max-height: 100%;
-			width: 100%;
-			height: 100%;
-		}
-		.retold-remote-video-wrap video
-		{
-			flex: 1;
-			min-height: 0;
-			max-width: 100%;
-			max-height: calc(100% - 40px);
-			object-fit: contain;
-		}
-		.retold-remote-video-stats
-		{
-			display: flex;
-			align-items: center;
-			gap: 16px;
-			padding: 6px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			width: 100%;
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-			white-space: nowrap;
-			overflow-x: auto;
-		}
-		.retold-remote-video-stats span
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-		}
-		.retold-remote-video-stats .retold-remote-video-stat-label
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-video-stats .retold-remote-video-stat-value
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-explore-btn
-		{
-			margin-left: auto;
-			padding: 3px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-accent);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-			white-space: nowrap;
-		}
-		.retold-remote-explore-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-vlc-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-accent);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-			white-space: nowrap;
-		}
-		.retold-remote-vlc-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		/* Video action menu */
-		.retold-remote-video-action-menu
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: 12px;
-			width: 100%;
-			height: 100%;
-		}
-		.retold-remote-video-action-menu-title
-		{
-			font-size: 0.85rem;
-			color: var(--retold-text-secondary);
-			margin-bottom: 4px;
-			text-align: center;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			max-width: 80%;
-		}
-		.retold-remote-video-action-thumb-wrap
-		{
-			margin-bottom: 4px;
-			text-align: center;
-		}
-		.retold-remote-video-action-thumb-wrap img
-		{
-			max-width: 640px;
-			max-height: 360px;
-			border-radius: 6px;
-			border: 1px solid var(--retold-border);
-			object-fit: contain;
-			background: var(--retold-bg-primary);
-		}
-		.retold-remote-video-action-thumb-wrap .retold-remote-video-action-thumb-loading
-		{
-			color: var(--retold-text-dim);
-			font-size: 0.78rem;
-			font-style: italic;
-			padding: 8px;
-		}
-		.retold-remote-video-action-btn
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 12px 24px;
-			min-width: 280px;
-			border: 1px solid var(--retold-border);
-			border-radius: 6px;
-			background: var(--retold-bg-secondary);
-			color: var(--retold-text-secondary);
-			font-size: 0.85rem;
-			cursor: pointer;
-			transition: border-color 0.15s, color 0.15s, background 0.15s;
-			font-family: inherit;
-			text-align: left;
-		}
-		.retold-remote-video-action-btn:hover,
-		.retold-remote-video-action-btn.selected
-		{
-			border-color: var(--retold-accent);
-			color: var(--retold-text-primary);
-			background: var(--retold-bg-tertiary);
-		}
-		.retold-remote-video-action-key
-		{
-			display: inline-block;
-			padding: 2px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-primary);
-			color: var(--retold-text-dim);
-			font-size: 0.72rem;
-			font-family: var(--retold-font-mono, monospace);
-			min-width: 24px;
-			text-align: center;
-		}
-		/* Ebook reader */
-		.retold-remote-ebook-wrap
-		{
-			display: flex;
-			width: 100%;
-			height: 100%;
-			position: relative;
-		}
-		.retold-remote-ebook-toc
-		{
-			width: 240px;
-			flex-shrink: 0;
-			background: var(--retold-bg-secondary);
-			border-right: 1px solid var(--retold-border);
-			overflow-y: auto;
-			font-size: 0.78rem;
-			padding: 8px 0;
-		}
-		.retold-remote-ebook-toc.collapsed
-		{
-			display: none;
-		}
-		.retold-remote-ebook-toc-item
-		{
-			display: block;
-			padding: 6px 16px;
-			color: var(--retold-text-secondary);
-			text-decoration: none;
-			cursor: pointer;
-			transition: background 0.1s, color 0.1s;
-			border: none;
-			background: none;
-			width: 100%;
-			text-align: left;
-			font-family: inherit;
-			font-size: inherit;
-		}
-		.retold-remote-ebook-toc-item:hover
-		{
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-ebook-toc-item.indent-1
-		{
-			padding-left: 32px;
-		}
-		.retold-remote-ebook-toc-item.indent-2
-		{
-			padding-left: 48px;
-		}
-		.retold-remote-ebook-reader
-		{
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			min-width: 0;
-			position: relative;
-		}
-		.retold-remote-ebook-content
-		{
-			flex: 1;
-			position: relative;
-			overflow: hidden;
-		}
-		.retold-remote-ebook-content iframe
-		{
-			border: none;
-		}
-		.retold-remote-ebook-controls
-		{
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 16px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-ebook-page-btn
-		{
-			padding: 6px 20px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.82rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-ebook-page-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-ebook-toc-btn
-		{
-			padding: 6px 12px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.75rem;
-			cursor: pointer;
-			font-family: inherit;
-		}
-		.retold-remote-ebook-toc-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-ebook-loading
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.85rem;
-		}
-		/* Distraction-free toggle */
-		.retold-remote-df-toggle
-		{
-			position: absolute;
-			top: 8px;
-			left: 8px;
-			z-index: 15;
-			padding: 4px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: rgba(0, 0, 0, 0.5);
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			opacity: 0;
-			transition: opacity 0.2s ease, color 0.15s, border-color 0.15s;
-			font-family: inherit;
-			white-space: nowrap;
-		}
-		.retold-remote-viewer-body:hover .retold-remote-df-toggle,
-		.retold-remote-df-toggle:focus
-		{
-			opacity: 1;
-		}
-		.retold-remote-df-toggle:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-df-toggle.active
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-		}
-		/* Distraction-free exit hotspot (top-left corner) */
-		.retold-remote-df-exit-hotspot
-		{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 80px;
-			height: 80px;
-			z-index: 16;
-			cursor: pointer;
-			display: none;
-		}
-		.retold-remote-df-exit-hotspot::after
-		{
-			content: '';
-			position: absolute;
-			top: 12px;
-			left: 12px;
-			width: 8px;
-			height: 8px;
-			border-radius: 50%;
-			background: var(--retold-accent);
-			opacity: 0;
-			transition: opacity 0.3s ease;
-		}
-		.retold-remote-df-exit-hotspot:hover::after
-		{
-			opacity: 0.6;
-		}
-	`};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":76}],143:[function(require,module,exports){const libPictView=require('pict-view');const _MediaViewerEbookViewer=require('./MediaViewer-EbookViewer');const _MediaViewerCodeViewer=require('./MediaViewer-CodeViewer');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
 	 * Show the media viewer for a given file.
 	 *
 	 * @param {string} pFilePath  - Relative file path
@@ -13744,194 +11055,17 @@ if(tmpRemote.CurrentViewerFile!==tmpFilePath)return;let tmpWrap=document.getElem
 tmpHTML+='<div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">';// Explore Audio button (available when ffprobe is present)
 let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};if(tmpCapabilities.ffprobe||tmpCapabilities.ffmpeg){tmpHTML+='<button class="retold-remote-explore-btn" '+'onclick="pict.views[\'RetoldRemote-AudioExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '+'title="Explore waveform and extract segments from this audio">'+'Explore Audio'+'</button>';}// Stream with VLC
 tmpHTML+='<button class="retold-remote-vlc-btn" '+'onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" '+'title="Stream to VLC on this device (v)">'+'Stream with VLC'+'</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildDocumentHTML(pURL,pFileName,pFilePath){let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExtension==='pdf'){return'<iframe src="'+pURL+'" '+'style="width: 100%; height: 100%; border: none;">'+'</iframe>';}if(tmpExtension==='epub'||tmpExtension==='mobi'){return this._buildEbookHTML(pURL,pFileName,pFilePath);}// For other document types, show a download link
-let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpDocIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('document-large',64)+'</span>':'&#128196;';return'<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpDocIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'</div>'+'<a href="'+pURL+'" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Open in new tab</a>'+'</div>';}_buildTextHTML(pURL,pFileName,pFilePath){return'<div class="retold-remote-code-viewer-container" id="RetoldRemote-CodeViewer-Container">'+'<div class="retold-remote-code-viewer-loading">Loading...</div>'+'</div>';}/**
-	 * Map a file extension to a pict-section-code highlight language.
-	 *
-	 * @param {string} pExtension - File extension (no dot)
-	 * @returns {string} One of: javascript, json, html, css, sql
-	 */_getHighlightLanguage(pExtension){let tmpJSExtensions={'js':true,'mjs':true,'cjs':true,'ts':true,'tsx':true,'jsx':true};if(tmpJSExtensions[pExtension])return'javascript';if(pExtension==='json')return'json';let tmpHTMLExtensions={'html':true,'htm':true,'xml':true,'svg':true};if(tmpHTMLExtensions[pExtension])return'html';let tmpCSSExtensions={'css':true,'scss':true,'sass':true,'less':true};if(tmpCSSExtensions[pExtension])return'css';if(pExtension==='sql')return'sql';// Default to javascript highlighting for other text files
-return'javascript';}/**
-	 * Load text content and display it using pict-section-code for
-	 * syntax highlighting and line numbers.
-	 *
-	 * @param {string} pURL       - Content URL to fetch
-	 * @param {string} pFilePath  - Full file path (used to derive extension)
-	 */_loadCodeViewer(pURL,pFilePath){let tmpSelf=this;let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();fetch(pURL).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.text();}).then(pText=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(!tmpContainer){return;}let tmpLanguage=tmpSelf._getHighlightLanguage(tmpExtension);// Destroy any previous CodeJar instance
-if(tmpSelf._activeCodeJar){tmpSelf._activeCodeJar.destroy();tmpSelf._activeCodeJar=null;}// Check that CodeJar is available
-if(typeof window==='undefined'||typeof window.CodeJar!=='function'){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">CodeJar not loaded; showing plain text.</div>';let tmpPre=document.createElement('pre');tmpPre.style.cssText='padding:16px 20px; margin:0; color:var(--retold-text-primary); font-family:monospace; white-space:pre; tab-size:4; overflow:auto; height:100%;';tmpPre.textContent=pText;tmpContainer.appendChild(tmpPre);return;}// Build the editor DOM (mirrors pict-section-code _buildEditorDOM)
-tmpContainer.innerHTML='';let tmpWrap=document.createElement('div');tmpWrap.className='pict-code-editor-wrap';let tmpLineNumbers=document.createElement('div');tmpLineNumbers.className='pict-code-line-numbers';tmpWrap.appendChild(tmpLineNumbers);let tmpEditor=document.createElement('div');tmpEditor.className='pict-code-editor language-'+tmpLanguage;tmpWrap.appendChild(tmpEditor);tmpContainer.appendChild(tmpWrap);// Create the highlight function from pict-section-code
-let tmpHighlight=libPictSectionCode.createHighlighter(tmpLanguage);// Instantiate CodeJar
-tmpSelf._activeCodeJar=window.CodeJar(tmpEditor,tmpHighlight,{tab:'\t',catchTab:false,addClosing:false});// Reset inline styles that CodeJar forces
-tmpEditor.style.whiteSpace='pre';tmpEditor.style.overflowWrap='normal';// Set the content
-tmpSelf._activeCodeJar.updateCode(pText);// Make it read-only
-tmpEditor.setAttribute('contenteditable','false');// Render line numbers
-let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}/**
-	 * Build the HTML shell for the ebook reader.
-	 */_buildEbookHTML(pURL,pFileName,pFilePath){return'<div class="retold-remote-ebook-wrap">'+'<div class="retold-remote-ebook-toc collapsed" id="RetoldRemote-EbookTOC"></div>'+'<div class="retold-remote-ebook-reader">'+'<div class="retold-remote-ebook-content" id="RetoldRemote-EbookContent">'+'<div class="retold-remote-ebook-loading">Loading ebook...</div>'+'</div>'+'<div class="retold-remote-ebook-controls">'+'<button class="retold-remote-ebook-toc-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleEbookTOC()">&#9776; TOC</button>'+'<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookPrevPage()">&larr; Prev</button>'+'<button class="retold-remote-ebook-page-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookNextPage()">Next &rarr;</button>'+'</div>'+'</div>'+'</div>';}/**
-	 * Load and render an ebook using epub.js.
-	 * For EPUB files, fetch directly. For MOBI files, convert server-side first.
-	 *
-	 * @param {string} pContentURL - Content URL for the file
-	 * @param {string} pFilePath   - Relative file path
-	 */_loadEbookViewer(pContentURL,pFilePath){let tmpSelf=this;let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();if(tmpExtension==='mobi'){// Convert MOBI to EPUB server-side first
-let tmpCapabilities=this.pict.AppData.RetoldRemote.ServerCapabilities||{};if(!tmpCapabilities.ebook_convert){let tmpContent=document.getElementById('RetoldRemote-EbookContent');if(tmpContent){tmpContent.innerHTML='<div class="retold-remote-ebook-loading">'+'MOBI viewing requires Calibre (ebook-convert) on the server.<br>'+'<a href="'+pContentURL+'" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'+'</div>';}return;}let tmpContent=document.getElementById('RetoldRemote-EbookContent');if(tmpContent){tmpContent.innerHTML='<div class="retold-remote-ebook-loading">Converting MOBI to EPUB...</div>';}let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/ebook-convert?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success){throw new Error(pData?pData.Error:'Conversion failed.');}// Fetch the converted EPUB and render
-let tmpEpubURL='/api/media/ebook/'+pData.CacheKey+'/'+pData.OutputFilename;tmpSelf._renderEpub(tmpEpubURL);}).catch(pError=>{let tmpEl=document.getElementById('RetoldRemote-EbookContent');if(tmpEl){tmpEl.innerHTML='<div class="retold-remote-ebook-loading">Failed to convert: '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)+'<br><a href="'+pContentURL+'" target="_blank" style="color: var(--retold-accent); margin-top: 12px; display: inline-block;">Download file</a>'+'</div>';}});}else{// EPUB — render directly
-this._renderEpub(pContentURL);}}/**
-	 * Initialize epub.js and render an EPUB into the viewer container.
-	 *
-	 * @param {string} pEpubURL - URL to fetch the EPUB from
-	 */_renderEpub(pEpubURL){let tmpSelf=this;// Check that epub.js is available
-if(typeof window==='undefined'||typeof window.ePub!=='function'){let tmpEl=document.getElementById('RetoldRemote-EbookContent');if(tmpEl){tmpEl.innerHTML='<div class="retold-remote-ebook-loading">epub.js library not loaded.</div>';}return;}// Destroy any previous book instance
-if(this._activeBook){try{this._activeBook.destroy();}catch(e){/* ignore */}this._activeBook=null;this._activeRendition=null;}let tmpContentEl=document.getElementById('RetoldRemote-EbookContent');if(!tmpContentEl){return;}// Clear loading message
-tmpContentEl.innerHTML='';// Fetch the EPUB as an ArrayBuffer and open with epub.js
-fetch(pEpubURL).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.arrayBuffer();}).then(pBuffer=>{let tmpBook=window.ePub(pBuffer);tmpSelf._activeBook=tmpBook;let tmpRendition=tmpBook.renderTo(tmpContentEl,{width:'100%',height:'100%',spread:'none'});tmpSelf._activeRendition=tmpRendition;tmpRendition.display();// Apply theme for dark backgrounds
-tmpRendition.themes.default({'body':{'color':'var(--retold-text-primary, #d4d4d4)','background':'var(--retold-bg-primary, #1e1e1e)','font-family':'Georgia, "Times New Roman", serif','line-height':'1.6','padding':'20px 40px'},'a':{'color':'var(--retold-accent, #569cd6)'}});// Load table of contents
-tmpBook.loaded.navigation.then(pNav=>{tmpSelf._renderEbookTOC(pNav.toc);});}).catch(pError=>{if(tmpContentEl){tmpContentEl.innerHTML='<div class="retold-remote-ebook-loading">Failed to load ebook: '+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pError.message)+'</div>';}});}/**
-	 * Render the table of contents for the ebook.
-	 *
-	 * @param {Array} pToc - epub.js navigation TOC array
-	 */_renderEbookTOC(pToc){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(!tmpTocEl||!pToc){return;}let tmpSelf=this;let tmpHTML='';let tmpBuildItems=function(pItems,pDepth){for(let i=0;i<pItems.length;i++){let tmpItem=pItems[i];let tmpIndentClass=pDepth>0?' indent-'+Math.min(pDepth,2):'';tmpHTML+='<button class="retold-remote-ebook-toc-item'+tmpIndentClass+'" '+'data-href="'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.href)+'" '+'onclick="pict.views[\'RetoldRemote-MediaViewer\'].ebookGoToChapter(this.getAttribute(\'data-href\'))">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.label.trim())+'</button>';if(tmpItem.subitems&&tmpItem.subitems.length>0){tmpBuildItems(tmpItem.subitems,pDepth+1);}}};tmpBuildItems(pToc,0);tmpTocEl.innerHTML=tmpHTML;}/**
-	 * Navigate to a chapter in the ebook by href.
-	 *
-	 * @param {string} pHref - Chapter href from the TOC
-	 */ebookGoToChapter(pHref){if(this._activeRendition&&pHref){this._activeRendition.display(pHref);}}/**
-	 * Go to the previous page in the ebook.
-	 */ebookPrevPage(){if(this._activeRendition){this._activeRendition.prev();}}/**
-	 * Go to the next page in the ebook.
-	 */ebookNextPage(){if(this._activeRendition){this._activeRendition.next();}}/**
-	 * Toggle the table of contents sidebar.
-	 */toggleEbookTOC(){let tmpTocEl=document.getElementById('RetoldRemote-EbookTOC');if(tmpTocEl){tmpTocEl.classList.toggle('collapsed');}}_buildFallbackHTML(pURL,pFileName){let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpFallbackIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('document-large',64)+'</span>':'&#128196;';return'<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpFallbackIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'</div>'+'<a href="'+pURL+'" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Download / Open in new tab</a>'+'</div>';}/**
+let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpDocIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('document-large',64)+'</span>':'&#128196;';return'<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpDocIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'</div>'+'<a href="'+pURL+'" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Open in new tab</a>'+'</div>';}// Note: _buildTextHTML, _getHighlightLanguage, _loadCodeViewer
+// are in MediaViewer-CodeViewer.js (mixed in below).
+// Note: _buildEbookHTML, _loadEbookViewer, _renderEpub, _renderEbookTOC,
+// ebookGoToChapter, ebookPrevPage, ebookNextPage, toggleEbookTOC
+// are in MediaViewer-EbookViewer.js (mixed in below).
+_buildFallbackHTML(pURL,pFileName){let tmpIconProvider=this.pict.providers['RetoldRemote-Icons'];let tmpFallbackIconHTML=tmpIconProvider?'<span class="retold-remote-icon retold-remote-icon-lg">'+tmpIconProvider.getIcon('document-large',64)+'</span>':'&#128196;';return'<div style="text-align: center; padding: 40px;">'+'<div style="margin-bottom: 24px;">'+tmpFallbackIconHTML+'</div>'+'<div style="font-size: 1.1rem; color: var(--retold-text-secondary); margin-bottom: 24px;">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName)+'</div>'+'<a href="'+pURL+'" target="_blank" style="color: var(--retold-accent); font-size: 0.9rem;">Download / Open in new tab</a>'+'</div>';}/**
 	 * Fetch file info and populate the overlay and video stats bar.
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"pict-section-code":49,"pict-view":76}],138:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-settings
-		{
-			padding: 12px;
-		}
-		.retold-remote-settings-section
-		{
-			margin-bottom: 16px;
-		}
-		.retold-remote-settings-section-title
-		{
-			font-size: 0.7rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			color: var(--retold-text-dim);
-			margin-bottom: 8px;
-		}
-		.retold-remote-settings-row
-		{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 4px 0;
-		}
-		.retold-remote-settings-label
-		{
-			font-size: 0.78rem;
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-settings-select
-		{
-			padding: 3px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.75rem;
-			font-family: inherit;
-		}
-		.retold-remote-settings-checkbox
-		{
-			accent-color: var(--retold-accent);
-		}
-		.retold-remote-settings-capabilities
-		{
-			margin-top: 12px;
-			padding: 8px;
-			background: var(--retold-bg-secondary);
-			border-radius: 4px;
-			font-size: 0.72rem;
-		}
-		.retold-remote-settings-cap-row
-		{
-			display: flex;
-			justify-content: space-between;
-			padding: 2px 0;
-		}
-		.retold-remote-settings-cap-label
-		{
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-settings-cap-yes
-		{
-			color: var(--retold-accent);
-		}
-		.retold-remote-settings-cap-no
-		{
-			color: var(--retold-danger-muted);
-		}
-		.retold-remote-settings-vlc-btn
-		{
-			display: block;
-			width: 100%;
-			padding: 8px 12px;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: var(--retold-bg-secondary);
-			color: var(--retold-text-secondary);
-			font-size: 0.75rem;
-			font-family: inherit;
-			cursor: pointer;
-			text-align: left;
-			transition: background 0.15s, color 0.15s;
-		}
-		.retold-remote-settings-vlc-btn:hover
-		{
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-settings-input
-		{
-			width: 100%;
-			padding: 5px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-secondary);
-			font-size: 0.75rem;
-			font-family: inherit;
-			box-sizing: border-box;
-		}
-		.retold-remote-settings-input:focus
-		{
-			outline: none;
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-settings-input-row
-		{
-			margin-bottom: 8px;
-		}
-		.retold-remote-settings-input-label
-		{
-			display: block;
-			font-size: 0.72rem;
-			color: var(--retold-text-dim);
-			margin-bottom: 3px;
-		}
-		.retold-remote-settings-template-preview
-		{
-			font-size: 0.68rem;
-			color: var(--retold-text-dim);
-			margin-top: 3px;
-			font-style: italic;
-			word-break: break-all;
-		}
-	`};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":134,"./MediaViewer-EbookViewer":135,"pict-view":76}],144:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Gallery</div>';// View mode
@@ -13984,447 +11118,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 	 * @returns {string}
 	 */_escapeHTML(pStr){if(!pStr)return'';return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}/**
 	 * Re-run the filter/sort pipeline and refresh the gallery.
-	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],139:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-topbar
-		{
-			display: flex;
-			align-items: center;
-			height: 40px;
-			padding: 0 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			gap: 16px;
-		}
-		.retold-remote-topbar-sidebar-toggle
-		{
-			flex-shrink: 0;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 32px;
-			height: 32px;
-			padding: 0;
-			margin: 0;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 1rem;
-			line-height: 1;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-			-webkit-tap-highlight-color: transparent;
-		}
-		.retold-remote-topbar-sidebar-toggle:hover,
-		.retold-remote-topbar-sidebar-toggle:active,
-		.retold-remote-topbar-df-toggle:hover,
-		.retold-remote-topbar-df-toggle:active
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		.retold-remote-topbar-df-toggle
-		{
-			flex-shrink: 0;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 32px;
-			height: 32px;
-			padding: 0;
-			margin: 0;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 1rem;
-			line-height: 1;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-			-webkit-tap-highlight-color: transparent;
-		}
-		.retold-remote-topbar-location
-		{
-			position: relative;
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-muted);
-			white-space: nowrap;
-			text-align: center;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			overflow: visible;
-			min-width: 0;
-		}
-		.retold-remote-topbar-location-inner
-		{
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-topbar-location-crumb
-		{
-			color: var(--retold-accent);
-			cursor: pointer;
-			text-decoration: none;
-		}
-		.retold-remote-topbar-location-crumb:hover
-		{
-			text-decoration: underline;
-		}
-		.retold-remote-topbar-home-crumb
-		{
-			cursor: pointer;
-			display: inline-flex;
-			align-items: center;
-			vertical-align: middle;
-			opacity: 0.8;
-		}
-		.retold-remote-topbar-home-crumb:hover
-		{
-			opacity: 1;
-		}
-		.retold-remote-topbar-sep
-		{
-			color: var(--retold-text-placeholder);
-			margin: 0 3px;
-		}
-		/* Breadcrumb overflow hamburger */
-		.retold-remote-topbar-breadcrumb-overflow
-		{
-			position: relative;
-			display: inline-flex;
-			align-items: center;
-			vertical-align: middle;
-		}
-		.retold-remote-topbar-overflow-btn
-		{
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 28px;
-			height: 28px;
-			padding: 0;
-			margin: 0;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.9rem;
-			line-height: 1;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-			-webkit-tap-highlight-color: transparent;
-		}
-		.retold-remote-topbar-overflow-btn:hover,
-		.retold-remote-topbar-overflow-btn:active
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		.retold-remote-topbar-overflow-dropdown
-		{
-			display: none;
-			position: absolute;
-			top: 100%;
-			left: 0;
-			margin-top: 4px;
-			min-width: 220px;
-			max-width: 400px;
-			background: var(--retold-bg-secondary);
-			border: 1px solid var(--retold-border);
-			border-radius: 6px;
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-			z-index: 1000;
-			overflow: hidden;
-		}
-		.retold-remote-topbar-overflow-dropdown.open
-		{
-			display: block;
-		}
-		.retold-remote-topbar-overflow-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			width: 100%;
-			padding: 12px 16px;
-			border: none;
-			border-bottom: 1px solid var(--retold-border);
-			background: transparent;
-			color: var(--retold-text-primary);
-			font-size: 0.9rem;
-			text-align: left;
-			cursor: pointer;
-			font-family: inherit;
-			-webkit-tap-highlight-color: transparent;
-			min-height: 44px;
-			box-sizing: border-box;
-		}
-		.retold-remote-topbar-overflow-item:last-child
-		{
-			border-bottom: none;
-		}
-		.retold-remote-topbar-overflow-item:hover,
-		.retold-remote-topbar-overflow-item:active
-		{
-			background: rgba(128, 128, 128, 0.12);
-			color: var(--retold-accent);
-		}
-		.retold-remote-topbar-overflow-item-icon
-		{
-			display: inline-flex;
-			align-items: center;
-			flex-shrink: 0;
-			opacity: 0.7;
-		}
-		.retold-remote-topbar-overflow-item-label
-		{
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-topbar-overflow-item-prefix
-		{
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-topbar-overflow-item:hover .retold-remote-topbar-overflow-item-prefix,
-		.retold-remote-topbar-overflow-item:active .retold-remote-topbar-overflow-item-prefix
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-topbar-info
-		{
-			flex-shrink: 1;
-			min-width: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.retold-remote-topbar-info-sep
-		{
-			margin: 0 2px;
-		}
-		/* Progressive info degradation on small screens */
-		@media (max-width: 500px)
-		{
-			.retold-remote-topbar-info-priority-3
-			{
-				display: none;
-			}
-		}
-		@media (max-width: 420px)
-		{
-			.retold-remote-topbar-info-priority-2
-			{
-				display: none;
-			}
-		}
-		@media (max-width: 360px)
-		{
-			.retold-remote-topbar-info-priority-1
-			{
-				display: none;
-			}
-		}
-		.retold-remote-topbar-actions
-		{
-			flex-shrink: 0;
-			display: flex;
-			gap: 8px;
-		}
-		.retold-remote-topbar-btn
-		{
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-topbar-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-topbar-addcoll-btn
-		{
-			font-size: 0.72rem;
-		}
-		.retold-remote-topbar-favorites-btn
-		{
-			font-size: 0.82rem;
-		}
-		.retold-remote-topbar-favorites-btn.is-favorited
-		{
-			color: #e74c3c;
-			border-color: #e74c3c;
-		}
-		.retold-remote-topbar-collections-btn.panel-open
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		/* Add-to-collection dropdown */
-		.retold-remote-addcoll-dropdown
-		{
-			position: absolute;
-			top: 100%;
-			right: 0;
-			margin-top: 4px;
-			min-width: 220px;
-			max-width: 320px;
-			max-height: 300px;
-			overflow-y: auto;
-			background: var(--retold-bg-secondary);
-			border: 1px solid var(--retold-border);
-			border-radius: 6px;
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-			z-index: 1000;
-		}
-		.retold-remote-addcoll-dropdown-item
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			width: 100%;
-			padding: 10px 14px;
-			border: none;
-			border-bottom: 1px solid var(--retold-border);
-			background: transparent;
-			color: var(--retold-text-primary);
-			font-size: 0.82rem;
-			text-align: left;
-			cursor: pointer;
-			font-family: inherit;
-			box-sizing: border-box;
-		}
-		.retold-remote-addcoll-dropdown-item:last-child
-		{
-			border-bottom: none;
-		}
-		.retold-remote-addcoll-dropdown-item:hover
-		{
-			background: rgba(128, 128, 128, 0.12);
-			color: var(--retold-accent);
-		}
-		.retold-remote-addcoll-dropdown-new
-		{
-			color: var(--retold-accent);
-			font-weight: 500;
-		}
-		.retold-remote-topbar-filter-btn
-		{
-			position: relative;
-			padding: 4px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.82rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-			line-height: 1;
-		}
-		.retold-remote-topbar-filter-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-topbar-filter-btn.filter-active
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		.retold-remote-topbar-filter-btn.filter-bar-open
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-text-muted);
-			background: rgba(128, 128, 128, 0.06);
-		}
-		.retold-remote-topbar-aisort-btn
-		{
-			padding: 4px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.72rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s, background 0.15s;
-			font-family: inherit;
-			white-space: nowrap;
-		}
-		.retold-remote-topbar-aisort-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-			background: rgba(128, 128, 128, 0.1);
-		}
-		.retold-remote-topbar-aisort-btn.generating
-		{
-			color: var(--retold-accent);
-			border-color: var(--retold-accent);
-			cursor: wait;
-		}
-		.retold-remote-topbar-filter-badge
-		{
-			position: absolute;
-			top: -4px;
-			right: -4px;
-			min-width: 14px;
-			height: 14px;
-			line-height: 14px;
-			padding: 0 3px;
-			border-radius: 7px;
-			background: var(--retold-accent);
-			color: var(--retold-bg-tertiary);
-			font-size: 0.55rem;
-			font-weight: 700;
-			text-align: center;
-		}
-		@media (max-width: 600px)
-		{
-			.retold-remote-topbar
-			{
-				padding: 0 4px;
-				gap: 4px;
-				height: 36px;
-			}
-			.retold-remote-topbar-actions
-			{
-				gap: 3px;
-			}
-			.retold-remote-topbar-btn
-			{
-				padding: 3px 7px;
-			}
-			.retold-remote-topbar-sidebar-toggle,
-			.retold-remote-topbar-df-toggle
-			{
-				width: 28px;
-				height: 28px;
-			}
-			.retold-remote-topbar-filter-btn
-			{
-				padding: 3px 6px;
-			}
-		}
-	`,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
+	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":76}],145:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
 				<div class="retold-remote-topbar">
 					<button class="retold-remote-topbar-sidebar-toggle" id="RetoldRemote-TopBar-SidebarToggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar"></button>
 					<button class="retold-remote-topbar-df-toggle" id="RetoldRemote-TopBar-DFToggle" onclick="pict.views['ContentEditor-TopBar'].toggleDistractionFree()" title="Distraction-free mode (d)"></button>
@@ -14541,248 +11235,7 @@ tmpBtn.style.position='relative';tmpBtn.appendChild(tmpDropdown);// Close on out
 setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pClickEvent=>{if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpBtn){tmpSelf._closeAddToCollectionDropdown();}});},10);});}/**
 	 * Close the add-to-collection dropdown.
 	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}// Clear any pending clip context that was never consumed
-let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],140:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-vlc-modal-backdrop
-		{
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(0, 0, 0, 0.6);
-			z-index: 9000;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.retold-remote-vlc-modal
-		{
-			background: var(--retold-bg-tertiary);
-			border: 1px solid var(--retold-border);
-			border-radius: 8px;
-			width: 600px;
-			max-width: 90vw;
-			max-height: 85vh;
-			display: flex;
-			flex-direction: column;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-		}
-		.retold-remote-vlc-modal-header
-		{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 14px 18px;
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-vlc-modal-title
-		{
-			font-size: 0.85rem;
-			font-weight: 700;
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-vlc-modal-close
-		{
-			border: none;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 1.1rem;
-			cursor: pointer;
-			padding: 2px 6px;
-			border-radius: 3px;
-			font-family: inherit;
-			line-height: 1;
-		}
-		.retold-remote-vlc-modal-close:hover
-		{
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-vlc-modal-body
-		{
-			flex: 1;
-			overflow-y: auto;
-			padding: 18px;
-		}
-		.retold-remote-vlc-setup-section
-		{
-			margin-bottom: 18px;
-		}
-		.retold-remote-vlc-setup-section-title
-		{
-			font-size: 0.7rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			color: var(--retold-text-dim);
-			margin-bottom: 8px;
-		}
-		.retold-remote-vlc-setup-desc
-		{
-			font-size: 0.75rem;
-			color: var(--retold-text-secondary);
-			line-height: 1.5;
-			margin-bottom: 8px;
-		}
-		.retold-remote-vlc-setup-status
-		{
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px;
-			border-radius: 4px;
-			background: var(--retold-bg-secondary);
-			margin-bottom: 12px;
-			font-size: 0.75rem;
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-vlc-setup-status-dot
-		{
-			width: 8px;
-			height: 8px;
-			border-radius: 50%;
-			flex-shrink: 0;
-		}
-		.retold-remote-vlc-setup-status-dot.detected
-		{
-			background: var(--retold-accent);
-		}
-		.retold-remote-vlc-setup-status-dot.unknown
-		{
-			background: var(--retold-text-dim);
-		}
-		.retold-remote-vlc-setup-platform
-		{
-			display: none;
-		}
-		.retold-remote-vlc-setup-platform.active
-		{
-			display: block;
-		}
-		.retold-remote-vlc-setup-platform-tabs
-		{
-			display: flex;
-			gap: 0;
-			margin-bottom: 12px;
-			border-bottom: 1px solid var(--retold-border);
-		}
-		.retold-remote-vlc-setup-platform-tab
-		{
-			padding: 6px 12px;
-			border: none;
-			background: transparent;
-			font-size: 0.72rem;
-			font-weight: 600;
-			color: var(--retold-text-muted);
-			cursor: pointer;
-			border-bottom: 2px solid transparent;
-			font-family: inherit;
-		}
-		.retold-remote-vlc-setup-platform-tab:hover
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-vlc-setup-platform-tab.active
-		{
-			color: var(--retold-accent);
-			border-bottom-color: var(--retold-accent);
-		}
-		.retold-remote-vlc-setup-code
-		{
-			background: var(--retold-bg-primary);
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			padding: 10px;
-			font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-			font-size: 0.68rem;
-			color: var(--retold-text-secondary);
-			line-height: 1.6;
-			overflow-x: auto;
-			white-space: pre;
-			margin-bottom: 8px;
-			tab-size: 4;
-		}
-		.retold-remote-vlc-setup-btn
-		{
-			display: inline-block;
-			padding: 6px 14px;
-			border: 1px solid var(--retold-border);
-			border-radius: 4px;
-			background: var(--retold-bg-secondary);
-			color: var(--retold-text-secondary);
-			font-size: 0.72rem;
-			font-family: inherit;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			margin-right: 6px;
-			margin-bottom: 6px;
-		}
-		.retold-remote-vlc-setup-btn:hover
-		{
-			background: var(--retold-bg-hover);
-			color: var(--retold-text-primary);
-		}
-		.retold-remote-vlc-setup-btn.primary
-		{
-			background: var(--retold-accent);
-			border-color: var(--retold-accent);
-			color: #fff;
-		}
-		.retold-remote-vlc-setup-btn.primary:hover
-		{
-			opacity: 0.85;
-		}
-		.retold-remote-vlc-setup-step
-		{
-			display: flex;
-			gap: 10px;
-			margin-bottom: 10px;
-		}
-		.retold-remote-vlc-setup-step-num
-		{
-			flex-shrink: 0;
-			width: 20px;
-			height: 20px;
-			border-radius: 50%;
-			background: var(--retold-accent);
-			color: #fff;
-			font-size: 0.65rem;
-			font-weight: 700;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.retold-remote-vlc-setup-step-content
-		{
-			flex: 1;
-			font-size: 0.75rem;
-			color: var(--retold-text-secondary);
-			line-height: 1.5;
-		}
-		.retold-remote-vlc-setup-note
-		{
-			font-size: 0.7rem;
-			color: var(--retold-text-dim);
-			font-style: italic;
-			margin-top: 4px;
-		}
-		.retold-remote-toast
-		{
-			position: fixed;
-			bottom: 20px;
-			left: 50%;
-			transform: translateX(-50%);
-			background: var(--retold-bg-secondary);
-			color: var(--retold-accent);
-			padding: 8px 16px;
-			border-radius: 4px;
-			font-size: 0.75rem;
-			z-index: 10000;
-			pointer-events: none;
-			border: 1px solid var(--retold-border);
-		}
-	`};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":76}],146:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
 if(/Macintosh/i.test(tmpUA)&&typeof navigator!=='undefined'&&navigator.maxTouchPoints>1){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
 let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
 let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
@@ -14794,520 +11247,13 @@ tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="r
 tmpHTML+='<div class="retold-remote-vlc-setup-status">';tmpHTML+='<div class="retold-remote-vlc-setup-status-dot '+(this._detectPlatform()===tmpPlatform?'detected':'unknown')+'"></div>';tmpHTML+='<span>Detected platform: <b>'+this._getPlatformLabel(this._detectPlatform())+'</b></span>';tmpHTML+='</div>';// Platform tabs
 tmpHTML+='<div class="retold-remote-vlc-setup-platform-tabs">';tmpHTML+=this._buildPlatformTab('ios','iOS',tmpPlatform);tmpHTML+=this._buildPlatformTab('android','Android',tmpPlatform);tmpHTML+=this._buildPlatformTab('macos','macOS',tmpPlatform);tmpHTML+=this._buildPlatformTab('windows','Windows',tmpPlatform);tmpHTML+=this._buildPlatformTab('linux','Linux',tmpPlatform);tmpHTML+='</div>';// Platform-specific content
 tmpHTML+=this._buildIOSContent(tmpPlatform);tmpHTML+=this._buildAndroidContent(tmpPlatform);tmpHTML+=this._buildMacOSContent(tmpPlatform);tmpHTML+=this._buildWindowsContent(tmpPlatform);tmpHTML+=this._buildLinuxContent(tmpPlatform);// Test section
-tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Test</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Click below to test whether the vlc:// protocol handler is registered. VLC should open.';tmpHTML+='</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].testProtocol()">Test VLC Protocol</button>';tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;}_buildPlatformTab(pKey,pLabel,pActive){let tmpClass='retold-remote-vlc-setup-platform-tab';if(pKey===pActive){tmpClass+=' active';}return'<button class="'+tmpClass+'" onclick="pict.views[\'RetoldRemote-VLCSetup\'].switchPlatformTab(\''+pKey+'\')">'+pLabel+'</button>';}_getPlatformLabel(pKey){if(pKey==='ios')return'iOS';if(pKey==='android')return'Android';if(pKey==='macos')return'macOS';if(pKey==='windows')return'Windows';return'Linux';}_buildIOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='ios'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="ios">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (iOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for iOS registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Mobile</b> from the App Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Safari will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If Safari shows "Cannot Open Page", VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildAndroidContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='android'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="android">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Android)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for Android registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Android</b> from the Google Play Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Your browser will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If your browser shows an error, VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildMacOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='macos'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="macos">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (macOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on macOS does not register a vlc:// protocol handler by default. ';tmpHTML+='An AppleScript app bundle is needed to bridge vlc:// links to VLC. ';tmpHTML+='Run the command below in Terminal to create and register the handler automatically.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Automatic Setup</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Copy and paste this into Terminal:';tmpHTML+='</div>';let tmpScript=this._getMacSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates an AppleScript at <code>/tmp/VLCProtocol.applescript</code> that handles vlc:// URLs</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Compiles it into an app bundle at <code>/Applications/VLCProtocol.app</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Adds the vlc:// URL scheme to the app\'s Info.plist</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">4</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers the protocol handler with macOS Launch Services</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC installed at /Applications/VLC.app and Python 3 (included with macOS).</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildWindowsContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='windows'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="windows">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on Windows registers the vlc:// protocol handler during installation. ';tmpHTML+='If it is not working, you can re-register it by saving and running the registry file below.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option A: Reinstall VLC</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Reinstall VLC and ensure "Register VLC as handler for vlc:// protocol" is checked during installation.</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option B: Registry File</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Save this as <code>vlc-protocol.reg</code> and double-click to import. ';tmpHTML+='Adjust the VLC path if yours differs.';tmpHTML+='</div>';let tmpRegFile=this._getWindowsRegFile();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRegFile)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';tmpHTML+='This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';tmpHTML+='</div>';let tmpBatchScript=this._getWindowsBatchScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpBatchScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildLinuxContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='linux'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="linux">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Linux)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Register a vlc:// protocol handler using a .desktop file and xdg-mime. ';tmpHTML+='Run the command below in a terminal.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';let tmpScript=this._getLinuxSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a handler script at <code>~/.local/bin/vlc-protocol</code> that URL-decodes and opens VLC</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a .desktop file at <code>~/.local/share/applications/vlc-protocol.desktop</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers vlc:// as a URL scheme via <code>xdg-mime</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC and Python 3 installed.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_getMacSetupScript(){return["# Create the AppleScript handler","cat > /tmp/VLCProtocol.applescript << 'EOF'","on open location theURL","\tset theURL to text 7 thru -1 of theURL","\tset theURL to do shell script \"python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' \" & quoted form of theURL","\tdo shell script \"open -a VLC \" & quoted form of theURL","end open location","EOF","","# Compile into app bundle","osacompile -o /Applications/VLCProtocol.app /tmp/VLCProtocol.applescript","","# Add vlc:// URL scheme to Info.plist","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0 dict\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLName string 'VLC Protocol'\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string vlc\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","","# Register with Launch Services","/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \\","  -f /Applications/VLCProtocol.app","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_getWindowsRegFile(){return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\"URL:VLC Protocol\"","\"URL Protocol\"=\"\"","","[HKEY_CLASSES_ROOT\\vlc\\shell]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]","@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""].join('\n');}_getWindowsBatchScript(){return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler script","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","(","echo import sys, urllib.parse, subprocess","echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''","echo if url.startswith('vlc://'^): url = url[6:]","echo url = urllib.parse.unquote(url^)","echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",") > \"%APPDATA%\\VLCProtocol\\handler.py\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":76}],141:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:/*css*/`
-		.retold-remote-vex
-		{
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.retold-remote-vex-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			z-index: 5;
-		}
-		.retold-remote-vex-nav-btn
-		{
-			padding: 4px 10px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.8rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-nav-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-vex-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			text-align: center;
-		}
-		.retold-remote-vex-info
-		{
-			display: flex;
-			align-items: center;
-			gap: 16px;
-			padding: 8px 16px;
-			background: var(--retold-bg-tertiary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-			font-size: 0.75rem;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-vex-info-item
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-		}
-		.retold-remote-vex-info-label
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-vex-info-value
-		{
-			color: var(--retold-text-secondary);
-		}
-		.retold-remote-vex-controls
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-bottom: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-vex-controls label
-		{
-			font-size: 0.75rem;
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-vex-controls select,
-		.retold-remote-vex-controls input[type="range"]
-		{
-			font-size: 0.75rem;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			padding: 2px 6px;
-			font-family: inherit;
-		}
-		.retold-remote-vex-controls .retold-remote-vex-refresh-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-accent);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-controls .retold-remote-vex-refresh-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-vex-body
-		{
-			flex: 1;
-			overflow-y: auto;
-			padding: 16px;
-		}
-		.retold-remote-vex-loading
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.9rem;
-		}
-		.retold-remote-vex-loading-spinner
-		{
-			width: 32px;
-			height: 32px;
-			border: 3px solid var(--retold-border);
-			border-top-color: var(--retold-accent);
-			border-radius: 50%;
-			animation: retold-vex-spin 0.8s linear infinite;
-			margin-bottom: 16px;
-		}
-		@keyframes retold-vex-spin
-		{
-			to { transform: rotate(360deg); }
-		}
-		.retold-remote-vex-grid
-		{
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-			gap: 12px;
-		}
-		.retold-remote-vex-frame
-		{
-			position: relative;
-			border-radius: 6px;
-			overflow: hidden;
-			background: var(--retold-bg-tertiary);
-			border: 2px solid transparent;
-			cursor: pointer;
-			transition: border-color 0.15s, transform 0.1s;
-		}
-		.retold-remote-vex-frame:hover
-		{
-			border-color: var(--retold-accent);
-			transform: translateY(-1px);
-		}
-		.retold-remote-vex-frame.selected
-		{
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-vex-frame img
-		{
-			width: 100%;
-			display: block;
-			aspect-ratio: 16 / 9;
-			object-fit: contain;
-			background: #000;
-		}
-		.retold-remote-vex-frame-info
-		{
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 6px 10px;
-			background: var(--retold-bg-secondary);
-		}
-		.retold-remote-vex-frame-timestamp
-		{
-			font-size: 0.78rem;
-			color: var(--retold-text-secondary);
-			font-family: var(--retold-font-mono, monospace);
-		}
-		.retold-remote-vex-frame-index
-		{
-			font-size: 0.7rem;
-			color: var(--retold-text-dim);
-		}
-		.retold-remote-vex-frame.custom-frame
-		{
-			border-color: var(--retold-accent);
-			border-style: dashed;
-		}
-		.retold-remote-vex-frame.custom-frame .retold-remote-vex-frame-info
-		{
-			background: color-mix(in srgb, var(--retold-accent) 12%, var(--retold-bg-secondary));
-		}
-		.retold-remote-vex-frame-loading
-		{
-			width: 100%;
-			aspect-ratio: 16 / 9;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: #000;
-			color: var(--retold-text-dim);
-			font-size: 0.8rem;
-		}
-		.retold-remote-vex-timeline-marker.custom
-		{
-			background: var(--retold-text-primary);
-			opacity: 0.9;
-			width: 2px;
-			border: 1px dashed var(--retold-accent);
-		}
-		/* Timeline bar at bottom */
-		.retold-remote-vex-timeline
-		{
-			display: flex;
-			align-items: flex-end;
-			gap: 8px;
-			padding: 8px 16px;
-			background: var(--retold-bg-secondary);
-			border-top: 1px solid var(--retold-border);
-			flex-shrink: 0;
-		}
-		.retold-remote-vex-timeline-column
-		{
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			gap: 0;
-			min-width: 0;
-		}
-		.retold-remote-vex-slider-track
-		{
-			position: relative;
-			height: 18px;
-			user-select: none;
-			-webkit-user-select: none;
-		}
-		.retold-remote-vex-slider-handle
-		{
-			position: absolute;
-			bottom: 0;
-			width: 14px;
-			height: 18px;
-			background: var(--retold-accent);
-			border-radius: 3px 3px 0 0;
-			cursor: ew-resize;
-			transform: translateX(-50%);
-			z-index: 2;
-			transition: background 0.15s;
-			touch-action: none;
-		}
-		.retold-remote-vex-slider-handle:hover,
-		.retold-remote-vex-slider-handle.dragging
-		{
-			background: var(--retold-text-primary);
-		}
-		.retold-remote-vex-slider-handle::after
-		{
-			content: '';
-			position: absolute;
-			top: 5px;
-			left: 4px;
-			width: 6px;
-			height: 8px;
-			border-left: 2px solid rgba(0, 0, 0, 0.3);
-			border-right: 2px solid rgba(0, 0, 0, 0.3);
-		}
-		.retold-remote-vex-timeline-bar
-		{
-			height: 24px;
-			background: var(--retold-bg-tertiary);
-			border-radius: 4px;
-			position: relative;
-			overflow: hidden;
-			cursor: pointer;
-		}
-		.retold-remote-vex-timeline-marker
-		{
-			position: absolute;
-			top: 0;
-			width: 3px;
-			height: 100%;
-			background: var(--retold-accent);
-			opacity: 0.7;
-			transition: opacity 0.15s;
-		}
-		.retold-remote-vex-timeline-marker:hover
-		{
-			opacity: 1;
-		}
-		.retold-remote-vex-timeline-marker.selected
-		{
-			opacity: 1;
-			background: var(--retold-text-primary);
-		}
-		.retold-remote-vex-timeline-label
-		{
-			font-size: 0.7rem;
-			color: var(--retold-text-dim);
-			white-space: nowrap;
-		}
-		/* Selection mode toggle button */
-		.retold-remote-vex-select-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-muted);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-select-btn:hover
-		{
-			color: var(--retold-text-primary);
-			border-color: var(--retold-accent);
-		}
-		.retold-remote-vex-select-btn.active
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-			border-color: var(--retold-accent);
-		}
-		/* Selection info display */
-		.retold-remote-vex-selection-info
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			font-size: 0.75rem;
-			color: var(--retold-text-secondary);
-			font-family: var(--retold-font-mono, monospace);
-		}
-		.retold-remote-vex-selection-info-label
-		{
-			color: var(--retold-text-muted);
-		}
-		.retold-remote-vex-clear-btn
-		{
-			padding: 2px 8px;
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-text-dim);
-			font-size: 0.7rem;
-			cursor: pointer;
-			transition: color 0.15s, border-color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-clear-btn:hover
-		{
-			color: #e06c75;
-			border-color: #e06c75;
-		}
-		/* Generate frames across range */
-		.retold-remote-vex-generate-controls
-		{
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-		}
-		.retold-remote-vex-generate-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid var(--retold-accent);
-			border-radius: 3px;
-			background: transparent;
-			color: var(--retold-accent);
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-generate-btn:hover
-		{
-			background: var(--retold-accent);
-			color: var(--retold-bg-primary);
-		}
-		/* Save segment to collection button */
-		.retold-remote-vex-save-btn
-		{
-			padding: 3px 12px;
-			border: 1px solid #98c379;
-			border-radius: 3px;
-			background: transparent;
-			color: #98c379;
-			font-size: 0.75rem;
-			cursor: pointer;
-			transition: background 0.15s, color 0.15s;
-			font-family: inherit;
-		}
-		.retold-remote-vex-save-btn:hover
-		{
-			background: #98c379;
-			color: var(--retold-bg-primary);
-		}
-		.retold-remote-vex-range-frame-select
-		{
-			font-size: 0.75rem;
-			background: var(--retold-bg-tertiary);
-			color: var(--retold-text-primary);
-			border: 1px solid var(--retold-border);
-			border-radius: 3px;
-			padding: 2px 6px;
-			font-family: inherit;
-		}
-		/* Timeline selection overlay */
-		.retold-remote-vex-timeline-selection
-		{
-			position: absolute;
-			top: 0;
-			height: 100%;
-			background: color-mix(in srgb, var(--retold-accent) 20%, transparent);
-			border-left: 2px solid var(--retold-accent);
-			border-right: 2px solid var(--retold-accent);
-			pointer-events: none;
-			z-index: 1;
-			box-sizing: border-box;
-		}
-		.retold-remote-vex-timeline-bar.selecting
-		{
-			cursor: crosshair;
-		}
-		/* Frame preview overlay */
-		.retold-remote-vex-preview-backdrop
-		{
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.85);
-			z-index: 100;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-		}
-		.retold-remote-vex-preview-header
-		{
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 8px 16px;
-			width: 100%;
-			max-width: 95vw;
-			flex-shrink: 0;
-		}
-		.retold-remote-vex-preview-header .retold-remote-vex-nav-btn
-		{
-			background: rgba(40, 44, 52, 0.8);
-		}
-		.retold-remote-vex-preview-title
-		{
-			flex: 1;
-			font-size: 0.82rem;
-			color: var(--retold-text-secondary);
-			text-align: center;
-		}
-		.retold-remote-vex-preview-body
-		{
-			flex: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			overflow: auto;
-			padding: 8px;
-			max-width: 95vw;
-			max-height: calc(100vh - 60px);
-		}
-		.retold-remote-vex-preview-body img
-		{
-			max-width: 100%;
-			max-height: 100%;
-			object-fit: contain;
-			border-radius: 4px;
-			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-		}
-		/* Error state */
-		.retold-remote-vex-error
-		{
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			color: var(--retold-text-dim);
-			font-size: 0.85rem;
-			text-align: center;
-			padding: 40px;
-		}
-		.retold-remote-vex-error-message
-		{
-			color: #e06c75;
-			margin-bottom: 16px;
-		}
-	`};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
+tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Test</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Click below to test whether the vlc:// protocol handler is registered. VLC should open.';tmpHTML+='</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn" onclick="pict.views[\'RetoldRemote-VLCSetup\'].testProtocol()">Test VLC Protocol</button>';tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;}_buildPlatformTab(pKey,pLabel,pActive){let tmpClass='retold-remote-vlc-setup-platform-tab';if(pKey===pActive){tmpClass+=' active';}return'<button class="'+tmpClass+'" onclick="pict.views[\'RetoldRemote-VLCSetup\'].switchPlatformTab(\''+pKey+'\')">'+pLabel+'</button>';}_getPlatformLabel(pKey){if(pKey==='ios')return'iOS';if(pKey==='android')return'Android';if(pKey==='macos')return'macOS';if(pKey==='windows')return'Windows';return'Linux';}_buildIOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='ios'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="ios">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (iOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for iOS registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Mobile</b> from the App Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Safari will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If Safari shows "Cannot Open Page", VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildAndroidContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='android'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="android">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Android)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC for Android registers the vlc:// protocol handler automatically when installed. No additional setup is needed.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Installation</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Install <b>VLC for Android</b> from the Google Play Store if you haven\'t already.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Tap the <b>Stream with VLC</b> button on any video or audio file. Your browser will ask to open VLC — tap <b>Open</b>.</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">If your browser shows an error, VLC may not be installed or may need to be updated.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildMacOSContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='macos'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="macos">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (macOS)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on macOS does not register a vlc:// protocol handler by default. ';tmpHTML+='An AppleScript app bundle is needed to bridge vlc:// links to VLC. ';tmpHTML+='Run the command below in Terminal to create and register the handler automatically.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Automatic Setup</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Copy and paste this into Terminal:';tmpHTML+='</div>';let tmpScript=this._getMacSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyMacSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates an AppleScript at <code>/tmp/VLCProtocol.applescript</code> that handles vlc:// URLs</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Compiles it into an app bundle at <code>/Applications/VLCProtocol.app</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Adds the vlc:// URL scheme to the app\'s Info.plist</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">4</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers the protocol handler with macOS Launch Services</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC installed at /Applications/VLC.app and Python 3 (included with macOS).</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildWindowsContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='windows'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="windows">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='VLC on Windows registers the vlc:// protocol handler during installation. ';tmpHTML+='If it is not working, you can re-register it by saving and running the registry file below.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option A: Reinstall VLC</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Reinstall VLC and ensure "Register VLC as handler for vlc:// protocol" is checked during installation.</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option B: Registry File</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Save this as <code>vlc-protocol.reg</code> and double-click to import. ';tmpHTML+='Adjust the VLC path if yours differs.';tmpHTML+='</div>';let tmpRegFile=this._getWindowsRegFile();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpRegFile)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsReg()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';tmpHTML+='This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';tmpHTML+='</div>';let tmpBatchScript=this._getWindowsBatchScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpBatchScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyWindowsBatch()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_buildLinuxContent(pActive){let tmpClass='retold-remote-vlc-setup-platform'+(pActive==='linux'?' active':'');let tmpHTML='<div class="'+tmpClass+'" data-platform="linux">';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup (Linux)</div>';tmpHTML+='<div class="retold-remote-vlc-setup-desc">';tmpHTML+='Register a vlc:// protocol handler using a .desktop file and xdg-mime. ';tmpHTML+='Run the command below in a terminal.';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">Setup Command</div>';let tmpScript=this._getLinuxSetupScript();tmpHTML+='<div class="retold-remote-vlc-setup-code">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpScript)+'</div>';tmpHTML+='<button class="retold-remote-vlc-setup-btn primary" onclick="pict.views[\'RetoldRemote-VLCSetup\'].copyLinuxSetup()">Copy to Clipboard</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-section">';tmpHTML+='<div class="retold-remote-vlc-setup-section-title">What This Does</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">1</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a handler script at <code>~/.local/bin/vlc-protocol</code> that URL-decodes and opens VLC</div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">2</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Creates a .desktop file at <code>~/.local/share/applications/vlc-protocol.desktop</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step">';tmpHTML+='<div class="retold-remote-vlc-setup-step-num">3</div>';tmpHTML+='<div class="retold-remote-vlc-setup-step-content">Registers vlc:// as a URL scheme via <code>xdg-mime</code></div>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vlc-setup-note">Requires VLC and Python 3 installed.</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}_getMacSetupScript(){return["# Create the AppleScript handler","cat > /tmp/VLCProtocol.applescript << 'EOF'","on open location theURL","\tset theURL to text 7 thru -1 of theURL","\tset theURL to do shell script \"python3 -c 'import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))' \" & quoted form of theURL","\tdo shell script \"open -a VLC \" & quoted form of theURL","end open location","EOF","","# Compile into app bundle","osacompile -o /Applications/VLCProtocol.app /tmp/VLCProtocol.applescript","","# Add vlc:// URL scheme to Info.plist","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0 dict\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLName string 'VLC Protocol'\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes array\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","/usr/libexec/PlistBuddy -c \"Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string vlc\" \\","  /Applications/VLCProtocol.app/Contents/Info.plist 2>/dev/null","","# Register with Launch Services","/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \\","  -f /Applications/VLCProtocol.app","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_getWindowsRegFile(){return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\"URL:VLC Protocol\"","\"URL Protocol\"=\"\"","","[HKEY_CLASSES_ROOT\\vlc\\shell]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open]","","[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]","@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""].join('\n');}_getWindowsBatchScript(){return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler script","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","(","echo import sys, urllib.parse, subprocess","echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''","echo if url.startswith('vlc://'^): url = url[6:]","echo url = urllib.parse.unquote(url^)","echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",") > \"%APPDATA%\\VLCProtocol\\handler.py\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":76}],147:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
 this._selectionModeActive=false;this._selectionStartTime=-1;this._selectionEndTime=-1;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// 'start', 'end', or null
 // Cached provider references (resolved lazily)
-this._fmt=null;this._provider=null;}/**
+this._fmt=null;this._provider=null;}// -----------------------------------------------------------------
+//  Provider / utility accessors
+// -----------------------------------------------------------------
+/**
 	 * Get the FormattingUtilities provider (lazy-cached).
 	 * @returns {Object} FormattingUtilities provider
 	 */_getFmt(){if(!this._fmt){this._fmt=this.pict.providers['RetoldRemote-FormattingUtilities'];}return this._fmt;}/**
@@ -15324,14 +11270,7 @@ this._fmt=null;this._provider=null;}/**
 	 *
 	 * @param {string} pPath - File path
 	 * @returns {string} Encoded path parameter
-	 */_getPathParam(pPath){let tmpProvider=this._getProvider();return tmpProvider?tmpProvider._getPathParam(pPath):encodeURIComponent(pPath);}// -----------------------------------------------------------------
-//  Selection mode
-// -----------------------------------------------------------------
-/**
-	 * Toggle selection mode on or off.
-	 * When on, timeline clicks/drags create a selection range.
-	 * When off, timeline clicks extract frames (existing behavior).
-	 */toggleSelectionMode(){this._selectionModeActive=!this._selectionModeActive;let tmpBtn=document.getElementById('RetoldRemote-VEX-SelectBtn');if(tmpBtn){if(this._selectionModeActive){tmpBtn.classList.add('active');}else{tmpBtn.classList.remove('active');}}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(tmpBar){if(this._selectionModeActive){tmpBar.classList.add('selecting');}else{tmpBar.classList.remove('selecting');}}}/**
+	 */_getPathParam(pPath){let tmpProvider=this._getProvider();return tmpProvider?tmpProvider._getPathParam(pPath):encodeURIComponent(pPath);}/**
 	 * Extract clientX from a mouse or touch event.
 	 *
 	 * @param {Event} pEvent - MouseEvent or TouchEvent
@@ -15341,82 +11280,19 @@ this._fmt=null;this._provider=null;}/**
 	 *
 	 * @param {Event} pEvent - MouseEvent or TouchEvent
 	 * @returns {number} Timestamp in seconds, clamped to [0, Duration]
-	 */_getTimelineTimestamp(pEvent){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return 0;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return 0;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));return tmpPercent*this._frameData.Duration;}/**
-	 * Set the selection start marker.
-	 *
-	 * @param {number} pTime - Timestamp in seconds
-	 */setSelectionStart(pTime){this._selectionStartTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
-	 * Set the selection end marker.
-	 *
-	 * @param {number} pTime - Timestamp in seconds
-	 */setSelectionEnd(pTime){this._selectionEndTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
-	 * Clear the selection range.
-	 */clearSelection(){this._selectionStartTime=-1;this._selectionEndTime=-1;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
-	 * Render (or remove) the selection overlay div inside the timeline bar.
-	 */_renderSelectionOverlay(){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Remove any existing overlay
-let tmpExisting=tmpBar.querySelector('.retold-remote-vex-timeline-selection');if(tmpExisting){tmpExisting.remove();}if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=this._frameData.Duration;let tmpLeftPercent=tmpStart/tmpDuration*100;let tmpWidthPercent=(tmpEnd-tmpStart)/tmpDuration*100;let tmpOverlay=document.createElement('div');tmpOverlay.className='retold-remote-vex-timeline-selection';tmpOverlay.style.left=tmpLeftPercent.toFixed(2)+'%';tmpOverlay.style.width=tmpWidthPercent.toFixed(2)+'%';tmpBar.appendChild(tmpOverlay);}/**
-	 * Update the selection info display with current selection range.
-	 */_updateSelectionInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-VEX-SelectionInfo');let tmpClearBtn=document.getElementById('RetoldRemote-VEX-ClearBtn');let tmpGenControls=document.getElementById('RetoldRemote-VEX-GenerateControls');if(!tmpInfoEl){return;}if(this._selectionStartTime<0||this._selectionEndTime<0){tmpInfoEl.style.display='none';if(tmpClearBtn){tmpClearBtn.style.display='none';}if(tmpGenControls){tmpGenControls.style.display='none';}return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=tmpEnd-tmpStart;let tmpFmt=this._getFmt();let tmpText='<span class="retold-remote-vex-selection-info-label">Selection:</span> '+tmpFmt.formatTimestamp(tmpStart)+' \u2013 '+tmpFmt.formatTimestamp(tmpEnd)+' ('+tmpFmt.formatTimestamp(tmpDuration)+')';tmpInfoEl.innerHTML=tmpText;tmpInfoEl.style.display='';if(tmpClearBtn){tmpClearBtn.style.display='';}if(tmpGenControls){tmpGenControls.style.display='';}}/**
-	 * Handle selection drag start (mousedown or touchstart on timeline bar).
-	 *
-	 * @param {Event} pEvent - MouseEvent or TouchEvent
-	 */_onSelectionDragStart(pEvent){if(!this._selectionModeActive){return;}// Don't start drag on marker clicks
-let tmpMarker=pEvent.target.closest('.retold-remote-vex-timeline-marker');if(tmpMarker){return;}pEvent.preventDefault();this._isDraggingTimeline=true;let tmpTimestamp=this._getTimelineTimestamp(pEvent);this._selectionStartTime=tmpTimestamp;this._selectionEndTime=tmpTimestamp;this._renderSelectionOverlay();}/**
-	 * Handle selection drag move (mousemove or touchmove on timeline bar).
-	 *
-	 * @param {Event} pEvent - MouseEvent or TouchEvent
-	 */_onSelectionDragMove(pEvent){if(!this._isDraggingTimeline){return;}pEvent.preventDefault();this._selectionEndTime=this._getTimelineTimestamp(pEvent);this._renderSelectionOverlay();}/**
-	 * Handle selection drag end (mouseup or touchend on window).
-	 *
-	 * @param {Event} pEvent - MouseEvent or TouchEvent
-	 */_onSelectionDragEnd(pEvent){if(!this._isDraggingTimeline){return;}this._isDraggingTimeline=false;// If selection is too small (< 0.5s), clear it
-let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
-	 * Clean up window-level event listeners (mouseup/touchend).
-	 * Called when the explorer is closed or refreshed.
-	 */_cleanupWindowListeners(){if(this._boundDragEnd){window.removeEventListener('mouseup',this._boundDragEnd);window.removeEventListener('touchend',this._boundDragEnd);this._boundDragEnd=null;}}/**
-	 * Render (or clear) the slider handles in the slider track above
-	 * the timeline bar.  The handles sit at the start/end positions
-	 * of the current selection range.
-	 */_renderSliderHandles(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}// Clear existing handles
-tmpTrack.innerHTML='';if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){tmpTrack.style.display='none';return;}tmpTrack.style.display='';let tmpDuration=this._frameData.Duration;let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpStartPercent=tmpStart/tmpDuration*100;let tmpEndPercent=tmpEnd/tmpDuration*100;let tmpStartHandle=document.createElement('div');tmpStartHandle.className='retold-remote-vex-slider-handle';tmpStartHandle.id='RetoldRemote-VEX-HandleStart';tmpStartHandle.style.left=tmpStartPercent.toFixed(2)+'%';tmpStartHandle.title='Drag to adjust selection start';tmpTrack.appendChild(tmpStartHandle);let tmpEndHandle=document.createElement('div');tmpEndHandle.className='retold-remote-vex-slider-handle';tmpEndHandle.id='RetoldRemote-VEX-HandleEnd';tmpEndHandle.style.left=tmpEndPercent.toFixed(2)+'%';tmpEndHandle.title='Drag to adjust selection end';tmpTrack.appendChild(tmpEndHandle);}/**
-	 * Bind drag interaction to the slider handles (mouse + touch).
-	 * Uses the slider track element for coordinate computation.
-	 */_bindSliderHandleDrag(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}let tmpSelf=this;// Mouse handlers on the track (delegated — detect which handle)
-tmpTrack.addEventListener('mousedown',pEvent=>{if(pEvent.button!==0){return;}tmpSelf._onSliderDragStart(pEvent);});// Touch handlers on the track
-tmpTrack.addEventListener('touchstart',pEvent=>{tmpSelf._onSliderDragStart(pEvent);},{passive:false});}/**
-	 * Begin dragging a slider handle.
-	 *
-	 * @param {Event} pEvent - mousedown or touchstart
-	 */_onSliderDragStart(pEvent){let tmpTarget=pEvent.target;if(!tmpTarget.classList.contains('retold-remote-vex-slider-handle')){return;}pEvent.preventDefault();pEvent.stopPropagation();// Determine which handle
-if(tmpTarget.id==='RetoldRemote-VEX-HandleStart'){this._draggingHandle='start';}else if(tmpTarget.id==='RetoldRemote-VEX-HandleEnd'){this._draggingHandle='end';}else{return;}tmpTarget.classList.add('dragging');let tmpSelf=this;// Create window-level move/end handlers
-let tmpBoundMove=pMoveEvent=>{tmpSelf._onSliderDragMove(pMoveEvent);};let tmpBoundEnd=pEndEvent=>{tmpSelf._onSliderDragEnd(pEndEvent);window.removeEventListener('mousemove',tmpBoundMove);window.removeEventListener('mouseup',tmpBoundEnd);window.removeEventListener('touchmove',tmpBoundMove);window.removeEventListener('touchend',tmpBoundEnd);};window.addEventListener('mousemove',tmpBoundMove);window.addEventListener('mouseup',tmpBoundEnd);window.addEventListener('touchmove',tmpBoundMove,{passive:false});window.addEventListener('touchend',tmpBoundEnd);}/**
-	 * Handle slider handle drag move.
-	 *
-	 * @param {Event} pEvent - mousemove or touchmove
-	 */_onSliderDragMove(pEvent){if(!this._draggingHandle){return;}pEvent.preventDefault();// Compute timestamp from the timeline bar position
-let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));let tmpTimestamp=tmpPercent*this._frameData.Duration;if(this._draggingHandle==='start'){this._selectionStartTime=tmpTimestamp;}else{this._selectionEndTime=tmpTimestamp;}// Update the handle position directly (avoid full re-render for performance)
-let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.style.left=(tmpPercent*100).toFixed(2)+'%';}this._renderSelectionOverlay();this._updateSelectionInfo();}/**
-	 * Handle slider handle drag end.
-	 *
-	 * @param {Event} pEvent - mouseup or touchend
-	 */_onSliderDragEnd(pEvent){if(!this._draggingHandle){return;}// Remove dragging class from handles
-let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.classList.remove('dragging');}this._draggingHandle=null;// If the selection is too small (< 0.5s), clear it
-let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();}/**
-	 * Generate frames evenly spaced across the current selection range.
-	 * Uses the frame count from the GenerateControls dropdown.
-	 */generateSelectionFrames(){if(this._selectionStartTime<0||this._selectionEndTime<0){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpCountEl=document.getElementById('RetoldRemote-VEX-RangeFrameCount');let tmpCount=tmpCountEl?parseInt(tmpCountEl.value,10):5;if(tmpCount<1){tmpCount=5;}let tmpData=this._frameData;if(!tmpData||!tmpData.CacheKey){return;}// Calculate evenly-spaced timestamps within the selection range
-let tmpTimestamps=[];if(tmpCount===1){tmpTimestamps.push(tmpStart+(tmpEnd-tmpStart)/2);}else{let tmpStep=(tmpEnd-tmpStart)/(tmpCount-1);for(let i=0;i<tmpCount;i++){tmpTimestamps.push(tmpStart+tmpStep*i);}}let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Launch all frame extractions (insert placeholder immediately, replace on success)
-for(let i=0;i<tmpTimestamps.length;i++){let tmpTimestamp=tmpTimestamps[i];let tmpPlaceholderId='retold-vex-gen-'+Date.now()+'-'+i;tmpSelf._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(tmpSelf._fullResFrames){tmpURL+='&width=1920&height=1080';}// Use a closure to capture the correct placeholder id and timestamp
-(function(fPlaceholderId,fTimestamp){fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
-tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
-let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
-tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(fTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});})(tmpPlaceholderId,tmpTimestamp);}}/**
+	 */_getTimelineTimestamp(pEvent){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return 0;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return 0;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));return tmpPercent*this._frameData.Duration;}// -----------------------------------------------------------------
+//  Collection integration
+// -----------------------------------------------------------------
+/**
 	 * Save the current selection range as a video clip to the last-used
 	 * collection.  Mirrors the keyboard shortcut (s) behaviour.
 	 * If no last-used collection exists, opens the collection picker.
 	 */saveSelectionToCollection(){if(this._selectionStartTime<0||this._selectionEndTime<0){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpCollMgr=this.pict.providers['RetoldRemote-CollectionManager'];if(!tmpCollMgr){return;}let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addVideoClipToCollection(tmpQuickGUID,tmpStart,tmpEnd);}else{// Store the segment data so the dropdown callback can use it
 // instead of falling back to addCurrentFileToCollection
-tmpCollMgr.setPendingClipContext({Type:'video-clip',Start:tmpStart,End:tmpEnd});let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}/**
+tmpCollMgr.setPendingClipContext({Type:'video-clip',Start:tmpStart,End:tmpEnd});let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}// -----------------------------------------------------------------
+//  Show explorer (main entry point)
+// -----------------------------------------------------------------
+/**
 	 * Show the video explorer for a given video file.
 	 *
 	 * @param {string} pFilePath - Relative file path
@@ -15436,7 +11312,10 @@ tmpHTML+='<div class="retold-remote-vex-controls" id="RetoldRemote-VEX-Controls"
 tmpHTML+='<div class="retold-remote-vex-body" id="RetoldRemote-VEX-Body">';tmpHTML+='<div class="retold-remote-vex-loading">';tmpHTML+='<div class="retold-remote-vex-loading-spinner"></div>';tmpHTML+='Extracting frames from video...';tmpHTML+='</div>';tmpHTML+='</div>';// Timeline bar (populated after frames load)
 tmpHTML+='<div class="retold-remote-vex-timeline" id="RetoldRemote-VEX-Timeline" style="display:none;"></div>';tmpHTML+='</div>';if(tmpViewerContainer){tmpViewerContainer.innerHTML=tmpHTML;}// Update topbar
 let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.updateInfo();}// Fetch frames
-this._fetchFrames(pFilePath);}/**
+this._fetchFrames(pFilePath);}// -----------------------------------------------------------------
+//  Frame data fetching & rendering
+// -----------------------------------------------------------------
+/**
 	 * Fetch video frames from the server.
 	 *
 	 * @param {string} pFilePath - Relative file path
@@ -15463,7 +11342,10 @@ tmpSelf._cleanupWindowListeners();// Window-level end handlers (so drag works ev
 tmpSelf._boundDragEnd=pEvent=>{tmpSelf._onSelectionDragEnd(pEvent);};window.addEventListener('mouseup',tmpSelf._boundDragEnd);window.addEventListener('touchend',tmpSelf._boundDragEnd);// Apply selection mode cursor if active
 if(tmpSelf._selectionModeActive){tmpBar.classList.add('selecting');}}// Render any existing selection overlay and slider handles
 this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();// Bind slider handle drag events
-this._bindSliderHandleDrag();}/**
+this._bindSliderHandleDrag();}// -----------------------------------------------------------------
+//  Frame selection (grid highlight + timeline)
+// -----------------------------------------------------------------
+/**
 	 * Select a frame by index (highlight it in grid and timeline).
 	 *
 	 * @param {number} pIndex - Frame index
@@ -15472,104 +11354,10 @@ if(this._selectedFrameIndex>=0){let tmpPrevFrame=document.getElementById('retold
 let tmpFrame=document.getElementById('retold-vex-frame-'+pIndex);if(tmpFrame){tmpFrame.classList.add('selected');tmpFrame.scrollIntoView({behavior:'smooth',block:'nearest'});}// Update timeline markers
 this._updateTimelineSelection();}/**
 	 * Update the timeline marker selection state.
-	 */_updateTimelineSelection(){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}let tmpMarkers=tmpBar.querySelectorAll('.retold-remote-vex-timeline-marker');for(let i=0;i<tmpMarkers.length;i++){if(i===this._selectedFrameIndex){tmpMarkers[i].classList.add('selected');}else{tmpMarkers[i].classList.remove('selected');}}}/**
-	 * Handle a click on the timeline bar (not on a marker).
-	 * Calculates the timestamp from the click position and extracts a single frame.
-	 *
-	 * @param {MouseEvent} pEvent - The click event
-	 */onTimelineClick(pEvent){let tmpData=this._frameData;if(!tmpData||!tmpData.Duration||!tmpData.CacheKey){return;}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Calculate timestamp from click position
-let tmpRect=tmpBar.getBoundingClientRect();let tmpClickX=pEvent.clientX-tmpRect.left;let tmpPercent=Math.max(0,Math.min(1,tmpClickX/tmpRect.width));let tmpTimestamp=tmpPercent*tmpData.Duration;let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Build the URL — pass the same resolution settings as the initial extraction
-let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(this._fullResFrames){tmpURL+='&width=1920&height=1080';}// Insert a placeholder into the grid immediately
-let tmpPlaceholderId='retold-vex-custom-'+Date.now();this._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
-tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
-let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
-tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(tmpTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});}/**
-	 * Load previously saved custom frames from the server and restore
-	 * them into the grid.  Called after batch frames are rendered.
-	 */_loadSavedCustomFrames(){let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);let tmpURL='/api/media/video-explorer-state?path='+tmpPathParam;fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success||!pData.State){return;}// Restore selection state if present — but only when the
-// caller did not already provide an explicit selection
-// (e.g. opening a saved clip from a collection)
-if(tmpSelf._selectionFromCaller){// Caller supplied selection — render it but do not overwrite
-tmpSelf._selectionFromCaller=false;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}else if(typeof pData.State.SelectionStartTime==='number'&&pData.State.SelectionStartTime>=0&&typeof pData.State.SelectionEndTime==='number'&&pData.State.SelectionEndTime>=0){tmpSelf._selectionStartTime=pData.State.SelectionStartTime;tmpSelf._selectionEndTime=pData.State.SelectionEndTime;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}// Restore custom frames
-if(!Array.isArray(pData.State.CustomFrames)||pData.State.CustomFrames.length===0){return;}let tmpSavedFrames=pData.State.CustomFrames;// Restore each saved custom frame into the grid
-for(let i=0;i<tmpSavedFrames.length;i++){let tmpFrame=tmpSavedFrames[i];// Use the frame's own CacheKey for the image URL
-let tmpCacheKey=tmpFrame.CacheKey||(tmpSelf._frameData?tmpSelf._frameData.CacheKey:'');let tmpFrameURL=tmpSelf._buildFrameURL(tmpCacheKey,tmpFrame.Filename);// Add to in-memory array
-tmpSelf._customFrames.push(tmpFrame);// Insert card into grid at correct position
-tmpSelf._insertRestoredCustomFrame(tmpFrame,tmpFrameURL);}// Re-render timeline to show all custom markers
-tmpSelf._renderTimeline();}).catch(pError=>{// Silent failure — explorer still works, just without restored custom frames
-});}/**
-	 * Save the current selection state to the server (fire-and-forget).
-	 * Called whenever the selection changes.
-	 */_saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}/**
-	 * Insert a DOM element into the frame grid at the correct chronological
-	 * position based on timestamp.  Shared helper for placeholder and
-	 * restored frame insertion.
-	 *
-	 * @param {HTMLElement} pElement - The element to insert
-	 * @param {number} pTimestamp - Timestamp in seconds for sort position
-	 */_insertFrameAtPosition(pElement,pTimestamp){let tmpGrid=document.querySelector('.retold-remote-vex-grid');if(!tmpGrid){return;}let tmpInsertBefore=null;let tmpChildren=tmpGrid.children;for(let i=0;i<tmpChildren.length;i++){let tmpChild=tmpChildren[i];let tmpTsEl=tmpChild.querySelector('.retold-remote-vex-frame-timestamp');if(tmpTsEl){let tmpChildTimestamp=this._parseTimestamp(tmpTsEl.textContent);if(tmpChildTimestamp>pTimestamp){tmpInsertBefore=tmpChild;break;}}}if(tmpInsertBefore){tmpGrid.insertBefore(pElement,tmpInsertBefore);}else{tmpGrid.appendChild(pElement);}}/**
-	 * Insert a fully-rendered custom frame card into the grid at its
-	 * correct chronological position.  Used when restoring saved state
-	 * (the image already exists on disk, so no loading placeholder needed).
-	 *
-	 * @param {Object} pFrame    - Saved custom frame object { Timestamp, TimestampFormatted, Filename, CacheKey }
-	 * @param {string} pFrameURL - Image URL for the frame
-	 */_insertRestoredCustomFrame(pFrame,pFrameURL){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';let tmpEscFilename=this._getFmt().escapeHTML(pFrame.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=this._getFmt().escapeHTML(pFrame.TimestampFormatted).replace(/'/g,"\\'");tmpEl.style.cursor='pointer';tmpEl.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpEl.innerHTML='<img src="'+pFrameURL+'" alt="Frame at '+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pFrame.Timestamp);}/**
-	 * Insert a loading placeholder frame card into the grid at the correct
-	 * chronological position based on timestamp.
-	 *
-	 * @param {number} pTimestamp    - Timestamp in seconds
-	 * @param {string} pPlaceholderId - DOM id for the placeholder element
-	 */_insertFramePlaceholder(pTimestamp,pPlaceholderId){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';tmpEl.id=pPlaceholderId;tmpEl.innerHTML='<div class="retold-remote-vex-frame-loading">Extracting...</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().formatTimestamp(pTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pTimestamp);// Scroll the new element into view
-tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});}/**
-	 * Parse a formatted timestamp string back to seconds.
-	 * Handles "M:SS", "MM:SS", and "H:MM:SS" formats.
-	 *
-	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
-	 * @returns {number} Seconds
-	 */_parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}/**
-	 * Open any frame in the preview overlay.
-	 * Unified entry point for both regular and custom frames.
-	 *
-	 * @param {Object} pFrameInfo - Frame descriptor { Type: 'regular'|'custom', Index, Filename, TimestampFormatted, CacheKey }
-	 */openFrame(pFrameInfo){if(!this._frameData||!pFrameInfo){return;}let tmpCacheKey=pFrameInfo.CacheKey||this._frameData.CacheKey;let tmpURL=this._buildFrameURL(tmpCacheKey,pFrameInfo.Filename);let tmpLabel=pFrameInfo.TimestampFormatted+'  \u00b7  '+(pFrameInfo.Type==='regular'?'#'+((pFrameInfo.Index||0)+1):'custom');this._showFramePreview(tmpURL,tmpLabel,pFrameInfo.Type,pFrameInfo.Index);}/**
-	 * Open a regular frame at full size (convenience wrapper for grid onclick).
-	 *
-	 * @param {number} pIndex - Frame index in the regular Frames array
-	 */openFrameFullsize(pIndex){if(!this._frameData||!this._frameData.Frames[pIndex]){return;}let tmpFrame=this._frameData.Frames[pIndex];this.openFrame({Type:'regular',Index:pIndex,Filename:tmpFrame.Filename,TimestampFormatted:tmpFrame.TimestampFormatted,CacheKey:this._frameData.CacheKey});}/**
-	 * Open a custom frame in the preview overlay (convenience wrapper).
-	 *
-	 * @param {string} pFilename - Custom frame filename
-	 * @param {string} pTimestamp - Formatted timestamp label
-	 */openCustomFrameFullsize(pFilename,pTimestamp){if(!this._frameData){return;}// Find the custom frame by filename
-let tmpCustomIndex=-1;let tmpCacheKey=this._frameData.CacheKey;for(let i=0;i<this._customFrames.length;i++){if(this._customFrames[i].Filename===pFilename){tmpCustomIndex=i;if(this._customFrames[i].CacheKey){tmpCacheKey=this._customFrames[i].CacheKey;}break;}}this.openFrame({Type:'custom',Index:tmpCustomIndex,Filename:pFilename,TimestampFormatted:pTimestamp,CacheKey:tmpCacheKey});}/**
-	 * Build a sorted list of all frames (regular + custom) for navigation.
-	 */_buildAllFramesList(){let tmpAllFrames=[];// Add regular frames
-if(this._frameData&&this._frameData.Frames){for(let i=0;i<this._frameData.Frames.length;i++){let tmpFrame=this._frameData.Frames[i];tmpAllFrames.push({Type:'regular',Index:i,Timestamp:tmpFrame.Timestamp,TimestampFormatted:tmpFrame.TimestampFormatted,Filename:tmpFrame.Filename,Label:tmpFrame.TimestampFormatted+'  \u00b7  #'+(tmpFrame.Index+1)});}}// Add custom frames
-if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];tmpAllFrames.push({Type:'custom',Index:i,Timestamp:tmpCustom.Timestamp,TimestampFormatted:tmpCustom.TimestampFormatted,Filename:tmpCustom.Filename,CacheKey:tmpCustom.CacheKey||null,Label:tmpCustom.TimestampFormatted+'  \u00b7  custom'});}}// Sort by timestamp
-tmpAllFrames.sort((a,b)=>a.Timestamp-b.Timestamp);return tmpAllFrames;}/**
-	 * Show the frame preview overlay.
-	 *
-	 * @param {string} pURL - Frame image URL
-	 * @param {string} pLabel - Frame label to display
-	 * @param {string} pType - 'regular' or 'custom'
-	 * @param {number} pIndex - Index within its type array
-	 */_showFramePreview(pURL,pLabel,pType,pIndex){// Store current preview state for navigation
-this._previewType=pType;this._previewIndex=pIndex;// Build all frames for prev/next navigation
-let tmpAllFrames=this._buildAllFramesList();this._previewAllFrames=tmpAllFrames;// Find current position in the unified list
-this._previewPosition=0;for(let i=0;i<tmpAllFrames.length;i++){if(tmpAllFrames[i].Type===pType&&tmpAllFrames[i].Index===pIndex){this._previewPosition=i;break;}}// Build the overlay
-let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vex-preview-backdrop';tmpBackdrop.id='RetoldRemote-VEX-Preview';tmpBackdrop.onclick=e=>{if(e.target===tmpBackdrop){this.closeFramePreview();}};let tmpHTML='';tmpHTML+='<div class="retold-remote-vex-preview-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">'+this._getFmt().escapeHTML(pLabel)+'</div>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';tmpHTML+='<img src="'+pURL+'" alt="'+this._getFmt().escapeHTML(pLabel)+'">';tmpHTML+='</div>';tmpBackdrop.innerHTML=tmpHTML;document.body.appendChild(tmpBackdrop);// Bind keyboard handler (stopImmediatePropagation prevents the global handler from also firing)
-this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stopImmediatePropagation();this.closeFramePreview();break;case'ArrowLeft':case'k':e.preventDefault();e.stopImmediatePropagation();this.previewPrevFrame();break;case'ArrowRight':case'j':e.preventDefault();e.stopImmediatePropagation();this.previewNextFrame();break;}};document.addEventListener('keydown',this._previewKeyHandler);}/**
-	 * Close the frame preview overlay.
-	 */closeFramePreview(){let tmpBackdrop=document.getElementById('RetoldRemote-VEX-Preview');if(tmpBackdrop){tmpBackdrop.remove();}if(this._previewKeyHandler){document.removeEventListener('keydown',this._previewKeyHandler);this._previewKeyHandler=null;}}/**
-	 * Navigate to the previous frame in the preview.
-	 */previewPrevFrame(){if(!this._previewAllFrames||this._previewPosition<=0){return;}this._previewPosition--;this._updatePreviewFrame();}/**
-	 * Navigate to the next frame in the preview.
-	 */previewNextFrame(){if(!this._previewAllFrames||this._previewPosition>=this._previewAllFrames.length-1){return;}this._previewPosition++;this._updatePreviewFrame();}/**
-	 * Update the preview to show the frame at the current position.
-	 */_updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
-let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
-this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}/**
+	 */_updateTimelineSelection(){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}let tmpMarkers=tmpBar.querySelectorAll('.retold-remote-vex-timeline-marker');for(let i=0;i<tmpMarkers.length;i++){if(i===this._selectedFrameIndex){tmpMarkers[i].classList.add('selected');}else{tmpMarkers[i].classList.remove('selected');}}}// -----------------------------------------------------------------
+//  Controls
+// -----------------------------------------------------------------
+/**
 	 * Handle frame count dropdown change.
 	 *
 	 * @param {string} pValue - New frame count
@@ -15581,11 +11369,241 @@ this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Ty
 	 * Refresh (re-extract) frames with current settings.
 	 */refresh(){// Show loading state
 let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-loading">'+'<div class="retold-remote-vex-loading-spinner"></div>'+'Extracting frames from video...'+'</div>';}// Hide timeline during loading
-let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimeline){tmpTimeline.style.display='none';}this._selectedFrameIndex=-1;this._customFrames=[];this._fetchFrames(this._currentPath);}/**
+let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimeline){tmpTimeline.style.display='none';}this._selectedFrameIndex=-1;this._customFrames=[];this._fetchFrames(this._currentPath);}// -----------------------------------------------------------------
+//  Navigation
+// -----------------------------------------------------------------
+/**
 	 * Navigate back to the video viewer.
 	 */goBack(){this._cleanupWindowListeners();if(this._currentPath){let tmpApp=this.pict.views['RetoldRemote-MediaViewer'];if(tmpApp){tmpApp.showMedia(this._currentPath,'video');}}else{let tmpNav=this.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpNav){tmpNav.closeViewer();}}}/**
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"pict-view":76}]},{},[113])(113);});
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}// -- Mix in method groups from sub-modules --------------------------------
+Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":148,"./VideoExplorer-Preview":149,"./VideoExplorer-Selection":150,"pict-view":76}],148:[function(require,module,exports){/**
+ * VideoExplorer — Custom Frames Mixin
+ *
+ * Methods for extracting individual frames at arbitrary timestamps,
+ * generating evenly-spaced frames across a selection range, inserting
+ * frame cards into the grid, loading saved custom frames from the
+ * server, and the timeline click handler.
+ *
+ * Mixed into RetoldRemoteVideoExplorerView.prototype via Object.assign().
+ * All methods access state through `this` (the view instance).
+ *
+ * @license MIT
+ */module.exports={// -----------------------------------------------------------------
+//  Frame extraction
+// -----------------------------------------------------------------
+/**
+	 * Generate frames evenly spaced across the current selection range.
+	 * Uses the frame count from the GenerateControls dropdown.
+	 */generateSelectionFrames:function generateSelectionFrames(){if(this._selectionStartTime<0||this._selectionEndTime<0){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpCountEl=document.getElementById('RetoldRemote-VEX-RangeFrameCount');let tmpCount=tmpCountEl?parseInt(tmpCountEl.value,10):5;if(tmpCount<1){tmpCount=5;}let tmpData=this._frameData;if(!tmpData||!tmpData.CacheKey){return;}// Calculate evenly-spaced timestamps within the selection range
+let tmpTimestamps=[];if(tmpCount===1){tmpTimestamps.push(tmpStart+(tmpEnd-tmpStart)/2);}else{let tmpStep=(tmpEnd-tmpStart)/(tmpCount-1);for(let i=0;i<tmpCount;i++){tmpTimestamps.push(tmpStart+tmpStep*i);}}let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Launch all frame extractions (insert placeholder immediately, replace on success)
+for(let i=0;i<tmpTimestamps.length;i++){let tmpTimestamp=tmpTimestamps[i];let tmpPlaceholderId='retold-vex-gen-'+Date.now()+'-'+i;tmpSelf._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(tmpSelf._fullResFrames){tmpURL+='&width=1920&height=1080';}// Use a closure to capture the correct placeholder id and timestamp
+(function(fPlaceholderId,fTimestamp){fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
+tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
+let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
+tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(fPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(fTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});})(tmpPlaceholderId,tmpTimestamp);}},/**
+	 * Handle a click on the timeline bar (not on a marker).
+	 * Calculates the timestamp from the click position and extracts a single frame.
+	 *
+	 * @param {MouseEvent} pEvent - The click event
+	 */onTimelineClick:function onTimelineClick(pEvent){let tmpData=this._frameData;if(!tmpData||!tmpData.Duration||!tmpData.CacheKey){return;}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Calculate timestamp from click position
+let tmpRect=tmpBar.getBoundingClientRect();let tmpClickX=pEvent.clientX-tmpRect.left;let tmpPercent=Math.max(0,Math.min(1,tmpClickX/tmpRect.width));let tmpTimestamp=tmpPercent*tmpData.Duration;let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);// Build the URL — pass the same resolution settings as the initial extraction
+let tmpURL='/api/media/video-frame-at?path='+tmpPathParam+'&cacheKey='+encodeURIComponent(tmpData.CacheKey)+'&timestamp='+tmpTimestamp.toFixed(3);if(this._fullResFrames){tmpURL+='&width=1920&height=1080';}// Insert a placeholder into the grid immediately
+let tmpPlaceholderId='retold-vex-custom-'+Date.now();this._insertFramePlaceholder(tmpTimestamp,tmpPlaceholderId);fetch(tmpURL).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){throw new Error(pResult?pResult.Error:'Extraction failed.');}// Store the custom frame
+tmpSelf._customFrames.push(pResult);// Replace the placeholder with the real frame
+let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){let tmpFrameURL=tmpSelf._buildFrameURL(tmpData.CacheKey,pResult.Filename);let tmpEscFilename=tmpSelf._getFmt().escapeHTML(pResult.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted).replace(/'/g,"\\'");tmpPlaceholder.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpPlaceholder.style.cursor='pointer';tmpPlaceholder.innerHTML='<img src="'+tmpFrameURL+'" alt="Frame at '+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().escapeHTML(pResult.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';}// Re-render timeline to show the new custom marker
+tmpSelf._renderTimeline();}).catch(pError=>{let tmpPlaceholder=document.getElementById(tmpPlaceholderId);if(tmpPlaceholder){tmpPlaceholder.innerHTML='<div class="retold-remote-vex-frame-loading">Failed: '+tmpSelf._getFmt().escapeHTML(pError.message)+'</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+tmpSelf._getFmt().formatTimestamp(tmpTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">error</span>'+'</div>';}});},// -----------------------------------------------------------------
+//  Saved custom frames (load from server)
+// -----------------------------------------------------------------
+/**
+	 * Load previously saved custom frames from the server and restore
+	 * them into the grid.  Called after batch frames are rendered.
+	 */_loadSavedCustomFrames:function _loadSavedCustomFrames(){let tmpSelf=this;let tmpPathParam=this._getPathParam(this._currentPath);let tmpURL='/api/media/video-explorer-state?path='+tmpPathParam;fetch(tmpURL).then(pResponse=>pResponse.json()).then(pData=>{if(!pData||!pData.Success||!pData.State){return;}// Restore selection state if present — but only when the
+// caller did not already provide an explicit selection
+// (e.g. opening a saved clip from a collection)
+if(tmpSelf._selectionFromCaller){// Caller supplied selection — render it but do not overwrite
+tmpSelf._selectionFromCaller=false;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}else if(typeof pData.State.SelectionStartTime==='number'&&pData.State.SelectionStartTime>=0&&typeof pData.State.SelectionEndTime==='number'&&pData.State.SelectionEndTime>=0){tmpSelf._selectionStartTime=pData.State.SelectionStartTime;tmpSelf._selectionEndTime=pData.State.SelectionEndTime;tmpSelf._renderSelectionOverlay();tmpSelf._renderSliderHandles();tmpSelf._updateSelectionInfo();}// Restore custom frames
+if(!Array.isArray(pData.State.CustomFrames)||pData.State.CustomFrames.length===0){return;}let tmpSavedFrames=pData.State.CustomFrames;// Restore each saved custom frame into the grid
+for(let i=0;i<tmpSavedFrames.length;i++){let tmpFrame=tmpSavedFrames[i];// Use the frame's own CacheKey for the image URL
+let tmpCacheKey=tmpFrame.CacheKey||(tmpSelf._frameData?tmpSelf._frameData.CacheKey:'');let tmpFrameURL=tmpSelf._buildFrameURL(tmpCacheKey,tmpFrame.Filename);// Add to in-memory array
+tmpSelf._customFrames.push(tmpFrame);// Insert card into grid at correct position
+tmpSelf._insertRestoredCustomFrame(tmpFrame,tmpFrameURL);}// Re-render timeline to show all custom markers
+tmpSelf._renderTimeline();}).catch(pError=>{// Silent failure — explorer still works, just without restored custom frames
+});},// -----------------------------------------------------------------
+//  DOM insertion helpers
+// -----------------------------------------------------------------
+/**
+	 * Insert a DOM element into the frame grid at the correct chronological
+	 * position based on timestamp.  Shared helper for placeholder and
+	 * restored frame insertion.
+	 *
+	 * @param {HTMLElement} pElement - The element to insert
+	 * @param {number} pTimestamp - Timestamp in seconds for sort position
+	 */_insertFrameAtPosition:function _insertFrameAtPosition(pElement,pTimestamp){let tmpGrid=document.querySelector('.retold-remote-vex-grid');if(!tmpGrid){return;}let tmpInsertBefore=null;let tmpChildren=tmpGrid.children;for(let i=0;i<tmpChildren.length;i++){let tmpChild=tmpChildren[i];let tmpTsEl=tmpChild.querySelector('.retold-remote-vex-frame-timestamp');if(tmpTsEl){let tmpChildTimestamp=this._parseTimestamp(tmpTsEl.textContent);if(tmpChildTimestamp>pTimestamp){tmpInsertBefore=tmpChild;break;}}}if(tmpInsertBefore){tmpGrid.insertBefore(pElement,tmpInsertBefore);}else{tmpGrid.appendChild(pElement);}},/**
+	 * Insert a fully-rendered custom frame card into the grid at its
+	 * correct chronological position.  Used when restoring saved state
+	 * (the image already exists on disk, so no loading placeholder needed).
+	 *
+	 * @param {Object} pFrame    - Saved custom frame object { Timestamp, TimestampFormatted, Filename, CacheKey }
+	 * @param {string} pFrameURL - Image URL for the frame
+	 */_insertRestoredCustomFrame:function _insertRestoredCustomFrame(pFrame,pFrameURL){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';let tmpEscFilename=this._getFmt().escapeHTML(pFrame.Filename).replace(/'/g,"\\'");let tmpEscTimestamp=this._getFmt().escapeHTML(pFrame.TimestampFormatted).replace(/'/g,"\\'");tmpEl.style.cursor='pointer';tmpEl.ondblclick=function(){pict.views['RetoldRemote-VideoExplorer'].openCustomFrameFullsize(tmpEscFilename,tmpEscTimestamp);};tmpEl.innerHTML='<img src="'+pFrameURL+'" alt="Frame at '+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'" loading="lazy">'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().escapeHTML(pFrame.TimestampFormatted)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pFrame.Timestamp);},/**
+	 * Insert a loading placeholder frame card into the grid at the correct
+	 * chronological position based on timestamp.
+	 *
+	 * @param {number} pTimestamp    - Timestamp in seconds
+	 * @param {string} pPlaceholderId - DOM id for the placeholder element
+	 */_insertFramePlaceholder:function _insertFramePlaceholder(pTimestamp,pPlaceholderId){let tmpEl=document.createElement('div');tmpEl.className='retold-remote-vex-frame custom-frame';tmpEl.id=pPlaceholderId;tmpEl.innerHTML='<div class="retold-remote-vex-frame-loading">Extracting...</div>'+'<div class="retold-remote-vex-frame-info">'+'<span class="retold-remote-vex-frame-timestamp">'+this._getFmt().formatTimestamp(pTimestamp)+'</span>'+'<span class="retold-remote-vex-frame-index">custom</span>'+'</div>';this._insertFrameAtPosition(tmpEl,pTimestamp);// Scroll the new element into view
+tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});},/**
+	 * Parse a formatted timestamp string back to seconds.
+	 * Handles "M:SS", "MM:SS", and "H:MM:SS" formats.
+	 *
+	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
+	 * @returns {number} Seconds
+	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],149:[function(require,module,exports){/**
+ * VideoExplorer — Frame Preview Mixin
+ *
+ * Full-screen frame preview overlay with keyboard navigation
+ * (left/right arrows, j/k, Escape).  Combines regular and custom
+ * frames into a single sorted sequence for prev/next traversal.
+ *
+ * Mixed into RetoldRemoteVideoExplorerView.prototype via Object.assign().
+ * All methods access state through `this` (the view instance).
+ *
+ * @license MIT
+ */module.exports={/**
+	 * Open any frame in the preview overlay.
+	 * Unified entry point for both regular and custom frames.
+	 *
+	 * @param {Object} pFrameInfo - Frame descriptor { Type: 'regular'|'custom', Index, Filename, TimestampFormatted, CacheKey }
+	 */openFrame:function openFrame(pFrameInfo){if(!this._frameData||!pFrameInfo){return;}let tmpCacheKey=pFrameInfo.CacheKey||this._frameData.CacheKey;let tmpURL=this._buildFrameURL(tmpCacheKey,pFrameInfo.Filename);let tmpLabel=pFrameInfo.TimestampFormatted+'  \u00b7  '+(pFrameInfo.Type==='regular'?'#'+((pFrameInfo.Index||0)+1):'custom');this._showFramePreview(tmpURL,tmpLabel,pFrameInfo.Type,pFrameInfo.Index);},/**
+	 * Open a regular frame at full size (convenience wrapper for grid onclick).
+	 *
+	 * @param {number} pIndex - Frame index in the regular Frames array
+	 */openFrameFullsize:function openFrameFullsize(pIndex){if(!this._frameData||!this._frameData.Frames[pIndex]){return;}let tmpFrame=this._frameData.Frames[pIndex];this.openFrame({Type:'regular',Index:pIndex,Filename:tmpFrame.Filename,TimestampFormatted:tmpFrame.TimestampFormatted,CacheKey:this._frameData.CacheKey});},/**
+	 * Open a custom frame in the preview overlay (convenience wrapper).
+	 *
+	 * @param {string} pFilename - Custom frame filename
+	 * @param {string} pTimestamp - Formatted timestamp label
+	 */openCustomFrameFullsize:function openCustomFrameFullsize(pFilename,pTimestamp){if(!this._frameData){return;}// Find the custom frame by filename
+let tmpCustomIndex=-1;let tmpCacheKey=this._frameData.CacheKey;for(let i=0;i<this._customFrames.length;i++){if(this._customFrames[i].Filename===pFilename){tmpCustomIndex=i;if(this._customFrames[i].CacheKey){tmpCacheKey=this._customFrames[i].CacheKey;}break;}}this.openFrame({Type:'custom',Index:tmpCustomIndex,Filename:pFilename,TimestampFormatted:pTimestamp,CacheKey:tmpCacheKey});},/**
+	 * Build a sorted list of all frames (regular + custom) for navigation.
+	 */_buildAllFramesList:function _buildAllFramesList(){let tmpAllFrames=[];// Add regular frames
+if(this._frameData&&this._frameData.Frames){for(let i=0;i<this._frameData.Frames.length;i++){let tmpFrame=this._frameData.Frames[i];tmpAllFrames.push({Type:'regular',Index:i,Timestamp:tmpFrame.Timestamp,TimestampFormatted:tmpFrame.TimestampFormatted,Filename:tmpFrame.Filename,Label:tmpFrame.TimestampFormatted+'  \u00b7  #'+(tmpFrame.Index+1)});}}// Add custom frames
+if(this._customFrames){for(let i=0;i<this._customFrames.length;i++){let tmpCustom=this._customFrames[i];tmpAllFrames.push({Type:'custom',Index:i,Timestamp:tmpCustom.Timestamp,TimestampFormatted:tmpCustom.TimestampFormatted,Filename:tmpCustom.Filename,CacheKey:tmpCustom.CacheKey||null,Label:tmpCustom.TimestampFormatted+'  \u00b7  custom'});}}// Sort by timestamp
+tmpAllFrames.sort((a,b)=>a.Timestamp-b.Timestamp);return tmpAllFrames;},/**
+	 * Show the frame preview overlay.
+	 *
+	 * @param {string} pURL - Frame image URL
+	 * @param {string} pLabel - Frame label to display
+	 * @param {string} pType - 'regular' or 'custom'
+	 * @param {number} pIndex - Index within its type array
+	 */_showFramePreview:function _showFramePreview(pURL,pLabel,pType,pIndex){// Store current preview state for navigation
+this._previewType=pType;this._previewIndex=pIndex;// Build all frames for prev/next navigation
+let tmpAllFrames=this._buildAllFramesList();this._previewAllFrames=tmpAllFrames;// Find current position in the unified list
+this._previewPosition=0;for(let i=0;i<tmpAllFrames.length;i++){if(tmpAllFrames[i].Type===pType&&tmpAllFrames[i].Index===pIndex){this._previewPosition=i;break;}}// Build the overlay
+let tmpSelf=this;let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vex-preview-backdrop';tmpBackdrop.id='RetoldRemote-VEX-Preview';tmpBackdrop.onclick=e=>{if(e.target===tmpBackdrop){tmpSelf.closeFramePreview();}};let tmpHTML='';tmpHTML+='<div class="retold-remote-vex-preview-header">';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].closeFramePreview()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewPrevFrame()" title="Previous (\u2190)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-vex-preview-title" id="RetoldRemote-VEX-PreviewTitle">'+this._getFmt().escapeHTML(pLabel)+'</div>';tmpHTML+='<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].previewNextFrame()" title="Next (\u2192)">Next &rsaquo;</button>';tmpHTML+='</div>';tmpHTML+='<div class="retold-remote-vex-preview-body" id="RetoldRemote-VEX-PreviewBody">';tmpHTML+='<img src="'+pURL+'" alt="'+this._getFmt().escapeHTML(pLabel)+'">';tmpHTML+='</div>';tmpBackdrop.innerHTML=tmpHTML;document.body.appendChild(tmpBackdrop);// Bind keyboard handler (stopImmediatePropagation prevents the global handler from also firing)
+this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stopImmediatePropagation();tmpSelf.closeFramePreview();break;case'ArrowLeft':case'k':e.preventDefault();e.stopImmediatePropagation();tmpSelf.previewPrevFrame();break;case'ArrowRight':case'j':e.preventDefault();e.stopImmediatePropagation();tmpSelf.previewNextFrame();break;}};document.addEventListener('keydown',this._previewKeyHandler);},/**
+	 * Close the frame preview overlay.
+	 */closeFramePreview:function closeFramePreview(){let tmpBackdrop=document.getElementById('RetoldRemote-VEX-Preview');if(tmpBackdrop){tmpBackdrop.remove();}if(this._previewKeyHandler){document.removeEventListener('keydown',this._previewKeyHandler);this._previewKeyHandler=null;}},/**
+	 * Navigate to the previous frame in the preview.
+	 */previewPrevFrame:function previewPrevFrame(){if(!this._previewAllFrames||this._previewPosition<=0){return;}this._previewPosition--;this._updatePreviewFrame();},/**
+	 * Navigate to the next frame in the preview.
+	 */previewNextFrame:function previewNextFrame(){if(!this._previewAllFrames||this._previewPosition>=this._previewAllFrames.length-1){return;}this._previewPosition++;this._updatePreviewFrame();},/**
+	 * Update the preview to show the frame at the current position.
+	 */_updatePreviewFrame:function _updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
+let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
+this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],150:[function(require,module,exports){/**
+ * VideoExplorer — Selection Mixin
+ *
+ * Methods for timeline range selection: toggling selection mode,
+ * setting/clearing range markers, drag-to-select on the timeline,
+ * draggable slider handles for adjusting boundaries, and persisting
+ * selection state to the server.
+ *
+ * Mixed into RetoldRemoteVideoExplorerView.prototype via Object.assign().
+ * All methods access state through `this` (the view instance).
+ *
+ * @license MIT
+ */module.exports={// -----------------------------------------------------------------
+//  Selection mode
+// -----------------------------------------------------------------
+/**
+	 * Toggle selection mode on or off.
+	 * When on, timeline clicks/drags create a selection range.
+	 * When off, timeline clicks extract frames (existing behavior).
+	 */toggleSelectionMode:function toggleSelectionMode(){this._selectionModeActive=!this._selectionModeActive;let tmpBtn=document.getElementById('RetoldRemote-VEX-SelectBtn');if(tmpBtn){if(this._selectionModeActive){tmpBtn.classList.add('active');}else{tmpBtn.classList.remove('active');}}let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(tmpBar){if(this._selectionModeActive){tmpBar.classList.add('selecting');}else{tmpBar.classList.remove('selecting');}}},/**
+	 * Set the selection start marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */setSelectionStart:function setSelectionStart(pTime){this._selectionStartTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();},/**
+	 * Set the selection end marker.
+	 *
+	 * @param {number} pTime - Timestamp in seconds
+	 */setSelectionEnd:function setSelectionEnd(pTime){this._selectionEndTime=pTime;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();},/**
+	 * Clear the selection range.
+	 */clearSelection:function clearSelection(){this._selectionStartTime=-1;this._selectionEndTime=-1;this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();},/**
+	 * Render (or remove) the selection overlay div inside the timeline bar.
+	 */_renderSelectionOverlay:function _renderSelectionOverlay(){let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar){return;}// Remove any existing overlay
+let tmpExisting=tmpBar.querySelector('.retold-remote-vex-timeline-selection');if(tmpExisting){tmpExisting.remove();}if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=this._frameData.Duration;let tmpLeftPercent=tmpStart/tmpDuration*100;let tmpWidthPercent=(tmpEnd-tmpStart)/tmpDuration*100;let tmpOverlay=document.createElement('div');tmpOverlay.className='retold-remote-vex-timeline-selection';tmpOverlay.style.left=tmpLeftPercent.toFixed(2)+'%';tmpOverlay.style.width=tmpWidthPercent.toFixed(2)+'%';tmpBar.appendChild(tmpOverlay);},/**
+	 * Update the selection info display with current selection range.
+	 */_updateSelectionInfo:function _updateSelectionInfo(){let tmpInfoEl=document.getElementById('RetoldRemote-VEX-SelectionInfo');let tmpClearBtn=document.getElementById('RetoldRemote-VEX-ClearBtn');let tmpGenControls=document.getElementById('RetoldRemote-VEX-GenerateControls');if(!tmpInfoEl){return;}if(this._selectionStartTime<0||this._selectionEndTime<0){tmpInfoEl.style.display='none';if(tmpClearBtn){tmpClearBtn.style.display='none';}if(tmpGenControls){tmpGenControls.style.display='none';}return;}let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpDuration=tmpEnd-tmpStart;let tmpFmt=this._getFmt();let tmpText='<span class="retold-remote-vex-selection-info-label">Selection:</span> '+tmpFmt.formatTimestamp(tmpStart)+' \u2013 '+tmpFmt.formatTimestamp(tmpEnd)+' ('+tmpFmt.formatTimestamp(tmpDuration)+')';tmpInfoEl.innerHTML=tmpText;tmpInfoEl.style.display='';if(tmpClearBtn){tmpClearBtn.style.display='';}if(tmpGenControls){tmpGenControls.style.display='';}},// -----------------------------------------------------------------
+//  Selection drag (timeline bar)
+// -----------------------------------------------------------------
+/**
+	 * Handle selection drag start (mousedown or touchstart on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragStart:function _onSelectionDragStart(pEvent){if(!this._selectionModeActive){return;}// Don't start drag on marker clicks
+let tmpMarker=pEvent.target.closest('.retold-remote-vex-timeline-marker');if(tmpMarker){return;}pEvent.preventDefault();this._isDraggingTimeline=true;let tmpTimestamp=this._getTimelineTimestamp(pEvent);this._selectionStartTime=tmpTimestamp;this._selectionEndTime=tmpTimestamp;this._renderSelectionOverlay();},/**
+	 * Handle selection drag move (mousemove or touchmove on timeline bar).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragMove:function _onSelectionDragMove(pEvent){if(!this._isDraggingTimeline){return;}pEvent.preventDefault();this._selectionEndTime=this._getTimelineTimestamp(pEvent);this._renderSelectionOverlay();},/**
+	 * Handle selection drag end (mouseup or touchend on window).
+	 *
+	 * @param {Event} pEvent - MouseEvent or TouchEvent
+	 */_onSelectionDragEnd:function _onSelectionDragEnd(pEvent){if(!this._isDraggingTimeline){return;}this._isDraggingTimeline=false;// If selection is too small (< 0.5s), clear it
+let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();},/**
+	 * Clean up window-level event listeners (mouseup/touchend).
+	 * Called when the explorer is closed or refreshed.
+	 */_cleanupWindowListeners:function _cleanupWindowListeners(){if(this._boundDragEnd){window.removeEventListener('mouseup',this._boundDragEnd);window.removeEventListener('touchend',this._boundDragEnd);this._boundDragEnd=null;}},// -----------------------------------------------------------------
+//  Slider handles (fine-adjustment of selection boundaries)
+// -----------------------------------------------------------------
+/**
+	 * Render (or clear) the slider handles in the slider track above
+	 * the timeline bar.  The handles sit at the start/end positions
+	 * of the current selection range.
+	 */_renderSliderHandles:function _renderSliderHandles(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}// Clear existing handles
+tmpTrack.innerHTML='';if(this._selectionStartTime<0||this._selectionEndTime<0||!this._frameData||!this._frameData.Duration){tmpTrack.style.display='none';return;}tmpTrack.style.display='';let tmpDuration=this._frameData.Duration;let tmpStart=Math.min(this._selectionStartTime,this._selectionEndTime);let tmpEnd=Math.max(this._selectionStartTime,this._selectionEndTime);let tmpStartPercent=tmpStart/tmpDuration*100;let tmpEndPercent=tmpEnd/tmpDuration*100;let tmpStartHandle=document.createElement('div');tmpStartHandle.className='retold-remote-vex-slider-handle';tmpStartHandle.id='RetoldRemote-VEX-HandleStart';tmpStartHandle.style.left=tmpStartPercent.toFixed(2)+'%';tmpStartHandle.title='Drag to adjust selection start';tmpTrack.appendChild(tmpStartHandle);let tmpEndHandle=document.createElement('div');tmpEndHandle.className='retold-remote-vex-slider-handle';tmpEndHandle.id='RetoldRemote-VEX-HandleEnd';tmpEndHandle.style.left=tmpEndPercent.toFixed(2)+'%';tmpEndHandle.title='Drag to adjust selection end';tmpTrack.appendChild(tmpEndHandle);},/**
+	 * Bind drag interaction to the slider handles (mouse + touch).
+	 * Uses the slider track element for coordinate computation.
+	 */_bindSliderHandleDrag:function _bindSliderHandleDrag(){let tmpTrack=document.getElementById('RetoldRemote-VEX-SliderTrack');if(!tmpTrack){return;}let tmpSelf=this;// Mouse handlers on the track (delegated — detect which handle)
+tmpTrack.addEventListener('mousedown',pEvent=>{if(pEvent.button!==0){return;}tmpSelf._onSliderDragStart(pEvent);});// Touch handlers on the track
+tmpTrack.addEventListener('touchstart',pEvent=>{tmpSelf._onSliderDragStart(pEvent);},{passive:false});},/**
+	 * Begin dragging a slider handle.
+	 *
+	 * @param {Event} pEvent - mousedown or touchstart
+	 */_onSliderDragStart:function _onSliderDragStart(pEvent){let tmpTarget=pEvent.target;if(!tmpTarget.classList.contains('retold-remote-vex-slider-handle')){return;}pEvent.preventDefault();pEvent.stopPropagation();// Determine which handle
+if(tmpTarget.id==='RetoldRemote-VEX-HandleStart'){this._draggingHandle='start';}else if(tmpTarget.id==='RetoldRemote-VEX-HandleEnd'){this._draggingHandle='end';}else{return;}tmpTarget.classList.add('dragging');let tmpSelf=this;// Create window-level move/end handlers
+let tmpBoundMove=pMoveEvent=>{tmpSelf._onSliderDragMove(pMoveEvent);};let tmpBoundEnd=pEndEvent=>{tmpSelf._onSliderDragEnd(pEndEvent);window.removeEventListener('mousemove',tmpBoundMove);window.removeEventListener('mouseup',tmpBoundEnd);window.removeEventListener('touchmove',tmpBoundMove);window.removeEventListener('touchend',tmpBoundEnd);};window.addEventListener('mousemove',tmpBoundMove);window.addEventListener('mouseup',tmpBoundEnd);window.addEventListener('touchmove',tmpBoundMove,{passive:false});window.addEventListener('touchend',tmpBoundEnd);},/**
+	 * Handle slider handle drag move.
+	 *
+	 * @param {Event} pEvent - mousemove or touchmove
+	 */_onSliderDragMove:function _onSliderDragMove(pEvent){if(!this._draggingHandle){return;}pEvent.preventDefault();// Compute timestamp from the timeline bar position
+let tmpBar=document.getElementById('RetoldRemote-VEX-TimelineBar');if(!tmpBar||!this._frameData||!this._frameData.Duration){return;}let tmpRect=tmpBar.getBoundingClientRect();let tmpClientX=this._getClientX(pEvent);if(tmpClientX===null){return;}let tmpPercent=Math.max(0,Math.min(1,(tmpClientX-tmpRect.left)/tmpRect.width));let tmpTimestamp=tmpPercent*this._frameData.Duration;if(this._draggingHandle==='start'){this._selectionStartTime=tmpTimestamp;}else{this._selectionEndTime=tmpTimestamp;}// Update the handle position directly (avoid full re-render for performance)
+let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.style.left=(tmpPercent*100).toFixed(2)+'%';}this._renderSelectionOverlay();this._updateSelectionInfo();},/**
+	 * Handle slider handle drag end.
+	 *
+	 * @param {Event} pEvent - mouseup or touchend
+	 */_onSliderDragEnd:function _onSliderDragEnd(pEvent){if(!this._draggingHandle){return;}// Remove dragging class from handles
+let tmpHandle=document.getElementById(this._draggingHandle==='start'?'RetoldRemote-VEX-HandleStart':'RetoldRemote-VEX-HandleEnd');if(tmpHandle){tmpHandle.classList.remove('dragging');}this._draggingHandle=null;// If the selection is too small (< 0.5s), clear it
+let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRange<0.5){this._selectionStartTime=-1;this._selectionEndTime=-1;}this._renderSelectionOverlay();this._renderSliderHandles();this._updateSelectionInfo();this._saveState();},// -----------------------------------------------------------------
+//  State persistence
+// -----------------------------------------------------------------
+/**
+	 * Save the current selection state to the server (fire-and-forget).
+	 * Called whenever the selection changes.
+	 */_saveState:function _saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}};},{}]},{},[113])(113);});
 //# sourceMappingURL=retold-remote.js.map

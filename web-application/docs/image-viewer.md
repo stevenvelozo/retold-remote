@@ -57,9 +57,33 @@ These work while viewing any image:
 | `i` | Toggle file info overlay |
 | Right / `j` | Next file |
 | Left / `k` | Previous file |
-| `v` | Stream with VLC |
+| `v` / `Enter` | Stream with VLC |
 | `d` | Distraction-free mode |
+| `e` | Open image explorer |
+| `a` | Quick-add to active collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
 | `Esc` | Back to gallery |
+
+## Image Explorer
+
+The image explorer provides a dedicated zoom and pan interface for detailed image inspection.
+
+### Opening the Explorer
+
+- From the image viewer, press `e`
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `+` / `=` | Zoom in |
+| `-` | Zoom out |
+| `0` | Reset zoom to home |
+| `a` | Quick-add to collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+| `Esc` | Back to image viewer |
 
 ## File Info Overlay
 

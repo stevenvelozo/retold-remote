@@ -107,6 +107,9 @@ The explorer shows an info bar with metadata from ffprobe:
 | `-` | Zoom out |
 | `0` | Zoom to fit |
 | `z` | Zoom to selection |
+| `a` / `s` | Save audio snippet to collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
 | `Esc` | Clear selection (if any), or go back to audio player |
 
 ### Mouse Interactions

@@ -7,68 +7,7 @@ const _ViewConfiguration =
 	DefaultDestinationAddress: "#RetoldRemote-Viewer-Container",
 	AutoRender: false,
 
-	CSS: /*css*/`
-		#RetoldRemote-ImageViewer-Img
-		{
-			image-orientation: from-image;
-			transition: width 0.15s ease, height 0.15s ease;
-			display: block;
-		}
-		.retold-remote-fit-indicator
-		{
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: rgba(0, 0, 0, 0.7);
-			color: #fff;
-			padding: 8px 18px;
-			border-radius: 6px;
-			font-size: 0.82rem;
-			pointer-events: none;
-			z-index: 20;
-			opacity: 0;
-			transition: opacity 0.3s ease;
-			white-space: nowrap;
-		}
-		.retold-remote-fit-indicator.visible
-		{
-			opacity: 1;
-		}
-		.retold-remote-image-explore-btn
-		{
-			position: absolute;
-			bottom: 16px;
-			right: 16px;
-			background: rgba(40, 44, 52, 0.85);
-			color: #abb2bf;
-			border: 1px solid rgba(255, 255, 255, 0.15);
-			padding: 6px 14px;
-			border-radius: 6px;
-			font-size: 0.82rem;
-			cursor: pointer;
-			z-index: 20;
-			transition: background 0.2s, color 0.2s;
-		}
-		.retold-remote-image-explore-btn:hover
-		{
-			background: rgba(97, 175, 239, 0.3);
-			color: #fff;
-		}
-		.retold-remote-image-large-badge
-		{
-			position: absolute;
-			top: 16px;
-			right: 16px;
-			background: rgba(40, 44, 52, 0.85);
-			color: #e5c07b;
-			padding: 4px 10px;
-			border-radius: 4px;
-			font-size: 0.72rem;
-			pointer-events: none;
-			z-index: 20;
-		}
-	`
+	CSS: ``
 };
 
 class RetoldRemoteImageViewerView extends libPictView

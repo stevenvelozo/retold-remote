@@ -22,12 +22,15 @@ When a video is opened, an action menu appears instead of playing immediately. T
 
 The preview frame in the menu is loaded automatically from the server. If ffmpeg is not available, the Explore and Thumbnail options are hidden.
 
-Navigation shortcuts still work while the menu is open:
+Navigation and collection shortcuts also work while the menu is open:
 
 | Key | Action |
 |-----|--------|
 | Right / `j` | Skip to next file |
 | Left / `k` | Skip to previous file |
+| `a` | Quick-add to active collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
 | `Esc` | Back to gallery |
 
 ## In-Browser Playback
@@ -111,7 +114,13 @@ The Back button in the preview header also closes it. Navigation moves through a
 
 | Key | Action |
 |-----|--------|
-| `Esc` | Back to video viewer |
+| `Esc` | Back to video viewer (or close frame preview) |
+| `a` | Add current frame to collection |
+| `s` | Add video clip (selection) to collection |
+| `[` | Set selection start marker at current frame |
+| `]` | Set selection end marker at current frame |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
 
 ## VLC Streaming
 

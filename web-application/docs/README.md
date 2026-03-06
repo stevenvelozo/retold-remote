@@ -71,6 +71,11 @@ Then open `http://localhost:8086` in a browser.
 | `x` | Clear all filters |
 | `c` | Settings panel |
 | `d` | Distraction-free mode |
+| `e` | Explore video frames (video files) |
+| `a` | Quick-add to active collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+| `i` | Show info sidebar tab |
 
 ### Media Viewer
 
@@ -83,11 +88,15 @@ Then open `http://localhost:8086` in a browser.
 | `Space` | Play / pause |
 | `f` | Fullscreen |
 | `i` | File info overlay |
-| `v` | Stream with VLC |
+| `v` / `Enter` | Stream with VLC |
 | `+` / `-` | Zoom in / out |
 | `0` | Reset zoom |
 | `z` | Cycle fit mode |
 | `d` | Distraction-free mode |
+| `e` | Open explorer (video / audio / image) |
+| `a` | Quick-add to active collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
 
 ### Video Action Menu
 
@@ -97,12 +106,32 @@ Then open `http://localhost:8086` in a browser.
 | `e` | Explore video frames |
 | `t` | Extract thumbnail |
 | `v` | Stream with VLC |
+| Right / `j` | Next file |
+| Left / `k` | Previous file |
+| `a` | Quick-add to active collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+| `Esc` | Back to gallery |
 
 ### Video Explorer
 
 | Key | Action |
 |-----|--------|
-| `Esc` | Back to video |
+| `Esc` | Back to video (or close frame preview) |
+| `a` | Add current frame to collection |
+| `s` | Add video clip (selection) to collection |
+| `[` | Set selection start marker |
+| `]` | Set selection end marker |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+
+In the frame preview overlay:
+
+| Key | Action |
+|-----|--------|
+| Left / `k` | Previous frame |
+| Right / `j` | Next frame |
+| `Esc` | Close preview |
 
 ### Audio Explorer
 
@@ -113,6 +142,30 @@ Then open `http://localhost:8086` in a browser.
 | `0` | Zoom to fit |
 | `z` | Zoom to selection |
 | `Esc` | Clear selection / back |
+| `a` / `s` | Save audio snippet to collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+
+### Image Explorer
+
+| Key | Action |
+|-----|--------|
+| `+` / `=` | Zoom in |
+| `-` | Zoom out |
+| `0` | Reset zoom |
+| `a` | Quick-add to collection |
+| `b` | Toggle collection panel |
+| `h` | Toggle favorite |
+| `Esc` | Back to viewer |
+
+### Sidebar (F9)
+
+| Key | Action |
+|-----|--------|
+| Up / Down | Navigate file list |
+| `Home` / `End` | Jump to first / last |
+| `Enter` | Open folder or select file |
+| `Esc` | Return to gallery |
 
 ## Supported File Formats
 

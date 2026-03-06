@@ -16,6 +16,8 @@ const libPath = require('path');
 const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 
+const libExplorerStateMixin = require('./RetoldRemote-ExplorerStateMixin');
+
 const EXPLORER_STATE_SOURCE = 'retold-remote-video-explorer-state';
 
 const _DefaultServiceConfiguration =
@@ -49,7 +51,150 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
+		// Apply explorer state persistence mixin (initializeState,
+		// _buildExplorerStateKey, loadExplorerState, saveExplorerState)
+		libExplorerStateMixin.apply(this, EXPLORER_STATE_SOURCE, 'video-explorer');
+
+		// Override saveExplorerState with custom merge logic for video
+		// frames, and add saveSelectionState.
+		this._initVideoStateMethods();
+
 		this.fable.log.info('Video Frame Service: frames in ParimeBinaryStorage, state in Bibliograph');
+	}
+
+	/**
+	 * Install video-specific explorer state methods that need read-merge-write
+	 * behavior (merging custom frames, preserving selection across saves).
+	 * These override the generic mixin version of saveExplorerState.
+	 */
+	_initVideoStateMethods()
+	{
+		let tmpSelf = this;
+
+		/**
+		 * Save video explorer state (custom frames) to Bibliograph.
+		 * Reads existing state, merges incoming frames (deduplicating
+		 * by Filename), sorts by Timestamp, and writes back.
+		 *
+		 * @param {string}   pRelPath      - Relative path to the video
+		 * @param {number}   pMtimeMs      - Video file modification time in ms
+		 * @param {Array}    pCustomFrames - Array of custom frame objects to merge
+		 * @param {Function} fCallback     - Callback(pError, pState)
+		 */
+		this.saveExplorerState = function saveExplorerState(pRelPath, pMtimeMs, pCustomFrames, fCallback)
+		{
+			let tmpCacheKey = tmpSelf._buildExplorerStateKey(pRelPath, pMtimeMs);
+
+			// Read existing state first for merge
+			tmpSelf.fable.Bibliograph.read(EXPLORER_STATE_SOURCE, tmpCacheKey,
+				(pReadError, pExisting) =>
+				{
+					if (pReadError)
+					{
+						pExisting = null;
+					}
+
+					let tmpMergedFrames = [];
+					let tmpSeen = {};
+
+					// Add existing frames
+					if (pExisting && Array.isArray(pExisting.CustomFrames))
+					{
+						for (let i = 0; i < pExisting.CustomFrames.length; i++)
+						{
+							let tmpFrame = pExisting.CustomFrames[i];
+							if (!tmpSeen[tmpFrame.Filename])
+							{
+								tmpMergedFrames.push(tmpFrame);
+								tmpSeen[tmpFrame.Filename] = true;
+							}
+						}
+					}
+
+					// Add new frames (deduplicate)
+					if (Array.isArray(pCustomFrames))
+					{
+						for (let i = 0; i < pCustomFrames.length; i++)
+						{
+							let tmpFrame = pCustomFrames[i];
+							if (!tmpSeen[tmpFrame.Filename])
+							{
+								tmpMergedFrames.push(tmpFrame);
+								tmpSeen[tmpFrame.Filename] = true;
+							}
+						}
+					}
+
+					// Sort by timestamp
+					tmpMergedFrames.sort((pA, pB) => pA.Timestamp - pB.Timestamp);
+
+					let tmpState =
+					{
+						Path: pRelPath,
+						ModifiedMs: pMtimeMs,
+						CustomFrames: tmpMergedFrames,
+						SelectionStartTime: (pExisting && typeof pExisting.SelectionStartTime === 'number') ? pExisting.SelectionStartTime : -1,
+						SelectionEndTime: (pExisting && typeof pExisting.SelectionEndTime === 'number') ? pExisting.SelectionEndTime : -1,
+						UpdatedAt: new Date().toISOString()
+					};
+
+					tmpSelf.fable.Bibliograph.write(EXPLORER_STATE_SOURCE, tmpCacheKey, tmpState,
+						(pWriteError) =>
+						{
+							if (pWriteError)
+							{
+								tmpSelf.fable.log.warn('Explorer state write error: ' + pWriteError.message);
+							}
+							return fCallback(null, tmpState);
+						});
+				});
+		};
+	}
+
+	/**
+	 * Save video explorer selection state (start/end times) to Bibliograph.
+	 * Reads existing state so that custom frames are preserved, then
+	 * updates the selection fields and writes back.
+	 *
+	 * @param {string}   pRelPath        - Relative path to the video
+	 * @param {number}   pMtimeMs        - Video file modification time in ms
+	 * @param {Object}   pSelectionData  - { SelectionStartTime, SelectionEndTime }
+	 * @param {Function} fCallback       - Callback(pError, pState)
+	 */
+	saveSelectionState(pRelPath, pMtimeMs, pSelectionData, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpCacheKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
+
+		// Read existing state first to preserve custom frames
+		this.fable.Bibliograph.read(EXPLORER_STATE_SOURCE, tmpCacheKey,
+			(pReadError, pExisting) =>
+			{
+				if (pReadError)
+				{
+					pExisting = null;
+				}
+
+				let tmpState =
+				{
+					Path: pRelPath,
+					ModifiedMs: pMtimeMs,
+					CustomFrames: (pExisting && Array.isArray(pExisting.CustomFrames)) ? pExisting.CustomFrames : [],
+					SelectionStartTime: (pSelectionData && typeof pSelectionData.SelectionStartTime === 'number') ? pSelectionData.SelectionStartTime : -1,
+					SelectionEndTime: (pSelectionData && typeof pSelectionData.SelectionEndTime === 'number') ? pSelectionData.SelectionEndTime : -1,
+					UpdatedAt: new Date().toISOString()
+				};
+
+				tmpSelf.fable.Bibliograph.write(EXPLORER_STATE_SOURCE, tmpCacheKey, tmpState,
+					(pWriteError) =>
+					{
+						if (pWriteError)
+						{
+							tmpSelf.fable.log.warn('Explorer selection state write error: ' + pWriteError.message);
+						}
+						return fCallback(null, tmpState);
+					});
+			});
 	}
 
 	/**
@@ -479,190 +624,10 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		return null;
 	}
 
-	// -- Video Explorer State Persistence (Bibliograph) ---------------------
-
-	/**
-	 * Create the Bibliograph source for explorer state.
-	 * Must be called after Parime initialization completes.
-	 *
-	 * @param {Function} fCallback - Callback(pError)
-	 */
-	initializeState(fCallback)
-	{
-		this.fable.Bibliograph.createSource(EXPLORER_STATE_SOURCE,
-			(pError) =>
-			{
-				if (pError)
-				{
-					this.fable.log.warn('Video explorer state source creation notice: ' + pError.message);
-				}
-				return fCallback();
-			});
-	}
-
-	/**
-	 * Build the Bibliograph record key for a video's explorer state.
-	 * Deliberately excludes frame count and resolution so custom
-	 * frames persist across extraction-setting changes.
-	 *
-	 * @param {string} pRelPath - Relative path to the video
-	 * @param {number} pMtimeMs - Video file modification time in ms
-	 * @returns {string} 16-char hex hash key
-	 */
-	_buildExplorerStateKey(pRelPath, pMtimeMs)
-	{
-		let tmpInput = `video-explorer:${pRelPath}:${pMtimeMs}`;
-		return libCrypto.createHash('sha256').update(tmpInput).digest('hex').substring(0, 16);
-	}
-
-	/**
-	 * Load saved video explorer state (custom frames) from Bibliograph.
-	 *
-	 * @param {string}   pRelPath  - Relative path to the video
-	 * @param {number}   pMtimeMs  - Video file modification time in ms
-	 * @param {Function} fCallback - Callback(pError, pState) where pState is the record or null
-	 */
-	loadExplorerState(pRelPath, pMtimeMs, fCallback)
-	{
-		let tmpCacheKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
-
-		this.fable.Bibliograph.read(EXPLORER_STATE_SOURCE, tmpCacheKey,
-			(pReadError, pRecord) =>
-			{
-				if (pReadError || !pRecord)
-				{
-					return fCallback(null, null);
-				}
-
-				return fCallback(null, pRecord);
-			});
-	}
-
-	/**
-	 * Save video explorer state (custom frames) to Bibliograph.
-	 * Reads existing state, merges incoming frames (deduplicating
-	 * by Filename), sorts by Timestamp, and writes back.
-	 *
-	 * @param {string}   pRelPath      - Relative path to the video
-	 * @param {number}   pMtimeMs      - Video file modification time in ms
-	 * @param {Array}    pCustomFrames - Array of custom frame objects to merge
-	 * @param {Function} fCallback     - Callback(pError, pState)
-	 */
-	saveExplorerState(pRelPath, pMtimeMs, pCustomFrames, fCallback)
-	{
-		let tmpSelf = this;
-		let tmpCacheKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
-
-		// Read existing state first for merge
-		this.fable.Bibliograph.read(EXPLORER_STATE_SOURCE, tmpCacheKey,
-			(pReadError, pExisting) =>
-			{
-				if (pReadError)
-				{
-					pExisting = null;
-				}
-
-				let tmpMergedFrames = [];
-				let tmpSeen = {};
-
-				// Add existing frames
-				if (pExisting && Array.isArray(pExisting.CustomFrames))
-				{
-					for (let i = 0; i < pExisting.CustomFrames.length; i++)
-					{
-						let tmpFrame = pExisting.CustomFrames[i];
-						if (!tmpSeen[tmpFrame.Filename])
-						{
-							tmpMergedFrames.push(tmpFrame);
-							tmpSeen[tmpFrame.Filename] = true;
-						}
-					}
-				}
-
-				// Add new frames (deduplicate)
-				if (Array.isArray(pCustomFrames))
-				{
-					for (let i = 0; i < pCustomFrames.length; i++)
-					{
-						let tmpFrame = pCustomFrames[i];
-						if (!tmpSeen[tmpFrame.Filename])
-						{
-							tmpMergedFrames.push(tmpFrame);
-							tmpSeen[tmpFrame.Filename] = true;
-						}
-					}
-				}
-
-				// Sort by timestamp
-				tmpMergedFrames.sort((pA, pB) => pA.Timestamp - pB.Timestamp);
-
-				let tmpState =
-				{
-					Path: pRelPath,
-					ModifiedMs: pMtimeMs,
-					CustomFrames: tmpMergedFrames,
-					SelectionStartTime: (pExisting && typeof pExisting.SelectionStartTime === 'number') ? pExisting.SelectionStartTime : -1,
-					SelectionEndTime: (pExisting && typeof pExisting.SelectionEndTime === 'number') ? pExisting.SelectionEndTime : -1,
-					UpdatedAt: new Date().toISOString()
-				};
-
-				tmpSelf.fable.Bibliograph.write(EXPLORER_STATE_SOURCE, tmpCacheKey, tmpState,
-					(pWriteError) =>
-					{
-						if (pWriteError)
-						{
-							tmpSelf.fable.log.warn('Explorer state write error: ' + pWriteError.message);
-						}
-						return fCallback(null, tmpState);
-					});
-			});
-	}
-
-	/**
-	 * Save video explorer selection state (start/end times) to Bibliograph.
-	 * Reads existing state so that custom frames are preserved, then
-	 * updates the selection fields and writes back.
-	 *
-	 * @param {string}   pRelPath        - Relative path to the video
-	 * @param {number}   pMtimeMs        - Video file modification time in ms
-	 * @param {Object}   pSelectionData  - { SelectionStartTime, SelectionEndTime }
-	 * @param {Function} fCallback       - Callback(pError, pState)
-	 */
-	saveSelectionState(pRelPath, pMtimeMs, pSelectionData, fCallback)
-	{
-		let tmpSelf = this;
-		let tmpCacheKey = this._buildExplorerStateKey(pRelPath, pMtimeMs);
-
-		// Read existing state first to preserve custom frames
-		this.fable.Bibliograph.read(EXPLORER_STATE_SOURCE, tmpCacheKey,
-			(pReadError, pExisting) =>
-			{
-				if (pReadError)
-				{
-					pExisting = null;
-				}
-
-				let tmpState =
-				{
-					Path: pRelPath,
-					ModifiedMs: pMtimeMs,
-					CustomFrames: (pExisting && Array.isArray(pExisting.CustomFrames)) ? pExisting.CustomFrames : [],
-					SelectionStartTime: (pSelectionData && typeof pSelectionData.SelectionStartTime === 'number') ? pSelectionData.SelectionStartTime : -1,
-					SelectionEndTime: (pSelectionData && typeof pSelectionData.SelectionEndTime === 'number') ? pSelectionData.SelectionEndTime : -1,
-					UpdatedAt: new Date().toISOString()
-				};
-
-				tmpSelf.fable.Bibliograph.write(EXPLORER_STATE_SOURCE, tmpCacheKey, tmpState,
-					(pWriteError) =>
-					{
-						if (pWriteError)
-						{
-							tmpSelf.fable.log.warn('Explorer selection state write error: ' + pWriteError.message);
-						}
-						return fCallback(null, tmpState);
-					});
-			});
-	}
+	// Note: initializeState, _buildExplorerStateKey, and loadExplorerState
+	// are provided by the explorer state mixin.
+	// saveExplorerState is overridden in _initVideoStateMethods() with
+	// custom merge logic for video frames.
 }
 
 module.exports = RetoldRemoteVideoFrameService;
