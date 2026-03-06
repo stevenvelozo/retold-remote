@@ -66,13 +66,31 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 		this.hasFfprobe = this._detectCommand('ffprobe -version');
 		this.hasExifr = this._detectModule('exifr');
 		this.hasPdfParse = this._detectModule('pdf-parse');
-		this.hasSharp = this._detectModule('sharp');
+		// Sharp is set via setSharpModule() from the centrally-verified instance
+		this.hasSharp = false;
+		this._sharpModule = null;
 
 		this.fable.log.info(`Metadata Cache: using ParimeBinaryStorage (category: ${CACHE_CATEGORY})`);
 		this.fable.log.info(`  ffprobe: ${this.hasFfprobe ? 'available' : 'not found'}`);
 		this.fable.log.info(`  exifr: ${this.hasExifr ? 'available' : 'not found'}`);
 		this.fable.log.info(`  pdf-parse: ${this.hasPdfParse ? 'available' : 'not found'}`);
-		this.fable.log.info(`  sharp: ${this.hasSharp ? 'available' : 'not found'}`);
+		this.fable.log.info(`  sharp: deferred (set via setSharpModule)`);
+	}
+
+	/**
+	 * Set the centrally-verified sharp module reference.
+	 * Called from Server-Setup after ToolDetector has validated sharp.
+	 *
+	 * @param {function} pSharpModule - The working sharp function, or null
+	 */
+	setSharpModule(pSharpModule)
+	{
+		if (pSharpModule)
+		{
+			this._sharpModule = pSharpModule;
+			this.hasSharp = true;
+			this.fable.log.info('Metadata Cache: sharp module set (available)');
+		}
 	}
 
 	/**
@@ -788,12 +806,11 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 			}
 		}
 
-		if (this.hasSharp)
+		if (this.hasSharp && this._sharpModule)
 		{
 			try
 			{
-				let tmpSharp = require('sharp');
-				tmpSharp(pAbsPath).metadata()
+				this._sharpModule(pAbsPath).metadata()
 					.then((pMeta) =>
 					{
 						tmpImageData.Width = pMeta.width || null;

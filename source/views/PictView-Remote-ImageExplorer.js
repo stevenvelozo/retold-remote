@@ -247,8 +247,8 @@ class RetoldRemoteImageExplorerView extends libPictView
 	_isRawExtension(pFilePath)
 	{
 		let tmpExt = (pFilePath || '').replace(/^.*\./, '').toLowerCase();
-		// Common raw camera extensions
-		let tmpRawExts = { 'nef': true, 'nrw': true, 'cr2': true, 'cr3': true, 'crw': true, 'arw': true, 'srf': true, 'sr2': true, 'raf': true, 'orf': true, 'rw2': true, 'rwl': true, 'pef': true, 'srw': true, 'x3f': true, '3fr': true, 'fff': true, 'iiq': true, 'dcr': true, 'kdc': true, 'mrw': true, 'erf': true, 'raw': true, 'dng': true };
+		// Formats requiring server-side conversion (raw camera + HEIC)
+		let tmpRawExts = { 'nef': true, 'nrw': true, 'cr2': true, 'cr3': true, 'crw': true, 'arw': true, 'srf': true, 'sr2': true, 'raf': true, 'orf': true, 'rw2': true, 'rwl': true, 'pef': true, 'srw': true, 'x3f': true, '3fr': true, 'fff': true, 'iiq': true, 'dcr': true, 'kdc': true, 'mrw': true, 'erf': true, 'raw': true, 'dng': true, 'heic': true, 'heif': true };
 		return !!tmpRawExts[tmpExt];
 	}
 

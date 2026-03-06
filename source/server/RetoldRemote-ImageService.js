@@ -78,17 +78,6 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		// Tool capabilities — set by MediaService after ToolDetector runs
 		this._capabilities = {};
-
-		// Try to load sharp
-		try
-		{
-			this._sharp = require('sharp');
-			this.fable.log.info('Image Service: sharp loaded successfully');
-		}
-		catch (pError)
-		{
-			this.fable.log.warn('Image Service: sharp not available — large image features disabled');
-		}
 	}
 
 	/**
@@ -103,12 +92,25 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 	/**
 	 * Set tool capabilities from ToolDetector results.
+	 * Also receives the centrally-verified sharp module reference
+	 * so we don't need an independent require('sharp') call.
 	 *
-	 * @param {object} pCapabilities - { dcraw, imagemagick, sharp, ... }
+	 * @param {object} pCapabilities - { sharp, sharpMode, sharpModule, dcraw, imagemagick, ... }
 	 */
 	setCapabilities(pCapabilities)
 	{
 		this._capabilities = pCapabilities || {};
+
+		// Use the centrally-verified sharp module from ToolDetector
+		if (this._capabilities.sharpModule)
+		{
+			this._sharp = this._capabilities.sharpModule;
+			this.fable.log.info('Image Service: using shared sharp module (' + (this._capabilities.sharpMode || 'unknown') + ' mode)');
+		}
+		else
+		{
+			this.fable.log.warn('Image Service: sharp not available — large image features disabled');
+		}
 	}
 
 	// ---------------------------------------------------------------
@@ -401,9 +403,9 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		if (!this._sharp)
+		if (!this._sharp && !this._capabilities.imagemagick)
 		{
-			return fCallback(new Error('sharp is not available.'));
+			return fCallback(new Error('Neither sharp nor ImageMagick is available.'));
 		}
 
 		let tmpMaxDim = pMaxDimension || this.options.DefaultMaxPreviewDimension;
@@ -454,7 +456,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		this.fable.log.info(`Generating image preview: ${pRelPath} (max ${tmpMaxDim}px)`);
 
-		// For raw formats, convert first then process the converted file
+		// For raw/HEIC formats, convert first then process the converted file
 		if (tmpIsRaw)
 		{
 			this._ensureConvertedRaw(pAbsPath, tmpStat.mtimeMs, false, (pError, pConvertedPath) =>
@@ -463,12 +465,24 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				{
 					return fCallback(new Error('Raw conversion failed: ' + pError.message));
 				}
-				tmpSelf._doGeneratePreview(pConvertedPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, true, fCallback);
+				if (tmpSelf._sharp)
+				{
+					tmpSelf._doGeneratePreview(pConvertedPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, true, fCallback);
+				}
+				else
+				{
+					tmpSelf._doGeneratePreviewWithImageMagick(pConvertedPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpManifestPath, tmpOutputPath, tmpStat, true, fCallback);
+				}
 			});
+		}
+		else if (this._sharp)
+		{
+			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
 		}
 		else
 		{
-			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
+			// No Sharp available — use ImageMagick for standard images too
+			this._doGeneratePreviewWithImageMagick(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
 		}
 	}
 
@@ -589,6 +603,141 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			{
 				return fCallback(new Error('Could not read image metadata: ' + pError.message));
 			});
+	}
+
+	/**
+	 * Generate a preview using ImageMagick when Sharp is not available.
+	 * Uses `identify` for dimensions and `convert` for resizing.
+	 *
+	 * @param {string}   pInputPath      - Path to the image (or converted JPEG)
+	 * @param {string}   pRelPath        - Relative path (for response)
+	 * @param {number}   pMaxDim         - Max dimension
+	 * @param {string}   pCacheKey       - Cache key
+	 * @param {string}   pOutputFilename - Output filename
+	 * @param {string}   pManifestPath   - Manifest file path
+	 * @param {string}   pOutputPath     - Output file path
+	 * @param {object}   pStat           - Original file stat
+	 * @param {boolean}  pIsRaw          - Whether this is a raw/conversion-required format
+	 * @param {Function} fCallback       - Callback(pError, pResult)
+	 */
+	_doGeneratePreviewWithImageMagick(pInputPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pManifestPath, pOutputPath, pStat, pIsRaw, fCallback)
+	{
+		let tmpSelf = this;
+
+		// Get dimensions with identify
+		try
+		{
+			let tmpIdentifyCmd = `identify -format "%w %h" "${pInputPath}"[0]`;
+			libChildProcess.exec(tmpIdentifyCmd, { timeout: 30000 }, (pError, pStdout) =>
+			{
+				let tmpOrigWidth = 0;
+				let tmpOrigHeight = 0;
+
+				if (!pError && pStdout)
+				{
+					let tmpParts = pStdout.toString().trim().split(/\s+/);
+					tmpOrigWidth = parseInt(tmpParts[0], 10) || 0;
+					tmpOrigHeight = parseInt(tmpParts[1], 10) || 0;
+				}
+
+				let tmpLongest = Math.max(tmpOrigWidth, tmpOrigHeight);
+
+				// For non-raw standard images that are small enough, no preview needed
+				if (tmpLongest > 0 && tmpLongest <= pMaxDim && !pIsRaw)
+				{
+					let tmpResult =
+					{
+						Success: true,
+						SourcePath: pRelPath,
+						CacheKey: pCacheKey,
+						OutputFilename: pOutputFilename,
+						Width: tmpOrigWidth,
+						Height: tmpOrigHeight,
+						OrigWidth: tmpOrigWidth,
+						OrigHeight: tmpOrigHeight,
+						FileSize: pStat.size,
+						NeedsPreview: false,
+						IsRawFormat: false,
+						GeneratedAt: new Date().toISOString()
+					};
+
+					try
+					{
+						libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
+					}
+					catch (pWriteError)
+					{
+						tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
+					}
+
+					return fCallback(null, tmpResult);
+				}
+
+				// Resize with convert
+				let tmpResizeArg = (tmpLongest > pMaxDim) ? `-resize ${pMaxDim}x${pMaxDim}` : '';
+				let tmpConvertCmd = `convert "${pInputPath}"[0] -auto-orient ${tmpResizeArg} -quality ${tmpSelf.options.PreviewQuality} "${pOutputPath}"`;
+
+				libChildProcess.exec(tmpConvertCmd, { timeout: 120000 }, (pConvertError) =>
+				{
+					if (pConvertError || !libFs.existsSync(pOutputPath))
+					{
+						return fCallback(new Error('ImageMagick preview generation failed: ' + (pConvertError ? pConvertError.message : 'no output')));
+					}
+
+					// Get the actual output dimensions
+					let tmpNewWidth = tmpOrigWidth;
+					let tmpNewHeight = tmpOrigHeight;
+					if (tmpLongest > pMaxDim && tmpOrigWidth > 0)
+					{
+						let tmpScale = pMaxDim / tmpLongest;
+						tmpNewWidth = Math.round(tmpOrigWidth * tmpScale);
+						tmpNewHeight = Math.round(tmpOrigHeight * tmpScale);
+					}
+
+					let tmpOutputStat;
+					try
+					{
+						tmpOutputStat = libFs.statSync(pOutputPath);
+					}
+					catch (pStatError)
+					{
+						return fCallback(new Error('Could not stat preview output'));
+					}
+
+					let tmpResult =
+					{
+						Success: true,
+						SourcePath: pRelPath,
+						CacheKey: pCacheKey,
+						OutputFilename: pOutputFilename,
+						Width: tmpNewWidth,
+						Height: tmpNewHeight,
+						OrigWidth: tmpOrigWidth,
+						OrigHeight: tmpOrigHeight,
+						FileSize: tmpOutputStat.size,
+						NeedsPreview: true,
+						IsRawFormat: pIsRaw,
+						GeneratedAt: new Date().toISOString()
+					};
+
+					try
+					{
+						libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
+					}
+					catch (pWriteError)
+					{
+						tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
+					}
+
+					tmpSelf.fable.log.info(`Generated image preview (ImageMagick): ${pRelPath} (${tmpOrigWidth}×${tmpOrigHeight} → ${tmpNewWidth}×${tmpNewHeight})`);
+					return fCallback(null, tmpResult);
+				});
+			});
+		}
+		catch (pError)
+		{
+			return fCallback(new Error('ImageMagick preview failed: ' + pError.message));
+		}
 	}
 
 	// ---------------------------------------------------------------

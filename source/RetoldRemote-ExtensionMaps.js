@@ -5,9 +5,11 @@
  * services (MediaService) to classify files by extension.
  */
 
-// Raw camera image formats that require conversion before display.
+// Image formats that require server-side conversion before display.
 // These are recognized as images for categorization but need dcraw,
-// ImageMagick, or embedded-preview extraction before Sharp can process them.
+// ImageMagick, or embedded-preview extraction before the browser can
+// render them.  Includes raw camera formats and formats that most
+// browsers cannot display natively (HEIC/HEIF).
 const RawImageExtensions =
 {
 	'nef': true, 'nrw': true,                       // Nikon
@@ -25,7 +27,8 @@ const RawImageExtensions =
 	'mrw': true,                                     // Minolta
 	'erf': true,                                     // Epson
 	'raw': true,                                     // Generic
-	'dng': true                                      // Adobe DNG (Leica, DJI, etc.)
+	'dng': true,                                     // Adobe DNG (Leica, DJI, etc.)
+	'heic': true, 'heif': true                       // Apple / MPEG-H (limited browser support)
 };
 
 const ImageExtensions = { 'png': true, 'jpg': true, 'jpeg': true, 'gif': true, 'webp': true, 'svg': true, 'bmp': true, 'ico': true, 'avif': true, 'tiff': true, 'tif': true, 'heic': true, 'heif': true };

@@ -17,7 +17,7 @@ class ToolDetector
 	 * Detect all available tools and return a capabilities object.
 	 * Results are cached after the first call.
 	 *
-	 * @returns {object} { sharp, imagemagick, ffmpeg, ffprobe }
+	 * @returns {object} { sharp, sharpMode, sharpModule, imagemagick, ffmpeg, ffprobe, ... }
 	 */
 	detect()
 	{
@@ -26,9 +26,13 @@ class ToolDetector
 			return this._capabilities;
 		}
 
+		let tmpSharpResult = this._detectSharp();
+
 		this._capabilities =
 		{
-			sharp: this._detectSharp(),
+			sharp: tmpSharpResult.available,
+			sharpMode: tmpSharpResult.mode,
+			sharpModule: tmpSharpResult.module,
 			imagemagick: this._detectCommand('identify --version'),
 			ffmpeg: this._detectCommand('ffmpeg -version'),
 			ffprobe: this._detectCommand('ffprobe -version'),
@@ -44,20 +48,47 @@ class ToolDetector
 	}
 
 	/**
-	 * Check if the sharp module is available.
+	 * Check if the sharp module is available AND functional.
 	 *
-	 * @returns {boolean}
+	 * A bare require('sharp') can succeed even when the native binary
+	 * is missing or incompatible (e.g. on Synology NAS where node-gyp
+	 * can't compile).  To catch that, we create a tiny 1×1 pixel
+	 * buffer synchronously — this exercises the native or WASM binding.
+	 *
+	 * Sharp's internal resolution chain tries the native platform binary
+	 * first, then falls back to @img/sharp-wasm32 if installed.  We
+	 * detect which mode is active by checking whether the native
+	 * platform package resolves.
+	 *
+	 * @returns {{ available: boolean, mode: string|null, module: function|null }}
 	 */
 	_detectSharp()
 	{
 		try
 		{
-			require('sharp');
-			return true;
+			let tmpSharp = require('sharp');
+			// Smoke test: instantiate with raw pixel data to exercise the
+			// native or WASM binding (the constructor validates immediately).
+			tmpSharp(Buffer.from([0, 0, 0]), { raw: { width: 1, height: 1, channels: 3 } });
+
+			// Determine mode: if the native platform package resolves, we
+			// are running native.  Otherwise sharp loaded via WASM.
+			let tmpMode = 'native';
+			try
+			{
+				let tmpPlatform = process.platform + '-' + process.arch;
+				require.resolve('@img/sharp-' + tmpPlatform);
+			}
+			catch (pError)
+			{
+				tmpMode = 'wasm';
+			}
+
+			return { available: true, mode: tmpMode, module: tmpSharp };
 		}
 		catch (pError)
 		{
-			return false;
+			return { available: false, mode: null, module: null };
 		}
 	}
 

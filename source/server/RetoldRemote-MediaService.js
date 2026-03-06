@@ -268,7 +268,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						let tmpIsRawFile = libExtensionMaps.isRawImage(tmpExtension);
 						try
 						{
-							let tmpSharp = require('sharp');
+							let tmpSharp = tmpSelf.capabilities.sharpModule;
 							tmpSharp(tmpFullPath).metadata()
 								.then((pMetadata) =>
 								{
@@ -302,7 +302,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 							// sharp not available after all — try exifr for raw
 							if (tmpIsRawFile)
 							{
-								this._probeRawWithExifr(tmpFullPath, tmpProbe, pResponse, fNext);
+								tmpSelf._probeRawWithExifr(tmpFullPath, tmpProbe, pResponse, fNext);
 								return;
 							}
 						}
@@ -452,7 +452,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		{
 			try
 			{
-				let tmpSharp = require('sharp');
+				let tmpSharp = this.capabilities.sharpModule;
 				tmpSharp(pFullPath)
 					.resize(pWidth, pHeight, { fit: 'inside', withoutEnlargement: true })
 					.toFormat(pFormat === 'webp' ? 'webp' : 'jpeg', { quality: 80 })
@@ -500,7 +500,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		{
 			try
 			{
-				let tmpSharp = require('sharp');
+				let tmpSharp = this.capabilities.sharpModule;
 				let tmpDcraw = libChildProcess.spawn('dcraw', ['-c', '-w', '-h', pFullPath], { timeout: 60000 });
 				let tmpChunks = [];
 
@@ -572,7 +572,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			try
 			{
 				let tmpExifr = require('exifr');
-				let tmpSharp = require('sharp');
+				let tmpSharp = this.capabilities.sharpModule;
 				tmpExifr.thumbnailBuffer(pFullPath)
 					.then((pBuffer) =>
 					{

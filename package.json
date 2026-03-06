@@ -46,7 +46,8 @@
 		"yauzl": "^3.2.0"
 	},
 	"optionalDependencies": {
-		"sharp": "^0.34.5"
+		"sharp": "^0.34.5",
+		"@img/sharp-wasm32": "^0.34.5"
 	},
 	"devDependencies": {
 		"quackage": "^1.0.61"

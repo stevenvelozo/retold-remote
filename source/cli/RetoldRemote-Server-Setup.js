@@ -202,7 +202,14 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Share tool capabilities with the image service so it can
 			// use dcraw and ImageMagick for raw camera format conversion.
+			// Also provides the centrally-verified sharp module reference.
 			tmpImageService.setCapabilities(tmpMediaService.capabilities);
+
+			// Share the verified sharp module with the metadata cache
+			if (tmpMediaService.capabilities.sharpModule)
+			{
+				tmpMetadataCache.setSharpModule(tmpMediaService.capabilities.sharpModule);
+			}
 
 			tmpOrator.initialize(
 		function ()

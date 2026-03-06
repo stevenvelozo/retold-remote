@@ -9196,9 +9196,11 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
  *
  * Used by both client-side providers (GalleryFilterSort) and server-side
  * services (MediaService) to classify files by extension.
- */// Raw camera image formats that require conversion before display.
+ */// Image formats that require server-side conversion before display.
 // These are recognized as images for categorization but need dcraw,
-// ImageMagick, or embedded-preview extraction before Sharp can process them.
+// ImageMagick, or embedded-preview extraction before the browser can
+// render them.  Includes raw camera formats and formats that most
+// browsers cannot display natively (HEIC/HEIF).
 const RawImageExtensions={'nef':true,'nrw':true,// Nikon
 'cr2':true,'cr3':true,'crw':true,// Canon
 'arw':true,'srf':true,'sr2':true,// Sony
@@ -9214,7 +9216,8 @@ const RawImageExtensions={'nef':true,'nrw':true,// Nikon
 'mrw':true,// Minolta
 'erf':true,// Epson
 'raw':true,// Generic
-'dng':true// Adobe DNG (Leica, DJI, etc.)
+'dng':true,// Adobe DNG (Leica, DJI, etc.)
+'heic':true,'heif':true// Apple / MPEG-H (limited browser support)
 };const ImageExtensions={'png':true,'jpg':true,'jpeg':true,'gif':true,'webp':true,'svg':true,'bmp':true,'ico':true,'avif':true,'tiff':true,'tif':true,'heic':true,'heif':true};// Merge raw extensions into ImageExtensions so getCategory() returns 'image'
 for(let tmpKey in RawImageExtensions){ImageExtensions[tmpKey]=true;}const VideoExtensions={'mp4':true,'webm':true,'mov':true,'mkv':true,'avi':true,'wmv':true,'flv':true,'m4v':true,'ogv':true,'mpg':true,'mpeg':true,'mpe':true,'mpv':true,'m2v':true,'ts':true,'mts':true,'m2ts':true,'vob':true,'3gp':true,'3g2':true,'f4v':true,'rm':true,'rmvb':true,'divx':true,'asf':true,'mxf':true,'dv':true,'nsv':true,'nuv':true,'y4m':true,'wtv':true,'swf':true,'dat':true};const AudioExtensions={'mp3':true,'wav':true,'ogg':true,'flac':true,'aac':true,'m4a':true,'wma':true,'oga':true};const DocumentExtensions={'pdf':true,'epub':true,'mobi':true,'doc':true,'docx':true};/**
  * Get the media category for a file extension.
@@ -10812,8 +10815,8 @@ tmpSelf._loading=false;tmpSelf._showSimpleImage(pFilePath);});}/**
 	 *
 	 * @param {string} pFilePath - File path to check
 	 * @returns {boolean}
-	 */_isRawExtension(pFilePath){let tmpExt=(pFilePath||'').replace(/^.*\./,'').toLowerCase();// Common raw camera extensions
-let tmpRawExts={'nef':true,'nrw':true,'cr2':true,'cr3':true,'crw':true,'arw':true,'srf':true,'sr2':true,'raf':true,'orf':true,'rw2':true,'rwl':true,'pef':true,'srw':true,'x3f':true,'3fr':true,'fff':true,'iiq':true,'dcr':true,'kdc':true,'mrw':true,'erf':true,'raw':true,'dng':true};return!!tmpRawExts[tmpExt];}/**
+	 */_isRawExtension(pFilePath){let tmpExt=(pFilePath||'').replace(/^.*\./,'').toLowerCase();// Formats requiring server-side conversion (raw camera + HEIC)
+let tmpRawExts={'nef':true,'nrw':true,'cr2':true,'cr3':true,'crw':true,'arw':true,'srf':true,'sr2':true,'raf':true,'orf':true,'rw2':true,'rwl':true,'pef':true,'srw':true,'x3f':true,'3fr':true,'fff':true,'iiq':true,'dcr':true,'kdc':true,'mrw':true,'erf':true,'raw':true,'dng':true,'heic':true,'heif':true};return!!tmpRawExts[tmpExt];}/**
 	 * Show a message when a raw image cannot be displayed.
 	 */_showRawUnsupported(){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.innerHTML='<div style="padding: 2em; text-align: center; color: #999;">Raw image preview not available.<br>Install dcraw on the server for raw camera format support.</div>';}}/**
 	 * Show the info bar for a simple-image viewer (without tile details).
@@ -11134,7 +11137,7 @@ tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retol
 tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Autoplay audio</span>';tmpHTML+='<input type="checkbox" class="retold-remote-settings-checkbox"'+(tmpRemote.AutoplayAudio?' checked':'')+' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleAutoplay(\'AutoplayAudio\', this.checked)">';tmpHTML+='</div>';// Navigation bar in distraction-free
 tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Nav bar in distraction-free</span>';tmpHTML+='<input type="checkbox" class="retold-remote-settings-checkbox"'+(tmpRemote.DistractionFreeShowNav?' checked':'')+' onchange="pict.views[\'RetoldRemote-SettingsPanel\'].toggleDistractionFreeNav(this.checked)">';tmpHTML+='</div>';tmpHTML+='</div>';// end viewer section
 // Server capabilities
-tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Server Capabilities</div>';tmpHTML+='<div class="retold-remote-settings-capabilities">';let tmpTools=[{key:'sharp',label:'Sharp (image thumbnails)'},{key:'imagemagick',label:'ImageMagick (image fallback)'},{key:'ffmpeg',label:'ffmpeg (video thumbnails)'},{key:'ffprobe',label:'ffprobe (media metadata)'}];for(let i=0;i<tmpTools.length;i++){let tmpTool=tmpTools[i];let tmpAvailable=tmpCapabilities[tmpTool.key];tmpHTML+='<div class="retold-remote-settings-cap-row">';tmpHTML+='<span class="retold-remote-settings-cap-label">'+tmpTool.label+'</span>';tmpHTML+='<span class="'+(tmpAvailable?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpAvailable?'Available':'Not found')+'</span>';tmpHTML+='</div>';}// Hashed filenames status
+tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Server Capabilities</div>';tmpHTML+='<div class="retold-remote-settings-capabilities">';let tmpSharpLabel='Sharp (image thumbnails)';if(tmpCapabilities.sharpMode){tmpSharpLabel='Sharp / '+tmpCapabilities.sharpMode+' (image thumbnails)';}let tmpTools=[{key:'sharp',label:tmpSharpLabel},{key:'imagemagick',label:'ImageMagick (image fallback)'},{key:'ffmpeg',label:'ffmpeg (video thumbnails)'},{key:'ffprobe',label:'ffprobe (media metadata)'}];for(let i=0;i<tmpTools.length;i++){let tmpTool=tmpTools[i];let tmpAvailable=tmpCapabilities[tmpTool.key];tmpHTML+='<div class="retold-remote-settings-cap-row">';tmpHTML+='<span class="retold-remote-settings-cap-label">'+tmpTool.label+'</span>';tmpHTML+='<span class="'+(tmpAvailable?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpAvailable?'Available':'Not found')+'</span>';tmpHTML+='</div>';}// Hashed filenames status
 tmpHTML+='<div class="retold-remote-settings-cap-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--retold-border);">';tmpHTML+='<span class="retold-remote-settings-cap-label">Hashed filenames</span>';tmpHTML+='<span class="'+(tmpRemote.HashedFilenames?'retold-remote-settings-cap-yes':'retold-remote-settings-cap-no')+'">'+(tmpRemote.HashedFilenames?'Enabled':'Disabled')+'</span>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';// end capabilities section
 // AI File Sort
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">AI File Sort</div>';let tmpAISortManager=this.pict.providers['RetoldRemote-AISortManager'];let tmpAISettings=tmpRemote.AISortSettings||{AIEndpoint:'http://localhost:11434',AIModel:'llama3.1',AIProvider:'ollama',NamingTemplate:'{artist}/{album}/{track} - {title}'};// AI Endpoint

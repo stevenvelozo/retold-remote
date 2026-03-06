@@ -188,8 +188,14 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '<div class="retold-remote-settings-section-title">Server Capabilities</div>';
 		tmpHTML += '<div class="retold-remote-settings-capabilities">';
 
+		let tmpSharpLabel = 'Sharp (image thumbnails)';
+		if (tmpCapabilities.sharpMode)
+		{
+			tmpSharpLabel = 'Sharp / ' + tmpCapabilities.sharpMode + ' (image thumbnails)';
+		}
+
 		let tmpTools = [
-			{ key: 'sharp', label: 'Sharp (image thumbnails)' },
+			{ key: 'sharp', label: tmpSharpLabel },
 			{ key: 'imagemagick', label: 'ImageMagick (image fallback)' },
 			{ key: 'ffmpeg', label: 'ffmpeg (video thumbnails)' },
 			{ key: 'ffprobe', label: 'ffprobe (media metadata)' }
