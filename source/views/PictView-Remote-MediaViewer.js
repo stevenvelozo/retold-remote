@@ -61,15 +61,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpHTML += '<div class="retold-remote-viewer-title">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';
-		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9634;</button>';
 		tmpHTML += '</div>';
 
 		// Body with media content
 		tmpHTML += '<div class="retold-remote-viewer-body">';
-
-		// Distraction-free toggle (top-left corner)
-		let tmpDFActive = tmpRemote._distractionFreeMode ? ' active' : '';
-		tmpHTML += '<button class="retold-remote-df-toggle' + tmpDFActive + '" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';
 
 		// Exit hotspot for distraction-free mode (double-click/tap top-left to exit)
 		let tmpDFHotspotDisplay = tmpRemote._distractionFreeMode ? '' : ' style="display:none"';
@@ -139,6 +135,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 			{
 				this._loadEbookViewer(tmpContentURL, pFilePath);
 			}
+
 		}
 
 		// Set up swipe navigation for touch devices
@@ -191,15 +188,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpHTML += '<div class="retold-remote-viewer-title">' + tmpEscapedTitle + '</div>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';
-		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFullscreen()" title="Fullscreen (f)">&#9634;</button>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9634;</button>';
 		tmpHTML += '</div>';
 
 		// Body with the frame image
 		tmpHTML += '<div class="retold-remote-viewer-body">';
-
-		// Distraction-free toggle
-		let tmpDFActive = tmpRemote._distractionFreeMode ? ' active' : '';
-		tmpHTML += '<button class="retold-remote-df-toggle' + tmpDFActive + '" id="RetoldRemote-DF-Toggle" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9673; DF</button>';
 
 		// Exit hotspot for distraction-free mode
 		let tmpDFHotspotDisplay = tmpRemote._distractionFreeMode ? '' : ' style="display:none"';
@@ -352,28 +345,12 @@ class RetoldRemoteMediaViewerView extends libPictView
 	}
 
 	/**
-	 * Sync the distraction-free toggle button and exit hotspot
-	 * with the current mode state.
+	 * Sync the exit hotspot with the current distraction-free mode state.
 	 */
 	_updateDFControls()
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		let tmpActive = tmpRemote._distractionFreeMode || false;
-
-		let tmpToggle = document.getElementById('RetoldRemote-DF-Toggle');
-		if (tmpToggle)
-		{
-			if (tmpActive)
-			{
-				tmpToggle.classList.add('active');
-				tmpToggle.style.display = 'none';
-			}
-			else
-			{
-				tmpToggle.classList.remove('active');
-				tmpToggle.style.display = '';
-			}
-		}
 
 		let tmpHotspot = document.getElementById('RetoldRemote-DF-ExitHotspot');
 		if (tmpHotspot)

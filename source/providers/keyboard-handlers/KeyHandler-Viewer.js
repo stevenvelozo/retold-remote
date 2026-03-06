@@ -132,7 +132,7 @@ function handleViewerKey(pGalleryNav, pEvent)
 
 		case 'f':
 			pEvent.preventDefault();
-			pGalleryNav._toggleFullscreen();
+			pGalleryNav._toggleDistractionFree();
 			break;
 
 		case 'i':

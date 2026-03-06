@@ -18,7 +18,13 @@ module.exports =
 	_buildEbookHTML: function _buildEbookHTML(pURL, pFileName, pFilePath)
 	{
 		return '<div class="retold-remote-ebook-wrap">'
-			+ '<div class="retold-remote-ebook-toc collapsed" id="RetoldRemote-EbookTOC"></div>'
+			+ '<div class="retold-remote-ebook-toc collapsed" id="RetoldRemote-EbookTOC">'
+			+ '<div class="retold-remote-ebook-toc-header">'
+			+ '<span>Contents</span>'
+			+ '<button class="retold-remote-ebook-toc-close" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleEbookTOC()" title="Close">&times;</button>'
+			+ '</div>'
+			+ '<div class="retold-remote-ebook-toc-items" id="RetoldRemote-EbookTOCItems"></div>'
+			+ '</div>'
 			+ '<div class="retold-remote-ebook-reader">'
 			+ '<div class="retold-remote-ebook-content" id="RetoldRemote-EbookContent">'
 			+ '<div class="retold-remote-ebook-loading">Loading ebook...</div>'
@@ -205,8 +211,8 @@ module.exports =
 	 */
 	_renderEbookTOC: function _renderEbookTOC(pToc)
 	{
-		let tmpTocEl = document.getElementById('RetoldRemote-EbookTOC');
-		if (!tmpTocEl || !pToc)
+		let tmpTocItemsEl = document.getElementById('RetoldRemote-EbookTOCItems');
+		if (!tmpTocItemsEl || !pToc)
 		{
 			return;
 		}
@@ -234,7 +240,7 @@ module.exports =
 		};
 
 		tmpBuildItems(pToc, 0);
-		tmpTocEl.innerHTML = tmpHTML;
+		tmpTocItemsEl.innerHTML = tmpHTML;
 	},
 
 	/**
