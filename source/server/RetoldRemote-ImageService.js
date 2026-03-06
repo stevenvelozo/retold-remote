@@ -66,6 +66,10 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 		this._sharp = null;
 
+		// Track in-flight DZI generation requests to coalesce concurrent requests
+		// for the same image instead of regenerating tiles in parallel.
+		this._dziInFlight = new Map();
+
 		// Try to load sharp
 		try
 		{
@@ -172,7 +176,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		this.fable.log.info(`Generating image preview: ${pRelPath} (max ${tmpMaxDim}px)`);
 
 		// Get metadata first to check if downscaling is needed
-		this._sharp(pAbsPath).metadata()
+		this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
 				let tmpOrigWidth = pMetadata.width;
@@ -215,7 +219,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				let tmpNewHeight = Math.round(tmpOrigHeight * tmpScale);
 
 				// Generate the preview
-				tmpSelf._sharp(pAbsPath)
+				tmpSelf._sharp(pAbsPath, { limitInputPixels: false })
 					.resize(tmpNewWidth, tmpNewHeight, { fit: 'inside', withoutEnlargement: true })
 					.jpeg({ quality: tmpSelf.options.PreviewQuality })
 					.toFile(tmpOutputPath)
@@ -313,6 +317,16 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			}
 		}
 
+		// If another request is already generating tiles for this file,
+		// queue our callback to receive the same result.
+		if (this._dziInFlight.has(tmpCacheKey))
+		{
+			this.fable.log.info(`DZI tiles already generating, queuing: ${pRelPath}`);
+			this._dziInFlight.get(tmpCacheKey).push(fCallback);
+			return;
+		}
+		this._dziInFlight.set(tmpCacheKey, []);
+
 		// Ensure cache directory exists
 		if (!libFs.existsSync(tmpCacheDir))
 		{
@@ -322,7 +336,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		this.fable.log.info(`Generating DZI tiles: ${pRelPath}`);
 
 		// Get metadata first
-		this._sharp(pAbsPath).metadata()
+		this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
 				let tmpTileSize = tmpSelf.options.DziTileSize;
@@ -357,10 +371,10 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 					tmpFormatOptions = { compressionLevel: 6 };
 				}
 
-				tmpSelf._sharp(pAbsPath)
+				tmpSelf._sharp(pAbsPath, { limitInputPixels: false })
 					.toFormat(tmpFormat, tmpFormatOptions)
 					.tile(tmpSharpOptions)
-					.toFile(tmpOutputBase + '.dzi')
+					.toFile(tmpOutputBase)
 					.then((pInfo) =>
 					{
 						let tmpResult =
@@ -388,16 +402,39 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 						}
 
 						tmpSelf.fable.log.info(`Generated DZI tiles: ${pRelPath} (${pMetadata.width}×${pMetadata.height})`);
+
+						// Notify queued waiters
+						let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
+						tmpSelf._dziInFlight.delete(tmpCacheKey);
+						for (let i = 0; i < tmpWaiters.length; i++)
+						{
+							tmpWaiters[i](null, tmpResult);
+						}
+
 						return fCallback(null, tmpResult);
 					})
 					.catch((pError) =>
 					{
-						return fCallback(new Error('DZI tile generation failed: ' + pError.message));
+						let tmpErr = new Error('DZI tile generation failed: ' + pError.message);
+						let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
+						tmpSelf._dziInFlight.delete(tmpCacheKey);
+						for (let i = 0; i < tmpWaiters.length; i++)
+						{
+							tmpWaiters[i](tmpErr);
+						}
+						return fCallback(tmpErr);
 					});
 			})
 			.catch((pError) =>
 			{
-				return fCallback(new Error('Could not read image metadata: ' + pError.message));
+				let tmpErr = new Error('Could not read image metadata: ' + pError.message);
+				let tmpWaiters = tmpSelf._dziInFlight.get(tmpCacheKey) || [];
+				tmpSelf._dziInFlight.delete(tmpCacheKey);
+				for (let i = 0; i < tmpWaiters.length; i++)
+				{
+					tmpWaiters[i](tmpErr);
+				}
+				return fCallback(tmpErr);
 			});
 	}
 
@@ -541,7 +578,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			return fCallback(null, { IsLarge: false, Width: 0, Height: 0 });
 		}
 
-		this._sharp(pAbsPath).metadata()
+		this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
 				let tmpLongest = Math.max(pMetadata.width || 0, pMetadata.height || 0);

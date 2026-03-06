@@ -153,6 +153,99 @@ class RetoldRemoteFileInfoPanel extends libPictView
 		this._fetchMetadata(this._currentPath, true);
 	}
 
+	/**
+	 * Extract just the file extension (e.g. ".jpg") from a path.
+	 * Returns empty string if no extension found.
+	 */
+	_getExtension(pPath)
+	{
+		let tmpFileName = (pPath || '').split('/').pop() || '';
+		let tmpDotIndex = tmpFileName.lastIndexOf('.');
+		if (tmpDotIndex < 1)
+		{
+			return '';
+		}
+		return tmpFileName.substring(tmpDotIndex);
+	}
+
+	/**
+	 * Get the hash for the current file from the provider or gallery item.
+	 */
+	_getHashForCurrentFile()
+	{
+		let tmpProvider = this.pict.providers['RetoldRemote'];
+		if (tmpProvider && typeof (tmpProvider.getHashForPath) === 'function')
+		{
+			let tmpHash = tmpProvider.getHashForPath(this._currentPath);
+			if (tmpHash)
+			{
+				return tmpHash;
+			}
+		}
+
+		// Fall back to gallery item
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpItems = tmpRemote.GalleryItems || [];
+		for (let i = 0; i < tmpItems.length; i++)
+		{
+			if (tmpItems[i].Path === this._currentPath && tmpItems[i].Hash)
+			{
+				return tmpItems[i].Hash;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Trigger a browser download for a given URL with a specified filename.
+	 */
+	_triggerDownload(pURL, pFilename)
+	{
+		let tmpAnchor = document.createElement('a');
+		tmpAnchor.href = pURL;
+		tmpAnchor.download = pFilename;
+		tmpAnchor.style.display = 'none';
+		document.body.appendChild(tmpAnchor);
+		tmpAnchor.click();
+		document.body.removeChild(tmpAnchor);
+	}
+
+	/**
+	 * Download the current file with its original filename.
+	 */
+	downloadFile()
+	{
+		if (!this._currentPath)
+		{
+			return;
+		}
+		let tmpFileName = this._currentPath.split('/').pop() || this._currentPath;
+		let tmpURL = '/content/' + encodeURIComponent(this._currentPath);
+		this._triggerDownload(tmpURL, tmpFileName);
+	}
+
+	/**
+	 * Download the current file with a hashed filename (hash + original extension).
+	 */
+	downloadHashedFile()
+	{
+		if (!this._currentPath)
+		{
+			return;
+		}
+		let tmpHash = this._getHashForCurrentFile();
+		if (!tmpHash)
+		{
+			this.fable.log.warn('No hash available for file: ' + this._currentPath);
+			return;
+		}
+		let tmpExt = this._getExtension(this._currentPath);
+		let tmpHashedName = tmpHash + tmpExt;
+		let tmpURL = '/content/' + encodeURIComponent(this._currentPath);
+		this._triggerDownload(tmpURL, tmpHashedName);
+	}
+
 	// ---------------------------------------------------------------
 	// Rendering helpers
 	// ---------------------------------------------------------------
@@ -233,6 +326,8 @@ class RetoldRemoteFileInfoPanel extends libPictView
 		}
 
 		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].extractMetadata()">Extract Metadata</button>`;
+		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].downloadFile()" style="margin-top: 4px;">Download File</button>`;
+		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].downloadHashedFile()" style="margin-top: 4px;">Download Hashed File</button>`;
 
 		tmpBody.innerHTML = tmpHTML;
 	}
@@ -569,6 +664,8 @@ class RetoldRemoteFileInfoPanel extends libPictView
 
 		// Re-extract button at bottom
 		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].extractMetadata()" style="margin-top: 8px;">Re-extract Metadata</button>`;
+		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].downloadFile()" style="margin-top: 4px;">Download File</button>`;
+		tmpHTML += `<button class="retold-remote-info-extract-btn" onclick="pict.views['RetoldRemote-FileInfoPanel'].downloadHashedFile()" style="margin-top: 4px;">Download Hashed File</button>`;
 
 		tmpBody.innerHTML = tmpHTML;
 	}

@@ -22,6 +22,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._osdViewer = null;
 		this._dziData = null;
 		this._osdLoaded = false;
+		this._loading = false;
 	}
 
 	/**
@@ -35,6 +36,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		tmpRemote.ActiveMode = 'image-explorer';
 		this._currentPath = pFilePath;
 		this._dziData = null;
+		this._loading = false;
 
 		// Clean up existing viewer
 		if (this._osdViewer)
@@ -155,6 +157,13 @@ class RetoldRemoteImageExplorerView extends libPictView
 	 */
 	_probeAndShow(pFilePath)
 	{
+		// Guard against duplicate requests (e.g. rapid re-renders)
+		if (this._loading)
+		{
+			return;
+		}
+		this._loading = true;
+
 		let tmpSelf = this;
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
@@ -167,6 +176,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 				if (!pResult || !pResult.Success)
 				{
 					// sharp might not be available — fall back to simple image source
+					tmpSelf._loading = false;
 					tmpSelf._showSimpleImage(pFilePath);
 					return;
 				}
@@ -181,6 +191,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 				else
 				{
 					// Regular image — use simple image source (no tile generation)
+					tmpSelf._loading = false;
 					tmpSelf._dziData = { Width: pResult.OrigWidth, Height: pResult.OrigHeight };
 					tmpSelf._showSimpleImageInfo(pResult.OrigWidth, pResult.OrigHeight);
 					tmpSelf._initSimpleViewer(pFilePath);
@@ -189,6 +200,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 			.catch(() =>
 			{
 				// Probe failed — fall back to simple image source
+				tmpSelf._loading = false;
 				tmpSelf._showSimpleImage(pFilePath);
 			});
 	}
@@ -337,9 +349,12 @@ class RetoldRemoteImageExplorerView extends libPictView
 			.then((pResponse) => pResponse.json())
 			.then((pResult) =>
 			{
+				tmpSelf._loading = false;
+
 				if (!pResult || !pResult.Success)
 				{
-					tmpSelf._showError(pResult ? pResult.Error : 'DZI generation failed.');
+					// DZI generation failed — fall back to direct image mode
+					tmpSelf._showSimpleImage(pFilePath);
 					return;
 				}
 
@@ -349,7 +364,9 @@ class RetoldRemoteImageExplorerView extends libPictView
 			})
 			.catch((pError) =>
 			{
-				tmpSelf._showError('Failed to generate tiles: ' + pError.message);
+				tmpSelf._loading = false;
+				// Network or server error — fall back to direct image mode
+				tmpSelf._showSimpleImage(pFilePath);
 			});
 	}
 
