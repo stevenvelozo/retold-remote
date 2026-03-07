@@ -2371,6 +2371,16 @@ html, body
 {
 	color: var(--retold-text-secondary);
 }
+.retold-remote-iex-tiling-status
+{
+	color: var(--retold-accent);
+	animation: retold-pulse 1.5s ease-in-out infinite;
+}
+@keyframes retold-pulse
+{
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
 .retold-remote-iex-body
 {
 	flex: 1;

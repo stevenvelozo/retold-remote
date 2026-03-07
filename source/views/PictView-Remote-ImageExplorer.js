@@ -205,8 +205,8 @@ class RetoldRemoteImageExplorerView extends libPictView
 
 				if (tmpLongest > 4096)
 				{
-					// Large image — use DZI tiles for efficient pan+zoom
-					tmpSelf._generateAndShowTiles(pFilePath, tmpPathParam);
+					// Large image — show the preview immediately, then generate DZI tiles
+					tmpSelf._generateAndShowTiles(pFilePath, tmpPathParam, pResult);
 				}
 				else
 				{
@@ -403,15 +403,34 @@ class RetoldRemoteImageExplorerView extends libPictView
 	}
 
 	/**
-	 * Request DZI tile generation from the server, then initialize the viewer.
+	 * Show the preview image immediately, then generate DZI tiles and swap.
 	 *
-	 * @param {string} pFilePath  - Relative file path
-	 * @param {string} pPathParam - URL-encoded path parameter
+	 * @param {string} pFilePath    - Relative file path
+	 * @param {string} pPathParam   - URL-encoded path parameter
+	 * @param {object} pProbeResult - Result from the image-preview probe
 	 */
-	_generateAndShowTiles(pFilePath, pPathParam)
+	_generateAndShowTiles(pFilePath, pPathParam, pProbeResult)
 	{
 		let tmpSelf = this;
 
+		// 1. Show the preview image right away so the user sees something
+		let tmpPreviewURL = null;
+		if (pProbeResult && pProbeResult.CacheKey && pProbeResult.OutputFilename)
+		{
+			tmpPreviewURL = '/api/media/image-preview-file/' +
+				encodeURIComponent(pProbeResult.CacheKey) + '/' +
+				encodeURIComponent(pProbeResult.OutputFilename);
+		}
+
+		if (tmpPreviewURL)
+		{
+			// Show dimensions info immediately (from probe data)
+			this._dziData = { Width: pProbeResult.OrigWidth, Height: pProbeResult.OrigHeight };
+			this._showPreviewInfo(pProbeResult.OrigWidth, pProbeResult.OrigHeight);
+			this._initSimpleViewer(null, tmpPreviewURL);
+		}
+
+		// 2. Generate DZI tiles in the background
 		fetch('/api/media/dzi?path=' + pPathParam)
 			.then((pResponse) => pResponse.json())
 			.then((pResult) =>
@@ -420,21 +439,72 @@ class RetoldRemoteImageExplorerView extends libPictView
 
 				if (!pResult || !pResult.Success)
 				{
-					// DZI generation failed — fall back to direct image mode
-					tmpSelf._showSimpleImage(pFilePath);
+					// DZI generation failed — the preview is already showing
+					if (!tmpPreviewURL)
+					{
+						tmpSelf._showSimpleImage(pFilePath);
+					}
 					return;
 				}
 
+				// 3. Swap the preview for the full DZI tile viewer
 				tmpSelf._dziData = pResult;
 				tmpSelf._showInfo(pResult);
+
+				// Destroy the preview viewer and replace with tile viewer
+				if (tmpSelf._osdViewer)
+				{
+					try { tmpSelf._osdViewer.destroy(); } catch (e) { /* ignore */ }
+					tmpSelf._osdViewer = null;
+				}
+
+				// Clear the viewer div for fresh OSD init
+				let tmpViewerDiv = document.getElementById('RetoldRemote-IEX-Viewer');
+				if (tmpViewerDiv)
+				{
+					tmpViewerDiv.innerHTML = '';
+				}
+
 				tmpSelf._initViewer(pResult);
 			})
 			.catch((pError) =>
 			{
 				tmpSelf._loading = false;
-				// Network or server error — fall back to direct image mode
-				tmpSelf._showSimpleImage(pFilePath);
+				// Tiles failed — the preview is already showing, leave it
+				if (!tmpPreviewURL)
+				{
+					tmpSelf._showSimpleImage(pFilePath);
+				}
 			});
+	}
+
+	/**
+	 * Show the info bar while the preview is displayed and tiles are generating.
+	 *
+	 * @param {number} pWidth  - Original image width
+	 * @param {number} pHeight - Original image height
+	 */
+	_showPreviewInfo(pWidth, pHeight)
+	{
+		let tmpInfoBar = document.getElementById('RetoldRemote-IEX-Info');
+		if (!tmpInfoBar)
+		{
+			return;
+		}
+
+		let tmpHTML = '';
+		tmpHTML += '<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Dimensions:</span> ';
+		tmpHTML += '<span class="retold-remote-iex-info-value">' + pWidth + ' \u00d7 ' + pHeight + ' px</span></span>';
+
+		let tmpMegapixels = ((pWidth * pHeight) / 1000000).toFixed(1);
+		tmpHTML += '<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Size:</span> ';
+		tmpHTML += '<span class="retold-remote-iex-info-value">' + tmpMegapixels + ' MP</span></span>';
+
+		tmpHTML += '<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Mode:</span> ';
+		tmpHTML += '<span class="retold-remote-iex-info-value retold-remote-iex-tiling-status">Preview \u2014 generating tiles\u2026</span></span>';
+
+		tmpInfoBar.innerHTML = tmpHTML;
+		tmpInfoBar.style.display = '';
 	}
 
 	/**
@@ -461,6 +531,9 @@ class RetoldRemoteImageExplorerView extends libPictView
 		let tmpMegapixels = ((pDziData.Width * pDziData.Height) / 1000000).toFixed(1);
 		tmpHTML += '<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Size:</span> ';
 		tmpHTML += '<span class="retold-remote-iex-info-value">' + tmpMegapixels + ' MP</span></span>';
+
+		tmpHTML += '<span class="retold-remote-iex-info-item"><span class="retold-remote-iex-info-label">Mode:</span> ';
+		tmpHTML += '<span class="retold-remote-iex-info-value">Tiled</span></span>';
 
 		tmpInfoBar.innerHTML = tmpHTML;
 		tmpInfoBar.style.display = '';

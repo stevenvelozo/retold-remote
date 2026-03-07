@@ -287,7 +287,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						{
 							Enabled: true,
 							Has7z: tmpArchiveService.has7z,
-							NativeZipOnly: !tmpArchiveService.has7z,
+							HasNativeZip: tmpArchiveService.hasYauzl,
+							HasNativeRar: tmpArchiveService.hasUnrarJs,
 							SupportedExtensions: tmpArchiveService.getSupportedExtensions()
 						}
 					});

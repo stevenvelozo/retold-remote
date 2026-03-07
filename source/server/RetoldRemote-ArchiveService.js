@@ -28,6 +28,9 @@ const _ArchiveExtensions = ['.tar.gz', '.tar.bz2', '.tar.xz', '.tgz', '.zip', '.
 // Extensions that the native yauzl fallback can handle (cbz is zip-based)
 const _NativeZipExtensions = { '.zip': true, '.cbz': true };
 
+// Extensions that the native node-unrar-js fallback can handle (cbr is rar-based)
+const _NativeRarExtensions = { '.rar': true, '.cbr': true };
+
 // Quick lookup set for isArchiveFile()
 const _ArchiveExtensionSet = {};
 for (let i = 0; i < _ArchiveExtensions.length; i++)
@@ -101,7 +104,20 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 			this._yauzl = null;
 		}
 
-		this.fable.log.info(`Archive Service: 7z=${this.has7z}, yauzl=${this.hasYauzl}`);
+		// Try to load node-unrar-js (Emscripten port of official unrar)
+		this.hasUnrarJs = false;
+		this._unrarJs = null;
+		try
+		{
+			this._unrarJs = require('node-unrar-js');
+			this.hasUnrarJs = true;
+		}
+		catch (pError)
+		{
+			this._unrarJs = null;
+		}
+
+		this.fable.log.info(`Archive Service: 7z=${this.has7z}, yauzl=${this.hasYauzl}, unrar-js=${this.hasUnrarJs}`);
 	}
 
 	// ──────────────────────────────────────────────
@@ -183,8 +199,17 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 			// 7z can handle all archive types
 			return this.isArchiveFile(pExtension);
 		}
-		// yauzl only handles .zip
-		return this.hasYauzl && !!_NativeZipExtensions[pExtension.toLowerCase()];
+		let tmpExt = pExtension.toLowerCase();
+		// yauzl handles .zip/.cbz, node-unrar-js handles .rar/.cbr
+		if (this.hasYauzl && _NativeZipExtensions[tmpExt])
+		{
+			return true;
+		}
+		if (this.hasUnrarJs && _NativeRarExtensions[tmpExt])
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -198,7 +223,16 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 		{
 			return _ArchiveExtensions.slice();
 		}
-		return Object.keys(_NativeZipExtensions);
+		let tmpExtensions = [];
+		if (this.hasYauzl)
+		{
+			tmpExtensions = tmpExtensions.concat(Object.keys(_NativeZipExtensions));
+		}
+		if (this.hasUnrarJs)
+		{
+			tmpExtensions = tmpExtensions.concat(Object.keys(_NativeRarExtensions));
+		}
+		return tmpExtensions;
 	}
 
 	/**
@@ -284,9 +318,19 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 		}
 
 		// Get the full listing, then filter to the requested directory
-		let tmpListFn = this.has7z
-			? this._list7z.bind(this)
-			: this._listYauzl.bind(this);
+		let tmpListFn = null;
+		if (this.has7z)
+		{
+			tmpListFn = this._list7z.bind(this);
+		}
+		else if (this.hasUnrarJs && _NativeRarExtensions[tmpExtension])
+		{
+			tmpListFn = this._listUnrarJs.bind(this);
+		}
+		else
+		{
+			tmpListFn = this._listYauzl.bind(this);
+		}
 
 		tmpListFn(pArchiveAbsPath,
 			(pError, pAllEntries) =>
@@ -600,6 +644,50 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 			});
 	}
 
+	/**
+	 * List archive contents using node-unrar-js (rar-only fallback).
+	 *
+	 * @param {string}   pArchiveAbsPath - Absolute path to the rar file
+	 * @param {Function} fCallback       - Callback(pError, pEntries)
+	 */
+	_listUnrarJs(pArchiveAbsPath, fCallback)
+	{
+		if (!this._unrarJs)
+		{
+			return fCallback(new Error('node-unrar-js is not available.'));
+		}
+
+		try
+		{
+			let tmpBuf = libFs.readFileSync(pArchiveAbsPath);
+			let tmpExtractor = this._unrarJs.createExtractorFromData({ data: tmpBuf });
+			let tmpList = tmpExtractor.getFileList();
+			let tmpHeaders = [...tmpList.fileHeaders];
+
+			let tmpEntries = [];
+			for (let i = 0; i < tmpHeaders.length; i++)
+			{
+				let tmpHeader = tmpHeaders[i];
+				let tmpPath = tmpHeader.name.replace(/\\/g, '/');
+				let tmpIsDir = tmpHeader.flags && tmpHeader.flags.directory;
+
+				tmpEntries.push(
+				{
+					_innerPath: tmpPath,
+					Type: tmpIsDir ? 'folder' : 'file',
+					Size: tmpIsDir ? 0 : (tmpHeader.unpSize || 0),
+					Modified: tmpHeader.time ? new Date(tmpHeader.time).toISOString() : ''
+				});
+			}
+
+			return fCallback(null, tmpEntries);
+		}
+		catch (pError)
+		{
+			return fCallback(new Error(`RAR listing failed: ${pError.message}`));
+		}
+	}
+
 	// ──────────────────────────────────────────────
 	// Extraction
 	// ──────────────────────────────────────────────
@@ -668,6 +756,10 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 		if (this.has7z)
 		{
 			return this._extract7z(pArchiveAbsPath, pInnerFilePath, tmpOutputPath, fCallback);
+		}
+		else if (this.hasUnrarJs && _NativeRarExtensions[tmpExtension])
+		{
+			return this._extractUnrarJs(pArchiveAbsPath, pInnerFilePath, tmpOutputPath, fCallback);
 		}
 		else if (this.hasYauzl && _NativeZipExtensions[tmpExtension])
 		{
@@ -817,6 +909,63 @@ class RetoldRemoteArchiveService extends libFableServiceProviderBase
 
 				pZipFile.readEntry();
 			});
+	}
+
+	/**
+	 * Extract a single file from a RAR archive using node-unrar-js.
+	 *
+	 * @param {string}   pArchiveAbsPath - Absolute path to the rar file
+	 * @param {string}   pInnerFilePath  - Path within the rar archive
+	 * @param {string}   pOutputPath     - Absolute destination path
+	 * @param {Function} fCallback       - Callback(pError, pExtractedPath)
+	 */
+	_extractUnrarJs(pArchiveAbsPath, pInnerFilePath, pOutputPath, fCallback)
+	{
+		if (!this._unrarJs)
+		{
+			return fCallback(new Error('node-unrar-js is not available.'));
+		}
+
+		try
+		{
+			let tmpBuf = libFs.readFileSync(pArchiveAbsPath);
+			let tmpExtractor = this._unrarJs.createExtractorFromData({ data: tmpBuf });
+
+			// Normalize the target path (RAR uses backslashes internally)
+			let tmpTargetNormalized = pInnerFilePath.replace(/\\/g, '/');
+
+			let tmpExtracted = tmpExtractor.extract({ files: [pInnerFilePath] });
+			let tmpFiles = [...tmpExtracted.files];
+
+			// Also try with backslash-normalized path if no match
+			if (tmpFiles.length === 0 || !tmpFiles[0].extraction)
+			{
+				let tmpBackslashPath = pInnerFilePath.replace(/\//g, '\\');
+				tmpExtracted = tmpExtractor.extract({ files: [tmpBackslashPath] });
+				tmpFiles = [...tmpExtracted.files];
+			}
+
+			if (tmpFiles.length === 0 || !tmpFiles[0].extraction)
+			{
+				return fCallback(new Error(`File not found in RAR archive: ${pInnerFilePath}`));
+			}
+
+			let tmpData = tmpFiles[0].extraction;
+
+			// Ensure parent directory exists
+			let tmpParentDir = libPath.dirname(pOutputPath);
+			if (!libFs.existsSync(tmpParentDir))
+			{
+				libFs.mkdirSync(tmpParentDir, { recursive: true });
+			}
+
+			libFs.writeFileSync(pOutputPath, Buffer.from(tmpData));
+			return fCallback(null, pOutputPath);
+		}
+		catch (pError)
+		{
+			return fCallback(new Error(`RAR extraction failed: ${pError.message}`));
+		}
 	}
 }
 
