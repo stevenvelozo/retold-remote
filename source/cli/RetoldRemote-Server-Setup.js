@@ -68,6 +68,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 		APIServerPort: tmpPort,
 		ContentPath: tmpContentPath,
 		ParimeBinaryStorageRoot: tmpCacheRoot,
+		'Bibliograph-Storage-FS-Path': libPath.join(tmpCacheRoot, 'data'),
 		ParimeBinarySharding:
 		{
 			Enabled: true,
@@ -280,6 +281,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						CacheStorage:
 						{
 							Root: tmpCacheRoot,
+							DataPath: tmpFable.settings['Bibliograph-Storage-FS-Path'],
 							Remote: tmpParimeCache.isRemote,
 							Sharding: true
 						},
