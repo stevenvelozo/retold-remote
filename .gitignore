@@ -3,6 +3,8 @@ package-lock.json
 
 # Test Environment
 debug/testenv
+debug/tmp
+debug/dist
 
 # Quackage takes care of these for me!
 .babelrc

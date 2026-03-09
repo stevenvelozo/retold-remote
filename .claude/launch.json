@@ -4,7 +4,7 @@
     {
       "name": "retold-remote",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["source/cli/RetoldRemote-CLI-Run.js", "serve", ".", "-p", "7500"],
+      "runtimeArgs": ["server.js"],
       "port": 7500
     }
   ]
