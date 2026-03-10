@@ -563,6 +563,12 @@ class GalleryNavigationProvider extends libPictProvider
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
 		let tmpViewerContainer = document.getElementById('RetoldRemote-Viewer-Container');
 
+		// Stop any playing video/audio and release resources before hiding the viewer
+		let tmpVideo = document.querySelector('#RetoldRemote-Viewer-Container video');
+		let tmpAudio = document.querySelector('#RetoldRemote-Viewer-Container audio');
+		if (tmpVideo) { tmpVideo.pause(); tmpVideo.removeAttribute('src'); tmpVideo.load(); }
+		if (tmpAudio) { tmpAudio.pause(); tmpAudio.removeAttribute('src'); tmpAudio.load(); }
+
 		if (tmpGalleryContainer) tmpGalleryContainer.style.display = '';
 		if (tmpViewerContainer) tmpViewerContainer.style.display = 'none';
 

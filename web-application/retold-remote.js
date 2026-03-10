@@ -3332,7 +3332,7 @@ pView._updateImagePreviews(pSegmentIndex);};/**
 	 * @param {number} pSegmentIndex - The internal segment index
 	 */pView._updateImagePreviews=function _updateImagePreviews(pSegmentIndex){let tmpPreviewEl=document.getElementById(`PictMDE-ImagePreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-images');return;}let tmpContent=tmpEditor.state.doc.toString();// Match markdown image syntax: ![alt text](url)
 let tmpImageRegex=/!\[([^\]]*)\]\(([^)]+)\)/g;let tmpMatches=[];let tmpMatch;while((tmpMatch=tmpImageRegex.exec(tmpContent))!==null){tmpMatches.push({alt:tmpMatch[1]||'image',url:tmpMatch[2]});}if(tmpMatches.length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-images');return;}// Build preview HTML
-let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');let tmpURL=tmpMatches[i].url.replace(/&/g,'&amp;').replace(/"/g,'&quot;');tmpHTML+=`<div class="pict-mde-image-preview-item"><img src="${tmpURL}" alt="${tmpAlt}" /><span class="pict-mde-image-preview-label">${tmpAlt}</span></div>`;}tmpPreviewEl.innerHTML=tmpHTML;tmpPreviewEl.classList.add('pict-mde-has-images');};/**
+let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');let tmpResolvedURL=pView._resolveImageURL(tmpMatches[i].url);let tmpURL=tmpResolvedURL.replace(/&/g,'&amp;').replace(/"/g,'&quot;');tmpHTML+=`<div class="pict-mde-image-preview-item"><img src="${tmpURL}" alt="${tmpAlt}" /><span class="pict-mde-image-preview-label">${tmpAlt}</span></div>`;}tmpPreviewEl.innerHTML=tmpHTML;tmpPreviewEl.classList.add('pict-mde-has-images');};/**
 	 * Wire drag-and-drop events for image files on a segment editor container.
 	 *
 	 * These events are separate from the segment-reorder drag events.
@@ -3374,7 +3374,8 @@ if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTrans
 	 */pView._updateRichPreviews=function _updateRichPreviews(pSegmentIndex){if(!pView.options.EnableRichPreview){return;}let tmpPreviewEl=document.getElementById(`PictMDE-RichPreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}let tmpContent=tmpEditor.state.doc.toString();if(!tmpContent||tmpContent.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Use pict-section-content's provider to parse the raw markdown into HTML
 let tmpProvider=pView._getContentProvider();let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpContent);if(!tmpRenderedHTML||tmpRenderedHTML.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Wrap the rendered HTML in a pict-content container so that
 // pict-section-content's CSS classes take effect
-let tmpPreviewID=`PictMDE-RichPreviewBody-${pSegmentIndex}`;tmpPreviewEl.innerHTML=`<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Bump generation counter for stale-render protection (mermaid is async)
+let tmpPreviewID=`PictMDE-RichPreviewBody-${pSegmentIndex}`;tmpPreviewEl.innerHTML=`<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Resolve relative image URLs in the rendered HTML using ImageBaseURL
+if(pView.options.ImageBaseURL){let tmpImages=tmpPreviewEl.querySelectorAll('img');for(let i=0;i<tmpImages.length;i++){let tmpSrc=tmpImages[i].getAttribute('src');if(tmpSrc){let tmpResolved=pView._resolveImageURL(tmpSrc);if(tmpResolved!==tmpSrc){tmpImages[i].setAttribute('src',tmpResolved);}}}}// Bump generation counter for stale-render protection (mermaid is async)
 let tmpGeneration=(pView._richPreviewGenerations[pSegmentIndex]||0)+1;pView._richPreviewGenerations[pSegmentIndex]=tmpGeneration;// Post-render: call mermaid.run() for mermaid diagram elements
 pView._postRenderMermaid(tmpPreviewID,pSegmentIndex,tmpGeneration);// Post-render: call katex.render() for KaTeX math elements
 pView._postRenderKaTeX(tmpPreviewID);};/**
@@ -3414,7 +3415,8 @@ pView._marshalAllEditorsToData();// Combine all segments into a single markdown 
 let tmpSegments=pView._getSegmentsFromData();let tmpCombinedContent='';if(tmpSegments&&tmpSegments.length>0){let tmpParts=[];for(let i=0;i<tmpSegments.length;i++){tmpParts.push(tmpSegments[i].Content||'');}tmpCombinedContent=tmpParts.join('\n\n');}// Destroy existing CodeMirror editors
 for(let tmpIdx in pView._segmentEditors){if(pView._segmentEditors[tmpIdx]){pView._segmentEditors[tmpIdx].destroy();}}pView._segmentEditors={};// Render the combined markdown via pict-section-content
 let tmpProvider=pView._getContentProvider();let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpCombinedContent);// Build the rendered view container
-let tmpRenderedViewID='PictMDE-RenderedView';tmpContainer.innerHTML=`<div class="pict-mde-rendered-view" id="${tmpRenderedViewID}"><div class="pict-content">${tmpRenderedHTML||''}</div></div>`;tmpContainer.classList.add('pict-mde-rendered-mode');// Bump generation for stale-render protection
+let tmpRenderedViewID='PictMDE-RenderedView';tmpContainer.innerHTML=`<div class="pict-mde-rendered-view" id="${tmpRenderedViewID}"><div class="pict-content">${tmpRenderedHTML||''}</div></div>`;tmpContainer.classList.add('pict-mde-rendered-mode');// Resolve relative image URLs in the rendered HTML using ImageBaseURL
+if(pView.options.ImageBaseURL){let tmpImages=tmpContainer.querySelectorAll('.pict-mde-rendered-view img');for(let i=0;i<tmpImages.length;i++){let tmpSrc=tmpImages[i].getAttribute('src');if(tmpSrc){let tmpResolved=pView._resolveImageURL(tmpSrc);if(tmpResolved!==tmpSrc){tmpImages[i].setAttribute('src',tmpResolved);}}}}// Bump generation for stale-render protection
 pView._renderedViewGeneration++;let tmpGeneration=pView._renderedViewGeneration;// Post-render hooks for mermaid diagrams and KaTeX equations
 let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-content`);if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
 	 * Switch back from rendered view to the editing view: rebuild the
@@ -3445,7 +3447,11 @@ let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-
 // code, mermaid diagrams, KaTeX equations, tables, etc. via pict-section-content).
 // Requires the consumer to load the mermaid and/or katex libraries via CDN
 // for diagram/equation rendering; code highlighting works without CDN scripts.
-"EnableRichPreview":true,// ---- Quadrant button definitions ----
+"EnableRichPreview":true,// Base URL prepended to relative image URLs in image and rich previews.
+// Set this to the directory-level path (e.g. "/content/") so that images
+// referenced by filename in the markdown resolve correctly.
+// Absolute URLs (starting with /, http://, https://, data:) are left as-is.
+"ImageBaseURL":"",// ---- Quadrant button definitions ----
 // Each quadrant is an array of button objects:
 //   HTML   — innerHTML for the button
 //   Action — method name, optionally "method:arg" (receives segment index as first param)
@@ -4160,6 +4166,16 @@ this._buildEditorUI();}/**
 	 *
 	 * @returns {HTMLElement|null}
 	 */_getContainerElement(){if(this.targetElement){let tmpContainer=this.targetElement.querySelector('.pict-mde');if(tmpContainer){return tmpContainer;}}return this.targetElement||null;}/**
+	 * Resolve a URL relative to the configured ImageBaseURL.
+	 *
+	 * Absolute URLs (starting with /, http://, https://, data:) are returned
+	 * unchanged.  Relative URLs are prepended with this.options.ImageBaseURL.
+	 *
+	 * @param {string} pURL - The URL to resolve
+	 * @returns {string} The resolved URL
+	 */_resolveImageURL(pURL){if(!pURL||!this.options.ImageBaseURL){return pURL;}// Leave absolute URLs alone
+if(pURL.startsWith('/')||pURL.startsWith('http://')||pURL.startsWith('https://')||pURL.startsWith('data:')){return pURL;}let tmpBase=this.options.ImageBaseURL;// Ensure base ends with /
+if(tmpBase&&!tmpBase.endsWith('/')){tmpBase+='/';}return tmpBase+pURL;}/**
 	 * Build the full editor UI: render existing segments from data and the add-segment button.
 	 */_buildEditorUI(){let tmpContainer=this._getContainerElement();// Ensure the container has the pict-mde class (the template's wrapper
 // may have been replaced by pict's async render pipeline)
@@ -9872,7 +9888,8 @@ let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.FolderCursorHistory[tmpCu
 	 */closeViewer(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='gallery';// Clear viewer file state so collection/favorites resolution
 // falls through to the gallery cursor instead of a stale path
 tmpRemote.CurrentViewerFile='';tmpRemote.CurrentViewerMediaType='';// Exit collection browsing mode
-tmpRemote.BrowsingCollection=false;tmpRemote.BrowsingCollectionIndex=-1;let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Clean up swipe and DF exit listeners
+tmpRemote.BrowsingCollection=false;tmpRemote.BrowsingCollectionIndex=-1;let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');// Stop any playing video/audio and release resources before hiding the viewer
+let tmpVideo=document.querySelector('#RetoldRemote-Viewer-Container video');let tmpAudio=document.querySelector('#RetoldRemote-Viewer-Container audio');if(tmpVideo){tmpVideo.pause();tmpVideo.removeAttribute('src');tmpVideo.load();}if(tmpAudio){tmpAudio.pause();tmpAudio.removeAttribute('src');tmpAudio.load();}if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Clean up swipe and DF exit listeners
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){if(tmpMediaViewer._cleanupSwipe){tmpMediaViewer._cleanupSwipe();}if(tmpMediaViewer._cleanupDFExitHotspot){tmpMediaViewer._cleanupDFExitHotspot();}}// Restore the hash to the browse route (use hashed identifier when available)
 let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider&&tmpCurrentLocation?tmpFragProvider.getFragmentIdentifier(tmpCurrentLocation):tmpCurrentLocation;window.location.hash=tmpFragId?'#/browse/'+tmpFragId:'#/browse/';// Re-render gallery to ensure cursor is visible
 let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}/**
