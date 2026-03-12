@@ -78,6 +78,19 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		// Tool capabilities — set by MediaService after ToolDetector runs
 		this._capabilities = {};
+
+		// Ultravisor dispatcher — set via setDispatcher()
+		this._dispatcher = null;
+	}
+
+	/**
+	 * Set the Ultravisor dispatcher for offloading heavy processing.
+	 *
+	 * @param {object} pDispatcher - RetoldRemoteUltravisorDispatcher instance
+	 */
+	setDispatcher(pDispatcher)
+	{
+		this._dispatcher = pDispatcher;
 	}
 
 	/**
@@ -336,6 +349,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 	/**
 	 * Convert a raw image to JPEG using dcraw piped through Sharp.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 * dcraw outputs PPM to stdout; Sharp converts to JPEG.
 	 *
 	 * @param {string}   pAbsPath        - Raw file path
@@ -344,6 +358,71 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	 * @param {Function} fCallback       - Callback(pError)
 	 */
 	_convertWithDcraw(pAbsPath, pOutputPath, pFullResolution, fCallback)
+	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpHalfFlag = pFullResolution ? '' : ' -h';
+				let tmpOutputFilename = libPath.basename(pOutputPath);
+				let tmpCommand = `dcraw -c -w${tmpHalfFlag} "{SourcePath}" | convert ppm:- jpeg:"{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 180000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						try
+						{
+							let tmpDir = libPath.dirname(pOutputPath);
+							if (!libFs.existsSync(tmpDir))
+							{
+								libFs.mkdirSync(tmpDir, { recursive: true });
+							}
+							libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+							tmpSelf.fable.log.info(`Raw conversion via Ultravisor (dcraw) for ${tmpRelPath}`);
+							return fCallback(null);
+						}
+						catch (pWriteError)
+						{
+							// Fall through to local
+						}
+					}
+
+					// Fall through to local processing
+					tmpSelf._convertWithDcrawLocal(pAbsPath, pOutputPath, pFullResolution, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._convertWithDcrawLocal(pAbsPath, pOutputPath, pFullResolution, fCallback);
+	}
+
+	/**
+	 * Convert a raw image to JPEG locally using dcraw piped through Sharp.
+	 */
+	_convertWithDcrawLocal(pAbsPath, pOutputPath, pFullResolution, fCallback)
 	{
 		if (!this._capabilities.dcraw || !this._sharp)
 		{
@@ -413,6 +492,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 	/**
 	 * Convert a raw image to JPEG using ImageMagick's convert command.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 * Works if ImageMagick has the dcraw/ufraw delegate installed.
 	 *
 	 * @param {string}   pAbsPath    - Raw file path
@@ -420,6 +500,70 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	 * @param {Function} fCallback   - Callback(pError)
 	 */
 	_convertWithImageMagick(pAbsPath, pOutputPath, fCallback)
+	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpOutputFilename = libPath.basename(pOutputPath);
+				let tmpCommand = `convert "{SourcePath}" -auto-orient -quality 92 "{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 180000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						try
+						{
+							let tmpDir = libPath.dirname(pOutputPath);
+							if (!libFs.existsSync(tmpDir))
+							{
+								libFs.mkdirSync(tmpDir, { recursive: true });
+							}
+							libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+							tmpSelf.fable.log.info(`Raw conversion via Ultravisor (ImageMagick) for ${tmpRelPath}`);
+							return fCallback(null);
+						}
+						catch (pWriteError)
+						{
+							// Fall through to local
+						}
+					}
+
+					// Fall through to local processing
+					tmpSelf._convertWithImageMagickLocal(pAbsPath, pOutputPath, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._convertWithImageMagickLocal(pAbsPath, pOutputPath, fCallback);
+	}
+
+	/**
+	 * Convert a raw image to JPEG locally using ImageMagick's convert command.
+	 */
+	_convertWithImageMagickLocal(pAbsPath, pOutputPath, fCallback)
 	{
 		if (!this._capabilities.imagemagick)
 		{

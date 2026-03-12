@@ -51,6 +51,9 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
+		// Ultravisor dispatcher — set via setDispatcher()
+		this._dispatcher = null;
+
 		// Apply explorer state persistence mixin (initializeState,
 		// _buildExplorerStateKey, loadExplorerState, saveExplorerState)
 		libExplorerStateMixin.apply(this, EXPLORER_STATE_SOURCE, 'video-explorer');
@@ -60,6 +63,16 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		this._initVideoStateMethods();
 
 		this.fable.log.info('Video Frame Service: frames in ParimeBinaryStorage, state in Bibliograph');
+	}
+
+	/**
+	 * Set the Ultravisor dispatcher for offloading heavy processing.
+	 *
+	 * @param {object} pDispatcher - RetoldRemoteUltravisorDispatcher instance
+	 */
+	setDispatcher(pDispatcher)
+	{
+		this._dispatcher = pDispatcher;
 	}
 
 	/**
@@ -218,43 +231,76 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 	/**
 	 * Probe a video file with ffprobe to get its duration.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the video
 	 * @param {Function} fCallback - Callback(pError, { duration, width, height, codec })
 	 */
 	_probeVideo(pAbsPath, fCallback)
 	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 30000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					{
+						try
+						{
+							let tmpData = JSON.parse(pResult.Outputs.StdOut);
+							let tmpParsed = tmpSelf._parseProbeData(tmpData);
+							tmpSelf.fable.log.info(`ffprobe via Ultravisor for ${tmpRelPath}`);
+							return fCallback(null, tmpParsed);
+						}
+						catch (pParseError)
+						{
+							// Fall through to local
+						}
+					}
+
+					tmpSelf._probeVideoLocal(pAbsPath, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._probeVideoLocal(pAbsPath, fCallback);
+	}
+
+	/**
+	 * Probe a video file locally with ffprobe.
+	 */
+	_probeVideoLocal(pAbsPath, fCallback)
+	{
 		try
 		{
 			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams "${pAbsPath}"`;
 			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 1024 * 1024, timeout: 15000 });
 			let tmpData = JSON.parse(tmpOutput.toString());
-
-			let tmpResult = {};
-
-			if (tmpData.format)
-			{
-				tmpResult.duration = parseFloat(tmpData.format.duration) || null;
-				tmpResult.bitrate = parseInt(tmpData.format.bit_rate, 10) || null;
-				tmpResult.size = parseInt(tmpData.format.size, 10) || null;
-			}
-
-			if (tmpData.streams)
-			{
-				for (let i = 0; i < tmpData.streams.length; i++)
-				{
-					let tmpStream = tmpData.streams[i];
-					if (tmpStream.codec_type === 'video')
-					{
-						tmpResult.width = tmpStream.width;
-						tmpResult.height = tmpStream.height;
-						tmpResult.codec = tmpStream.codec_name;
-						break;
-					}
-				}
-			}
-
-			return fCallback(null, tmpResult);
+			return fCallback(null, this._parseProbeData(tmpData));
 		}
 		catch (pError)
 		{
@@ -263,7 +309,40 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Parse ffprobe JSON output into a normalized result object.
+	 */
+	_parseProbeData(pData)
+	{
+		let tmpResult = {};
+
+		if (pData.format)
+		{
+			tmpResult.duration = parseFloat(pData.format.duration) || null;
+			tmpResult.bitrate = parseInt(pData.format.bit_rate, 10) || null;
+			tmpResult.size = parseInt(pData.format.size, 10) || null;
+		}
+
+		if (pData.streams)
+		{
+			for (let i = 0; i < pData.streams.length; i++)
+			{
+				let tmpStream = pData.streams[i];
+				if (tmpStream.codec_type === 'video')
+				{
+					tmpResult.width = tmpStream.width;
+					tmpResult.height = tmpStream.height;
+					tmpResult.codec = tmpStream.codec_name;
+					break;
+				}
+			}
+		}
+
+		return tmpResult;
+	}
+
+	/**
 	 * Extract a single frame from a video at a given timestamp.
+	 * Synchronous version for backward compatibility.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the video
 	 * @param {number} pTimestamp - Timestamp in seconds
@@ -275,16 +354,17 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	 */
 	_extractFrame(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat)
 	{
+		return this._extractFrameLocal(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat);
+	}
+
+	/**
+	 * Extract a single frame locally using ffmpeg (synchronous).
+	 */
+	_extractFrameLocal(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat)
+	{
 		try
 		{
-			// Format timestamp as HH:MM:SS.mmm for ffmpeg
-			let tmpHours = Math.floor(pTimestamp / 3600);
-			let tmpMinutes = Math.floor((pTimestamp % 3600) / 60);
-			let tmpSeconds = pTimestamp % 60;
-			let tmpTimeStr = `${String(tmpHours).padStart(2, '0')}:${String(tmpMinutes).padStart(2, '0')}:${tmpSeconds.toFixed(3).padStart(6, '0')}`;
-
-			let tmpCodec = (pFormat === 'png') ? 'png' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
-
+			let tmpTimeStr = this._formatFfmpegTimestamp(pTimestamp);
 			let tmpMuxer = (pFormat === 'png') ? 'image2' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
 			let tmpCmd = `ffmpeg -ss ${tmpTimeStr} -i "${pAbsPath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpMuxer} -y "${pOutputPath}"`;
 			libChildProcess.execSync(tmpCmd, { stdio: 'ignore', timeout: 30000 });
@@ -295,6 +375,97 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			this.fable.log.warn(`Frame extraction failed at ${pTimestamp}s: ${pError.message}`);
 			return false;
 		}
+	}
+
+	/**
+	 * Extract a single frame asynchronously, trying Ultravisor dispatch first.
+	 *
+	 * @param {string} pAbsPath - Absolute path to the video
+	 * @param {number} pTimestamp - Timestamp in seconds
+	 * @param {string} pOutputPath - Absolute path for the output image
+	 * @param {number} pWidth - Target width
+	 * @param {number} pHeight - Target height
+	 * @param {string} pFormat - Output format (jpg, png, webp)
+	 * @param {Function} fCallback - Callback(pError, pSuccess)
+	 */
+	_extractFrameAsync(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpTimeStr = this._formatFfmpegTimestamp(pTimestamp);
+				let tmpMuxer = (pFormat === 'png') ? 'image2' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
+				let tmpOutputFilename = libPath.basename(pOutputPath);
+				let tmpCommand = `ffmpeg -ss ${tmpTimeStr} -i "{SourcePath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpMuxer} -y "{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 60000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						try
+						{
+							// Write the output buffer to the expected path
+							let tmpDir = libPath.dirname(pOutputPath);
+							if (!libFs.existsSync(tmpDir))
+							{
+								libFs.mkdirSync(tmpDir, { recursive: true });
+							}
+							libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+							return fCallback(null, true);
+						}
+						catch (pWriteError)
+						{
+							// Fall through to local
+						}
+					}
+
+					// Fall through to local processing
+					let tmpSuccess = tmpSelf._extractFrameLocal(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat);
+					return fCallback(null, tmpSuccess);
+				});
+				return;
+			}
+		}
+
+		// Local processing
+		let tmpSuccess = this._extractFrameLocal(pAbsPath, pTimestamp, pOutputPath, pWidth, pHeight, pFormat);
+		return fCallback(null, tmpSuccess);
+	}
+
+	/**
+	 * Format a timestamp in seconds to ffmpeg's HH:MM:SS.mmm format.
+	 *
+	 * @param {number} pTimestamp - Timestamp in seconds
+	 * @returns {string}
+	 */
+	_formatFfmpegTimestamp(pTimestamp)
+	{
+		let tmpHours = Math.floor(pTimestamp / 3600);
+		let tmpMinutes = Math.floor((pTimestamp % 3600) / 60);
+		let tmpSeconds = pTimestamp % 60;
+		return `${String(tmpHours).padStart(2, '0')}:${String(tmpMinutes).padStart(2, '0')}:${tmpSeconds.toFixed(3).padStart(6, '0')}`;
 	}
 
 	/**
@@ -443,66 +614,127 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 				tmpSelf.fable.log.info(`Extracting ${tmpTimestamps.length} frames from ${pRelPath} (${tmpDuration.toFixed(1)}s)`);
 
-				for (let i = 0; i < tmpTimestamps.length; i++)
+				// Use async serial extraction when dispatcher is available,
+				// otherwise use synchronous loop for backward compatibility
+				let tmpUseAsync = !!(tmpSelf._dispatcher && tmpSelf._dispatcher.isAvailable());
+
+				let _finishExtraction = () =>
 				{
-					let tmpTimestamp = tmpTimestamps[i];
-					let tmpFrameFilename = `frame_${String(i).padStart(4, '0')}.${tmpFormat}`;
-					let tmpFramePath = libPath.join(tmpCacheDir, tmpFrameFilename);
-
-					let tmpSuccess = tmpSelf._extractFrame(
-						pAbsPath, tmpTimestamp, tmpFramePath, tmpWidth, tmpHeight, tmpFormat);
-
-					if (tmpSuccess)
+					if (tmpExtractedCount === 0)
 					{
-						let tmpFrameStat = libFs.statSync(tmpFramePath);
-						tmpFrames.push(
-						{
-							Index: i,
-							Timestamp: tmpTimestamp,
-							TimestampFormatted: tmpSelf._formatTimestamp(tmpTimestamp),
-							Filename: tmpFrameFilename,
-							Size: tmpFrameStat.size
-						});
-						tmpExtractedCount++;
+						return fCallback(new Error('Failed to extract any frames from the video.'));
 					}
-				}
 
-				if (tmpExtractedCount === 0)
-				{
-					return fCallback(new Error('Failed to extract any frames from the video.'));
-				}
+					let tmpResult =
+					{
+						Success: true,
+						Path: pRelPath,
+						Duration: tmpDuration,
+						DurationFormatted: tmpSelf._formatTimestamp(tmpDuration),
+						VideoWidth: pVideoInfo.width,
+						VideoHeight: pVideoInfo.height,
+						Codec: pVideoInfo.codec,
+						Bitrate: pVideoInfo.bitrate,
+						FileSize: pVideoInfo.size || tmpStat.size,
+						FrameCount: tmpExtractedCount,
+						FrameWidth: tmpWidth,
+						FrameHeight: tmpHeight,
+						FrameFormat: tmpFormat,
+						CacheKey: libPath.basename(tmpCacheDir),
+						Frames: tmpFrames
+					};
 
-				let tmpResult =
-				{
-					Success: true,
-					Path: pRelPath,
-					Duration: tmpDuration,
-					DurationFormatted: tmpSelf._formatTimestamp(tmpDuration),
-					VideoWidth: pVideoInfo.width,
-					VideoHeight: pVideoInfo.height,
-					Codec: pVideoInfo.codec,
-					Bitrate: pVideoInfo.bitrate,
-					FileSize: pVideoInfo.size || tmpStat.size,
-					FrameCount: tmpExtractedCount,
-					FrameWidth: tmpWidth,
-					FrameHeight: tmpHeight,
-					FrameFormat: tmpFormat,
-					CacheKey: libPath.basename(tmpCacheDir),
-					Frames: tmpFrames
+					// Write manifest to cache
+					try
+					{
+						libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+					}
+					catch (pWriteError)
+					{
+						tmpSelf.fable.log.warn(`Could not write frame manifest: ${pWriteError.message}`);
+					}
+
+					tmpSelf.fable.log.info(`Extracted ${tmpExtractedCount} frames for ${pRelPath}`);
+					return fCallback(null, tmpResult);
 				};
 
-				// Write manifest to cache
-				try
+				if (tmpUseAsync)
 				{
-					libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
-				}
-				catch (pWriteError)
-				{
-					tmpSelf.fable.log.warn(`Could not write frame manifest: ${pWriteError.message}`);
-				}
+					// Serial async extraction
+					let tmpFrameIndex = 0;
 
-				tmpSelf.fable.log.info(`Extracted ${tmpExtractedCount} frames for ${pRelPath}`);
-				return fCallback(null, tmpResult);
+					let _extractNext = () =>
+					{
+						if (tmpFrameIndex >= tmpTimestamps.length)
+						{
+							return _finishExtraction();
+						}
+
+						let tmpI = tmpFrameIndex;
+						let tmpTimestamp = tmpTimestamps[tmpI];
+						let tmpFrameFilename = `frame_${String(tmpI).padStart(4, '0')}.${tmpFormat}`;
+						let tmpFramePath = libPath.join(tmpCacheDir, tmpFrameFilename);
+						tmpFrameIndex++;
+
+						tmpSelf._extractFrameAsync(
+							pAbsPath, tmpTimestamp, tmpFramePath, tmpWidth, tmpHeight, tmpFormat,
+							(pExtractError, pSuccess) =>
+							{
+								if (pSuccess)
+								{
+									try
+									{
+										let tmpFrameStat = libFs.statSync(tmpFramePath);
+										tmpFrames.push(
+										{
+											Index: tmpI,
+											Timestamp: tmpTimestamp,
+											TimestampFormatted: tmpSelf._formatTimestamp(tmpTimestamp),
+											Filename: tmpFrameFilename,
+											Size: tmpFrameStat.size
+										});
+										tmpExtractedCount++;
+									}
+									catch (pStatErr)
+									{
+										// Frame file disappeared — skip
+									}
+								}
+								_extractNext();
+							});
+					};
+
+					_extractNext();
+				}
+				else
+				{
+					// Synchronous extraction (original behavior)
+					for (let i = 0; i < tmpTimestamps.length; i++)
+					{
+						let tmpTimestamp = tmpTimestamps[i];
+						let tmpFrameFilename = `frame_${String(i).padStart(4, '0')}.${tmpFormat}`;
+						let tmpFramePath = libPath.join(tmpCacheDir, tmpFrameFilename);
+
+						let tmpSuccess = tmpSelf._extractFrame(
+							pAbsPath, tmpTimestamp, tmpFramePath, tmpWidth, tmpHeight, tmpFormat);
+
+						if (tmpSuccess)
+						{
+							let tmpFrameStat = libFs.statSync(tmpFramePath);
+							tmpFrames.push(
+							{
+								Index: i,
+								Timestamp: tmpTimestamp,
+								TimestampFormatted: tmpSelf._formatTimestamp(tmpTimestamp),
+								Filename: tmpFrameFilename,
+								Size: tmpFrameStat.size
+							});
+							tmpExtractedCount++;
+						}
+					}
+
+					_finishExtraction();
+				}
 			});
 	}
 

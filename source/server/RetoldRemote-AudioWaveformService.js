@@ -51,6 +51,9 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
+		// Ultravisor dispatcher — set via setDispatcher()
+		this._dispatcher = null;
+
 		// Detect audiowaveform availability
 		this.hasAudiowaveform = this._detectCommand('audiowaveform --version');
 
@@ -59,6 +62,16 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 		this.fable.log.info('Audio Waveform Service: waveforms/segments in ParimeBinaryStorage, state in Bibliograph');
 		this.fable.log.info(`  audiowaveform tool: ${this.hasAudiowaveform ? 'available' : 'not found (using ffprobe fallback)'}`);
+	}
+
+	/**
+	 * Set the Ultravisor dispatcher for offloading heavy processing.
+	 *
+	 * @param {object} pDispatcher - RetoldRemoteUltravisorDispatcher instance
+	 */
+	setDispatcher(pDispatcher)
+	{
+		this._dispatcher = pDispatcher;
 	}
 
 	/**
@@ -114,50 +127,115 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 	/**
 	 * Probe an audio file with ffprobe to get metadata.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the audio file
 	 * @param {Function} fCallback - Callback(pError, { duration, sampleRate, channels, codec, bitrate, size })
 	 */
 	_probeAudio(pAbsPath, fCallback)
 	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 30000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					{
+						try
+						{
+							let tmpData = JSON.parse(pResult.Outputs.StdOut);
+							let tmpParsed = tmpSelf._parseAudioProbeData(tmpData);
+							tmpSelf.fable.log.info(`ffprobe (audio) via Ultravisor for ${tmpRelPath}`);
+							return fCallback(null, tmpParsed);
+						}
+						catch (pParseError)
+						{
+							// Fall through to local
+						}
+					}
+
+					tmpSelf._probeAudioLocal(pAbsPath, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._probeAudioLocal(pAbsPath, fCallback);
+	}
+
+	/**
+	 * Probe an audio file locally with ffprobe.
+	 */
+	_probeAudioLocal(pAbsPath, fCallback)
+	{
 		try
 		{
 			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams "${pAbsPath}"`;
 			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 1024 * 1024, timeout: 15000 });
 			let tmpData = JSON.parse(tmpOutput.toString());
-
-			let tmpResult = {};
-
-			if (tmpData.format)
-			{
-				tmpResult.duration = parseFloat(tmpData.format.duration) || null;
-				tmpResult.bitrate = parseInt(tmpData.format.bit_rate, 10) || null;
-				tmpResult.size = parseInt(tmpData.format.size, 10) || null;
-				tmpResult.formatName = tmpData.format.format_name || null;
-			}
-
-			if (tmpData.streams)
-			{
-				for (let i = 0; i < tmpData.streams.length; i++)
-				{
-					let tmpStream = tmpData.streams[i];
-					if (tmpStream.codec_type === 'audio')
-					{
-						tmpResult.sampleRate = parseInt(tmpStream.sample_rate, 10) || null;
-						tmpResult.channels = tmpStream.channels || null;
-						tmpResult.codec = tmpStream.codec_name || null;
-						tmpResult.channelLayout = tmpStream.channel_layout || null;
-						break;
-					}
-				}
-			}
-
-			return fCallback(null, tmpResult);
+			return fCallback(null, this._parseAudioProbeData(tmpData));
 		}
 		catch (pError)
 		{
 			return fCallback(pError);
 		}
+	}
+
+	/**
+	 * Parse ffprobe JSON output for audio metadata.
+	 */
+	_parseAudioProbeData(pData)
+	{
+		let tmpResult = {};
+
+		if (pData.format)
+		{
+			tmpResult.duration = parseFloat(pData.format.duration) || null;
+			tmpResult.bitrate = parseInt(pData.format.bit_rate, 10) || null;
+			tmpResult.size = parseInt(pData.format.size, 10) || null;
+			tmpResult.formatName = pData.format.format_name || null;
+		}
+
+		if (pData.streams)
+		{
+			for (let i = 0; i < pData.streams.length; i++)
+			{
+				let tmpStream = pData.streams[i];
+				if (tmpStream.codec_type === 'audio')
+				{
+					tmpResult.sampleRate = parseInt(tmpStream.sample_rate, 10) || null;
+					tmpResult.channels = tmpStream.channels || null;
+					tmpResult.codec = tmpStream.codec_name || null;
+					tmpResult.channelLayout = tmpStream.channel_layout || null;
+					break;
+				}
+			}
+		}
+
+		return tmpResult;
 	}
 
 	/**

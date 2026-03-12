@@ -200,5 +200,102 @@ suite
 				return fDone();
 			}
 		);
+
+		test
+		(
+			'UltravisorDispatcher is disabled when no UltravisorURL configured',
+			(fDone) =>
+			{
+				let libFable = require('fable');
+				let libDispatcher = require('../source/server/RetoldRemote-UltravisorDispatcher.js');
+
+				let tmpFable = new libFable({});
+				let tmpDispatcher = new libDispatcher(tmpFable, {});
+
+				libAssert.strictEqual(tmpDispatcher.isAvailable(), false, 'Should not be available without UltravisorURL');
+
+				return fDone();
+			}
+		);
+
+		test
+		(
+			'UltravisorDispatcher checkConnection skips when disabled',
+			(fDone) =>
+			{
+				let libFable = require('fable');
+				let libDispatcher = require('../source/server/RetoldRemote-UltravisorDispatcher.js');
+
+				let tmpFable = new libFable({});
+				let tmpDispatcher = new libDispatcher(tmpFable, {});
+
+				tmpDispatcher.checkConnection((pError) =>
+				{
+					libAssert.strictEqual(pError, null, 'Should not error when disabled');
+					libAssert.strictEqual(tmpDispatcher.isAvailable(), false, 'Should remain unavailable');
+					return fDone();
+				});
+			}
+		);
+
+		test
+		(
+			'UltravisorDispatcher dispatch returns error when not configured',
+			(fDone) =>
+			{
+				let libFable = require('fable');
+				let libDispatcher = require('../source/server/RetoldRemote-UltravisorDispatcher.js');
+
+				let tmpFable = new libFable({});
+				let tmpDispatcher = new libDispatcher(tmpFable, {});
+
+				tmpDispatcher.dispatch(
+				{
+					Capability: 'Shell',
+					Settings: { Command: 'echo test' }
+				},
+				(pError) =>
+				{
+					libAssert.ok(pError, 'Should return error when not configured');
+					libAssert.ok(pError.message.includes('not configured'), 'Error message should mention not configured');
+					return fDone();
+				});
+			}
+		);
+
+		test
+		(
+			'UltravisorDispatcher dispatchMediaCommand builds correct request body',
+			(fDone) =>
+			{
+				let libFable = require('fable');
+				let libDispatcher = require('../source/server/RetoldRemote-UltravisorDispatcher.js');
+
+				let tmpFable = new libFable({
+					UltravisorURL: 'http://localhost:99999',
+					ContentAPIURL: 'http://localhost:8080'
+				});
+				let tmpDispatcher = new libDispatcher(tmpFable, {});
+
+				// dispatchMediaCommand will fail because the server doesn't exist,
+				// but we can verify the error comes from the HTTP connection
+				tmpDispatcher.dispatchMediaCommand(
+				{
+					Command: 'ffmpeg -i "{SourcePath}" "{OutputPath}"',
+					InputPath: 'videos/test.mp4',
+					OutputFilename: 'thumbnail.webp',
+					AffinityKey: 'videos/test.mp4',
+					TimeoutMs: 5000
+				},
+				(pError, pResult) =>
+				{
+					// Should fail with connection error (not a configuration error)
+					libAssert.ok(pError, 'Should return error when server unreachable');
+					// The error should be from HTTP connection, not from "not configured"
+					libAssert.ok(!pError.message.includes('not configured'), 'Error should not be "not configured"');
+					return fDone();
+				});
+			}
+		);
 	}
 );

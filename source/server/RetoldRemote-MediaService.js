@@ -52,7 +52,20 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		this.thumbnailCache = new libThumbnailCache(this.fable);
 		this.pathRegistry = this.options.PathRegistry || null;
 
+		// Ultravisor dispatcher — set via setDispatcher()
+		this._dispatcher = null;
+
 		this.fable.log.info(`Media Service: capabilities = ${JSON.stringify(this.capabilities)}`);
+	}
+
+	/**
+	 * Set the Ultravisor dispatcher for offloading heavy processing.
+	 *
+	 * @param {object} pDispatcher - RetoldRemoteUltravisorDispatcher instance
+	 */
+	setDispatcher(pDispatcher)
+	{
+		this._dispatcher = pDispatcher;
 	}
 
 	/**
@@ -483,6 +496,47 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
+		// Try Ultravisor dispatch as last resort for image thumbnails
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
+				let tmpCommand = `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 30000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						this.fable.log.info(`Image thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						return fCallback(null, pResult.OutputBuffer);
+					}
+
+					return fCallback(new Error('No image thumbnail tools available.'));
+				});
+				return;
+			}
+		}
+
 		return fCallback(new Error('No image thumbnail tools available.'));
 	}
 
@@ -743,8 +797,62 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 	/**
 	 * Generate a video thumbnail by extracting a frame with ffmpeg.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 */
 	_generateVideoThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'mjpeg';
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
+				let tmpCommand = `ffmpeg -ss 00:00:02 -i "{SourcePath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpOutputFormat} "{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 60000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						tmpSelf.fable.log.info(`Video thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						return fCallback(null, pResult.OutputBuffer);
+					}
+
+					// Fall through to local processing
+					tmpSelf.fable.log.info(`Ultravisor dispatch failed for video thumbnail, falling back to local: ${pDispatchError ? pDispatchError.message : 'no output'}`);
+					tmpSelf._generateVideoThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._generateVideoThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Generate a video thumbnail locally using ffmpeg.
+	 */
+	_generateVideoThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		try
 		{
@@ -799,60 +907,126 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 	/**
 	 * Run ffprobe and parse the output.
+	 * Tries Ultravisor dispatch first, falls back to local execution.
 	 */
 	_ffprobe(pFullPath, fCallback)
+	{
+		let tmpSelf = this;
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 30000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					{
+						try
+						{
+							let tmpData = JSON.parse(pResult.Outputs.StdOut);
+							let tmpParsed = tmpSelf._parseFfprobeData(tmpData);
+							tmpSelf.fable.log.info(`ffprobe via Ultravisor for ${tmpRelPath}`);
+							return fCallback(null, tmpParsed);
+						}
+						catch (pParseError)
+						{
+							// Fall through to local
+						}
+					}
+
+					// Fall through to local processing
+					tmpSelf._ffprobeLocal(pFullPath, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._ffprobeLocal(pFullPath, fCallback);
+	}
+
+	/**
+	 * Run ffprobe locally and parse the output.
+	 */
+	_ffprobeLocal(pFullPath, fCallback)
 	{
 		try
 		{
 			let tmpCmd = `ffprobe -v quiet -print_format json -show_format -show_streams "${pFullPath}"`;
 			let tmpOutput = libChildProcess.execSync(tmpCmd, { maxBuffer: 1024 * 1024, timeout: 10000 });
 			let tmpData = JSON.parse(tmpOutput.toString());
-
-			let tmpResult = {};
-
-			if (tmpData.format)
-			{
-				tmpResult.duration = parseFloat(tmpData.format.duration) || null;
-				tmpResult.bitrate = parseInt(tmpData.format.bit_rate, 10) || null;
-
-				// Extract format-level tags (ID3, Vorbis comments, etc.)
-				if (tmpData.format.tags)
-				{
-					tmpResult.tags = {};
-					let tmpTagKeys = Object.keys(tmpData.format.tags);
-					for (let t = 0; t < tmpTagKeys.length; t++)
-					{
-						tmpResult.tags[tmpTagKeys[t].toLowerCase()] = tmpData.format.tags[tmpTagKeys[t]];
-					}
-				}
-			}
-
-			// Find video stream for dimensions
-			if (tmpData.streams)
-			{
-				for (let i = 0; i < tmpData.streams.length; i++)
-				{
-					let tmpStream = tmpData.streams[i];
-					if (tmpStream.codec_type === 'video')
-					{
-						tmpResult.width = tmpStream.width;
-						tmpResult.height = tmpStream.height;
-						tmpResult.codec = tmpStream.codec_name;
-						break;
-					}
-					if (tmpStream.codec_type === 'audio' && !tmpResult.codec)
-					{
-						tmpResult.codec = tmpStream.codec_name;
-					}
-				}
-			}
-
-			return fCallback(null, tmpResult);
+			return fCallback(null, this._parseFfprobeData(tmpData));
 		}
 		catch (pError)
 		{
 			return fCallback(pError);
 		}
+	}
+
+	/**
+	 * Parse ffprobe JSON output into a normalized result object.
+	 */
+	_parseFfprobeData(pData)
+	{
+		let tmpResult = {};
+
+		if (pData.format)
+		{
+			tmpResult.duration = parseFloat(pData.format.duration) || null;
+			tmpResult.bitrate = parseInt(pData.format.bit_rate, 10) || null;
+
+			// Extract format-level tags (ID3, Vorbis comments, etc.)
+			if (pData.format.tags)
+			{
+				tmpResult.tags = {};
+				let tmpTagKeys = Object.keys(pData.format.tags);
+				for (let t = 0; t < tmpTagKeys.length; t++)
+				{
+					tmpResult.tags[tmpTagKeys[t].toLowerCase()] = pData.format.tags[tmpTagKeys[t]];
+				}
+			}
+		}
+
+		// Find video stream for dimensions
+		if (pData.streams)
+		{
+			for (let i = 0; i < pData.streams.length; i++)
+			{
+				let tmpStream = pData.streams[i];
+				if (tmpStream.codec_type === 'video')
+				{
+					tmpResult.width = tmpStream.width;
+					tmpResult.height = tmpStream.height;
+					tmpResult.codec = tmpStream.codec_name;
+					break;
+				}
+				if (tmpStream.codec_type === 'audio' && !tmpResult.codec)
+				{
+					tmpResult.codec = tmpStream.codec_name;
+				}
+			}
+		}
+
+		return tmpResult;
 	}
 }
 

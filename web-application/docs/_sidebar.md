@@ -2,6 +2,7 @@
 
 - Getting Started
   - [Server Setup & Docker](server-setup.md)
+  - [Ultravisor Integration](ultravisor-integration.md)
 
 - Media Viewers
   - [Image Viewer](image-viewer.md)

@@ -48,6 +48,7 @@ const libRetoldRemoteMetadataCache = require('../server/RetoldRemote-MetadataCac
 const libRetoldRemoteFileOperationService = require('../server/RetoldRemote-FileOperationService.js');
 const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortService.js');
 const libRetoldRemoteImageService = require('../server/RetoldRemote-ImageService.js');
+const libRetoldRemoteUltravisorDispatcher = require('../server/RetoldRemote-UltravisorDispatcher.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -81,6 +82,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	if (pOptions.CacheServer)
 	{
 		tmpSettings.ParimeCacheServer = pOptions.CacheServer;
+	}
+
+	// If an Ultravisor URL is specified, offload heavy processing to beacons
+	if (pOptions.UltravisorURL)
+	{
+		tmpSettings.UltravisorURL = pOptions.UltravisorURL;
+	}
+	if (pOptions.ContentAPIURL)
+	{
+		tmpSettings.ContentAPIURL = pOptions.ContentAPIURL;
 	}
 
 	let tmpFable = new libFable(tmpSettings);
@@ -200,6 +211,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 				APIRoutePrefix: '/api/media',
 				PathRegistry: tmpPathRegistry
 			});
+
+			// Set up the Ultravisor dispatcher for offloading heavy processing
+			let tmpDispatcher = new libRetoldRemoteUltravisorDispatcher(tmpFable, {});
+
+			// Wire the dispatcher to services that can offload processing
+			tmpMediaService.setDispatcher(tmpDispatcher);
+			tmpVideoFrameService.setDispatcher(tmpDispatcher);
+			tmpAudioWaveformService.setDispatcher(tmpDispatcher);
+			tmpEbookService.setDispatcher(tmpDispatcher);
+			tmpImageService.setDispatcher(tmpDispatcher);
 
 			// Share tool capabilities with the image service so it can
 			// use dcraw and ImageMagick for raw camera format conversion.
@@ -457,6 +478,10 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			tmpEpubMetadataService.initialize(() =>
 			{
 				tmpFable.log.info('EPUB metadata service initialized.');
+			});
+			tmpDispatcher.checkConnection(() =>
+			{
+				// Non-fatal — if Ultravisor is down, processing stays local
 			});
 
 			// --- GET /api/media/metadata ---
@@ -2114,6 +2139,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						ParimeCache: tmpParimeCache,
 						MetadataCache: tmpMetadataCache,
 						FileOperationService: tmpFileOperationService,
+						UltravisorDispatcher: tmpDispatcher,
 						Port: tmpPort
 					});
 				});

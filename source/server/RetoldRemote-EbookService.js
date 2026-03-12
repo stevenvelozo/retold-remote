@@ -59,7 +59,20 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
 
+		// Ultravisor dispatcher — set via setDispatcher()
+		this._dispatcher = null;
+
 		this.fable.log.info('Ebook Service: using ParimeBinaryStorage (category: ebook-cache)');
+	}
+
+	/**
+	 * Set the Ultravisor dispatcher for offloading heavy processing.
+	 *
+	 * @param {object} pDispatcher - RetoldRemoteUltravisorDispatcher instance
+	 */
+	setDispatcher(pDispatcher)
+	{
+		this._dispatcher = pDispatcher;
 	}
 
 	/**
@@ -146,25 +159,21 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 
 		this.fable.log.info(`Converting ebook: ${pRelPath} -> EPUB`);
 
-		try
+		let _finishConversion = (pOutputPath, pOutputFilename, pCacheDir, pManifestPath) =>
 		{
-			// ebook-convert input.mobi output.epub
-			let tmpCmd = `ebook-convert "${pAbsPath}" "${tmpOutputPath}"`;
-			libChildProcess.execSync(tmpCmd, { stdio: 'ignore', timeout: 120000 });
-
-			if (!libFs.existsSync(tmpOutputPath))
+			if (!libFs.existsSync(pOutputPath))
 			{
 				return fCallback(new Error('Conversion completed but output file not found.'));
 			}
 
-			let tmpOutputStat = libFs.statSync(tmpOutputPath);
+			let tmpOutputStat = libFs.statSync(pOutputPath);
 
 			let tmpResult =
 			{
 				Success: true,
 				SourcePath: pRelPath,
-				CacheKey: libPath.basename(tmpCacheDir),
-				OutputFilename: tmpOutputFilename,
+				CacheKey: libPath.basename(pCacheDir),
+				OutputFilename: pOutputFilename,
 				FileSize: tmpOutputStat.size,
 				ConvertedAt: new Date().toISOString()
 			};
@@ -172,7 +181,111 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 			// Write manifest to cache
 			try
 			{
-				libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpResult, null, '\t'));
+				libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
+			}
+			catch (pWriteError)
+			{
+				tmpSelf.fable.log.warn(`Could not write ebook manifest: ${pWriteError.message}`);
+			}
+
+			tmpSelf.fable.log.info(`Converted ebook: ${pRelPath} (${tmpOutputStat.size} bytes)`);
+			return fCallback(null, tmpResult);
+		};
+
+		// Try Ultravisor dispatch first
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpCommand = `ebook-convert "{SourcePath}" "{OutputPath}"`;
+
+				this._dispatcher.dispatchMediaCommand(
+				{
+					Command: tmpCommand,
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 180000
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						try
+						{
+							libFs.writeFileSync(tmpOutputPath, pResult.OutputBuffer);
+							tmpSelf.fable.log.info(`Ebook converted via Ultravisor for ${tmpRelPath}`);
+							return _finishConversion(tmpOutputPath, tmpOutputFilename, tmpCacheDir, tmpManifestPath);
+						}
+						catch (pWriteError)
+						{
+							// Fall through to local
+						}
+					}
+
+					// Fall through to local processing
+					tmpSelf.fable.log.info(`Ultravisor dispatch failed for ebook conversion, falling back to local: ${pDispatchError ? pDispatchError.message : 'no output'}`);
+					tmpSelf._convertToEpubLocal(pAbsPath, tmpOutputPath, tmpOutputFilename, tmpCacheDir, tmpManifestPath, pRelPath, fCallback);
+				});
+				return;
+			}
+		}
+
+		this._convertToEpubLocal(pAbsPath, tmpOutputPath, tmpOutputFilename, tmpCacheDir, tmpManifestPath, pRelPath, fCallback);
+	}
+
+	/**
+	 * Convert an ebook to EPUB locally using ebook-convert.
+	 *
+	 * @param {string}   pAbsPath        - Absolute path to the source ebook
+	 * @param {string}   pOutputPath     - Absolute path for the output EPUB
+	 * @param {string}   pOutputFilename - Output filename
+	 * @param {string}   pCacheDir       - Cache directory path
+	 * @param {string}   pManifestPath   - Manifest file path
+	 * @param {string}   pRelPath        - Relative path (for logging)
+	 * @param {Function} fCallback       - Callback(pError, pResult)
+	 */
+	_convertToEpubLocal(pAbsPath, pOutputPath, pOutputFilename, pCacheDir, pManifestPath, pRelPath, fCallback)
+	{
+		let tmpSelf = this;
+
+		try
+		{
+			// ebook-convert input.mobi output.epub
+			let tmpCmd = `ebook-convert "${pAbsPath}" "${pOutputPath}"`;
+			libChildProcess.execSync(tmpCmd, { stdio: 'ignore', timeout: 120000 });
+
+			if (!libFs.existsSync(pOutputPath))
+			{
+				return fCallback(new Error('Conversion completed but output file not found.'));
+			}
+
+			let tmpOutputStat = libFs.statSync(pOutputPath);
+
+			let tmpResult =
+			{
+				Success: true,
+				SourcePath: pRelPath,
+				CacheKey: libPath.basename(pCacheDir),
+				OutputFilename: pOutputFilename,
+				FileSize: tmpOutputStat.size,
+				ConvertedAt: new Date().toISOString()
+			};
+
+			// Write manifest to cache
+			try
+			{
+				libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
 			}
 			catch (pWriteError)
 			{
