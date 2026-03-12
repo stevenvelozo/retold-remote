@@ -470,7 +470,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open]",
 			"",
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]",
-			"@=\"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"$u='%1'; if($u.StartsWith('vlc://')){$u=$u.Substring(6)}; $u=[System.Uri]::UnescapeDataString($u); Start-Process -FilePath 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe' -ArgumentList $u\\\"\""
+			"@=\"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"$u='%1'; if($u.StartsWith('vlc://')){$u=$u.Substring(6)}; $u=[System.Uri]::UnescapeDataString($u); $u=$u.TrimEnd('/'); Start-Process -FilePath 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe' -ArgumentList $u\\\"\""
 		].join('\n');
 	}
 
@@ -493,6 +493,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 			"echo $url = $args[0]",
 			"echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }",
 			"echo $url = [System.Uri]::UnescapeDataString^($url^)",
+			"echo $url = $url.TrimEnd^('/'^)",
 			"echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",
 			") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"",
 			"",
