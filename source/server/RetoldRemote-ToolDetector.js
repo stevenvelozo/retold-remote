@@ -102,17 +102,20 @@ class ToolDetector
 	}
 
 	/**
-	 * Check if VLC is available.  On macOS, check for the .app bundle.
-	 * On Linux, check the vlc command.
+	 * Check if VLC is available.
+	 * macOS: check for the .app bundle.
+	 * Windows: check the default install path.
+	 * Linux: check the vlc command.
 	 *
 	 * @returns {boolean}
 	 */
 	_detectVLC()
 	{
+		const libFS = require('fs');
+
 		// macOS: check for VLC.app
 		try
 		{
-			const libFS = require('fs');
 			if (libFS.existsSync('/Applications/VLC.app'))
 			{
 				return true;
@@ -121,6 +124,27 @@ class ToolDetector
 		catch (pError)
 		{
 			// ignore
+		}
+
+		// Windows: check the default install path
+		if (process.platform === 'win32')
+		{
+			try
+			{
+				if (libFS.existsSync('C:\\Program Files\\VideoLAN\\VLC\\vlc.exe'))
+				{
+					return true;
+				}
+				// Check 32-bit install location on 64-bit Windows
+				if (libFS.existsSync('C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe'))
+				{
+					return true;
+				}
+			}
+			catch (pError)
+			{
+				// ignore
+			}
 		}
 
 		// Linux / other: try vlc --version

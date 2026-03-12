@@ -329,8 +329,8 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '<div class="retold-remote-vlc-setup-section">';
 		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Setup (Windows)</div>';
 		tmpHTML += '<div class="retold-remote-vlc-setup-desc">';
-		tmpHTML += 'VLC on Windows registers the vlc:// protocol handler during installation. ';
-		tmpHTML += 'If it is not working, you can re-register it by saving and running the registry file below.';
+		tmpHTML += 'Windows requires a protocol handler to open vlc:// links. ';
+		tmpHTML += 'Choose one of the options below to register the handler.';
 		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
@@ -359,7 +359,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 		tmpHTML += '<div class="retold-remote-vlc-setup-section-title">Option C: Batch Script</div>';
 		tmpHTML += '<div class="retold-remote-vlc-setup-desc">';
 		tmpHTML += 'Alternatively, save this as <code>vlc-protocol-setup.bat</code> and run as Administrator. ';
-		tmpHTML += 'This creates a wrapper script that URL-decodes the vlc:// link before passing it to VLC.';
+		tmpHTML += 'This creates a handler script and registers the vlc:// protocol automatically.';
 		tmpHTML += '</div>';
 
 		let tmpBatchScript = this._getWindowsBatchScript();
@@ -454,6 +454,9 @@ class RetoldRemoteVLCSetupView extends libPictView
 
 	_getWindowsRegFile()
 	{
+		// Use an inline PowerShell command to strip the vlc:// prefix before
+		// launching VLC.  PowerShell ships with Windows 7+ and does not
+		// interpret percent-encoded characters in the URL the way cmd.exe does.
 		return [
 			"Windows Registry Editor Version 5.00",
 			"",
@@ -466,31 +469,33 @@ class RetoldRemoteVLCSetupView extends libPictView
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open]",
 			"",
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]",
-			"@=\"\\\"C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe\\\" \\\"%1\\\"\""
+			"@=\"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"$u='%1'; if($u.StartsWith('vlc://')){$u=$u.Substring(6)}; Start-Process -FilePath 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe' -ArgumentList $u\\\"\""
 		].join('\n');
 	}
 
 	_getWindowsBatchScript()
 	{
+		// Creates a PowerShell handler script and registers the vlc://
+		// protocol to use it.  No Python dependency required.
 		return [
 			"@echo off",
 			"REM VLC Protocol Handler Setup for Windows",
 			"REM Run this as Administrator",
 			"",
-			"REM Create the handler script",
+			"REM Create the handler directory",
 			"mkdir \"%APPDATA%\\VLCProtocol\" 2>nul",
+			"",
+			"REM Write the PowerShell handler script",
 			"(",
-			"echo import sys, urllib.parse, subprocess",
-			"echo url = sys.argv[1] if len(sys.argv^) ^> 1 else ''",
-			"echo if url.startswith('vlc://'^): url = url[6:]",
-			"echo url = urllib.parse.unquote(url^)",
-			"echo subprocess.Popen(['C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe', url]^)",
-			") > \"%APPDATA%\\VLCProtocol\\handler.py\"",
+			"echo $url = $args[0]",
+			"echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }",
+			"echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",
+			") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"",
 			"",
 			"REM Register the protocol in the registry",
 			"reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f",
 			"reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f",
-			"reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"pythonw \\\"%APPDATA%\\VLCProtocol\\handler.py\\\" \\\"%%1\\\"\" /f",
+			"reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f",
 			"",
 			"echo VLC protocol handler installed successfully.",
 			"pause"
