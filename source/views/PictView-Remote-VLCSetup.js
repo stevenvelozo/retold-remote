@@ -454,9 +454,10 @@ class RetoldRemoteVLCSetupView extends libPictView
 
 	_getWindowsRegFile()
 	{
-		// Use an inline PowerShell command to strip the vlc:// prefix before
-		// launching VLC.  PowerShell ships with Windows 7+ and does not
-		// interpret percent-encoded characters in the URL the way cmd.exe does.
+		// Use an inline PowerShell command to strip the vlc:// prefix and
+		// URL-decode before launching VLC.  The URL is percent-encoded by
+		// the client to prevent Windows from stripping the colon in nested
+		// http:// URLs (a known Windows protocol handler issue).
 		return [
 			"Windows Registry Editor Version 5.00",
 			"",
@@ -469,14 +470,16 @@ class RetoldRemoteVLCSetupView extends libPictView
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open]",
 			"",
 			"[HKEY_CLASSES_ROOT\\vlc\\shell\\open\\command]",
-			"@=\"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"$u='%1'; if($u.StartsWith('vlc://')){$u=$u.Substring(6)}; Start-Process -FilePath 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe' -ArgumentList $u\\\"\""
+			"@=\"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"$u='%1'; if($u.StartsWith('vlc://')){$u=$u.Substring(6)}; $u=[System.Uri]::UnescapeDataString($u); Start-Process -FilePath 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe' -ArgumentList $u\\\"\""
 		].join('\n');
 	}
 
 	_getWindowsBatchScript()
 	{
 		// Creates a PowerShell handler script and registers the vlc://
-		// protocol to use it.  No Python dependency required.
+		// protocol to use it.  The handler URL-decodes the argument because
+		// the client percent-encodes the URL to prevent Windows from
+		// stripping colons in nested http:// URLs.
 		return [
 			"@echo off",
 			"REM VLC Protocol Handler Setup for Windows",
@@ -489,6 +492,7 @@ class RetoldRemoteVLCSetupView extends libPictView
 			"(",
 			"echo $url = $args[0]",
 			"echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }",
+			"echo $url = [System.Uri]::UnescapeDataString^($url^)",
 			"echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",
 			") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"",
 			"",

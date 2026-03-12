@@ -1386,14 +1386,16 @@ class GalleryNavigationProvider extends libPictProvider
 			// iOS/iPadOS: use vlc-x-callback for reliable app launching
 			tmpVLCURL = 'vlc-x-callback://x-callback-url/stream?url=' + encodeURIComponent(tmpStreamURL);
 		}
-		else if (tmpIsWindows || tmpIsAndroid)
+		else if (tmpIsAndroid)
 		{
-			// Windows and Android: VLC handles the raw URL natively
+			// Android: VLC app handles the raw URL natively via intent
 			tmpVLCURL = 'vlc://' + tmpStreamURL;
 		}
 		else
 		{
-			// macOS/Linux: our custom handlers URL-decode, so we encode
+			// Windows, macOS, Linux: encode the URL so the custom protocol
+			// handler can decode it.  On Windows this is required because the
+			// shell strips the colon from nested http:// URLs.
 			tmpVLCURL = 'vlc://' + encodeURIComponent(tmpStreamURL);
 		}
 
