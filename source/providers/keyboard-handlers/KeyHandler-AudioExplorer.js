@@ -94,6 +94,11 @@ function handleAudioExplorerKey(pGalleryNav, pEvent)
 				}
 			}
 			break;
+
+		case 'v':
+			pEvent.preventDefault();
+			pGalleryNav._streamWithVLC();
+			break;
 	}
 }
 

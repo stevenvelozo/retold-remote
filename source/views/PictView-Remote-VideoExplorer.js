@@ -200,6 +200,8 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'video-explorer';
+		tmpRemote.CurrentViewerFile = pFilePath;
+		tmpRemote.CurrentViewerMediaType = 'video';
 		this._currentPath = pFilePath;
 		this._frameData = null;
 		this._selectedFrameIndex = -1;
@@ -257,9 +259,18 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		let tmpHTML = '<div class="retold-remote-vex">';
 
 		// Header
+		let tmpCapabilities = tmpRemote.ServerCapabilities || {};
 		tmpHTML += '<div class="retold-remote-vex-header">';
-		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back to video (Esc)">&larr; Back</button>';
+		tmpHTML += '<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<div class="retold-remote-vex-title">Video Explorer &mdash; ' + this._getFmt().escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-vex-actions">';
+		tmpHTML += '<button class="retold-remote-vex-action-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].playInBrowser()" title="Play in browser (Space)">&#9654; Play</button>';
+		tmpHTML += '<button class="retold-remote-vex-action-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" title="Stream with VLC (v)">&#9654; VLC</button>';
+		if (tmpCapabilities.ffmpeg || tmpCapabilities.ffprobe)
+		{
+			tmpHTML += '<button class="retold-remote-vex-action-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].showExplorer(pict.views[\'RetoldRemote-VideoExplorer\']._currentPath)" title="Explore audio track">&#9835; Audio</button>';
+		}
+		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar (populated after frames load)
@@ -683,27 +694,31 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	// -----------------------------------------------------------------
 
 	/**
-	 * Navigate back to the video viewer.
+	 * Navigate back to the gallery / file listing.
 	 */
 	goBack()
 	{
 		this._cleanupWindowListeners();
 
-		if (this._currentPath)
+		let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
+		if (tmpNav)
 		{
-			let tmpApp = this.pict.views['RetoldRemote-MediaViewer'];
-			if (tmpApp)
-			{
-				tmpApp.showMedia(this._currentPath, 'video');
-			}
+			tmpNav.closeViewer();
 		}
-		else
+	}
+
+	/**
+	 * Leave the video explorer and play the video in the browser viewer.
+	 */
+	playInBrowser()
+	{
+		this._cleanupWindowListeners();
+
+		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpViewer)
 		{
-			let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
-			if (tmpNav)
-			{
-				tmpNav.closeViewer();
-			}
+			tmpViewer.showMedia(this._currentPath, 'video');
+			tmpViewer.playVideo();
 		}
 	}
 

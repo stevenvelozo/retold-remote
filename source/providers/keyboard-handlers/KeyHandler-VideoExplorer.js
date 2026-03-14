@@ -133,6 +133,22 @@ function handleVideoExplorerKey(pGalleryNav, pEvent)
 				}
 			}
 			break;
+
+		case 'v':
+			pEvent.preventDefault();
+			pGalleryNav._streamWithVLC();
+			break;
+
+		case ' ':
+			pEvent.preventDefault();
+			{
+				let tmpPlayVEX = pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];
+				if (tmpPlayVEX)
+				{
+					tmpPlayVEX.playInBrowser();
+				}
+			}
+			break;
 	}
 }
 

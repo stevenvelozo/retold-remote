@@ -34,6 +34,8 @@ class RetoldRemoteImageExplorerView extends libPictView
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'image-explorer';
+		tmpRemote.CurrentViewerFile = pFilePath;
+		tmpRemote.CurrentViewerMediaType = 'image';
 		this._currentPath = pFilePath;
 		this._dziData = null;
 		this._loading = false;
@@ -86,6 +88,9 @@ class RetoldRemoteImageExplorerView extends libPictView
 		tmpHTML += '<div class="retold-remote-iex-header">';
 		tmpHTML += '<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<div class="retold-remote-iex-title">Image Explorer &mdash; ' + tmpFmt.escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-iex-actions">';
+		tmpHTML += '<button class="retold-remote-iex-action-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].viewInBrowser()" title="View in standard viewer">&#128444; View</button>';
+		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar
@@ -732,7 +737,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 	}
 
 	/**
-	 * Navigate back to the image viewer.
+	 * Navigate back to the gallery / file listing.
 	 */
 	goBack()
 	{
@@ -750,21 +755,36 @@ class RetoldRemoteImageExplorerView extends libPictView
 			this._osdViewer = null;
 		}
 
-		if (this._currentPath)
+		let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
+		if (tmpNav)
 		{
-			let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
-			if (tmpViewer)
-			{
-				tmpViewer.showMedia(this._currentPath, 'image');
-			}
+			tmpNav.closeViewer();
 		}
-		else
+	}
+
+	/**
+	 * Leave the image explorer and view the image in the standard viewer.
+	 */
+	viewInBrowser()
+	{
+		// Destroy the OSD viewer
+		if (this._osdViewer)
 		{
-			let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
-			if (tmpNav)
+			try
 			{
-				tmpNav.closeViewer();
+				this._osdViewer.destroy();
 			}
+			catch (pErr)
+			{
+				// ignore
+			}
+			this._osdViewer = null;
+		}
+
+		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpViewer)
+		{
+			tmpViewer.showMedia(this._currentPath, 'image');
 		}
 	}
 

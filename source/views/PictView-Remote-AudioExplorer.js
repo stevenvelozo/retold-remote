@@ -59,6 +59,8 @@ class RetoldRemoteAudioExplorerView extends libPictView
 	{
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		tmpRemote.ActiveMode = 'audio-explorer';
+		tmpRemote.CurrentViewerFile = pFilePath;
+		tmpRemote.CurrentViewerMediaType = 'audio';
 		this._currentPath = pFilePath;
 		this._waveformData = null;
 		this._peaks = [];
@@ -102,8 +104,12 @@ class RetoldRemoteAudioExplorerView extends libPictView
 
 		// Header
 		tmpHTML += '<div class="retold-remote-aex-header">';
-		tmpHTML += '<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()" title="Back to audio (Esc)">&larr; Back</button>';
+		tmpHTML += '<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<div class="retold-remote-aex-title">Audio Explorer &mdash; ' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<div class="retold-remote-aex-actions">';
+		tmpHTML += '<button class="retold-remote-aex-action-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].playInBrowser()" title="Play in browser">&#9654; Play</button>';
+		tmpHTML += '<button class="retold-remote-aex-action-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._streamWithVLC()" title="Stream with VLC (v)">&#9654; VLC</button>';
+		tmpHTML += '</div>';
 		tmpHTML += '</div>';
 
 		// Info bar (populated after waveform loads)
@@ -971,7 +977,7 @@ class RetoldRemoteAudioExplorerView extends libPictView
 	}
 
 	/**
-	 * Navigate back to the audio player viewer.
+	 * Navigate back to the gallery / file listing.
 	 */
 	goBack()
 	{
@@ -982,21 +988,29 @@ class RetoldRemoteAudioExplorerView extends libPictView
 			this._resizeObserver = null;
 		}
 
-		if (this._currentPath)
+		let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
+		if (tmpNav)
 		{
-			let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
-			if (tmpViewer)
-			{
-				tmpViewer.showMedia(this._currentPath, 'audio');
-			}
+			tmpNav.closeViewer();
 		}
-		else
+	}
+
+	/**
+	 * Leave the audio explorer and play the file in the browser viewer.
+	 */
+	playInBrowser()
+	{
+		// Clean up resize observer
+		if (this._resizeObserver)
 		{
-			let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
-			if (tmpNav)
-			{
-				tmpNav.closeViewer();
-			}
+			this._resizeObserver.disconnect();
+			this._resizeObserver = null;
+		}
+
+		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];
+		if (tmpViewer)
+		{
+			tmpViewer.showMedia(this._currentPath, 'audio');
 		}
 	}
 
