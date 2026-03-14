@@ -3,6 +3,7 @@
 - Getting Started
   - [Server Setup & Docker](server-setup.md)
   - [Ultravisor Integration](ultravisor-integration.md)
+  - [Ultravisor Beacon Tool Setup](ultravisor-configuration.md)
 
 - Media Viewers
   - [Image Viewer](image-viewer.md)
