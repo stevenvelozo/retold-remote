@@ -752,7 +752,11 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		if (!this._sharp && !this._capabilities.imagemagick)
 		{
-			return fCallback(new Error('Neither sharp nor ImageMagick is available.'));
+			// Neither Sharp nor ImageMagick available locally — check for Ultravisor
+			if (!(this._dispatcher && this._dispatcher.isAvailable()))
+			{
+				return fCallback(new Error('Neither sharp nor ImageMagick is available.'));
+			}
 		}
 
 		let tmpMaxDim = pMaxDimension || this.options.DefaultMaxPreviewDimension;
@@ -826,10 +830,19 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		{
 			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
 		}
-		else
+		else if (this._capabilities.imagemagick)
 		{
 			// No Sharp available — use ImageMagick for standard images too
 			this._doGeneratePreviewWithImageMagick(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
+		}
+		else if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			// No local tools available — dispatch to Ultravisor beacon
+			this._doGeneratePreviewWithDispatcher(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, tmpIsRaw, fCallback);
+		}
+		else
+		{
+			return fCallback(new Error('No preview tools available.'));
 		}
 	}
 
@@ -1085,6 +1098,101 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		{
 			return fCallback(new Error('ImageMagick preview failed: ' + pError.message));
 		}
+	}
+
+	/**
+	 * Generate a preview by dispatching to an Ultravisor beacon.
+	 * Uses the MediaConversion capability (ImageResize) with a shell
+	 * convert fallback. The result is written to the cache directory.
+	 *
+	 * @param {string}   pInputPath      - Absolute path to the source image
+	 * @param {string}   pRelPath        - Relative path (for response/logging)
+	 * @param {number}   pMaxDim         - Max dimension
+	 * @param {string}   pCacheKey       - Cache key
+	 * @param {string}   pOutputFilename - Output filename
+	 * @param {string}   pCacheDir       - Cache directory path
+	 * @param {string}   pManifestPath   - Manifest file path
+	 * @param {string}   pOutputPath     - Output file path
+	 * @param {object}   pStat           - Original file stat
+	 * @param {boolean}  pIsRaw          - Whether this is a raw camera format
+	 * @param {Function} fCallback       - Callback(pError, pResult)
+	 */
+	_doGeneratePreviewWithDispatcher(pInputPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pCacheDir, pManifestPath, pOutputPath, pStat, pIsRaw, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpRelPath;
+
+		try
+		{
+			tmpRelPath = libPath.relative(this.contentPath, pInputPath);
+		}
+		catch (pErr)
+		{
+			return fCallback(new Error('Could not resolve relative path for dispatch.'));
+		}
+
+		if (!tmpRelPath || tmpRelPath.startsWith('..'))
+		{
+			return fCallback(new Error('File is outside content root.'));
+		}
+
+		this._dispatcher.dispatchConversion(
+		{
+			Action: 'ImageResize',
+			InputPath: tmpRelPath,
+			OutputFilename: pOutputFilename,
+			Width: pMaxDim,
+			Height: pMaxDim,
+			Format: 'jpeg',
+			Quality: this.options.PreviewQuality || 85,
+			AffinityKey: tmpRelPath,
+			TimeoutMs: 120000,
+			FallbackCommand: `convert "{SourcePath}"[0] -auto-orient -resize ${pMaxDim}x${pMaxDim} -quality ${this.options.PreviewQuality || 85} "{OutputPath}"`
+		},
+		(pDispatchError, pResult) =>
+		{
+			if (pDispatchError || !pResult || !pResult.OutputBuffer)
+			{
+				return fCallback(new Error('Ultravisor preview generation failed: ' + (pDispatchError ? pDispatchError.message : 'no output')));
+			}
+
+			try
+			{
+				libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+			}
+			catch (pWriteError)
+			{
+				return fCallback(new Error('Failed to write preview output: ' + pWriteError.message));
+			}
+
+			let tmpResult =
+			{
+				Success: true,
+				SourcePath: pRelPath,
+				CacheKey: pCacheKey,
+				OutputFilename: pOutputFilename,
+				Width: pMaxDim,
+				Height: pMaxDim,
+				OrigWidth: 0,
+				OrigHeight: 0,
+				FileSize: pResult.OutputBuffer.length,
+				NeedsPreview: true,
+				IsRawFormat: pIsRaw,
+				GeneratedAt: new Date().toISOString()
+			};
+
+			try
+			{
+				libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
+			}
+			catch (pWriteError)
+			{
+				tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
+			}
+
+			tmpSelf.fable.log.info(`Generated image preview (Ultravisor): ${pRelPath}`);
+			return fCallback(null, tmpResult);
+		});
 	}
 
 	// ---------------------------------------------------------------

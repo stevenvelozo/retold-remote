@@ -496,7 +496,9 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
-		// Try Ultravisor dispatch as last resort for image thumbnails
+		// Try Ultravisor dispatch as last resort for image thumbnails.
+		// Uses structured MediaConversion capability (orator-conversion beacon)
+		// with shell convert fallback if MediaConversion is not available.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -513,15 +515,19 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			{
 				let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
-				let tmpCommand = `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`;
 
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.dispatchConversion(
 				{
-					Command: tmpCommand,
+					Action: 'ImageResize',
 					InputPath: tmpRelPath,
 					OutputFilename: tmpOutputFilename,
+					Width: pWidth,
+					Height: pHeight,
+					Format: tmpOutputFormat,
+					Quality: 80,
 					AffinityKey: tmpRelPath,
-					TimeoutMs: 30000
+					TimeoutMs: 30000,
+					FallbackCommand: `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`
 				},
 				(pDispatchError, pResult) =>
 				{
@@ -677,10 +683,11 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	}
 
 	/**
-	 * Fallback raw thumbnail generation: ImageMagick → exifr embedded preview.
+	 * Fallback raw thumbnail generation: ImageMagick → Ultravisor MediaConversion → exifr embedded preview.
 	 */
 	_generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
+		let tmpSelf = this;
 		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
 		// Strategy 2: ImageMagick (may have dcraw delegate)
@@ -694,11 +701,67 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 			catch (pError)
 			{
-				// Fall through to exifr
+				// Fall through to Ultravisor
 			}
 		}
 
-		// Strategy 3: Extract embedded JPEG preview via exifr, resize with sharp
+		// Strategy 2.5: Try Ultravisor MediaConversion (beacon may have Sharp
+		// even if local machine does not have ImageMagick)
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
+
+				this._dispatcher.dispatchConversion(
+				{
+					Action: 'ImageResize',
+					InputPath: tmpRelPath,
+					OutputFilename: tmpOutputFilename,
+					Width: pWidth,
+					Height: pHeight,
+					Format: tmpOutputFormat,
+					Quality: 80,
+					AffinityKey: tmpRelPath,
+					TimeoutMs: 60000,
+					FallbackCommand: `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`
+				},
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					{
+						tmpSelf.fable.log.info(`Raw thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						return fCallback(null, pResult.OutputBuffer);
+					}
+
+					// Fall through to exifr embedded preview
+					tmpSelf._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Strategy 3 for raw thumbnails: extract embedded JPEG preview via exifr,
+	 * resize with sharp. Most cameras embed a full-size JPEG preview in the raw file.
+	 */
+	_generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
 		if (this.capabilities.sharp)
 		{
 			let tmpSharp = this.capabilities.sharpModule;
