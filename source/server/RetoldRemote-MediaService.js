@@ -450,9 +450,12 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	/**
 	 * Generate an image thumbnail using sharp or ImageMagick.
 	 * Raw camera formats are routed to _generateRawThumbnail.
+	 * Prefers Ultravisor dispatch when a beacon is available.
 	 */
 	_generateImageThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
+		let tmpSelf = this;
+
 		// Raw camera formats need special handling
 		let tmpExt = libPath.extname(pFullPath).replace(/^\./, '').toLowerCase();
 		if (libExtensionMaps.RawImageExtensions[tmpExt])
@@ -460,6 +463,55 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			return this._generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback);
 		}
 
+		// Prefer Ultravisor operation trigger when available.
+		if (this._dispatcher && this._dispatcher.isAvailable())
+		{
+			let tmpRelPath;
+			try
+			{
+				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+			}
+			catch (pErr)
+			{
+				tmpRelPath = null;
+			}
+
+			if (tmpRelPath && !tmpRelPath.startsWith('..'))
+			{
+				let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+				this._dispatcher.triggerOperation('rr-image-thumbnail',
+				{
+					ImageAddress: '>retold-remote/File/' + tmpRelPath,
+					Width: pWidth,
+					Height: pHeight,
+					Format: tmpOutputFormat,
+					Quality: 80
+				},
+				(pTriggerError, pResult) =>
+				{
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
+					{
+						tmpSelf.fable.log.info(`Image thumbnail generated via operation trigger for ${tmpRelPath}`);
+						return fCallback(null, pResult.OutputBuffer);
+					}
+
+					// Trigger failed — fall through to local processing
+					tmpSelf.fable.log.info(`Operation trigger failed for image thumbnail, falling back to local: ${pTriggerError ? pTriggerError.message : 'no result'}`);
+					tmpSelf._generateImageThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
+				});
+				return;
+			}
+		}
+
+		return this._generateImageThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
+	}
+
+	/**
+	 * Generate an image thumbnail using local tools (Sharp or ImageMagick).
+	 */
+	_generateImageThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
 		// Try sharp first
 		if (this.capabilities.sharp)
 		{
@@ -496,9 +548,21 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
-		// Try Ultravisor dispatch as last resort for image thumbnails.
-		// Uses structured MediaConversion capability (orator-conversion beacon)
-		// with shell convert fallback if MediaConversion is not available.
+		return fCallback(new Error('No image thumbnail tools available.'));
+	}
+
+	/**
+	 * Generate a thumbnail for a raw camera image.
+	 * Fallback chain: Ultravisor dispatch → Sharp direct → dcraw.js → native dcraw → ImageMagick → exifr/JPEG scan.
+	 */
+	_generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
+
+		// Strategy 0: Dispatch to Ultravisor MediaConversion beacon if available.
+		// A remote orator-conversion node can resize raw images via Sharp/libvips
+		// without needing dcraw locally.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -513,7 +577,6 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
 
 				this._dispatcher.dispatchConversion(
@@ -526,36 +589,37 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 					Format: tmpOutputFormat,
 					Quality: 80,
 					AffinityKey: tmpRelPath,
-					TimeoutMs: 30000,
-					FallbackCommand: `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`
+					TimeoutMs: 60000
 				},
 				(pDispatchError, pResult) =>
 				{
 					if (!pDispatchError && pResult && pResult.OutputBuffer)
 					{
-						this.fable.log.info(`Image thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						tmpSelf.fable.log.info(`Raw thumbnail generated via Ultravisor for ${tmpRelPath}`);
 						return fCallback(null, pResult.OutputBuffer);
 					}
 
-					return fCallback(new Error('No image thumbnail tools available.'));
+					// Dispatch failed — fall through to local processing
+					tmpSelf.fable.log.info(`Ultravisor dispatch failed for raw thumbnail, falling back to local: ${pDispatchError ? pDispatchError.message : 'no result'}`);
+					tmpSelf._generateRawThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
 				});
 				return;
 			}
 		}
 
-		return fCallback(new Error('No image thumbnail tools available.'));
+		return this._generateRawThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
 	}
 
 	/**
-	 * Generate a thumbnail for a raw camera image.
-	 * Fallback chain: Sharp direct → dcraw.js → native dcraw → ImageMagick → exifr/JPEG scan.
+	 * Generate a raw thumbnail using local tools.
+	 * Fallback chain: Sharp direct → native dcraw → ImageMagick → dcraw.js → exifr.
 	 */
-	_generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	_generateRawThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		let tmpSelf = this;
 		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
-		// Strategy 0: Try Sharp directly — libvips can natively decode DNG
+		// Try Sharp directly — libvips can natively decode DNG
 		// and some other raw formats without needing external tools.
 		if (this.capabilities.sharp)
 		{
@@ -569,8 +633,8 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 					.then((pOutBuf) => fCallback(null, pOutBuf))
 					.catch(() =>
 					{
-						// Sharp can't decode this format — fall through to dcraw.js
-						tmpSelf._generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback);
+						// Sharp can't decode this format — fall through to native dcraw
+						tmpSelf._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
 					});
 				return;
 			}
@@ -580,12 +644,13 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
-		return this._generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback);
+		return this._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
 	}
 
 	/**
-	 * Generate a raw thumbnail using dcraw.js (Emscripten port — Strategy 1).
+	 * Generate a raw thumbnail using dcraw.js (Emscripten port).
 	 * Pure JavaScript, no native binary needed. Outputs TIFF → Sharp resize.
+	 * Slow and memory-heavy — last resort before exifr embedded preview.
 	 */
 	_generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
@@ -610,30 +675,30 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						.then((pOutBuf) => fCallback(null, pOutBuf))
 						.catch(() =>
 						{
-							tmpSelf._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
+							tmpSelf._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
 						});
 					return;
 				}
 			}
 			catch (pError)
 			{
-				// Fall through to native dcraw
+				// Fall through to exifr
 			}
 		}
 
-		return this._generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback);
+		return this._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
 	}
 
 	/**
-	 * Generate a raw thumbnail using native dcraw binary + sharp (Strategy 2).
-	 * Called after dcraw.js fails.
+	 * Generate a raw thumbnail using native dcraw binary + sharp.
+	 * Called after Sharp direct fails.
 	 */
 	_generateRawThumbnailNativeDcraw(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		let tmpSelf = this;
 		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
-		// Strategy 1: dcraw piped to sharp (half-size for speed)
+		// Native dcraw piped to sharp (half-size for speed)
 		if (this.capabilities.dcraw && this.capabilities.sharp)
 		{
 			try
@@ -649,15 +714,15 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 				tmpDcraw.on('error', () =>
 				{
-					// Fall through to next strategy
-					tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+					// Fall through to ImageMagick
+					tmpSelf._generateRawThumbnailImageMagick(pFullPath, pWidth, pHeight, pFormat, fCallback);
 				});
 
 				tmpDcraw.on('close', (pCode) =>
 				{
 					if (pCode !== 0 || tmpChunks.length === 0)
 					{
-						return tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+						return tmpSelf._generateRawThumbnailImageMagick(pFullPath, pWidth, pHeight, pFormat, fCallback);
 					}
 
 					let tmpBuffer = Buffer.concat(tmpChunks);
@@ -668,7 +733,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						.then((pOutBuf) => fCallback(null, pOutBuf))
 						.catch(() =>
 						{
-							tmpSelf._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+							tmpSelf._generateRawThumbnailImageMagick(pFullPath, pWidth, pHeight, pFormat, fCallback);
 						});
 				});
 				return;
@@ -679,18 +744,17 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
-		return this._generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback);
+		return this._generateRawThumbnailImageMagick(pFullPath, pWidth, pHeight, pFormat, fCallback);
 	}
 
 	/**
-	 * Fallback raw thumbnail generation: ImageMagick → Ultravisor MediaConversion → exifr embedded preview.
+	 * Generate a raw thumbnail using ImageMagick (may have dcraw/ufraw delegate).
+	 * Called after native dcraw fails.
 	 */
-	_generateRawThumbnailFallback(pFullPath, pWidth, pHeight, pFormat, fCallback)
+	_generateRawThumbnailImageMagick(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
-		let tmpSelf = this;
 		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
-		// Strategy 2: ImageMagick (may have dcraw delegate)
 		if (this.capabilities.imagemagick)
 		{
 			try
@@ -701,57 +765,11 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 			catch (pError)
 			{
-				// Fall through to Ultravisor
+				// Fall through to dcraw.js
 			}
 		}
 
-		// Strategy 2.5: Try Ultravisor MediaConversion (beacon may have Sharp
-		// even if local machine does not have ImageMagick)
-		if (this._dispatcher && this._dispatcher.isAvailable())
-		{
-			let tmpRelPath;
-			try
-			{
-				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
-			}
-			catch (pErr)
-			{
-				tmpRelPath = null;
-			}
-
-			if (tmpRelPath && !tmpRelPath.startsWith('..'))
-			{
-				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
-
-				this._dispatcher.dispatchConversion(
-				{
-					Action: 'ImageResize',
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					Width: pWidth,
-					Height: pHeight,
-					Format: tmpOutputFormat,
-					Quality: 80,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 60000,
-					FallbackCommand: `convert "{SourcePath}" -thumbnail ${pWidth}x${pHeight} -auto-orient ${tmpOutputFormat}:"{OutputPath}"`
-				},
-				(pDispatchError, pResult) =>
-				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
-					{
-						tmpSelf.fable.log.info(`Raw thumbnail generated via Ultravisor for ${tmpRelPath}`);
-						return fCallback(null, pResult.OutputBuffer);
-					}
-
-					// Fall through to exifr embedded preview
-					tmpSelf._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
-				});
-				return;
-			}
-		}
-
-		return this._generateRawThumbnailExifr(pFullPath, pWidth, pHeight, pFormat, fCallback);
+		return this._generateRawThumbnailDcrawJs(pFullPath, pWidth, pHeight, pFormat, fCallback);
 	}
 
 	/**

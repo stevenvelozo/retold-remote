@@ -826,19 +826,40 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				}
 			});
 		}
-		else if (this._sharp)
+		else if (this._dispatcher && this._dispatcher.isAvailable())
 		{
-			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
+			// Prefer Ultravisor dispatch when a beacon is available
+			this._doGeneratePreviewWithDispatcher(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, tmpIsRaw,
+				(pDispatchError, pResult) =>
+				{
+					if (!pDispatchError && pResult)
+					{
+						return fCallback(null, pResult);
+					}
+					// Dispatch failed — fall through to local tools
+					tmpSelf.fable.log.info(`Ultravisor dispatch failed for preview, falling back to local: ${pDispatchError ? pDispatchError.message : 'no result'}`);
+					tmpSelf._generatePreviewLocal(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, fCallback);
+				});
+		}
+		else
+		{
+			this._generatePreviewLocal(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, fCallback);
+		}
+	}
+
+	/**
+	 * Generate a preview using local tools (Sharp or ImageMagick).
+	 * Called when Ultravisor dispatch is unavailable or fails.
+	 */
+	_generatePreviewLocal(pAbsPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pCacheDir, pManifestPath, pOutputPath, pStat, fCallback)
+	{
+		if (this._sharp)
+		{
+			this._doGeneratePreview(pAbsPath, pAbsPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pCacheDir, pManifestPath, pOutputPath, pStat, false, fCallback);
 		}
 		else if (this._capabilities.imagemagick)
 		{
-			// No Sharp available — use ImageMagick for standard images too
-			this._doGeneratePreviewWithImageMagick(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpManifestPath, tmpOutputPath, tmpStat, false, fCallback);
-		}
-		else if (this._dispatcher && this._dispatcher.isAvailable())
-		{
-			// No local tools available — dispatch to Ultravisor beacon
-			this._doGeneratePreviewWithDispatcher(pAbsPath, pRelPath, tmpMaxDim, tmpCacheKey, tmpOutputFilename, tmpCacheDir, tmpManifestPath, tmpOutputPath, tmpStat, tmpIsRaw, fCallback);
+			this._doGeneratePreviewWithImageMagick(pAbsPath, pRelPath, pMaxDim, pCacheKey, pOutputFilename, pManifestPath, pOutputPath, pStat, false, fCallback);
 		}
 		else
 		{

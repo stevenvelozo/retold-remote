@@ -26,6 +26,9 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		this.options.CommandOptions.push(
 			{ Name: '--cache-server [url]', Description: 'URL of a remote parime cache server (e.g. http://host:9999).', Default: '' });
 
+		this.options.CommandOptions.push(
+			{ Name: '-u, --ultravisor [url]', Description: 'Connect to Ultravisor mesh. URL defaults to http://localhost:54321 if omitted.', Default: '' });
+
 		this.addCommand();
 	}
 
@@ -60,6 +63,17 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			? libPath.resolve(this.CommandOptions.cachePath)
 			: null;
 		let tmpCacheServer = this.CommandOptions.cacheServer || null;
+		// -u with no URL → true (Commander behavior for [optional]), default to localhost
+		let tmpUltravisorOpt = this.CommandOptions.ultravisor;
+		let tmpUltravisorURL = null;
+		if (tmpUltravisorOpt === true)
+		{
+			tmpUltravisorURL = 'http://localhost:54321';
+		}
+		else if (typeof tmpUltravisorOpt === 'string' && tmpUltravisorOpt.length > 0)
+		{
+			tmpUltravisorURL = tmpUltravisorOpt;
+		}
 
 		tmpSetupServer(
 			{
@@ -68,7 +82,8 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 				Port: tmpPort,
 				HashedFilenames: tmpHashedFilenames,
 				CacheRoot: tmpCacheRoot,
-				CacheServer: tmpCacheServer
+				CacheServer: tmpCacheServer,
+				UltravisorURL: tmpUltravisorURL
 			},
 			function (pError, pServerInfo)
 			{
@@ -85,10 +100,36 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 				tmpSelf.log.info(`  Content: ${tmpContentPath}`);
 				tmpSelf.log.info(`  Assets:  ${tmpDistPath}`);
 				tmpSelf.log.info(`  Browse:  http://localhost:${pServerInfo.Port}/`);
+				if (pServerInfo.UltravisorBeacon && pServerInfo.UltravisorBeacon.isEnabled())
+				{
+					tmpSelf.log.info(`  Beacon:  registered with Ultravisor at ${tmpUltravisorURL}`);
+				}
+				else if (tmpUltravisorURL)
+				{
+					tmpSelf.log.info(`  Beacon:  not connected (Ultravisor may be unreachable)`);
+				}
 				tmpSelf.log.info('==========================================================');
 				tmpSelf.log.info('');
 				tmpSelf.log.info('  Press Ctrl+C to stop.');
 				tmpSelf.log.info('');
+
+				// Graceful shutdown: disconnect beacon before exit
+				process.on('SIGINT', () =>
+				{
+					tmpSelf.log.info('');
+					tmpSelf.log.info('Shutting down...');
+					if (pServerInfo.UltravisorBeacon && pServerInfo.UltravisorBeacon.isEnabled())
+					{
+						pServerInfo.UltravisorBeacon.disconnectBeacon(() =>
+						{
+							process.exit(0);
+						});
+					}
+					else
+					{
+						process.exit(0);
+					}
+				});
 
 				// Intentionally do NOT call fCallback() here.
 				// The server should keep running.

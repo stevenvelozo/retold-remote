@@ -49,6 +49,7 @@ const libRetoldRemoteFileOperationService = require('../server/RetoldRemote-File
 const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortService.js');
 const libRetoldRemoteImageService = require('../server/RetoldRemote-ImageService.js');
 const libRetoldRemoteUltravisorDispatcher = require('../server/RetoldRemote-UltravisorDispatcher.js');
+const libRetoldRemoteUltravisorBeacon = require('../server/RetoldRemote-UltravisorBeacon.js');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -88,6 +89,13 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	if (pOptions.UltravisorURL)
 	{
 		tmpSettings.UltravisorURL = pOptions.UltravisorURL;
+
+		// Auto-construct ContentAPIURL from the server's own port so beacons
+		// know where to download source files from retold-remote.
+		if (!pOptions.ContentAPIURL)
+		{
+			tmpSettings.ContentAPIURL = 'http://localhost:' + pOptions.Port;
+		}
 	}
 	if (pOptions.ContentAPIURL)
 	{
@@ -214,6 +222,9 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Set up the Ultravisor dispatcher for offloading heavy processing
 			let tmpDispatcher = new libRetoldRemoteUltravisorDispatcher(tmpFable, {});
+
+			// Set up the Ultravisor beacon for mesh registration
+			let tmpBeacon = new libRetoldRemoteUltravisorBeacon(tmpFable, {});
 
 			// Wire the dispatcher to services that can offload processing
 			tmpMediaService.setDispatcher(tmpDispatcher);
@@ -2127,7 +2138,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			tmpOrator.startService(
 				function ()
 				{
-					return fCallback(null,
+					let tmpServerInfo =
 					{
 						Fable: tmpFable,
 						Orator: tmpOrator,
@@ -2140,8 +2151,39 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						MetadataCache: tmpMetadataCache,
 						FileOperationService: tmpFileOperationService,
 						UltravisorDispatcher: tmpDispatcher,
+						UltravisorBeacon: tmpBeacon,
 						Port: tmpPort
-					});
+					};
+
+					// If Ultravisor URL is configured, connect as a beacon
+					if (pOptions.UltravisorURL)
+					{
+						let tmpContentBaseURL = 'http://localhost:' + tmpPort + '/content/';
+
+						tmpBeacon.connectBeacon(
+							{
+								ServerURL: pOptions.UltravisorURL,
+								Name: 'retold-remote',
+								ContentPath: tmpContentPath,
+								ContentBaseURL: tmpContentBaseURL,
+								CacheRoot: tmpCacheRoot,
+								StagingPath: tmpCacheRoot || process.cwd()
+							},
+							(pBeaconError) =>
+							{
+								if (pBeaconError)
+								{
+									tmpFable.log.warn(`Ultravisor Beacon: registration failed (server may not be running): ${pBeaconError.message}`);
+									tmpFable.log.warn('Ultravisor Beacon: server is still running. Beacon will not be active.');
+								}
+								// Non-fatal — return server info regardless
+								return fCallback(null, tmpServerInfo);
+							});
+					}
+					else
+					{
+						return fCallback(null, tmpServerInfo);
+					}
 				});
 		});
 	});

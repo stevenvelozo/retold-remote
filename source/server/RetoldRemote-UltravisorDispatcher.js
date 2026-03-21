@@ -38,6 +38,9 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 		this._Available = false;
 		this._BeaconCount = 0;
 		this._Capabilities = [];
+
+		// Session cookie for authenticated requests
+		this._SessionCookie = null;
 	}
 
 	/**
@@ -51,9 +54,10 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 	}
 
 	/**
-	 * Check connection to Ultravisor server and log status.
-	 * Called once at startup. Non-fatal — if Ultravisor is down,
-	 * everything continues with local processing.
+	 * Check connection to Ultravisor server, authenticate,
+	 * update cached state, and start periodic refresh.
+	 * Non-fatal — if Ultravisor is down, everything continues
+	 * with local processing.
 	 *
 	 * @param {function} fCallback - function(pError)
 	 */
@@ -67,30 +71,150 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 
 		this.fable.log.info(`Ultravisor Dispatcher: checking connection to ${this._UltravisorURL}`);
 
+		// Authenticate first, then refresh state
+		this._authenticate((pAuthError) =>
+		{
+			if (pAuthError)
+			{
+				this.fable.log.warn(`Ultravisor Dispatcher: authentication failed — ${pAuthError.message}`);
+			}
+
+			this._refreshState((pError) =>
+			{
+				// Start periodic refresh (every 15 seconds) so the
+				// dispatcher picks up beacons that connect after startup.
+				if (!this._refreshInterval)
+				{
+					this._refreshInterval = setInterval(() =>
+					{
+						this._refreshState();
+					}, 15000);
+					// Don't keep the process alive just for this timer
+					if (this._refreshInterval.unref)
+					{
+						this._refreshInterval.unref();
+					}
+				}
+
+				return fCallback(null);
+			});
+		});
+	}
+
+	/**
+	 * Authenticate with the Ultravisor server to obtain a session cookie.
+	 *
+	 * @param {function} fCallback - function(pError)
+	 */
+	_authenticate(fCallback)
+	{
+		let tmpSelf = this;
+		let tmpBody = {
+			UserName: 'retold-remote-dispatcher',
+			Password: ''
+		};
+		let tmpBodyString = JSON.stringify(tmpBody);
+		let tmpParsedURL;
+
+		try
+		{
+			tmpParsedURL = new URL(this._UltravisorURL);
+		}
+		catch (pError)
+		{
+			return fCallback(new Error('Invalid UltravisorURL: ' + this._UltravisorURL));
+		}
+
+		let tmpLib = tmpParsedURL.protocol === 'https:' ? libHTTPS : libHTTP;
+
+		let tmpOptions = {
+			hostname: tmpParsedURL.hostname,
+			port: tmpParsedURL.port || (tmpParsedURL.protocol === 'https:' ? 443 : 80),
+			path: '/1.0/Authenticate',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Content-Length': Buffer.byteLength(tmpBodyString)
+			}
+		};
+
+		let tmpReq = tmpLib.request(tmpOptions, (pResponse) =>
+		{
+			let tmpData = '';
+			pResponse.on('data', (pChunk) => { tmpData += pChunk; });
+			pResponse.on('end', () =>
+			{
+				if (pResponse.statusCode >= 400)
+				{
+					return fCallback(new Error(`Authentication failed: HTTP ${pResponse.statusCode}`));
+				}
+
+				// Extract session cookie from Set-Cookie headers
+				let tmpSetCookieHeaders = pResponse.headers['set-cookie'];
+				if (tmpSetCookieHeaders && tmpSetCookieHeaders.length > 0)
+				{
+					let tmpCookieParts = tmpSetCookieHeaders[0].split(';');
+					tmpSelf._SessionCookie = tmpCookieParts[0].trim();
+					tmpSelf.fable.log.info('Ultravisor Dispatcher: authenticated.');
+				}
+
+				return fCallback(null);
+			});
+			pResponse.on('error', fCallback);
+		});
+
+		tmpReq.on('error', fCallback);
+		tmpReq.write(tmpBodyString);
+		tmpReq.end();
+	}
+
+	/**
+	 * Refresh cached Ultravisor state (capabilities, beacon count).
+	 *
+	 * @param {function} [fCallback] - Optional callback
+	 */
+	_refreshState(fCallback)
+	{
+		let tmpSelf = this;
+
 		this._httpRequest('GET', '/Beacon/Capabilities', null,
 			(pError, pResult) =>
 			{
 				if (pError)
 				{
-					this.fable.log.warn(`Ultravisor Dispatcher: connection failed — ${pError.message}. Processing will be local.`);
-					this._Available = false;
-					return fCallback(null);
+					if (tmpSelf._Available)
+					{
+						tmpSelf.fable.log.warn(`Ultravisor Dispatcher: connection lost — ${pError.message}. Processing will be local.`);
+					}
+					tmpSelf._Available = false;
+					tmpSelf._BeaconCount = 0;
+					tmpSelf._Capabilities = [];
+					if (fCallback) return fCallback(null);
+					return;
 				}
 
-				this._Capabilities = pResult.Capabilities || [];
-				this._BeaconCount = pResult.BeaconCount || 0;
-				this._Available = true;
+				let tmpPrevBeaconCount = tmpSelf._BeaconCount;
+				let tmpPrevAvailable = tmpSelf._Available;
 
-				if (this._BeaconCount === 0)
+				tmpSelf._Capabilities = pResult.Capabilities || [];
+				tmpSelf._BeaconCount = pResult.BeaconCount || 0;
+				tmpSelf._Available = true;
+
+				// Log state transitions
+				if (!tmpPrevAvailable && tmpSelf._BeaconCount > 0)
 				{
-					this.fable.log.warn('Ultravisor Dispatcher: connected but no beacons registered. Processing will be local until beacons connect.');
+					tmpSelf.fable.log.info(`Ultravisor Dispatcher: connected — ${tmpSelf._BeaconCount} beacon(s), capabilities: [${tmpSelf._Capabilities.join(', ')}]`);
 				}
-				else
+				else if (tmpPrevBeaconCount === 0 && tmpSelf._BeaconCount > 0)
 				{
-					this.fable.log.info(`Ultravisor Dispatcher: connected — ${this._BeaconCount} beacon(s), capabilities: [${this._Capabilities.join(', ')}]`);
+					tmpSelf.fable.log.info(`Ultravisor Dispatcher: ${tmpSelf._BeaconCount} beacon(s) now available, capabilities: [${tmpSelf._Capabilities.join(', ')}]`);
+				}
+				else if (tmpSelf._BeaconCount === 0 && !tmpPrevAvailable)
+				{
+					tmpSelf.fable.log.warn('Ultravisor Dispatcher: connected but no beacons registered. Processing will be local until beacons connect.');
 				}
 
-				return fCallback(null);
+				if (fCallback) return fCallback(null);
 			});
 	}
 
@@ -312,6 +436,76 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 	}
 
 	// ================================================================
+	// Operation Trigger
+	// ================================================================
+
+	/**
+	 * Trigger an operation on Ultravisor with parameters.
+	 *
+	 * Parameters seed the operation's initial state.  The operation
+	 * graph resolves universal addresses (>BeaconName/Context/Path)
+	 * and dispatches work to the appropriate beacon.
+	 *
+	 * @param {string} pOperationHash - Operation hash (e.g. 'rr-image-thumbnail')
+	 * @param {object} pParameters    - Key-value pairs seeded into OperationState
+	 * @param {function} fCallback    - function(pError, pResult) where pResult includes TaskOutputs
+	 */
+	triggerOperation(pOperationHash, pParameters, fCallback)
+	{
+		if (!this._UltravisorURL)
+		{
+			return fCallback(new Error('Ultravisor Dispatcher: not configured'));
+		}
+
+		let tmpBody = {
+			Parameters: pParameters || {},
+			Async: false,
+			TimeoutMs: (pParameters && pParameters.TimeoutMs) || 300000
+		};
+
+		this._httpRequest('POST', '/Operation/' + encodeURIComponent(pOperationHash) + '/Trigger', tmpBody,
+			(pError, pResult) =>
+			{
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+
+				if (!pResult.Success)
+				{
+					return fCallback(new Error(pResult.Errors && pResult.Errors.length > 0
+						? pResult.Errors[0]
+						: 'Operation trigger failed'));
+				}
+
+				// Extract OutputData from TaskOutputs — look for the
+				// beacon-dispatch node that produced binary output
+				if (pResult.TaskOutputs)
+				{
+					let tmpNodeHashes = Object.keys(pResult.TaskOutputs);
+					for (let i = 0; i < tmpNodeHashes.length; i++)
+					{
+						let tmpNodeOutputs = pResult.TaskOutputs[tmpNodeHashes[i]];
+						if (tmpNodeOutputs && tmpNodeOutputs.OutputData)
+						{
+							try
+							{
+								pResult.OutputBuffer = Buffer.from(tmpNodeOutputs.OutputData, 'base64');
+							}
+							catch (pDecodeError)
+							{
+								// Ignore decode errors on individual nodes
+							}
+							break;
+						}
+					}
+				}
+
+				return fCallback(null, pResult);
+			});
+	}
+
+	// ================================================================
 	// Streaming Dispatch (binary-framed)
 	// ================================================================
 
@@ -360,15 +554,23 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 
 		let tmpLib = tmpParsedURL.protocol === 'https:' ? libHTTPS : libHTTP;
 
+		let tmpStreamHeaders = {
+			'Content-Type': 'application/json',
+			'Connection': 'keep-alive'
+		};
+
+		// Attach session cookie if available
+		if (this._SessionCookie)
+		{
+			tmpStreamHeaders['Cookie'] = this._SessionCookie;
+		}
+
 		let tmpOptions = {
 			hostname: tmpParsedURL.hostname,
 			port: tmpParsedURL.port || (tmpParsedURL.protocol === 'https:' ? 443 : 80),
 			path: '/Beacon/Work/DispatchStream',
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Connection': 'keep-alive'
-			}
+			headers: tmpStreamHeaders
 		};
 
 		let tmpCallbackFired = false;
@@ -535,15 +737,23 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 
 		let tmpLib = tmpParsedURL.protocol === 'https:' ? libHTTPS : libHTTP;
 
+		let tmpHeaders = {
+			'Content-Type': 'application/json',
+			'Connection': 'keep-alive'
+		};
+
+		// Attach session cookie if available
+		if (this._SessionCookie)
+		{
+			tmpHeaders['Cookie'] = this._SessionCookie;
+		}
+
 		let tmpOptions = {
 			hostname: tmpParsedURL.hostname,
 			port: tmpParsedURL.port || (tmpParsedURL.protocol === 'https:' ? 443 : 80),
 			path: pPath,
 			method: pMethod,
-			headers: {
-				'Content-Type': 'application/json',
-				'Connection': 'keep-alive'
-			}
+			headers: tmpHeaders
 		};
 
 		let tmpCallbackFired = false;
