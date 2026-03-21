@@ -117,10 +117,9 @@ class RetoldRemoteTopBarView extends libPictView
 	/**
 	 * Update the breadcrumb location display.
 	 *
-	 * When more than one folder deep, shows a hamburger button to the
-	 * left of the home icon with a dropdown listing the intermediate
-	 * path segments.  The breadcrumb itself shows only
-	 * [home] / [current folder].
+	 * The home icon always shows and acts as a dropdown trigger
+	 * listing all path segments in the chain.  Clicking individual
+	 * items in the dropdown navigates to that level.
 	 */
 	updateLocation()
 	{
@@ -133,88 +132,78 @@ class RetoldRemoteTopBarView extends libPictView
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		let tmpCurrentLocation = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
 
-		// Build the home icon for the root crumb
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
 		let tmpHomeIcon = tmpIconProvider ? tmpIconProvider.getIcon('home', 16) : '/';
-		let tmpHomeCrumb = '<span class="retold-remote-topbar-home-crumb" onclick="pict.PictApplication.loadFileList(\'\')" title="Home">' + tmpHomeIcon + '</span>';
 
-		if (!tmpCurrentLocation)
-		{
-			tmpLocationEl.innerHTML = '<span class="retold-remote-topbar-location-inner">' + tmpHomeCrumb + '</span>';
-			return;
-		}
+		let tmpParts = tmpCurrentLocation ? tmpCurrentLocation.split('/').filter((p) => p) : [];
 
-		let tmpParts = tmpCurrentLocation.split('/').filter((p) => p);
-
-		// Shallow path (1 level): home / folder — no hamburger needed
-		if (tmpParts.length <= 1)
-		{
-			let tmpInner = tmpHomeCrumb;
-			for (let i = 0; i < tmpParts.length; i++)
-			{
-				let tmpPath = tmpParts.slice(0, i + 1).join('/');
-				tmpInner += '<span class="retold-remote-topbar-sep">/</span>';
-				tmpInner += '<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\'' + tmpPath + '\')">' + tmpParts[i] + '</span>';
-			}
-			tmpLocationEl.innerHTML = '<span class="retold-remote-topbar-location-inner">' + tmpInner + '</span>';
-			return;
-		}
-
-		// Deep path (2+ levels): show hamburger with intermediate folders
-		let tmpFolderIcon = tmpIconProvider ? tmpIconProvider.getIcon('folder', 16) : '';
-		let tmpHomeIconSmall = tmpIconProvider ? tmpIconProvider.getIcon('home', 16) : '/';
-
-		// Build dropdown items: deepest folder first, root last
+		// Build the dropdown contents (path chain + Home at bottom)
 		let tmpDropdownHTML = '';
 
-		// All folders from deepest to shallowest (includes current folder)
-		for (let i = tmpParts.length - 1; i >= 0; i--)
+		if (tmpParts.length > 0)
 		{
-			let tmpPath = tmpParts.slice(0, i + 1).join('/');
-			let tmpFolderName = tmpParts[i] + '/';
-			let tmpPrefix = '';
-			if (i > 0)
+			let tmpFolderIcon = tmpIconProvider ? tmpIconProvider.getIcon('folder', 16) : '';
+			let tmpHomeIconSmall = tmpIconProvider ? tmpIconProvider.getIcon('home', 16) : '/';
+
+			// All folders from deepest to shallowest, excluding current folder
+			for (let i = tmpParts.length - 2; i >= 0; i--)
 			{
-				tmpPrefix = '/' + tmpParts.slice(0, i).join('/') + '/';
+				let tmpPath = tmpParts.slice(0, i + 1).join('/');
+				let tmpFolderName = tmpParts[i] + '/';
+				let tmpPrefix = '';
+				if (i > 0)
+				{
+					tmpPrefix = '/' + tmpParts.slice(0, i).join('/') + '/';
+				}
+
+				tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'' + tmpPath + '\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
+				tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpFolderIcon + '</span>';
+				if (tmpPrefix)
+				{
+					tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label"><span class="retold-remote-topbar-overflow-item-prefix">' + tmpPrefix + '</span>' + tmpFolderName + '</span>';
+				}
+				else
+				{
+					tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">' + tmpFolderName + '</span>';
+				}
+				tmpDropdownHTML += '</button>';
 			}
 
-			tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'' + tmpPath + '\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
-			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpFolderIcon + '</span>';
-			if (tmpPrefix)
-			{
-				tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label"><span class="retold-remote-topbar-overflow-item-prefix">' + tmpPrefix + '</span>' + tmpFolderName + '</span>';
-			}
-			else
-			{
-				tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">' + tmpFolderName + '</span>';
-			}
+			// Home / root item at the bottom
+			tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
+			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpHomeIconSmall + '</span>';
+			tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">Home</span>';
 			tmpDropdownHTML += '</button>';
 		}
 
-		// Home / root item at the bottom
-		tmpDropdownHTML += '<button class="retold-remote-topbar-overflow-item" onclick="pict.PictApplication.loadFileList(\'\'); pict.views[\'ContentEditor-TopBar\'].closeBreadcrumbDropdown();">';
-		tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-icon">' + tmpHomeIconSmall + '</span>';
-		tmpDropdownHTML += '<span class="retold-remote-topbar-overflow-item-label">Home</span>';
-		tmpDropdownHTML += '</button>';
-
-		// Assemble: [hamburger + dropdown] [inner: home / current folder]
-		let tmpLastPart = tmpParts[tmpParts.length - 1];
-		let tmpLastPath = tmpParts.join('/');
-
+		// Assemble: [home icon with dropdown] / [current folder]
 		let tmpHTML = '';
-		// The overflow wrapper sits outside the truncation inner
 		tmpHTML += '<span class="retold-remote-topbar-breadcrumb-overflow">';
-		tmpHTML += '<button class="retold-remote-topbar-overflow-btn" onclick="pict.views[\'ContentEditor-TopBar\'].toggleBreadcrumbDropdown()" title="Navigate to parent folders">&#9776;</button>';
+		tmpHTML += '<span class="retold-remote-topbar-home-crumb"';
+		if (tmpParts.length > 0)
+		{
+			tmpHTML += ' onclick="pict.views[\'ContentEditor-TopBar\'].toggleBreadcrumbDropdown()"';
+			tmpHTML += ' title="Navigate to parent folders"';
+		}
+		else
+		{
+			tmpHTML += ' title="Home"';
+		}
+		tmpHTML += '>' + tmpHomeIcon + '</span>';
 		tmpHTML += '<div class="retold-remote-topbar-overflow-dropdown" id="RetoldRemote-BreadcrumbDropdown">';
 		tmpHTML += tmpDropdownHTML;
 		tmpHTML += '</div>';
 		tmpHTML += '</span>';
-		// The visible crumbs: home / current-folder
-		tmpHTML += '<span class="retold-remote-topbar-location-inner">';
-		tmpHTML += tmpHomeCrumb;
-		tmpHTML += '<span class="retold-remote-topbar-sep">/</span>';
-		tmpHTML += '<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\'' + tmpLastPath + '\')">' + tmpLastPart + '</span>';
-		tmpHTML += '</span>';
+
+		if (tmpParts.length > 0)
+		{
+			let tmpLastPart = tmpParts[tmpParts.length - 1];
+			let tmpLastPath = tmpParts.join('/');
+			tmpHTML += '<span class="retold-remote-topbar-location-inner">';
+			tmpHTML += '<span class="retold-remote-topbar-sep">/</span>';
+			tmpHTML += '<span class="retold-remote-topbar-location-crumb" onclick="pict.PictApplication.loadFileList(\'' + tmpLastPath + '\')">' + tmpLastPart + '</span>';
+			tmpHTML += '</span>';
+		}
 
 		tmpLocationEl.innerHTML = tmpHTML;
 	}
@@ -249,7 +238,7 @@ class RetoldRemoteTopBarView extends libPictView
 				{
 					return;
 				}
-				let tmpBtn = tmpDropdown.parentElement && tmpDropdown.parentElement.querySelector('.retold-remote-topbar-overflow-btn');
+				let tmpBtn = tmpDropdown.parentElement && tmpDropdown.parentElement.querySelector('.retold-remote-topbar-home-crumb');
 				if (tmpBtn && tmpBtn.contains(pEvent.target))
 				{
 					return;

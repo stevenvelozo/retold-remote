@@ -721,12 +721,15 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	 */
 	_executeRoute(pRoute, pPath)
 	{
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpActiveMode = tmpRemote.ActiveMode || 'gallery';
+
 		switch (pRoute)
 		{
 			case 'browse':
 			{
 				let tmpCurrentPath = (this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation) || '';
-				if (pPath !== tmpCurrentPath)
+				if (pPath !== tmpCurrentPath || tmpActiveMode !== 'gallery')
 				{
 					this.loadFileList(pPath);
 				}
@@ -735,7 +738,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			case 'view':
 			case 'edit':
 			{
-				if (this.pict.AppData.ContentEditor.CurrentFile !== pPath)
+				if (this.pict.AppData.ContentEditor.CurrentFile !== pPath || tmpActiveMode === 'gallery')
 				{
 					this.navigateToFile(pPath);
 				}
