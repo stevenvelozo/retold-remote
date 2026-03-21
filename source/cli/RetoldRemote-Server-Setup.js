@@ -2167,7 +2167,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								ContentPath: tmpContentPath,
 								ContentBaseURL: tmpContentBaseURL,
 								CacheRoot: tmpCacheRoot,
-								StagingPath: tmpCacheRoot || process.cwd()
+								StagingPath: tmpCacheRoot || process.cwd(),
+								BindAddresses: [{ IP: '127.0.0.1', Port: tmpPort, Protocol: 'http' }]
 							},
 							(pBeaconError) =>
 							{

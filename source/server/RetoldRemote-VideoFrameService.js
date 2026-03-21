@@ -240,7 +240,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -255,25 +255,24 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-media-probe',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 30000
+					MediaAddress: '>retold-remote/File/' + tmpRelPath
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					if (!pTriggerError && pResult && pResult.TaskOutputs)
 					{
 						try
 						{
-							let tmpData = JSON.parse(pResult.Outputs.StdOut);
-							let tmpParsed = tmpSelf._parseProbeData(tmpData);
-							tmpSelf.fable.log.info(`ffprobe via Ultravisor for ${tmpRelPath}`);
-							return fCallback(null, tmpParsed);
+							let tmpProcessOutput = pResult.TaskOutputs['rr-media-probe-process'];
+							if (tmpProcessOutput && tmpProcessOutput.Result)
+							{
+								let tmpData = JSON.parse(tmpProcessOutput.Result);
+								let tmpParsed = tmpSelf._parseProbeData(tmpData);
+								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath}`);
+								return fCallback(null, tmpParsed);
+							}
 						}
 						catch (pParseError)
 						{
@@ -392,7 +391,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -408,21 +407,16 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
 				let tmpTimeStr = this._formatFfmpegTimestamp(pTimestamp);
-				let tmpMuxer = (pFormat === 'png') ? 'image2' : (pFormat === 'webp') ? 'webp' : 'mjpeg';
-				let tmpOutputFilename = libPath.basename(pOutputPath);
-				let tmpCommand = `ffmpeg -ss ${tmpTimeStr} -i "{SourcePath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpMuxer} -y "{OutputPath}"`;
 
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-video-frame-extraction',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 60000
+					VideoAddress: '>retold-remote/File/' + tmpRelPath,
+					Timestamp: tmpTimeStr,
+					Width: pWidth
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
 						try
 						{

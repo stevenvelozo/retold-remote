@@ -455,6 +455,25 @@ function getOperations()
 		OutputFile: 'converted.epub'
 	}));
 
+	// ── 9. Media Probe ─────────────────────────────────────────
+	tmpOperations.push(_buildPipelineOperation(
+	{
+		Hash: 'rr-media-probe',
+		Name: 'Media Probe',
+		Description: 'Extract metadata from a media file via ffprobe. Pipeline: resolve → download → probe → send result. Trigger with Parameters: { MediaAddress }.',
+		Tags: ['media', 'probe', 'metadata'],
+		AddressParam: 'MediaAddress',
+		ProcessType: 'beacon-mediaconversion-mediaprobe',
+		ProcessTitle: 'Probe Metadata',
+		ProcessData:
+		{
+			TimeoutMs: 30000
+		},
+		ProcessSettings: ['InputFile'],
+		ProcessOutputs: ['Result', 'StdOut'],
+		OutputFile: 'probe.json'
+	}));
+
 	return tmpOperations;
 }
 

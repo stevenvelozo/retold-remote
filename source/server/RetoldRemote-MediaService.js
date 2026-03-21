@@ -558,11 +558,8 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	_generateRawThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		let tmpSelf = this;
-		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
-		// Strategy 0: Dispatch to Ultravisor MediaConversion beacon if available.
-		// A remote orator-conversion node can resize raw images via Sharp/libvips
-		// without needing dcraw locally.
+		// Try Ultravisor operation trigger when available.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -577,30 +574,26 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
+				let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'jpeg';
 
-				this._dispatcher.dispatchConversion(
+				this._dispatcher.triggerOperation('rr-image-thumbnail',
 				{
-					Action: 'ImageResize',
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
+					ImageAddress: '>retold-remote/File/' + tmpRelPath,
 					Width: pWidth,
 					Height: pHeight,
 					Format: tmpOutputFormat,
-					Quality: 80,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 60000
+					Quality: 80
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
-						tmpSelf.fable.log.info(`Raw thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						tmpSelf.fable.log.info(`Raw thumbnail generated via operation trigger for ${tmpRelPath}`);
 						return fCallback(null, pResult.OutputBuffer);
 					}
 
-					// Dispatch failed — fall through to local processing
-					tmpSelf.fable.log.info(`Ultravisor dispatch failed for raw thumbnail, falling back to local: ${pDispatchError ? pDispatchError.message : 'no result'}`);
+					// Trigger failed — fall through to local processing
+					tmpSelf.fable.log.info(`Operation trigger failed for raw thumbnail, falling back to local: ${pTriggerError ? pTriggerError.message : 'no result'}`);
 					tmpSelf._generateRawThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
 				});
 				return;
@@ -883,9 +876,8 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	_generateVideoThumbnail(pFullPath, pWidth, pHeight, pFormat, fCallback)
 	{
 		let tmpSelf = this;
-		let tmpOutputFormat = pFormat === 'webp' ? 'webp' : 'mjpeg';
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -900,27 +892,22 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpOutputFilename = `thumbnail.${pFormat === 'webp' ? 'webp' : 'jpg'}`;
-				let tmpCommand = `ffmpeg -ss 00:00:02 -i "{SourcePath}" -vframes 1 -vf "scale=${pWidth}:${pHeight}:force_original_aspect_ratio=decrease" -f ${tmpOutputFormat} "{OutputPath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-video-thumbnail',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 60000
+					VideoAddress: '>retold-remote/File/' + tmpRelPath,
+					Timestamp: '00:00:02',
+					Width: pWidth
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
-						tmpSelf.fable.log.info(`Video thumbnail generated via Ultravisor for ${tmpRelPath}`);
+						tmpSelf.fable.log.info(`Video thumbnail generated via operation trigger for ${tmpRelPath}`);
 						return fCallback(null, pResult.OutputBuffer);
 					}
 
 					// Fall through to local processing
-					tmpSelf.fable.log.info(`Ultravisor dispatch failed for video thumbnail, falling back to local: ${pDispatchError ? pDispatchError.message : 'no output'}`);
+					tmpSelf.fable.log.info(`Operation trigger failed for video thumbnail, falling back to local: ${pTriggerError ? pTriggerError.message : 'no output'}`);
 					tmpSelf._generateVideoThumbnailLocal(pFullPath, pWidth, pHeight, pFormat, fCallback);
 				});
 				return;
@@ -994,7 +981,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -1009,25 +996,24 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-media-probe',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 30000
+					MediaAddress: '>retold-remote/File/' + tmpRelPath
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					if (!pTriggerError && pResult && pResult.TaskOutputs)
 					{
 						try
 						{
-							let tmpData = JSON.parse(pResult.Outputs.StdOut);
-							let tmpParsed = tmpSelf._parseFfprobeData(tmpData);
-							tmpSelf.fable.log.info(`ffprobe via Ultravisor for ${tmpRelPath}`);
-							return fCallback(null, tmpParsed);
+							let tmpProcessOutput = pResult.TaskOutputs['rr-media-probe-process'];
+							if (tmpProcessOutput && tmpProcessOutput.Result)
+							{
+								let tmpData = JSON.parse(tmpProcessOutput.Result);
+								let tmpParsed = tmpSelf._parseFfprobeData(tmpData);
+								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath}`);
+								return fCallback(null, tmpParsed);
+							}
 						}
 						catch (pParseError)
 						{

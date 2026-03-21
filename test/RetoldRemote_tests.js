@@ -240,7 +240,7 @@ suite
 
 		test
 		(
-			'UltravisorDispatcher dispatch returns error when not configured',
+			'UltravisorDispatcher triggerOperation returns error when not configured',
 			(fDone) =>
 			{
 				let libFable = require('fable');
@@ -249,10 +249,11 @@ suite
 				let tmpFable = new libFable({});
 				let tmpDispatcher = new libDispatcher(tmpFable, {});
 
-				tmpDispatcher.dispatch(
+				tmpDispatcher.triggerOperation('rr-image-thumbnail',
 				{
-					Capability: 'Shell',
-					Settings: { Command: 'echo test' }
+					ImageAddress: '>retold-remote/File/test.jpg',
+					Width: 200,
+					Height: 200
 				},
 				(pError) =>
 				{
@@ -265,7 +266,7 @@ suite
 
 		test
 		(
-			'UltravisorDispatcher dispatchMediaCommand builds correct request body',
+			'UltravisorDispatcher triggerOperation sends correct request',
 			(fDone) =>
 			{
 				let libFable = require('fable');
@@ -277,15 +278,11 @@ suite
 				});
 				let tmpDispatcher = new libDispatcher(tmpFable, {});
 
-				// dispatchMediaCommand will fail because the server doesn't exist,
+				// triggerOperation will fail because the server doesn't exist,
 				// but we can verify the error comes from the HTTP connection
-				tmpDispatcher.dispatchMediaCommand(
+				tmpDispatcher.triggerOperation('rr-media-probe',
 				{
-					Command: 'ffmpeg -i "{SourcePath}" "{OutputPath}"',
-					InputPath: 'videos/test.mp4',
-					OutputFilename: 'thumbnail.webp',
-					AffinityKey: 'videos/test.mp4',
-					TimeoutMs: 5000
+					MediaAddress: '>retold-remote/File/videos/test.mp4'
 				},
 				(pError, pResult) =>
 				{

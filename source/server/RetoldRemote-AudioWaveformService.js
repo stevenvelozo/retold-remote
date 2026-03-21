@@ -136,7 +136,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -151,25 +151,24 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpCommand = `ffprobe -v quiet -print_format json -show_format -show_streams "{SourcePath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-media-probe',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 30000
+					MediaAddress: '>retold-remote/File/' + tmpRelPath
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.Outputs && pResult.Outputs.StdOut)
+					if (!pTriggerError && pResult && pResult.TaskOutputs)
 					{
 						try
 						{
-							let tmpData = JSON.parse(pResult.Outputs.StdOut);
-							let tmpParsed = tmpSelf._parseAudioProbeData(tmpData);
-							tmpSelf.fable.log.info(`ffprobe (audio) via Ultravisor for ${tmpRelPath}`);
-							return fCallback(null, tmpParsed);
+							let tmpProcessOutput = pResult.TaskOutputs['rr-media-probe-process'];
+							if (tmpProcessOutput && tmpProcessOutput.Result)
+							{
+								let tmpData = JSON.parse(tmpProcessOutput.Result);
+								let tmpParsed = tmpSelf._parseAudioProbeData(tmpData);
+								tmpSelf.fable.log.info(`ffprobe (audio) via operation trigger for ${tmpRelPath}`);
+								return fCallback(null, tmpParsed);
+							}
 						}
 						catch (pParseError)
 						{

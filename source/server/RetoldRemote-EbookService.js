@@ -192,7 +192,7 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 			return fCallback(null, tmpResult);
 		};
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -207,24 +207,18 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpCommand = `ebook-convert "{SourcePath}" "{OutputPath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-ebook-convert',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 180000
+					EbookAddress: '>retold-remote/File/' + tmpRelPath
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
 						try
 						{
 							libFs.writeFileSync(tmpOutputPath, pResult.OutputBuffer);
-							tmpSelf.fable.log.info(`Ebook converted via Ultravisor for ${tmpRelPath}`);
+							tmpSelf.fable.log.info(`Ebook converted via operation trigger for ${tmpRelPath}`);
 							return _finishConversion(tmpOutputPath, tmpOutputFilename, tmpCacheDir, tmpManifestPath);
 						}
 						catch (pWriteError)
@@ -234,7 +228,7 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 					}
 
 					// Fall through to local processing
-					tmpSelf.fable.log.info(`Ultravisor dispatch failed for ebook conversion, falling back to local: ${pDispatchError ? pDispatchError.message : 'no output'}`);
+					tmpSelf.fable.log.info(`Operation trigger failed for ebook conversion, falling back to local: ${pTriggerError ? pTriggerError.message : 'no output'}`);
 					tmpSelf._convertToEpubLocal(pAbsPath, tmpOutputPath, tmpOutputFilename, tmpCacheDir, tmpManifestPath, pRelPath, fCallback);
 				});
 				return;

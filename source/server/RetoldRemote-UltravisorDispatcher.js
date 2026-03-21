@@ -1,17 +1,16 @@
 /**
  * Retold Remote -- Ultravisor Dispatcher
  *
- * Fable service that dispatches heavy media processing operations to
- * an Ultravisor beacon worker via the /Beacon/Work/Dispatch API.
+ * Fable service that triggers Ultravisor operations for heavy media
+ * processing via the /Operation/{hash}/Trigger API.
  *
  * When UltravisorURL is not configured, the dispatcher is disabled and
  * all operations fall back to local processing. This ensures retold-remote
  * works identically with or without an Ultravisor server.
  *
- * File transfer is handled by the beacon executor: the dispatcher
- * provides a SourceURL (pointing to retold-remote's content API) and
- * the beacon downloads the file before processing. Results are returned
- * as base64-encoded data in the response.
+ * Operations use universal addresses (>BeaconName/Context/Path) for
+ * file resolution. Results are returned as binary (OutputBuffer) or
+ * JSON (TaskOutputs) depending on the operation type.
  *
  * @license MIT
  */
@@ -218,223 +217,6 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 			});
 	}
 
-	/**
-	 * Dispatch a work item to Ultravisor and wait for completion.
-	 *
-	 * @param {object} pWorkItem - Work item details
-	 * @param {string} pWorkItem.Capability - Required capability (e.g. 'Shell')
-	 * @param {string} [pWorkItem.Action] - Action within capability (e.g. 'Execute')
-	 * @param {object} pWorkItem.Settings - Work item settings (Command, etc.)
-	 * @param {string} [pWorkItem.AffinityKey] - Affinity key for routing
-	 * @param {number} [pWorkItem.TimeoutMs] - Timeout in milliseconds
-	 * @param {function} fCallback - function(pError, pResult)
-	 */
-	dispatch(pWorkItem, fCallback)
-	{
-		if (!this._UltravisorURL)
-		{
-			return fCallback(new Error('Ultravisor Dispatcher: not configured'));
-		}
-
-		this._httpRequest('POST', '/Beacon/Work/Dispatch', pWorkItem,
-			(pError, pResult) =>
-			{
-				if (pError)
-				{
-					return fCallback(pError);
-				}
-
-				if (!pResult.Success)
-				{
-					return fCallback(new Error(pResult.Error || 'Dispatch failed'));
-				}
-
-				return fCallback(null, pResult);
-			});
-	}
-
-	/**
-	 * Dispatch a media processing command to Ultravisor.
-	 * Convenience wrapper that builds SourceURL from ContentAPIURL,
-	 * sets up file transfer, and handles base64 result decoding.
-	 *
-	 * @param {object} pOptions - Dispatch options
-	 * @param {string} pOptions.Command - Shell command with {SourcePath} and {OutputPath} placeholders
-	 * @param {string} [pOptions.InputPath] - Relative path to source file (from ContentPath)
-	 * @param {string} [pOptions.InputFilename] - Filename for the downloaded source (defaults to basename of InputPath)
-	 * @param {string} [pOptions.OutputFilename] - Name of the output file
-	 * @param {string} [pOptions.AffinityKey] - Affinity routing key
-	 * @param {number} [pOptions.TimeoutMs] - Timeout in ms (default 300000)
-	 * @param {function} fCallback - function(pError, pResult) where pResult has OutputBuffer (Buffer) if output was collected
-	 */
-	dispatchMediaCommand(pOptions, fCallback)
-	{
-		let tmpSettings = {
-			Command: pOptions.Command || ''
-		};
-
-		// Set up source file download
-		if (pOptions.InputPath && this._ContentAPIURL)
-		{
-			let tmpEncodedPath = pOptions.InputPath.split('/').map(encodeURIComponent).join('/');
-			tmpSettings.SourceURL = this._ContentAPIURL + '/content/' + tmpEncodedPath;
-			tmpSettings.SourceFilename = pOptions.InputFilename ||
-				pOptions.InputPath.split('/').pop() || 'source_file';
-		}
-
-		// Set up output file collection
-		if (pOptions.OutputFilename)
-		{
-			tmpSettings.OutputFilename = pOptions.OutputFilename;
-			tmpSettings.ReturnOutputAsBase64 = true;
-		}
-
-		let tmpWorkItem = {
-			Capability: 'Shell',
-			Action: 'Execute',
-			Settings: tmpSettings,
-			AffinityKey: pOptions.AffinityKey || '',
-			TimeoutMs: pOptions.TimeoutMs || 300000
-		};
-
-		this.dispatch(tmpWorkItem,
-			(pError, pResult) =>
-			{
-				if (pError)
-				{
-					return fCallback(pError);
-				}
-
-				// If we have base64 output data, decode it to a Buffer
-				if (pResult.Outputs && pResult.Outputs.OutputData)
-				{
-					try
-					{
-						pResult.OutputBuffer = Buffer.from(pResult.Outputs.OutputData, 'base64');
-					}
-					catch (pDecodeError)
-					{
-						return fCallback(new Error('Failed to decode output data: ' + pDecodeError.message));
-					}
-				}
-
-				return fCallback(null, pResult);
-			});
-	}
-
-	/**
-	 * Check if a specific capability is available on any connected beacon.
-	 *
-	 * @param {string} pCapability - The capability name (e.g. 'MediaConversion', 'Shell')
-	 * @returns {boolean} True if at least one beacon has this capability
-	 */
-	hasCapability(pCapability)
-	{
-		return this._Available && this._Capabilities.indexOf(pCapability) >= 0;
-	}
-
-	/**
-	 * Dispatch a structured media conversion to Ultravisor using the
-	 * MediaConversion capability (orator-conversion beacon provider).
-	 *
-	 * Falls back to dispatchMediaCommand() (Shell) if MediaConversion
-	 * is not available.
-	 *
-	 * @param {object} pOptions - Conversion options
-	 * @param {string} pOptions.Action - Conversion action (e.g. 'ImageResize', 'PdfPageToPng')
-	 * @param {string} [pOptions.InputPath] - Relative path to source file (from content root)
-	 * @param {string} [pOptions.InputFilename] - Filename for the downloaded source
-	 * @param {string} [pOptions.OutputFilename] - Name of the output file
-	 * @param {number} [pOptions.Width] - Width for ImageResize
-	 * @param {number} [pOptions.Height] - Height for ImageResize
-	 * @param {string} [pOptions.Format] - Output format for ImageResize
-	 * @param {number} [pOptions.Quality] - Quality for lossy formats
-	 * @param {number} [pOptions.Page] - PDF page number (1-based)
-	 * @param {number} [pOptions.LongSidePixels] - Max dimension for sized PDF renders
-	 * @param {string} [pOptions.AffinityKey] - Affinity routing key
-	 * @param {number} [pOptions.TimeoutMs] - Timeout in ms (default 300000)
-	 * @param {function} fCallback - function(pError, pResult)
-	 */
-	dispatchConversion(pOptions, fCallback)
-	{
-		if (!this.hasCapability('MediaConversion'))
-		{
-			// Fall back to shell dispatch if caller provides a Command
-			if (pOptions.FallbackCommand)
-			{
-				return this.dispatchMediaCommand({
-					Command: pOptions.FallbackCommand,
-					InputPath: pOptions.InputPath,
-					InputFilename: pOptions.InputFilename,
-					OutputFilename: pOptions.OutputFilename,
-					AffinityKey: pOptions.AffinityKey,
-					TimeoutMs: pOptions.TimeoutMs
-				}, fCallback);
-			}
-			return fCallback(new Error('MediaConversion capability not available and no fallback command provided'));
-		}
-
-		let tmpSettings = {
-			InputFile: pOptions.InputFilename ||
-				(pOptions.InputPath ? pOptions.InputPath.split('/').pop() : 'source_file'),
-			OutputFile: pOptions.OutputFilename || 'output'
-		};
-
-		// Pass through action-specific settings
-		if (pOptions.Width) tmpSettings.Width = pOptions.Width;
-		if (pOptions.Height) tmpSettings.Height = pOptions.Height;
-		if (pOptions.Format) tmpSettings.Format = pOptions.Format;
-		if (pOptions.Quality) tmpSettings.Quality = pOptions.Quality;
-		if (pOptions.Page) tmpSettings.Page = pOptions.Page;
-		if (pOptions.LongSidePixels) tmpSettings.LongSidePixels = pOptions.LongSidePixels;
-
-		// Set up source file download
-		if (pOptions.InputPath && this._ContentAPIURL)
-		{
-			let tmpEncodedPath = pOptions.InputPath.split('/').map(encodeURIComponent).join('/');
-			tmpSettings.SourceURL = this._ContentAPIURL + '/content/' + tmpEncodedPath;
-			tmpSettings.SourceFilename = tmpSettings.InputFile;
-		}
-
-		// Set up output file collection
-		if (pOptions.OutputFilename)
-		{
-			tmpSettings.ReturnOutputAsBase64 = true;
-		}
-
-		let tmpWorkItem = {
-			Capability: 'MediaConversion',
-			Action: pOptions.Action || 'ImageResize',
-			Settings: tmpSettings,
-			AffinityKey: pOptions.AffinityKey || '',
-			TimeoutMs: pOptions.TimeoutMs || 300000
-		};
-
-		this.dispatch(tmpWorkItem,
-			(pError, pResult) =>
-			{
-				if (pError)
-				{
-					return fCallback(pError);
-				}
-
-				// If we have base64 output data, decode it to a Buffer
-				if (pResult.Outputs && pResult.Outputs.OutputData)
-				{
-					try
-					{
-						pResult.OutputBuffer = Buffer.from(pResult.Outputs.OutputData, 'base64');
-					}
-					catch (pDecodeError)
-					{
-						return fCallback(new Error('Failed to decode output data: ' + pDecodeError.message));
-					}
-				}
-
-				return fCallback(null, pResult);
-			});
-	}
-
 	// ================================================================
 	// Operation Trigger
 	// ================================================================
@@ -457,52 +239,125 @@ class RetoldRemoteUltravisorDispatcher extends libFableServiceProviderBase
 			return fCallback(new Error('Ultravisor Dispatcher: not configured'));
 		}
 
-		let tmpBody = {
+		this.fable.log.info(`[TriggerOp] START triggerOperation("${pOperationHash}") params: ${JSON.stringify(pParameters)}`);
+
+		let tmpBody = JSON.stringify({
 			Parameters: pParameters || {},
 			Async: false,
 			TimeoutMs: (pParameters && pParameters.TimeoutMs) || 300000
+		});
+
+		let tmpParsedURL;
+		try
+		{
+			tmpParsedURL = new URL(this._UltravisorURL);
+		}
+		catch (pURLError)
+		{
+			return fCallback(new Error('Invalid UltravisorURL: ' + this._UltravisorURL));
+		}
+
+		let tmpLib = tmpParsedURL.protocol === 'https:' ? libHTTPS : libHTTP;
+
+		let tmpHeaders = {
+			'Content-Type': 'application/json',
+			'Content-Length': Buffer.byteLength(tmpBody),
+			'Connection': 'keep-alive'
+		};
+		if (this._SessionCookie)
+		{
+			tmpHeaders['Cookie'] = this._SessionCookie;
+		}
+
+		let tmpOptions = {
+			hostname: tmpParsedURL.hostname,
+			port: tmpParsedURL.port || (tmpParsedURL.protocol === 'https:' ? 443 : 80),
+			path: '/Operation/' + encodeURIComponent(pOperationHash) + '/Trigger',
+			method: 'POST',
+			headers: tmpHeaders
 		};
 
-		this._httpRequest('POST', '/Operation/' + encodeURIComponent(pOperationHash) + '/Trigger', tmpBody,
-			(pError, pResult) =>
+		let tmpCallbackFired = false;
+		let tmpComplete = (pError, pResult) =>
+		{
+			if (tmpCallbackFired) return;
+			tmpCallbackFired = true;
+			return fCallback(pError, pResult);
+		};
+
+		this.fable.log.info(`[TriggerOp] Sending POST ${tmpOptions.path} to ${tmpOptions.hostname}:${tmpOptions.port}`);
+
+		let tmpReq = tmpLib.request(tmpOptions, (pResponse) =>
+		{
+			let tmpContentType = pResponse.headers['content-type'] || '';
+
+			this.fable.log.info(`[TriggerOp] Response received: HTTP ${pResponse.statusCode} content-type="${tmpContentType}"`);
+
+			if (tmpContentType.indexOf('application/octet-stream') >= 0)
 			{
-				if (pError)
+				// Binary response — collect chunks as Buffers
+				let tmpChunks = [];
+				pResponse.on('data', (pChunk) => { tmpChunks.push(pChunk); });
+				pResponse.on('end', () =>
 				{
-					return fCallback(pError);
-				}
-
-				if (!pResult.Success)
+					let tmpBuffer = Buffer.concat(tmpChunks);
+					this.fable.log.info(`[TriggerOp] Binary response: ${tmpBuffer.length} bytes, run=${pResponse.headers['x-run-hash']}, status=${pResponse.headers['x-status']}`);
+					let tmpResult = {
+						Success: true,
+						OutputBuffer: tmpBuffer,
+						RunHash: pResponse.headers['x-run-hash'] || '',
+						Status: pResponse.headers['x-status'] || 'Complete',
+						ElapsedMs: parseInt(pResponse.headers['x-elapsed-ms'] || '0', 10)
+					};
+					return tmpComplete(null, tmpResult);
+				});
+				pResponse.on('error', tmpComplete);
+			}
+			else
+			{
+				// JSON response (error or no binary result)
+				let tmpData = '';
+				pResponse.on('data', (pChunk) => { tmpData += pChunk; });
+				pResponse.on('end', () =>
 				{
-					return fCallback(new Error(pResult.Errors && pResult.Errors.length > 0
-						? pResult.Errors[0]
-						: 'Operation trigger failed'));
-				}
-
-				// Extract OutputData from TaskOutputs — look for the
-				// beacon-dispatch node that produced binary output
-				if (pResult.TaskOutputs)
-				{
-					let tmpNodeHashes = Object.keys(pResult.TaskOutputs);
-					for (let i = 0; i < tmpNodeHashes.length; i++)
+					this.fable.log.info(`[TriggerOp] JSON response body: ${tmpData.substring(0, 500)}`);
+					try
 					{
-						let tmpNodeOutputs = pResult.TaskOutputs[tmpNodeHashes[i]];
-						if (tmpNodeOutputs && tmpNodeOutputs.OutputData)
+						let tmpParsed = JSON.parse(tmpData);
+						if (pResponse.statusCode >= 400)
 						{
-							try
-							{
-								pResult.OutputBuffer = Buffer.from(tmpNodeOutputs.OutputData, 'base64');
-							}
-							catch (pDecodeError)
-							{
-								// Ignore decode errors on individual nodes
-							}
-							break;
+							this.fable.log.warn(`[TriggerOp] HTTP error ${pResponse.statusCode}: ${tmpParsed.Error || 'unknown'}`);
+							return tmpComplete(new Error(tmpParsed.Error || 'HTTP ' + pResponse.statusCode));
 						}
+						if (!tmpParsed.Success)
+						{
+							this.fable.log.warn(`[TriggerOp] Operation not successful. Errors: ${JSON.stringify(tmpParsed.Errors || [])}`);
+							return tmpComplete(new Error(
+								tmpParsed.Errors && tmpParsed.Errors.length > 0
+									? tmpParsed.Errors[0]
+									: 'Operation trigger failed'));
+						}
+						this.fable.log.info(`[TriggerOp] JSON success: run=${tmpParsed.RunHash}, status=${tmpParsed.Status}, keys=${Object.keys(tmpParsed).join(',')}`);
+						return tmpComplete(null, tmpParsed);
 					}
-				}
+					catch (pParseError)
+					{
+						this.fable.log.warn(`[TriggerOp] Failed to parse JSON response: ${pParseError.message}`);
+						return tmpComplete(new Error('Invalid response from trigger'));
+					}
+				});
+				pResponse.on('error', tmpComplete);
+			}
+		});
 
-				return fCallback(null, pResult);
-			});
+		tmpReq.on('error', (pReqError) =>
+		{
+			this.fable.log.warn(`[TriggerOp] Request error: ${pReqError.message}`);
+			tmpComplete(pReqError);
+		});
+		tmpReq.setTimeout(0);
+		tmpReq.write(tmpBody);
+		tmpReq.end();
 	}
 
 	// ================================================================

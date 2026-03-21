@@ -29,11 +29,34 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		this.options.CommandOptions.push(
 			{ Name: '-u, --ultravisor [url]', Description: 'Connect to Ultravisor mesh. URL defaults to http://localhost:54321 if omitted.', Default: '' });
 
+		this.options.CommandOptions.push(
+			{ Name: '-l, --logfile [path]', Description: 'Write logs to a file (auto-generates timestamped name if path omitted).', Default: '' });
+
 		this.addCommand();
 	}
 
 	onRunAsync(fCallback)
 	{
+		// Set up file logging if -l was provided
+		let tmpLogfileOpt = this.CommandOptions.logfile;
+		if (tmpLogfileOpt)
+		{
+			let tmpLogfilePath;
+			if (typeof tmpLogfileOpt === 'string' && tmpLogfileOpt.length > 0)
+			{
+				tmpLogfilePath = libPath.resolve(tmpLogfileOpt);
+			}
+			else
+			{
+				tmpLogfilePath = libPath.resolve(`retold-remote-${new Date().toISOString().replace(/[:.]/g, '-')}.log`);
+			}
+			let tmpStreamDef = { loggertype: 'simpleflatfile', level: 'info', path: tmpLogfilePath, outputloglinestoconsole: false, outputobjectstoconsole: false };
+			let tmpFileLogger = new this.fable.log._Providers.simpleflatfile(tmpStreamDef, this.fable.log);
+			tmpFileLogger.initialize();
+			this.fable.log.addLogger(tmpFileLogger, 'info');
+			this.log.info(`Logging to file: ${tmpLogfilePath}`);
+		}
+
 		let tmpContentPath = libPath.resolve(this.ArgumentString || process.cwd());
 
 		let tmpDistPath = libPath.resolve(__dirname, '..', '..', '..', 'web-application');

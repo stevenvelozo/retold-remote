@@ -70,7 +70,8 @@ class RetoldRemoteUltravisorBeacon extends libFableServiceProviderBase
 				Password: pBeaconConfig.Password || '',
 				MaxConcurrent: pBeaconConfig.MaxConcurrent || 1,
 				StagingPath: pBeaconConfig.StagingPath || process.cwd(),
-				Tags: pBeaconConfig.Tags || {}
+				Tags: pBeaconConfig.Tags || {},
+				BindAddresses: pBeaconConfig.BindAddresses || []
 			});
 
 		// Register the File context (content root — the user's media folder)

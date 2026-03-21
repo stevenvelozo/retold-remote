@@ -361,7 +361,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -376,21 +376,15 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpHalfFlag = pFullResolution ? '' : ' -h';
-				let tmpOutputFilename = libPath.basename(pOutputPath);
-				let tmpCommand = `dcraw -c -w${tmpHalfFlag} "{SourcePath}" | convert ppm:- jpeg:"{OutputPath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-image-convert',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 180000
+					ImageAddress: '>retold-remote/File/' + tmpRelPath,
+					Format: 'jpeg',
+					Quality: 92
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
 						try
 						{
@@ -400,7 +394,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 								libFs.mkdirSync(tmpDir, { recursive: true });
 							}
 							libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
-							tmpSelf.fable.log.info(`Raw conversion via Ultravisor (dcraw) for ${tmpRelPath}`);
+							tmpSelf.fable.log.info(`Raw conversion via operation trigger (dcraw) for ${tmpRelPath}`);
 							return fCallback(null);
 						}
 						catch (pWriteError)
@@ -503,7 +497,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor dispatch first
+		// Try Ultravisor operation trigger first
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -518,20 +512,15 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 			if (tmpRelPath && !tmpRelPath.startsWith('..'))
 			{
-				let tmpOutputFilename = libPath.basename(pOutputPath);
-				let tmpCommand = `convert "{SourcePath}" -auto-orient -quality 92 "{OutputPath}"`;
-
-				this._dispatcher.dispatchMediaCommand(
+				this._dispatcher.triggerOperation('rr-image-convert',
 				{
-					Command: tmpCommand,
-					InputPath: tmpRelPath,
-					OutputFilename: tmpOutputFilename,
-					AffinityKey: tmpRelPath,
-					TimeoutMs: 180000
+					ImageAddress: '>retold-remote/File/' + tmpRelPath,
+					Format: 'jpeg',
+					Quality: 92
 				},
-				(pDispatchError, pResult) =>
+				(pTriggerError, pResult) =>
 				{
-					if (!pDispatchError && pResult && pResult.OutputBuffer)
+					if (!pTriggerError && pResult && pResult.OutputBuffer)
 					{
 						try
 						{
@@ -541,7 +530,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 								libFs.mkdirSync(tmpDir, { recursive: true });
 							}
 							libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
-							tmpSelf.fable.log.info(`Raw conversion via Ultravisor (ImageMagick) for ${tmpRelPath}`);
+							tmpSelf.fable.log.info(`Raw conversion via operation trigger (ImageMagick) for ${tmpRelPath}`);
 							return fCallback(null);
 						}
 						catch (pWriteError)
@@ -1157,24 +1146,19 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			return fCallback(new Error('File is outside content root.'));
 		}
 
-		this._dispatcher.dispatchConversion(
+		this._dispatcher.triggerOperation('rr-image-thumbnail',
 		{
-			Action: 'ImageResize',
-			InputPath: tmpRelPath,
-			OutputFilename: pOutputFilename,
+			ImageAddress: '>retold-remote/File/' + tmpRelPath,
 			Width: pMaxDim,
 			Height: pMaxDim,
 			Format: 'jpeg',
-			Quality: this.options.PreviewQuality || 85,
-			AffinityKey: tmpRelPath,
-			TimeoutMs: 120000,
-			FallbackCommand: `convert "{SourcePath}"[0] -auto-orient -resize ${pMaxDim}x${pMaxDim} -quality ${this.options.PreviewQuality || 85} "{OutputPath}"`
+			Quality: this.options.PreviewQuality || 85
 		},
-		(pDispatchError, pResult) =>
+		(pTriggerError, pResult) =>
 		{
-			if (pDispatchError || !pResult || !pResult.OutputBuffer)
+			if (pTriggerError || !pResult || !pResult.OutputBuffer)
 			{
-				return fCallback(new Error('Ultravisor preview generation failed: ' + (pDispatchError ? pDispatchError.message : 'no output')));
+				return fCallback(new Error('Operation trigger preview generation failed: ' + (pTriggerError ? pTriggerError.message : 'no output')));
 			}
 
 			try
@@ -1211,7 +1195,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
 			}
 
-			tmpSelf.fable.log.info(`Generated image preview (Ultravisor): ${pRelPath}`);
+			tmpSelf.fable.log.info(`Generated image preview (operation trigger): ${pRelPath}`);
 			return fCallback(null, tmpResult);
 		});
 	}
