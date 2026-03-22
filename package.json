@@ -50,7 +50,7 @@
         "pict-service-commandlineutility": "^1.0.19",
         "pict-view": "^1.0.67",
         "retold-content-system": "^1.0.12",
-        "ultravisor-beacon": "^0.0.7",
+        "ultravisor-beacon": "^0.0.8",
         "yauzl": "^3.2.1"
     },
     "optionalDependencies": {
