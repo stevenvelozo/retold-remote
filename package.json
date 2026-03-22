@@ -1,6 +1,6 @@
 {
     "name": "retold-remote",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
     "main": "source/Pict-RetoldRemote-Bundle.js",
     "bin": {
@@ -50,7 +50,7 @@
         "pict-service-commandlineutility": "^1.0.19",
         "pict-view": "^1.0.67",
         "retold-content-system": "^1.0.12",
-        "ultravisor-beacon": "^0.0.6",
+        "ultravisor-beacon": "^0.0.7",
         "yauzl": "^3.2.1"
     },
     "optionalDependencies": {
