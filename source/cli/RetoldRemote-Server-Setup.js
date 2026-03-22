@@ -2158,18 +2158,31 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					// If Ultravisor URL is configured, connect as a beacon
 					if (pOptions.UltravisorURL)
 					{
-						let tmpContentAPIBase = tmpFable.settings.ContentAPIURL || ('http://localhost:' + tmpPort);
-						let tmpContentBaseURL = tmpContentAPIBase + '/content/';
+						// Discover bind addresses from network interfaces
+						let tmpBindAddresses = [];
+						let tmpNetworkInterfaces = require('os').networkInterfaces();
+						for (let tmpIfName of Object.keys(tmpNetworkInterfaces))
+						{
+							for (let tmpIf of tmpNetworkInterfaces[tmpIfName])
+							{
+								if (!tmpIf.internal && tmpIf.family === 'IPv4')
+								{
+									tmpBindAddresses.push({ IP: tmpIf.address, Port: tmpPort, Protocol: 'http' });
+								}
+							}
+						}
+						// Always include loopback as a fallback
+						tmpBindAddresses.push({ IP: '127.0.0.1', Port: tmpPort, Protocol: 'http' });
 
 						tmpBeacon.connectBeacon(
 							{
 								ServerURL: pOptions.UltravisorURL,
 								Name: 'retold-remote',
 								ContentPath: tmpContentPath,
-								ContentBaseURL: tmpContentBaseURL,
+								ContentBaseURL: '/content/',
 								CacheRoot: tmpCacheRoot,
 								StagingPath: tmpCacheRoot || process.cwd(),
-								BindAddresses: [{ IP: '127.0.0.1', Port: tmpPort, Protocol: 'http' }]
+								BindAddresses: tmpBindAddresses
 							},
 							(pBeaconError) =>
 							{
