@@ -2158,7 +2158,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					// If Ultravisor URL is configured, connect as a beacon
 					if (pOptions.UltravisorURL)
 					{
-						let tmpContentBaseURL = 'http://localhost:' + tmpPort + '/content/';
+						let tmpContentAPIBase = tmpFable.settings.ContentAPIURL || ('http://localhost:' + tmpPort);
+						let tmpContentBaseURL = tmpContentAPIBase + '/content/';
 
 						tmpBeacon.connectBeacon(
 							{
