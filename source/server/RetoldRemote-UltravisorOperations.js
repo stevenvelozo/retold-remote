@@ -262,7 +262,7 @@ function getOperations()
 			Height: '{~D:Record.Operation.Height~}',
 			Format: '{~D:Record.Operation.Format~}',
 			Quality: '{~D:Record.Operation.Quality~}',
-			TimeoutMs: 30000
+			TimeoutMs: 300000
 		},
 		ProcessSettings: ['InputFile', 'OutputFile', 'Width', 'Height', 'Format', 'Quality'],
 		ProcessOutputs: ['Result', 'StdOut'],
@@ -285,7 +285,7 @@ function getOperations()
 			OutputFile: 'thumbnail.jpg',
 			Timestamp: '{~D:Record.Operation.Timestamp~}',
 			Width: '{~D:Record.Operation.Width~}',
-			TimeoutMs: 60000
+			TimeoutMs: 600000
 		},
 		ProcessSettings: ['InputFile', 'OutputFile', 'Timestamp', 'Width'],
 		ProcessOutputs: ['Result', 'StdOut'],
@@ -310,7 +310,7 @@ function getOperations()
 		_taskNode(tmpVfe + '-probe', 'beacon-mediaconversion-mediaprobe', 'Probe Video', 660, 180,
 			{
 				AffinityKey: '{~D:Record.Operation.VideoAddress~}',
-				TimeoutMs: 30000
+				TimeoutMs: 600000
 			},
 			['InputFile'], ['Result', 'StdOut']),
 		_taskNode(tmpVfe + '-extract', 'beacon-mediaconversion-videoextractframe', 'Extract Frame', 880, 180,
@@ -319,7 +319,7 @@ function getOperations()
 				Timestamp: '{~D:Record.Operation.Timestamp~}',
 				Width: '{~D:Record.Operation.Width~}',
 				AffinityKey: '{~D:Record.Operation.VideoAddress~}',
-				TimeoutMs: 60000
+				TimeoutMs: 600000
 			},
 			['InputFile', 'OutputFile', 'Timestamp', 'Width'], ['Result', 'StdOut']),
 		_taskNode(tmpVfe + '-result', 'send-result', 'Send Result', 1100, 180,
@@ -409,7 +409,7 @@ function getOperations()
 			OutputFile: 'page.png',
 			Page: '{~D:Record.Operation.Page~}',
 			LongSidePixels: '{~D:Record.Operation.LongSidePixels~}',
-			TimeoutMs: 60000
+			TimeoutMs: 300000
 		},
 		ProcessSettings: ['InputFile', 'OutputFile', 'Page', 'LongSidePixels'],
 		ProcessOutputs: ['Result', 'StdOut'],
@@ -472,7 +472,7 @@ function getOperations()
 		ProcessTitle: 'Probe Metadata',
 		ProcessData:
 		{
-			TimeoutMs: 30000
+			TimeoutMs: 300000
 		},
 		ProcessSettings: ['InputFile'],
 		ProcessOutputs: ['Result', 'StdOut'],
