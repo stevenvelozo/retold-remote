@@ -164,9 +164,10 @@ function _buildPipelineOperation(pConfig)
 		_taskNode(tmpTransferHash, 'file-transfer', 'File Transfer', 490, 180,
 			{
 				SourceURL: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.URL~}',
-				Filename: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.Filename~}'
+				Filename: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.Filename~}',
+				TimeoutMs: pConfig.TransferTimeoutMs || 300000
 			},
-			['SourceURL', 'Filename'],
+			['SourceURL', 'Filename', 'TimeoutMs'],
 			['LocalPath', 'BytesTransferred', 'DurationMs']),
 
 		_taskNode(tmpProcessHash, pConfig.ProcessType, pConfig.ProcessTitle, 760, 180,
@@ -276,6 +277,7 @@ function getOperations()
 		Description: 'Generate a thumbnail from a video file. Pipeline: resolve → download → extract frame → send result. Trigger with Parameters: { VideoAddress, Timestamp, Width }.',
 		Tags: ['media', 'video', 'thumbnail'],
 		AddressParam: 'VideoAddress',
+		TransferTimeoutMs: 1800000,
 		ProcessType: 'beacon-mediaconversion-videothumbnail',
 		ProcessTitle: 'Extract Thumbnail',
 		ProcessData:
@@ -301,9 +303,10 @@ function getOperations()
 		_taskNode(tmpVfe + '-transfer', 'file-transfer', 'File Transfer', 440, 180,
 			{
 				SourceURL: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.URL~}',
-				Filename: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.Filename~}'
+				Filename: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.Filename~}',
+				TimeoutMs: 1800000
 			},
-			['SourceURL', 'Filename'], ['LocalPath', 'BytesTransferred', 'DurationMs']),
+			['SourceURL', 'Filename', 'TimeoutMs'], ['LocalPath', 'BytesTransferred', 'DurationMs']),
 		_taskNode(tmpVfe + '-probe', 'beacon-mediaconversion-mediaprobe', 'Probe Video', 660, 180,
 			{
 				AffinityKey: '{~D:Record.Operation.VideoAddress~}',
@@ -353,6 +356,7 @@ function getOperations()
 		Description: 'Extract waveform peak data from an audio file. Pipeline: resolve → download → extract waveform → send result. Trigger with Parameters: { AudioAddress, SampleRate, Samples }.',
 		Tags: ['media', 'audio', 'waveform'],
 		AddressParam: 'AudioAddress',
+		TransferTimeoutMs: 600000,
 		ProcessType: 'beacon-mediaconversion-audiowaveform',
 		ProcessTitle: 'Extract Waveform',
 		ProcessData:
@@ -374,6 +378,7 @@ function getOperations()
 		Description: 'Extract a time-range segment from an audio file. Pipeline: resolve → download → extract segment → send result. Trigger with Parameters: { AudioAddress, Start, Duration, Codec }.',
 		Tags: ['media', 'audio', 'segment'],
 		AddressParam: 'AudioAddress',
+		TransferTimeoutMs: 600000,
 		ProcessType: 'beacon-mediaconversion-audioextractsegment',
 		ProcessTitle: 'Extract Segment',
 		ProcessData:

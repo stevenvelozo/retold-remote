@@ -896,7 +896,8 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 				{
 					VideoAddress: '>retold-remote/File/' + tmpRelPath,
 					Timestamp: '00:00:02',
-					Width: pWidth
+					Width: pWidth,
+					TimeoutMs: 1800000
 				},
 				(pTriggerError, pResult) =>
 				{

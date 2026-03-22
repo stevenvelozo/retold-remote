@@ -412,7 +412,8 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 				{
 					VideoAddress: '>retold-remote/File/' + tmpRelPath,
 					Timestamp: tmpTimeStr,
-					Width: pWidth
+					Width: pWidth,
+					TimeoutMs: 1800000
 				},
 				(pTriggerError, pResult) =>
 				{
