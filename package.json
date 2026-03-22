@@ -1,6 +1,6 @@
 {
     "name": "retold-remote",
-    "version": "0.0.22",
+    "version": "0.0.23",
     "description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
     "main": "source/Pict-RetoldRemote-Bundle.js",
     "bin": {
