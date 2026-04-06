@@ -18,7 +18,8 @@
         "LICENSE"
     ],
     "scripts": {
-        "start": "node source/cli/RetoldRemote-CLI-Run.js serve",
+        "start": "node source/cli/RetoldRemote-CLI-Run.js",
+	"stack": "node source/cli/RetoldRemote-Stack-Run.js",
         "build": "npx quack build && npx quack copy",
         "test": "npx mocha -u tdd --exit --timeout 30000 test/*_tests.js",
         "prepack": "npm run build",

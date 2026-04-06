@@ -56,6 +56,7 @@ See [Stack Launcher](stack-launcher.md) for what `retold-stack` does and how the
 |----------|----------|
 | [Server Setup and Docker](server-setup.md) | Installation, CLI options, environment variables, configuration, Docker |
 | [Stack Launcher](stack-launcher.md) | `retold-stack` and `--stack` flag, XDG paths, child process orchestration |
+| [Synology Container Manager](synology.md) | Run the full stack on a Synology NAS via Container Manager |
 | [Ultravisor Integration](ultravisor-integration.md) | Offloading heavy media processing to a beacon worker |
 | [Image Viewer](image-viewer.md) | Fit modes, zoom, keyboard shortcuts, mouse interactions |
 | [Video Viewer](video-viewer.md) | Action menu, in-browser playback, VLC streaming |

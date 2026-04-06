@@ -1,0 +1,99 @@
+# Retold Remote — Full Stack Docker Compose
+#
+# Designed to work with Synology Container Manager (Project feature)
+# as well as plain `docker compose up` on Linux/macOS/Windows.
+#
+# Before running on Synology:
+#   1. Create the project folder:  /volume1/docker/retold-stack/
+#   2. Copy this file to that folder as docker-compose.yml
+#   3. Adjust the `media:` volume path below to point at your media folder
+#   4. In Container Manager, create a new Project → use existing docker-compose.yml
+#   5. Open http://your-nas-ip:7777/ in a browser
+#
+# On other hosts:
+#   docker compose up -d
+#   # Then browse to http://localhost:7777/
+
+services:
+  retold-stack:
+    # Build from the local Dockerfile. Change to `image: retold-stack:latest`
+    # if you've built or pulled a pre-built image.
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: retold-stack
+    hostname: retold-stack
+    restart: unless-stopped
+
+    # The image's CMD already launches the full stack via retold-stack.
+    # Uncomment + edit this to override the content path, port, or flags.
+    # command: ["node", "source/cli/RetoldRemote-Stack-Run.js", "/media", "-p", "7777", "--no-hash"]
+
+    ports:
+      # Retold Remote web UI — change the LEFT side to remap on the host.
+      - "7777:7777"
+      # Ultravisor web interface + API — optional, comment out if not needed.
+      - "54321:54321"
+
+    volumes:
+      # MEDIA FOLDER (read-only) — point this at whatever you want to browse.
+      #
+      # On Synology, edit the left side directly to match your NAS layout, e.g.:
+      #   - /volume1/media:/media:ro
+      #   - /volume1/photo:/media:ro    (Photo Station)
+      #   - /volume1/video:/media:ro    (Video Station)
+      #
+      # On other hosts, set MEDIA_PATH in the environment or .env file:
+      #   MEDIA_PATH=/path/to/media docker compose up -d
+      #
+      # Default (./media) lets you test the image with an empty folder
+      # next to this compose file.
+      - ${MEDIA_PATH:-./media}:/media:ro
+
+      # Retold Remote cache (thumbnails, frames, waveforms, conversions).
+      # This grows as content is browsed; keep it on a volume for persistence.
+      - retold-cache:/cache
+
+      # Ultravisor datastore + staging (persistent state, work queue journal).
+      - ultravisor-data:/data
+
+      # Stack config files (generated ultravisor-stack.json, etc).
+      - retold-config:/config
+
+    environment:
+      # XDG paths are already baked into the Dockerfile; override here if desired.
+      - XDG_CACHE_HOME=/cache
+      - XDG_DATA_HOME=/data
+      - XDG_CONFIG_HOME=/config
+      # Node memory limit — bump up for large libraries or raw camera formats.
+      - NODE_OPTIONS=--max-old-space-size=2048
+      # Uncomment to see more verbose logging:
+      # - DEBUG=retold:*
+
+    # Health check — waits until Retold Remote responds on its port.
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:7777/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+    # Synology-friendly resource limits (adjust to your NAS's specs).
+    # Comment these out if you want unlimited resources.
+    deploy:
+      resources:
+        limits:
+          # Memory cap — most Synology NAS units have 1-8GB.
+          # LibreOffice/Calibre conversions can be memory-hungry.
+          memory: 2G
+        reservations:
+          memory: 512M
+
+volumes:
+  retold-cache:
+    driver: local
+  ultravisor-data:
+    driver: local
+  retold-config:
+    driver: local

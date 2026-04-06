@@ -1,0 +1,54 @@
+# Retold Remote — Slim Stack Dockerfile
+#
+# Same as the main Dockerfile but WITHOUT LibreOffice and Calibre.
+# Use this if you don't need to view DOC, DOCX, RTF, ODT, WPD, MOBI,
+# or similar formats. The resulting image is ~700 MB smaller.
+#
+# Still runs the full stack (Ultravisor + Retold Remote + Orator-Conversion)
+# and supports all image, video, audio, PDF, and EPUB features.
+
+FROM node:20-slim
+
+# Install media processing tools (no LibreOffice, no Calibre)
+# Note: audiowaveform is not in Debian repos — retold-remote falls back
+# to ffprobe + ffmpeg for waveform generation, which is slower but works.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		ffmpeg \
+		imagemagick \
+		p7zip-full \
+		poppler-utils \
+		pdftk-java \
+		exiftool \
+		dcraw \
+		ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Prefer `npm ci` for reproducible builds, fall back to `npm install`
+# when the lock file is out of sync with package.json.
+# `--ignore-scripts` skips ultravisor's postinstall that tries to build
+# its web interface (which is already shipped pre-built).
+COPY package.json package-lock.json* ./
+RUN (npm ci --omit=dev --no-audit --no-fund --ignore-scripts \
+		|| npm install --omit=dev --no-audit --no-fund --ignore-scripts) \
+	&& npm cache clean --force
+
+COPY source/ source/
+COPY web-application/ web-application/
+COPY css/ css/
+COPY html/ html/
+
+ENV XDG_CACHE_HOME=/cache \
+	XDG_DATA_HOME=/data \
+	XDG_CONFIG_HOME=/config \
+	NODE_ENV=production
+
+RUN mkdir -p /media /cache /data /config \
+	&& mkdir -p /cache/retold-remote \
+	&& mkdir -p /data/ultravisor/datastore /data/ultravisor/staging \
+	&& mkdir -p /config/retold-stack
+
+EXPOSE 7777 54321
+
+CMD ["node", "source/cli/RetoldRemote-Stack-Run.js", "/media", "-p", "7777", "--no-hash"]

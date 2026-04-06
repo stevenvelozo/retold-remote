@@ -141,111 +141,103 @@ When enabled (`-H` flag or `RETOLD_HASHED_FILENAMES=true`), real file paths are 
 
 ## Docker
 
-### Using the Included Dockerfile
+Retold Remote ships with two Dockerfiles and a Synology-ready `docker-compose.yml`. Both images run the full stack (Ultravisor + Retold Remote + embedded Orator-Conversion) as a single container.
 
-A `Dockerfile` is provided in the repository root:
+> **Running on Synology?** See the dedicated [Synology Container Manager](synology.md) guide for a step-by-step walkthrough.
+
+### Quick Start (any Docker host)
 
 ```bash
-docker build -t retold-remote .
-docker run -p 8086:8086 -v /path/to/media:/media retold-remote
+cd retold-remote
+docker compose up -d
 ```
 
-### Inline Dockerfile
+Then browse to `http://localhost:7777/`. The Ultravisor coordinator web interface is at `http://localhost:54321/`.
 
-If you need to create a Dockerfile from scratch, here is a complete working version:
+Edit `docker-compose.yml` before starting to point the `/media` volume at your own content folder.
 
-```dockerfile
-FROM node:20-slim
+### Dockerfile Variants
 
-# Install optional tools for full functionality
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    imagemagick \
-    p7zip-full \
-    calibre \
-    && rm -rf /var/lib/apt/lists/*
+Both images have been verified to build and run the full stack on ARM64 (Apple Silicon) and should build identically on AMD64.
 
-WORKDIR /app
+| File | Measured Size | Includes | Use for |
+|------|---------------|----------|---------|
+| `Dockerfile` | **3.0 GB** | Everything: ffmpeg, ImageMagick, 7z, poppler, pdftk, LibreOffice, Calibre, exiftool, dcraw | Full document conversion (DOC, DOCX, RTF, ODT, WPD, MOBI, PPT, XLS, etc.) |
+| `Dockerfile.slim` | **1.81 GB** | Same but without LibreOffice and Calibre | Image/video/audio/PDF/EPUB only — no doc/docx/mobi conversion |
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+> **Note on audiowaveform:** Neither image installs `audiowaveform` because it is not in the default Debian repositories. Retold Remote automatically falls back to ffprobe + ffmpeg for waveform generation, which is slower but works identically. If you need the BBC `audiowaveform` tool for faster generation, add it via a custom Dockerfile step (build from source or a PPA).
 
-# Install sharp (optional image processing)
-RUN npm install sharp || true
-
-# Copy application source and built assets
-COPY source/ source/
-COPY web-application/ web-application/
-COPY css/ css/
-COPY html/ html/
-COPY server.js ./
-
-# Create cache directory
-RUN mkdir -p /cache
-
-# Default port
-ENV PORT=8086
-
-EXPOSE 8086
-
-# Serve /media with cache at /cache
-CMD ["node", "server.js", "/media"]
-```
-
-### Docker Compose
+Switch variants by editing the `dockerfile:` line in `docker-compose.yml`:
 
 ```yaml
-version: "3.8"
-services:
-  retold-remote:
-    build: .
-    ports:
-      - "8086:8086"
-    volumes:
-      - /path/to/media:/media:ro
-      - retold-cache:/cache
-    environment:
-      - PORT=8086
-    restart: unless-stopped
-
-volumes:
-  retold-cache:
+build:
+  context: .
+  dockerfile: Dockerfile.slim
 ```
 
-### Docker Usage Notes
+### Manual Docker Run
 
-- Mount your media folder to `/media` (read-only is fine with `:ro`)
-- Mount a volume to `/cache` for persistent thumbnail and frame caches
-- The `node:20-slim` base keeps the image small while the `apt-get` packages add full media processing
-- `calibre` is the largest optional package; omit it if you do not need MOBI/AZW ebook conversion
-- `sharp` is installed separately because it has native bindings that may fail on some architectures; the `|| true` ensures the build continues without it
+If you prefer `docker run` over Compose:
 
-### Minimal Dockerfile (No Optional Tools)
+```bash
+docker build -t retold-stack .
 
-If you only need basic browsing without thumbnails or media probing:
-
-```dockerfile
-FROM node:20-slim
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
-
-COPY source/ source/
-COPY web-application/ web-application/
-COPY css/ css/
-COPY html/ html/
-COPY server.js ./
-
-ENV PORT=8086
-EXPOSE 8086
-
-CMD ["node", "server.js", "/media"]
+docker run -d \
+  --name retold-stack \
+  -p 7777:7777 \
+  -p 54321:54321 \
+  -v /path/to/media:/media:ro \
+  -v retold-cache:/cache \
+  -v ultravisor-data:/data \
+  -v retold-config:/config \
+  --restart unless-stopped \
+  retold-stack
 ```
 
-This produces an image under 200MB. Images display directly (no thumbnails), videos play in the browser, and zip/cbz archives use native extraction.
+Then browse to `http://localhost:7777/`.
+
+### Volume Mounts
+
+The stack uses four volume mount points. The first is your media; the other three are for persistent state:
+
+| Container path | Purpose | Typical host mapping |
+|----------------|---------|---------------------|
+| `/media` | Media folder to browse (read-only) | `/path/to/media:/media:ro` |
+| `/cache` | Thumbnails, frames, waveforms, conversions | Named volume `retold-cache` |
+| `/data` | Ultravisor datastore + staging | Named volume `ultravisor-data` |
+| `/config` | Stack config files | Named volume `retold-config` |
+
+Inside the container, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, and `XDG_CONFIG_HOME` are set to these paths so the stack launcher uses them automatically.
+
+### Published Ports
+
+| Port | Purpose |
+|------|---------|
+| **7777** | Retold Remote web UI (the main thing you browse to) |
+| **54321** | Ultravisor coordinator API + web interface (optional — useful for monitoring) |
+
+Both are pinned to fixed ports via the `-p 7777` flag in the default CMD, overriding the usual random 7000-7999 behavior.
+
+### Customizing the CMD
+
+The default command launches `retold-stack` against `/media` on port 7777 with hashed filenames disabled. To override (e.g., to enable hashed filenames or change the port):
+
+```yaml
+command: ["node", "source/cli/RetoldRemote-Stack-Run.js", "/media", "-p", "7777"]
+```
+
+Remove the `--no-hash` flag to re-enable hashed filenames, or change `/media` if you mounted your media to a different path.
+
+### Image Size Notes
+
+- `node:20-slim` base: ~180 MB
+- Full `Dockerfile` (with LibreOffice + Calibre): ~2.5 GB — Calibre alone is ~1 GB, LibreOffice is ~600 MB
+- `Dockerfile.slim`: ~1.8 GB — drops both big dependencies
+- Omit `ffmpeg` and `audiowaveform` too if you don't need video/audio processing, for a ~1 GB image
+
+### Child Process Note
+
+The stack launcher spawns Ultravisor as a child process using `node` and the resolved `ultravisor` bin path. This works inside Docker without any special configuration — the child runs in the same container PID namespace and its logs are streamed through the main process's stdout with `[ultravisor]` prefixes.
 
 ## Archive Browsing
 
