@@ -51,10 +51,36 @@ If Sharp is not available on the server, the image loads directly regardless of 
 | `+` / `=` | Zoom in (1.5x) |
 | `-` | Zoom out (1.5x) |
 | `0` | Reset to home zoom (fit to view) |
-| `a` | Quick-add to active collection |
+| `s` | Toggle region selection mode |
+| `a` | Quick-add to active collection (current region if one is selected) |
 | `b` | Toggle collection panel |
 | `h` | Toggle favorite |
 | `Esc` | Back to image viewer |
+
+## Subimage Regions
+
+Press `s` (or click the **✂ Select** button in the header) to enter region selection mode. The cursor changes to a crosshair and OpenSeadragon's drag-to-pan is temporarily disabled.
+
+Drag a rectangle on the image. On release, an inline label input appears in the controls bar — type a name and hit Enter. The region is saved with these coordinates:
+
+- **X, Y** — top-left corner in original image pixels
+- **Width, Height** — dimensions in original image pixels
+
+Saved regions render as gold-bordered overlays with floating label badges. They persist per file via the SubimageService and appear in the **Regions** sidebar tab.
+
+### Region Actions
+
+From the **Regions** sidebar tab you can:
+
+- 🔍 **Navigate** — zoom the explorer to the saved region (`viewport.fitBounds(imageRect)`)
+- ➕ **Add to Collection** — saves as an `image-crop` collection item with the original-pixel `CropRegion`
+- 🗑️ **Delete** — removes the region
+
+### Multiple Regions
+
+You can save unlimited labeled regions per image. They never lose resolution because the coordinates are stored in the original image pixel space, not in viewport pixels. When the collection is exported, each region is cropped at full resolution via `sharp.extract()`.
+
+This same labeling pattern works on CBZ/CBR comic pages (each page is a regular image inside an archive — no special handling needed) and is the foundation for the document region system in the EPUB and PDF viewers.
 
 ## Coordinate Display
 

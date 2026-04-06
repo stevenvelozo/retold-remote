@@ -77,6 +77,11 @@ function handleImageExplorerKey(pGalleryNav, pEvent)
 				}
 			}
 			break;
+
+		case 's':
+			pEvent.preventDefault();
+			tmpIEX.toggleSelectionMode();
+			break;
 	}
 }
 

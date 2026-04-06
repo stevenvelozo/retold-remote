@@ -4,8 +4,16 @@ A browser-based media server and NAS file explorer. Point it at a folder and bro
 
 ## Quick Start
 
+Just the media browser:
+
 ```bash
 npx retold-remote serve /path/to/media
+```
+
+The full stack (Retold Remote + embedded Orator-Conversion + child Ultravisor):
+
+```bash
+retold-stack /path/to/media
 ```
 
 Or with Docker:
@@ -17,17 +25,24 @@ docker run -p 8086:8086 -v /path/to/media:/media retold-remote
 
 Then open `http://localhost:8086` in a browser.
 
+See [Stack Launcher](stack-launcher.md) for what `retold-stack` does and how the XDG-style data paths work.
+
 ## Features
 
 - **Gallery browser** with grid and list views, thumbnail generation, and lazy loading
 - **Image viewer** with three fit modes, 0.25x-8x zoom, and EXIF orientation support
 - **Video viewer** with action menu, in-browser playback, VLC streaming, and frame explorer
 - **Audio viewer** with waveform visualization, selection-based playback, and segment extraction
-- **eBook reader** for EPUB and MOBI with table of contents and page navigation
+- **eBook reader** for EPUB and MOBI with table of contents, page navigation, text selection capture, and visual region selection
+- **PDF viewer** with full pdf.js rendering, page navigation, text layer selection, and visual region selection
+- **Document conversion** for DOC, DOCX, RTF, ODT, WPD, ODP, PPT(X), ODS, XLS(X) — converted to PDF on the fly via Orator-Conversion + LibreOffice
 - **Code/text viewer** with syntax highlighting for 30+ languages
-- **PDF viewer** via native browser rendering
 - **Archive browsing** into zip, 7z, rar, tar.gz, cbz, and cbr files as virtual folders
 - **Filtering and sorting** by media type, extension, file size, date, and text search (with regex)
+- **Subimage regions** — draw labeled rectangles on images, ebook pages, and PDF pages; persisted per file
+- **Collections & Export** — bookmark files, image crops, video clips, audio clips, and document regions; export the whole collection to a folder with proper file cutting
+- **Stack mode** — single command launches Ultravisor coordinator + Retold Remote + embedded Orator-Conversion with sane XDG data paths
+- **Ultravisor offload** — heavy work (frame extraction, waveforms, conversions) dispatched to a beacon worker on a faster machine
 - **15 themes** from greyscale to retro and cyberpunk
 - **Full keyboard navigation** across every mode
 - **Media type override** to force any file open as image, video, audio, or text (keys 1-4)
@@ -40,14 +55,16 @@ Then open `http://localhost:8086` in a browser.
 | Document | Contents |
 |----------|----------|
 | [Server Setup and Docker](server-setup.md) | Installation, CLI options, environment variables, configuration, Docker |
+| [Stack Launcher](stack-launcher.md) | `retold-stack` and `--stack` flag, XDG paths, child process orchestration |
+| [Ultravisor Integration](ultravisor-integration.md) | Offloading heavy media processing to a beacon worker |
 | [Image Viewer](image-viewer.md) | Fit modes, zoom, keyboard shortcuts, mouse interactions |
 | [Video Viewer](video-viewer.md) | Action menu, in-browser playback, VLC streaming |
 | [Audio Viewer](audio-viewer.md) | HTML5 playback, autoplay, VLC streaming |
-| [eBook Reader](ebook-reader.md) | EPUB/MOBI support, table of contents, page navigation |
-| [Image Explorer](image-explorer.md) | Deep-zoom with OpenSeadragon, DZI tiling, coordinate display |
+| [eBook Reader](ebook-reader.md) | EPUB/MOBI support, TOC, page nav, text/region selection |
+| [Image Explorer](image-explorer.md) | Deep-zoom with OpenSeadragon, DZI tiling, region selection |
 | [Video Explorer](video-explorer.md) | Frame grid, timeline, range selection, clip extraction |
 | [Audio Explorer](audio-explorer.md) | Waveform visualization, selection, zoom, segment playback |
-| [Collections](collections.md) | Bookmarks, favorites, quick-add, item types, operation plans |
+| [Collections](collections.md) | Bookmarks, favorites, quick-add, item types, operation plans, export |
 | [File Metadata](metadata.md) | Info overlay, sidebar metadata, EXIF/GPS, ffprobe, explorer info bars |
 
 ## Keyboard Shortcuts (All Modes)
@@ -158,10 +175,23 @@ In the frame preview overlay:
 | `+` / `=` | Zoom in |
 | `-` | Zoom out |
 | `0` | Reset zoom |
-| `a` | Quick-add to collection |
+| `s` | Toggle region selection mode (draw rectangles) |
+| `a` | Quick-add to collection (current region if selected) |
 | `b` | Toggle collection panel |
 | `h` | Toggle favorite |
 | `Esc` | Back to viewer |
+
+### Document Viewer (PDF / EPUB)
+
+| Key | Action |
+|-----|--------|
+| `s` | Toggle visual region selection mode |
+| `a` | Quick-add document region to collection |
+| `Esc` | Back to gallery |
+
+In the PDF viewer, page navigation buttons and a page input are in the controls bar. The text layer supports native browser text selection — use the **Save Selection** button to capture selected text as a labeled region.
+
+In the EPUB reader, the controls bar exposes **Save Selection** (captures the selected text + CFI) and **Select Region** (draws a rectangle over the rendered page).
 
 ### Sidebar (F9)
 
@@ -184,7 +214,9 @@ mp4, webm, mov, mkv, avi, wmv, flv, m4v, ogv, mpg, mpeg, mpe, mpv, m2v, ts, mts,
 mp3, wav, ogg, flac, aac, m4a, wma, oga
 
 ### Documents
-pdf, epub, mobi
+pdf, epub, mobi, doc, docx, rtf, odt, wpd, wps, pages, odp, ppt, pptx, ods, xls, xlsx
+
+Documents beyond pdf/epub/mobi are converted to PDF on the fly via the embedded Orator-Conversion service (requires LibreOffice or Calibre on the server).
 
 ### Archives
 zip, 7z, rar, tar, tar.gz, tar.bz2, tar.xz, tgz, cbz, cbr
@@ -204,13 +236,16 @@ These external tools enhance functionality when available on the server:
 
 | Tool | Feature |
 |------|---------|
-| **sharp** (npm) | Fast image thumbnail generation |
+| **sharp** (npm) | Fast image thumbnail generation, region cropping |
 | **ImageMagick** | Fallback image thumbnails |
-| **ffmpeg** | Video thumbnails, frame extraction, audio waveforms |
+| **ffmpeg** | Video thumbnails, frame extraction, audio waveforms, clip cutting |
 | **ffprobe** | Media metadata (duration, resolution, codec) |
 | **7-Zip** (7z) | Archive browsing for rar, 7z, tar.* formats |
 | **VLC** | External video streaming |
-| **ebook-convert** (Calibre) | MOBI to EPUB conversion |
+| **audiowaveform** (BBC) | Faster audio waveform peak generation |
+| **ebook-convert** (Calibre) | MOBI/AZW to EPUB conversion (and PDF fallback for documents) |
+| **LibreOffice** (`soffice`) | DOC/DOCX/RTF/ODT/WPD/PPT(X)/XLS(X) to PDF conversion |
+| **pdftk** + **pdftoppm** (poppler) | PDF page extraction and rendering (used by Orator-Conversion) |
 
 Without these tools the application still works -- images serve directly, videos play in-browser, and zip/cbz archives use native extraction.
 
@@ -231,7 +266,20 @@ Without these tools the application still works -- images serve directly, videos
 | GET | `/api/media/audio-waveform?path=&peaks=` | Audio waveform peak data |
 | GET | `/api/media/audio-segment?path=&start=&end=` | Extract audio segment |
 | GET | `/api/media/ebook-convert?path=` | Convert MOBI to EPUB |
-| GET | `/api/media/ebook/:cacheKey/:filename` | Serve converted ebook |
+| GET | `/api/media/doc-convert?path=` | Convert DOC/DOCX/RTF/ODT/WPD/etc. to PDF |
+| GET | `/api/media/ebook/:cacheKey/:filename` | Serve converted ebook or PDF |
+| GET | `/api/media/pdf-text?path=&page=` | Extract text from a PDF page |
+| GET | `/api/media/subimage-regions?path=` | List labeled regions for an image, ebook, or PDF |
+| POST | `/api/media/subimage-regions` | Add a labeled region (visual or text-selection) |
+| PUT | `/api/media/subimage-regions/:id` | Update a region's label or coordinates |
+| DELETE | `/api/media/subimage-regions/:id?path=` | Remove a labeled region |
+| GET | `/api/collections` | List all collections |
+| POST | `/api/collections/:guid/items` | Add items to a collection |
+| POST | `/api/collections/:guid/export` | Export collection to a folder (cuts clips, crops images) |
+| POST | `/api/conversion/1.0/doc-to-pdf` | Convert any document buffer to PDF (via Orator-Conversion) |
+| POST | `/api/conversion/1.0/pdf-to-page-png/:Page` | Render a PDF page as PNG |
+| POST | `/api/conversion/1.0/pdf-to-page-jpg/:Page/:LongSidePixels` | Render and resize a PDF page as JPEG |
+| POST | `/api/conversion/1.0/image/resize` | Resize an image |
 | POST | `/api/media/open` | Open file in external player (VLC) |
 
 ## License

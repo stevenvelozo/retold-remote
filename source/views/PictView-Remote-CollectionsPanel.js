@@ -387,8 +387,18 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 				tmpManager.sortActiveCollection(null, tmpNewDir);
 			};
 
+			let tmpExportBtn = document.createElement('button');
+			tmpExportBtn.className = 'retold-remote-collections-export-btn';
+			tmpExportBtn.textContent = '\u21e9 Export';
+			tmpExportBtn.title = 'Export collection to a folder';
+			tmpExportBtn.onclick = () =>
+			{
+				tmpSelf._showExportDialog(tmpCollection.GUID, tmpCollection.Name);
+			};
+
 			tmpControls.appendChild(tmpSortSelect);
 			tmpControls.appendChild(tmpDirBtn);
+			tmpControls.appendChild(tmpExportBtn);
 			pRoot.appendChild(tmpControls);
 		}
 
@@ -984,6 +994,162 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 				return '\uD83D\uDCC4';
 			default:
 				return '\uD83D\uDCC4';
+		}
+	}
+
+	// -- Export Dialog -------------------------------------------------------
+
+	/**
+	 * Show the export dialog for a collection.
+	 *
+	 * @param {string} pGUID - Collection GUID
+	 * @param {string} pCollectionName - Collection name (for default folder)
+	 */
+	_showExportDialog(pGUID, pCollectionName)
+	{
+		let tmpSelf = this;
+
+		// Build a default folder name from the collection name
+		let tmpDefaultFolder = (pCollectionName || 'collection-export')
+			.replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
+			.replace(/\s+/g, '_')
+			.substring(0, 80);
+
+		// Use the current browsed folder as a prefix if available
+		let tmpRemote = this.pict.AppData.RetoldRemote;
+		let tmpCurrentFolder = tmpRemote.CurrentBrowsedFolder || '';
+		let tmpDefaultPath = tmpCurrentFolder
+			? tmpCurrentFolder.replace(/\/+$/, '') + '/' + tmpDefaultFolder
+			: tmpDefaultFolder;
+
+		// Create a simple inline prompt in the collections detail area
+		let tmpRoot = document.getElementById('RetoldRemote-Collections-Detail');
+		if (!tmpRoot)
+		{
+			return;
+		}
+
+		// Find or create the export dialog container
+		let tmpExistingDialog = document.getElementById('RetoldRemote-ExportDialog');
+		if (tmpExistingDialog)
+		{
+			tmpExistingDialog.parentElement.removeChild(tmpExistingDialog);
+		}
+
+		let tmpDialog = document.createElement('div');
+		tmpDialog.id = 'RetoldRemote-ExportDialog';
+		tmpDialog.style.cssText = 'padding:10px;border-top:1px solid var(--retold-border);background:var(--retold-bg-secondary,#21252b);';
+
+		tmpDialog.innerHTML =
+			'<div style="font-size:0.78rem;color:var(--retold-text);margin-bottom:6px;">Export to folder (within content root):</div>'
+			+ '<input type="text" id="RetoldRemote-ExportPath" value="' + tmpDefaultPath.replace(/"/g, '&quot;') + '" '
+			+ 'style="width:100%;box-sizing:border-box;background:var(--retold-bg-input,#1e1e1e);color:var(--retold-text);border:1px solid var(--retold-border);border-radius:4px;padding:4px 8px;font-size:0.78rem;font-family:inherit;margin-bottom:6px;">'
+			+ '<div style="display:flex;gap:6px;">'
+			+ '<button id="RetoldRemote-ExportConfirmBtn" style="flex:1;padding:4px 8px;font-size:0.75rem;">Export</button>'
+			+ '<button id="RetoldRemote-ExportCancelBtn" style="padding:4px 8px;font-size:0.75rem;">Cancel</button>'
+			+ '</div>'
+			+ '<div id="RetoldRemote-ExportStatus" style="font-size:0.72rem;color:var(--retold-text-dim);margin-top:6px;display:none;"></div>';
+
+		tmpRoot.appendChild(tmpDialog);
+
+		// Focus the path input
+		let tmpPathInput = document.getElementById('RetoldRemote-ExportPath');
+		if (tmpPathInput)
+		{
+			tmpPathInput.focus();
+			tmpPathInput.select();
+		}
+
+		// Cancel handler
+		document.getElementById('RetoldRemote-ExportCancelBtn').onclick = () =>
+		{
+			tmpDialog.parentElement.removeChild(tmpDialog);
+		};
+
+		// Export handler
+		document.getElementById('RetoldRemote-ExportConfirmBtn').onclick = () =>
+		{
+			let tmpDestPath = tmpPathInput ? tmpPathInput.value.trim() : '';
+			if (!tmpDestPath)
+			{
+				return;
+			}
+
+			let tmpBtn = document.getElementById('RetoldRemote-ExportConfirmBtn');
+			let tmpStatus = document.getElementById('RetoldRemote-ExportStatus');
+			if (tmpBtn) tmpBtn.disabled = true;
+			if (tmpBtn) tmpBtn.textContent = 'Exporting\u2026';
+			if (tmpStatus) tmpStatus.style.display = '';
+			if (tmpStatus) tmpStatus.textContent = 'Exporting\u2026';
+
+			fetch('/api/collections/' + encodeURIComponent(pGUID) + '/export',
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ DestinationPath: tmpDestPath })
+			})
+				.then((pResponse) => pResponse.json())
+				.then((pResult) =>
+				{
+					if (pResult && pResult.Success)
+					{
+						let tmpMsg = 'Exported ' + pResult.ExportedCount + ' of ' + pResult.TotalItems + ' items';
+						if (pResult.ErrorCount > 0)
+						{
+							tmpMsg += ' (' + pResult.ErrorCount + ' errors)';
+						}
+						tmpMsg += ' to ' + pResult.DestinationPath;
+
+						if (tmpStatus) tmpStatus.textContent = tmpMsg;
+						if (tmpBtn) tmpBtn.textContent = 'Done';
+
+						let tmpToast = tmpSelf.pict.providers['RetoldRemote-ToastNotification'];
+						if (tmpToast)
+						{
+							tmpToast.showToast(tmpMsg);
+						}
+
+						// Auto-dismiss after a moment
+						setTimeout(() =>
+						{
+							if (tmpDialog.parentElement)
+							{
+								tmpDialog.parentElement.removeChild(tmpDialog);
+							}
+						}, 3000);
+					}
+					else
+					{
+						let tmpErrMsg = (pResult && pResult.Error) || 'Export failed';
+						if (tmpStatus) tmpStatus.textContent = tmpErrMsg;
+						if (tmpStatus) tmpStatus.style.color = '#e06c75';
+						if (tmpBtn) tmpBtn.textContent = 'Retry';
+						if (tmpBtn) tmpBtn.disabled = false;
+					}
+				})
+				.catch((pError) =>
+				{
+					if (tmpStatus) tmpStatus.textContent = 'Request failed: ' + pError.message;
+					if (tmpStatus) tmpStatus.style.color = '#e06c75';
+					if (tmpBtn) tmpBtn.textContent = 'Retry';
+					if (tmpBtn) tmpBtn.disabled = false;
+				});
+		};
+
+		// Enter key in input triggers export
+		if (tmpPathInput)
+		{
+			tmpPathInput.onkeydown = (pEvent) =>
+			{
+				if (pEvent.key === 'Enter')
+				{
+					document.getElementById('RetoldRemote-ExportConfirmBtn').click();
+				}
+				if (pEvent.key === 'Escape')
+				{
+					tmpDialog.parentElement.removeChild(tmpDialog);
+				}
+			};
 		}
 	}
 }

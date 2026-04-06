@@ -79,12 +79,86 @@ RUN apt-get update && apt-get install -y calibre && rm -rf /var/lib/apt/lists/*
 
 ## PDF Files
 
-PDF files are rendered using the browser's native PDF viewer in an iframe. No additional tools or libraries are required. The browser provides its own controls for page navigation, zoom, and search.
+PDF files are rendered using a full **pdf.js** canvas pipeline. The library is loaded from CDN on first use; no server-side dependencies are required for basic display.
+
+### Page Navigation
+
+The controls bar exposes:
+
+- **← Prev** / **Next →** — page navigation
+- **Page input** — type a page number and press Enter to jump
+- **Zoom In / Out / Fit** — adjust scale (0.25x – 5x)
+
+### Text Selection
+
+PDF.js renders an invisible text layer over the canvas, so native browser text selection works. Drag to select text, then click **💾 Save Selection** to capture it as a labeled region.
+
+The capture stores: page number, selected text, optional label.
+
+### Visual Region Selection
+
+Click **✂ Select Region** to enter visual selection mode. A crosshair cursor appears over the page canvas. Drag a rectangle, release, and a label input appears in the controls bar.
+
+The capture stores: page number, X/Y/Width/Height in PDF units (so the region remaps correctly at any zoom level), optional label.
+
+### Server-Side Text Extraction
+
+`GET /api/media/pdf-text?path=<file>&page=<num>` returns the extracted text for a specific page (via pdf-parse). This is useful for search indexing or for when you want the full text without selecting it manually.
+
+## Convertible Document Formats
+
+Beyond PDF/EPUB/MOBI, the viewer also handles `.doc`, `.docx`, `.rtf`, `.odt`, `.wpd`, `.wps`, `.pages`, `.odp`, `.ppt`, `.pptx`, `.ods`, `.xls`, and `.xlsx` files. These are converted to PDF on the fly via the embedded **Orator-Conversion** service, then displayed in the same pdf.js viewer.
+
+### Conversion Pipeline
+
+1. The browser opens a convertible document
+2. Retold Remote shows a "Converting document to PDF..." spinner
+3. The server calls `GET /api/media/doc-convert?path=<file>` which delegates to `orator-conversion`'s `doc-to-pdf` custom converter
+4. The converter pipes the file through LibreOffice headless (`soffice --headless --convert-to pdf`)
+5. Falls back to Calibre's `ebook-convert` if LibreOffice is unavailable
+6. The resulting PDF is cached in the same Parime cache as ebooks (separate `manifest-pdf.json`)
+7. The browser loads the PDF in the standard pdf.js viewer with full text and region selection
+
+Conversion results are cached per file (keyed by path + mtime), so reopening the same document is instant after the first conversion.
+
+### Required Tools
+
+| Tool | Use |
+|------|-----|
+| **LibreOffice** (`soffice`) | Best fidelity for Word, RTF, ODT, WordPerfect, PowerPoint, Excel |
+| **Calibre** (`ebook-convert`) | Fallback for documents LibreOffice can't handle |
+
+Install at least one of them on the server. On macOS: `brew install --cask libreoffice` or `brew install calibre`.
+
+## eBook Selection Features
+
+The EPUB reader supports the same labeled-region capture pattern as PDF and image viewers.
+
+### Save Text Selection
+
+1. Select text in the rendered EPUB content (works through the epub.js iframe via `getContents()`)
+2. Click **💾 Save Selection** in the controls bar
+3. Enter a label and save
+
+The capture stores:
+
+- **CFI** (Canonical Fragment Identifier) — exact location for re-navigating later
+- **Spine index** — which section of the book
+- **Chapter title** — best-effort lookup from the TOC
+- **Selected text** — the actual highlighted prose
+
+Click a saved text selection in the **Regions** sidebar tab to navigate back to its exact location via `rendition.display(cfi)`.
+
+### Visual Region Selection
+
+Click **✂ Select Region** to overlay a transparent crosshair on the rendered page. Drag a rectangle to capture a visual area. The capture stores X/Y/Width/Height plus the viewport dimensions at capture time (so coordinates can be remapped if the window is resized later).
 
 ## Limitations
 
 - MOBI conversion requires Calibre's `ebook-convert` on the server
+- Document conversion (DOC, DOCX, RTF, etc.) requires LibreOffice or Calibre on the server
 - DRM-protected ebooks cannot be read
 - Complex EPUB layouts (fixed-layout EPUBs, heavy CSS) may not render perfectly
 - The reader uses single-page mode only (no two-page spreads)
 - Page numbers shown in the UI correspond to the reflowed content, not the original book pagination
+- EPUB visual region coordinates are container-relative; they remap reasonably at different window sizes but are not perfectly stable across major layout reflows

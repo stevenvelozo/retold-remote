@@ -41,7 +41,7 @@ for (let tmpKey in RawImageExtensions)
 
 const VideoExtensions = { 'mp4': true, 'webm': true, 'mov': true, 'mkv': true, 'avi': true, 'wmv': true, 'flv': true, 'm4v': true, 'ogv': true, 'mpg': true, 'mpeg': true, 'mpe': true, 'mpv': true, 'm2v': true, 'ts': true, 'mts': true, 'm2ts': true, 'vob': true, '3gp': true, '3g2': true, 'f4v': true, 'rm': true, 'rmvb': true, 'divx': true, 'asf': true, 'mxf': true, 'dv': true, 'nsv': true, 'nuv': true, 'y4m': true, 'wtv': true, 'swf': true, 'dat': true };
 const AudioExtensions = { 'mp3': true, 'wav': true, 'ogg': true, 'flac': true, 'aac': true, 'm4a': true, 'wma': true, 'oga': true };
-const DocumentExtensions = { 'pdf': true, 'epub': true, 'mobi': true, 'doc': true, 'docx': true };
+const DocumentExtensions = { 'pdf': true, 'epub': true, 'mobi': true, 'doc': true, 'docx': true, 'rtf': true, 'odt': true, 'wpd': true, 'wps': true, 'pages': true, 'odp': true, 'ppt': true, 'pptx': true, 'ods': true, 'xls': true, 'xlsx': true };
 
 /**
  * Get the media category for a file extension.

@@ -462,6 +462,11 @@ class RetoldRemoteCollectionService extends libFableServiceProviderBase
 								FrameFilename: tmpItem.FrameFilename || null,
 								AudioStart: (typeof tmpItem.AudioStart === 'number') ? tmpItem.AudioStart : null,
 								AudioEnd: (typeof tmpItem.AudioEnd === 'number') ? tmpItem.AudioEnd : null,
+								// Document region fields
+								PageNumber: (typeof tmpItem.PageNumber === 'number') ? tmpItem.PageNumber : null,
+								CFI: tmpItem.CFI || null,
+								SelectedText: tmpItem.SelectedText || null,
+								DocumentRegionType: tmpItem.DocumentRegionType || null,
 								// Operation fields (for operation-plan collections)
 								Operation: tmpItem.Operation || null,
 								DestinationPath: tmpItem.DestinationPath || null,

@@ -68,11 +68,11 @@ class RetoldRemoteImageViewerView extends libPictView
 	}
 
 	/**
-	 * Show the explore button for opening the deep-zoom explorer.
+	 * Show the explore button in the header nav bar.
 	 */
 	_showExploreButton()
 	{
-		let tmpBtn = document.getElementById('RetoldRemote-ImageExploreBtn');
+		let tmpBtn = document.getElementById('RetoldRemote-HeaderExploreBtn');
 		if (tmpBtn)
 		{
 			tmpBtn.style.display = '';

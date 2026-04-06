@@ -2,6 +2,7 @@ const libPictView = require('pict-view');
 
 const _MediaViewerEbookViewer = require('./MediaViewer-EbookViewer');
 const _MediaViewerCodeViewer = require('./MediaViewer-CodeViewer');
+const _MediaViewerPdfViewer = require('./MediaViewer-PdfViewer');
 
 const _ViewConfiguration =
 {
@@ -59,6 +60,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';
 		tmpHTML += '<div class="retold-remote-viewer-title">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName) + '</div>';
+		tmpHTML += '<button class="retold-remote-viewer-nav-btn" id="RetoldRemote-HeaderExploreBtn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" title="Explore image (e)" style="display:none;">&#128269; Explore</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';
 		tmpHTML += '<button class="retold-remote-viewer-nav-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9634;</button>';
@@ -127,7 +129,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 			this._loadCodeViewer(tmpContentURL, pFilePath);
 		}
 
-		// Load ebook viewer for epub/mobi
+		// Load document viewers: ebook for epub/mobi, PDF for pdf, convert-then-PDF for others
 		if (pMediaType === 'document')
 		{
 			let tmpExt = pFilePath.replace(/^.*\./, '').toLowerCase();
@@ -135,7 +137,15 @@ class RetoldRemoteMediaViewerView extends libPictView
 			{
 				this._loadEbookViewer(tmpContentURL, pFilePath);
 			}
-
+			else if (tmpExt === 'pdf')
+			{
+				this._loadPdfViewer(tmpContentURL, pFilePath);
+			}
+			else
+			{
+				// Convertible document types — convert to PDF first, then load PDF viewer
+				this._loadConvertedDocumentViewer(pFilePath);
+			}
 		}
 
 		// Set up swipe navigation for touch devices
@@ -533,19 +543,12 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpImg.onclick = function () { pict.views['RetoldRemote-ImageViewer'].toggleZoom(); };
 		tmpFragment.appendChild(tmpImg);
 
-		// Explore button (always present, initially hidden unless pShowExplore)
-		let tmpBtn = document.createElement('button');
-		tmpBtn.className = 'retold-remote-image-explore-btn';
-		tmpBtn.id = 'RetoldRemote-ImageExploreBtn';
-		tmpBtn.style.display = pShowExplore ? '' : 'none';
-		tmpBtn.title = 'Open in deep-zoom explorer (e)';
-		tmpBtn.innerHTML = '&#128269; Explore';
-		tmpBtn.onclick = function ()
+		// Always show the Explore button in the header nav bar for images
+		let tmpHeaderExploreBtn = document.getElementById('RetoldRemote-HeaderExploreBtn');
+		if (tmpHeaderExploreBtn)
 		{
-			pict.views['RetoldRemote-ImageExplorer'].showExplorer(
-				pict.AppData.RetoldRemote.CurrentViewerFile);
-		};
-		tmpFragment.appendChild(tmpBtn);
+			tmpHeaderExploreBtn.style.display = '';
+		}
 
 		// Dimension badge for large images
 		if (pShowExplore && pOrigWidth && pOrigHeight)
@@ -568,12 +571,6 @@ class RetoldRemoteMediaViewerView extends libPictView
 			+ 'id="RetoldRemote-ImageViewer-Img" '
 			+ 'onload="pict.views[\'RetoldRemote-ImageViewer\'].initImage()" '
 			+ 'onclick="pict.views[\'RetoldRemote-ImageViewer\'].toggleZoom()">';
-		// Explore button (hidden by default, shown by ImageViewer for large images)
-		tmpHTML += '<button class="retold-remote-image-explore-btn" id="RetoldRemote-ImageExploreBtn" '
-			+ 'style="display:none" '
-			+ 'onclick="pict.views[\'RetoldRemote-ImageExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" '
-			+ 'title="Open in deep-zoom explorer (e)">'
-			+ '&#128269; Explore</button>';
 		return tmpHTML;
 	}
 
@@ -786,9 +783,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 		if (tmpExtension === 'pdf')
 		{
-			return '<iframe src="' + pURL + '" '
-				+ 'style="width: 100%; height: 100%; border: none;">'
-				+ '</iframe>';
+			return this._buildPdfHTML(pURL, pFileName, pFilePath);
 		}
 
 		if (tmpExtension === 'epub' || tmpExtension === 'mobi')
@@ -796,7 +791,15 @@ class RetoldRemoteMediaViewerView extends libPictView
 			return this._buildEbookHTML(pURL, pFileName, pFilePath);
 		}
 
-		// For other document types, show a download link
+		// For convertible document types (doc, docx, rtf, odt, wpd, etc.),
+		// show the PDF viewer shell — conversion happens async in _loadDocumentViewer
+		let tmpConvertibleExts = { 'doc': true, 'docx': true, 'rtf': true, 'odt': true, 'wpd': true, 'wps': true, 'pages': true, 'odp': true, 'ppt': true, 'pptx': true, 'ods': true, 'xls': true, 'xlsx': true };
+		if (tmpConvertibleExts[tmpExtension])
+		{
+			return this._buildPdfHTML(pURL, pFileName, pFilePath);
+		}
+
+		// Unknown document types: show a download link
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
 		let tmpDocIconHTML = tmpIconProvider ? '<span class="retold-remote-icon retold-remote-icon-lg">' + tmpIconProvider.getIcon('document-large', 64) + '</span>' : '&#128196;';
 		return '<div style="text-align: center; padding: 40px;">'
@@ -812,6 +815,60 @@ class RetoldRemoteMediaViewerView extends libPictView
 	// Note: _buildEbookHTML, _loadEbookViewer, _renderEpub, _renderEbookTOC,
 	// ebookGoToChapter, ebookPrevPage, ebookNextPage, toggleEbookTOC
 	// are in MediaViewer-EbookViewer.js (mixed in below).
+
+	/**
+	 * Convert a document (doc, docx, rtf, odt, wpd, etc.) to PDF and load in the PDF viewer.
+	 * Shows a converting message in the PDF content area while waiting.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 */
+	_loadConvertedDocumentViewer(pFilePath)
+	{
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
+
+		// Show converting message in the PDF content area
+		let tmpContent = document.getElementById('RetoldRemote-PdfContent');
+		if (tmpContent)
+		{
+			tmpContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--retold-text-dim);">'
+				+ '<div style="font-size:1.5rem;margin-bottom:12px;">&#9881;</div>'
+				+ 'Converting document to PDF\u2026'
+				+ '</div>';
+		}
+
+		fetch('/api/media/doc-convert?path=' + tmpPathParam)
+			.then((pResponse) => pResponse.json())
+			.then((pData) =>
+			{
+				if (!pData || !pData.Success)
+				{
+					throw new Error(pData ? pData.Error : 'Conversion failed.');
+				}
+
+				// Build the PDF URL from the ebook cache (same serving endpoint)
+				let tmpPdfURL = '/api/media/ebook/' + pData.CacheKey + '/' + pData.OutputFilename;
+
+				// Load the PDF viewer with the converted file
+				tmpSelf._loadPdfViewer(tmpPdfURL, pFilePath);
+			})
+			.catch((pError) =>
+			{
+				if (tmpContent)
+				{
+					let tmpFmt = tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'];
+					tmpContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--retold-text-dim);">'
+						+ '<div style="margin-bottom:12px;color:#e06c75;">Conversion failed</div>'
+						+ '<div style="font-size:0.85rem;">' + tmpFmt.escapeHTML(pError.message) + '</div>'
+						+ '<div style="margin-top:16px;">'
+						+ '<a href="' + (tmpProvider ? tmpProvider.getContentURL(pFilePath) : '/content/' + encodeURIComponent(pFilePath))
+						+ '" target="_blank" style="color:var(--retold-accent);font-size:0.85rem;">Download original file</a>'
+						+ '</div>'
+						+ '</div>';
+				}
+			});
+	}
 
 	_buildFallbackHTML(pURL, pFileName)
 	{
@@ -942,6 +999,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 Object.assign(RetoldRemoteMediaViewerView.prototype, _MediaViewerEbookViewer);
 Object.assign(RetoldRemoteMediaViewerView.prototype, _MediaViewerCodeViewer);
+Object.assign(RetoldRemoteMediaViewerView.prototype, _MediaViewerPdfViewer);
 
 RetoldRemoteMediaViewerView.default_configuration = _ViewConfiguration;
 

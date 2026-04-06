@@ -5,7 +5,8 @@
     "main": "source/Pict-RetoldRemote-Bundle.js",
     "bin": {
         "retold-remote": "source/cli/RetoldRemote-CLI-Run.js",
-        "rr": "source/cli/RetoldRemote-CLI-Run.js"
+        "rr": "source/cli/RetoldRemote-CLI-Run.js",
+        "retold-stack": "source/cli/RetoldRemote-Stack-Run.js"
     },
     "files": [
         "source/",
@@ -38,6 +39,7 @@
         "fable-serviceproviderbase": "^3.0.19",
         "node-unrar-js": "^2.0.2",
         "orator": "^6.0.4",
+        "orator-conversion": "^1.0.7",
         "orator-serviceserver-restify": "^2.0.9",
         "parime": "^1.0.3",
         "pdf-parse": "^2.4.5",
@@ -50,6 +52,7 @@
         "pict-service-commandlineutility": "^1.0.19",
         "pict-view": "^1.0.67",
         "retold-content-system": "^1.0.12",
+        "ultravisor": "^1.0.15",
         "ultravisor-beacon": "^0.0.8",
         "yauzl": "^3.2.1"
     },

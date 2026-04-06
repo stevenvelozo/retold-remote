@@ -24,6 +24,7 @@ const _ViewConfiguration =
 								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
 								<button class="content-editor-sidebar-tab" data-tab="favorites" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('favorites')">Favorites</button>
 								<button class="content-editor-sidebar-tab" data-tab="info" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('info')">Info</button>
+								<button class="content-editor-sidebar-tab" data-tab="subimages" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('subimages')">Regions</button>
 								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
 								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
 							</div>
@@ -32,6 +33,7 @@ const _ViewConfiguration =
 								<div id="RetoldRemote-Favorites-Body"></div>
 							</div>
 							<div class="content-editor-sidebar-pane" data-pane="info" id="RetoldRemote-Info-Container" style="display:none"></div>
+							<div class="content-editor-sidebar-pane" data-pane="subimages" id="RetoldRemote-Subimages-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
 							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
 						</div>
@@ -195,6 +197,16 @@ class RetoldRemoteLayoutView extends libPictView
 		{
 			pEl.style.display = (pEl.getAttribute('data-pane') === pTab) ? '' : 'none';
 		});
+
+		// Subimages tab: render the subimages panel
+		if (pTab === 'subimages')
+		{
+			let tmpSubimagesView = this.pict.views['RetoldRemote-SubimagesPanel'];
+			if (tmpSubimagesView)
+			{
+				tmpSubimagesView.render();
+			}
+		}
 
 		// Render settings panel on demand
 		if (pTab === 'settings')

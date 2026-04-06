@@ -21,31 +21,31 @@ The build step bundles the client-side JavaScript with Quackage and copies asset
 
 ## Running the Server
 
-### CLI Command
+### CLI Commands
+
+There are three bin entries provided by the `retold-remote` package:
 
 ```bash
-retold-remote serve [content-path] [options]
-```
-
-Or using the short alias:
-
-```bash
-rr serve /path/to/media
+retold-remote serve [content-path] [options]   # full form
+rr serve [content-path] [options]               # short alias
+retold-stack [content-path] [options]           # convenience: serve --stack
 ```
 
 If `content-path` is omitted, the current directory is served.
+
+The `retold-stack` shortcut auto-injects `serve --stack`, which spawns Ultravisor as a child process and uses XDG-style data paths. See [Stack Launcher](stack-launcher.md) for the full story.
 
 ### Options
 
 | Flag | Description | Default |
 |------|-------------|---------|
 | `-p, --port [port]` | Port to listen on | Random 7000-7999 |
-| `-H, --hashed-filenames` | Enable hashed filename mode (hides real paths from browser) | Off |
-| `-c, --cache-path [path]` | Root cache directory | `./dist/retold-cache/` |
-| `--cache-thumbnails [path]` | Override thumbnail cache location | `<cache-root>/thumbnails/` |
-| `--cache-archives [path]` | Override archive extraction cache | `<cache-root>/archives/` |
-| `--cache-video-frames [path]` | Override video frame cache | `<cache-root>/video-frames/` |
-| `--cache-audio-waveforms [path]` | Override audio waveform cache | `<cache-root>/audio-waveforms/` |
+| `--no-hash` | Disable hashed filename mode (use plain paths in URLs) | Hashing on |
+| `-c, --cache-path [path]` | Root cache directory | `./dist/retold-cache/` (or `~/.cache/retold-remote/` in stack mode) |
+| `--cache-server [url]` | URL of a remote Parime cache server | None |
+| `-u, --ultravisor [url]` | Connect to an Ultravisor mesh; URL defaults to `http://localhost:54321` if omitted | None |
+| `--stack` | Spawn Ultravisor as a child process and connect to it. Uses XDG-style data paths under `~/.local/share` and `~/.cache`. See [Stack Launcher](stack-launcher.md) | Off |
+| `-l, --logfile [path]` | Write logs to a file (auto-generates timestamped name if path omitted) | Console only |
 
 ### Direct Node.js
 
@@ -65,20 +65,30 @@ Default port is `8086` when using `server.js` directly.
 ### Examples
 
 ```bash
-# Serve current directory on port 8086
-node server.js
+# Serve current directory on a random port
+retold-remote serve
 
 # Serve a specific folder
-node server.js /mnt/nas/media
+retold-remote serve /mnt/nas/media
 
 # CLI with custom port
 retold-remote serve /mnt/nas/media -p 3000
 
-# Hashed filenames for privacy
-retold-remote serve /mnt/nas/media -H
+# Plain paths in URLs (disable hashing)
+retold-remote serve /mnt/nas/media --no-hash
 
 # Custom cache location (useful for Docker volumes)
 retold-remote serve /media -c /cache
+
+# Connect to an existing Ultravisor mesh
+retold-remote serve /media -u http://192.168.1.100:54321
+
+# Full stack: spawn Ultravisor as a child process, embed Orator-Conversion,
+# use XDG paths (~/.local/share/ultravisor, ~/.cache/retold-remote)
+retold-stack /mnt/nas/media
+
+# Same thing via the explicit flag
+retold-remote serve --stack /mnt/nas/media
 ```
 
 ## Configuration

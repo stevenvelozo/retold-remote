@@ -40,6 +40,7 @@ class ToolDetector
 			p7zip: this._detectCommand('7z --help'),
 			audiowaveform: this._detectCommand('audiowaveform --version'),
 			ebook_convert: this._detectCommand('ebook-convert --version'),
+			libreoffice: this._detectLibreOffice(),
 			exiftool: this._detectCommand('exiftool -ver'),
 			dcraw: this._detectCommandExists('dcraw'),
 			dcrawJs: this._detectModule('dcraw'),
@@ -149,6 +150,55 @@ class ToolDetector
 
 		// Linux / other: try vlc --version
 		return this._detectCommand('vlc --version');
+	}
+
+	/**
+	 * Detect LibreOffice for headless document conversion.
+	 * macOS: check for the .app bundle (soffice in the bundle).
+	 * Linux: check the soffice command.
+	 * Windows: check default install paths.
+	 *
+	 * @returns {boolean}
+	 */
+	_detectLibreOffice()
+	{
+		const libFS = require('fs');
+
+		// macOS: check for LibreOffice.app
+		try
+		{
+			if (libFS.existsSync('/Applications/LibreOffice.app/Contents/MacOS/soffice'))
+			{
+				return true;
+			}
+		}
+		catch (pError)
+		{
+			// ignore
+		}
+
+		// Windows: check default install paths
+		if (process.platform === 'win32')
+		{
+			try
+			{
+				if (libFS.existsSync('C:\\Program Files\\LibreOffice\\program\\soffice.exe'))
+				{
+					return true;
+				}
+				if (libFS.existsSync('C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe'))
+				{
+					return true;
+				}
+			}
+			catch (pError)
+			{
+				// ignore
+			}
+		}
+
+		// Linux / other: check soffice on PATH
+		return this._detectCommandExists('soffice');
 	}
 
 	/**

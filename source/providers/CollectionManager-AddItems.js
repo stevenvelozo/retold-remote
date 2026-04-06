@@ -47,6 +47,30 @@ module.exports =
 			return this.addAudioSnippetToCollection(tmpTargetGUID);
 		}
 
+		// If the image explorer is active with a selection, add as subimage
+		if (tmpRemote.ActiveMode === 'image-explorer')
+		{
+			let tmpIEX = this.pict.views['RetoldRemote-ImageExplorer'];
+			if (tmpIEX)
+			{
+				let tmpActiveSelection = tmpIEX.getActiveSelection();
+				if (tmpActiveSelection)
+				{
+					return this.addSubimageToCollection(tmpTargetGUID, tmpActiveSelection, tmpIEX._currentPath);
+				}
+			}
+		}
+
+		// If viewing a document (PDF/EPUB) with a pending region, add as document-region
+		if (tmpRemote.ActiveMode === 'viewer' && tmpRemote.CurrentViewerMediaType === 'document')
+		{
+			let tmpMediaViewer = this.pict.views['RetoldRemote-MediaViewer'];
+			if (tmpMediaViewer && tmpMediaViewer._pendingDocumentRegion)
+			{
+				return this.addDocumentRegionToCollection(tmpTargetGUID, tmpMediaViewer._pendingDocumentRegion, tmpRemote.CurrentViewerFile);
+			}
+		}
+
 		let tmpCurrentItem = this._resolveCurrentItem();
 
 		if (!tmpCurrentItem || !tmpCurrentItem.Path)
@@ -324,6 +348,148 @@ module.exports =
 			Label: tmpFileName + ': ' + this._formatTimestamp(pStartTime) + ' \u2013 ' + this._formatTimestamp(pEndTime),
 			Note: ''
 		};
+
+		this.addItemsToCollection(tmpTargetGUID, [tmpItem]);
+		return true;
+	},
+
+	/**
+	 * Add a subimage region (crop) to a collection.
+	 *
+	 * @param {string} pGUID      - Collection GUID
+	 * @param {object} pRegion    - { X, Y, Width, Height, Label?, ID? } in image pixels
+	 * @param {string} [pFilePath] - Explicit file path (defaults to current viewer file)
+	 * @returns {boolean} true if the add was initiated
+	 */
+	addSubimageToCollection: function addSubimageToCollection(pGUID, pRegion, pFilePath)
+	{
+		let tmpRemote = this._getRemote();
+		let tmpTargetGUID = pGUID || tmpRemote.LastUsedCollectionGUID;
+		if (!tmpTargetGUID || !pRegion)
+		{
+			return false;
+		}
+
+		let tmpFilePath = pFilePath || tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath)
+		{
+			return false;
+		}
+
+		let tmpFileName = tmpFilePath.replace(/^.*\//, '');
+		let tmpLabel = pRegion.Label
+			? pRegion.Label
+			: tmpFileName + ': ' + pRegion.Width + '\u00d7' + pRegion.Height + ' at ' + pRegion.X + ',' + pRegion.Y;
+
+		let tmpItem =
+		{
+			Type: 'image-crop',
+			Path: tmpFilePath,
+			CropRegion:
+			{
+				X: pRegion.X,
+				Y: pRegion.Y,
+				Width: pRegion.Width,
+				Height: pRegion.Height
+			},
+			Label: tmpLabel,
+			Note: ''
+		};
+
+		// If we have a hash for this file, include it
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		if (tmpProvider)
+		{
+			let tmpHash = tmpProvider.getHashForPath(tmpFilePath);
+			if (tmpHash)
+			{
+				tmpItem.Hash = tmpHash;
+			}
+		}
+
+		this.addItemsToCollection(tmpTargetGUID, [tmpItem]);
+		return true;
+	},
+
+	/**
+	 * Add a document region (text selection or visual area) to a collection.
+	 *
+	 * @param {string} pGUID      - Collection GUID
+	 * @param {object} pRegion    - Region object with Type, Label, and type-specific fields
+	 * @param {string} [pFilePath] - Explicit file path (defaults to current viewer file)
+	 * @returns {boolean} true if the add was initiated
+	 */
+	addDocumentRegionToCollection: function addDocumentRegionToCollection(pGUID, pRegion, pFilePath)
+	{
+		let tmpRemote = this._getRemote();
+		let tmpTargetGUID = pGUID || tmpRemote.LastUsedCollectionGUID;
+		if (!tmpTargetGUID || !pRegion)
+		{
+			return false;
+		}
+
+		let tmpFilePath = pFilePath || tmpRemote.CurrentViewerFile;
+		if (!tmpFilePath)
+		{
+			return false;
+		}
+
+		let tmpFileName = tmpFilePath.replace(/^.*\//, '');
+		let tmpIsText = (pRegion.Type === 'text-selection');
+
+		// Build label
+		let tmpLabel = pRegion.Label || '';
+		if (!tmpLabel)
+		{
+			if (tmpIsText && pRegion.SelectedText)
+			{
+				tmpLabel = pRegion.SelectedText.substring(0, 50);
+				if (pRegion.SelectedText.length > 50) tmpLabel += '\u2026';
+			}
+			else
+			{
+				tmpLabel = tmpFileName;
+			}
+			if (pRegion.PageNumber)
+			{
+				tmpLabel = 'p.' + pRegion.PageNumber + ': ' + tmpLabel;
+			}
+		}
+
+		let tmpItem =
+		{
+			Type: 'document-region',
+			Path: tmpFilePath,
+			Label: tmpLabel,
+			Note: '',
+			DocumentRegionType: pRegion.Type || 'visual-region',
+			PageNumber: pRegion.PageNumber || null,
+			CFI: pRegion.CFI || null,
+			SelectedText: pRegion.SelectedText || null
+		};
+
+		// Include crop region for visual selections
+		if (!tmpIsText && pRegion.X !== undefined)
+		{
+			tmpItem.CropRegion =
+			{
+				X: pRegion.X,
+				Y: pRegion.Y,
+				Width: pRegion.Width,
+				Height: pRegion.Height
+			};
+		}
+
+		// File hash
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		if (tmpProvider)
+		{
+			let tmpHash = tmpProvider.getHashForPath(tmpFilePath);
+			if (tmpHash)
+			{
+				tmpItem.Hash = tmpHash;
+			}
+		}
 
 		this.addItemsToCollection(tmpTargetGUID, [tmpItem]);
 		return true;

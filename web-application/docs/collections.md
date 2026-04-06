@@ -16,6 +16,11 @@ Press `a` in any mode to add the current item to a collection. If a collection i
 | Video explorer | Video frame | Path, timestamp, cached frame image |
 | Video explorer (with selection) | Video clip | Path, start time, end time |
 | Audio explorer (with selection) | Audio clip | Path, start time, end time |
+| Image explorer (with active region) | Image crop | Path, X, Y, Width, Height in original pixels |
+| PDF viewer (with text selection) | Document region (text) | Path, page number, selected text |
+| PDF viewer (with visual region) | Document region (visual) | Path, page number, X/Y/Width/Height in PDF units |
+| EPUB reader (with text selection) | Document region (text) | Path, CFI, spine index, chapter title, selected text |
+| EPUB reader (with visual region) | Document region (visual) | Path, X/Y/Width/Height in container coordinates |
 
 ### Folder Choice
 
@@ -136,10 +141,34 @@ Pending item destinations can be edited inline by clicking the destination path.
 | `a` | Gallery, viewer, all explorers | Quick-add current item to collection |
 | `s` | Video explorer | Add selected range as video clip |
 | `s` | Audio explorer | Save audio snippet to collection |
+| `s` | Image explorer | Toggle region selection mode |
+| `s` | Document viewer (PDF/EPUB) | Toggle visual region selection mode |
 | `[` | Video explorer | Set selection start at current frame |
 | `]` | Video explorer | Set selection end at current frame |
 | `b` | All modes | Toggle collection panel |
 | `h` | All modes | Toggle favorite |
+
+## Export
+
+Collections can be exported to a folder within the content root. Each item is processed according to its type:
+
+| Item Type | Export Behavior |
+|-----------|----------------|
+| `file` / `subfile` | Copied directly to the destination |
+| `image-crop` | Cropped via sharp at the original resolution |
+| `video-clip` | Extracted via `ffmpeg -ss -t -c copy` |
+| `video-frame` | Extracted via `ffmpeg -ss -vframes 1` |
+| `audio-clip` | Extracted via `ffmpeg -ss -t -vn` |
+| `document-region` (text) | Written as a `.txt` file with the captured text and source metadata |
+| `document-region` (visual) | Metadata file describing the page and region |
+| `folder` | Copied recursively |
+| `folder-contents` | Files copied flat into the destination |
+
+Exported files are named `{sortOrder}_{label}.{ext}` so the order is preserved on disk.
+
+To export, click the **⇩ Export** button in the collection detail header. You will be prompted for a destination path (relative to the content root).
+
+The export endpoint is restricted to paths within the content root for safety — paths containing `..` or absolute paths are rejected.
 
 ## Data Storage
 
@@ -160,3 +189,4 @@ Client-side state (which collection is open, panel width, last-used collection) 
 | PUT | `/api/collections/:guid/reorder` | Reorder items (manual sort) |
 | POST | `/api/collections/copy-items` | Copy items between collections |
 | POST | `/api/collections/:guid/execute` | Execute pending operations (operation plans) |
+| POST | `/api/collections/:guid/export` | Export the collection to a folder within the content root |

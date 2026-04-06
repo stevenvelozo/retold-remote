@@ -630,6 +630,52 @@ class GalleryNavigationProvider extends libPictProvider
 				tmpAEX.showExplorer(pItem.Path, pItem.AudioStart, pItem.AudioEnd);
 			}
 		}
+		else if (pItem.Type === 'document-region')
+		{
+			// Navigate to the document, then to the specific location
+			let tmpApp = this.pict.PictApplication;
+			if (tmpApp && tmpApp.navigateToFile)
+			{
+				tmpApp.navigateToFile(pItem.Path);
+
+				// After the viewer loads, navigate to the specific page/CFI
+				let tmpSelf = this;
+				setTimeout(() =>
+				{
+					let tmpMediaViewer = tmpSelf.pict.views['RetoldRemote-MediaViewer'];
+					if (tmpMediaViewer)
+					{
+						if (pItem.CFI && tmpMediaViewer._activeRendition)
+						{
+							tmpMediaViewer._activeRendition.display(pItem.CFI);
+						}
+						else if (pItem.PageNumber && typeof tmpMediaViewer._renderPdfPage === 'function')
+						{
+							tmpMediaViewer._renderPdfPage(pItem.PageNumber);
+						}
+					}
+				}, 1000);
+			}
+		}
+		else if (pItem.Type === 'image-crop' && pItem.CropRegion)
+		{
+			let tmpIEX = this.pict.views['RetoldRemote-ImageExplorer'];
+			if (tmpIEX)
+			{
+				tmpIEX.showExplorer(pItem.Path);
+				// Zoom to the crop region after the viewer loads
+				let tmpCrop = pItem.CropRegion;
+				setTimeout(() =>
+				{
+					if (tmpIEX._osdViewer && tmpIEX._dziData)
+					{
+						let tmpImageRect = new OpenSeadragon.Rect(tmpCrop.X, tmpCrop.Y, tmpCrop.Width, tmpCrop.Height);
+						let tmpViewportRect = tmpIEX._osdViewer.viewport.imageToViewportRectangle(tmpImageRect);
+						tmpIEX._osdViewer.viewport.fitBounds(tmpViewportRect);
+					}
+				}, 800);
+			}
+		}
 		else if (pItem.Type === 'video-frame' && pItem.FrameCacheKey && pItem.FrameFilename)
 		{
 			// Show the cached frame image directly in the viewer

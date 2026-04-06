@@ -2,6 +2,7 @@
 
 - Getting Started
   - [Server Setup & Docker](server-setup.md)
+  - [Stack Launcher](stack-launcher.md)
   - [Ultravisor Integration](ultravisor-integration.md)
   - [Ultravisor Beacon Tool Setup](ultravisor-configuration.md)
 

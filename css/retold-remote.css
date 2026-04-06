@@ -2263,26 +2263,7 @@ html, body
 {
 	opacity: 1;
 }
-.retold-remote-image-explore-btn
-{
-	position: absolute;
-	bottom: 16px;
-	right: 16px;
-	background: rgba(40, 44, 52, 0.85);
-	color: #abb2bf;
-	border: 1px solid rgba(255, 255, 255, 0.15);
-	padding: 6px 14px;
-	border-radius: 6px;
-	font-size: 0.82rem;
-	cursor: pointer;
-	z-index: 20;
-	transition: background 0.2s, color 0.2s;
-}
-.retold-remote-image-explore-btn:hover
-{
-	background: rgba(97, 175, 239, 0.3);
-	color: #fff;
-}
+/* Explore button overlay styles removed — button moved to nav bar */
 .retold-remote-image-large-badge
 {
 	position: absolute;
@@ -2479,6 +2460,75 @@ html, body
 	min-width: 40px;
 	text-align: center;
 	color: var(--retold-text-secondary);
+}
+/* Subimage region overlays */
+.retold-remote-iex-region-overlay
+{
+	border: 2px solid rgba(229, 192, 123, 0.85);
+	background: rgba(229, 192, 123, 0.08);
+	pointer-events: none;
+	position: relative;
+}
+/* Subimages sidebar panel */
+.retold-remote-subimages-panel
+{
+	overflow-y: auto;
+	height: 100%;
+}
+.retold-remote-subimages-item
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 10px;
+	border-bottom: 1px solid var(--retold-border);
+	cursor: default;
+	transition: background 0.15s;
+}
+.retold-remote-subimages-item:hover
+{
+	background: rgba(255, 255, 255, 0.04);
+}
+.retold-remote-subimages-item-info
+{
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+}
+.retold-remote-subimages-item-label
+{
+	font-size: 0.82rem;
+	color: var(--retold-text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.retold-remote-subimages-item-dims
+{
+	font-size: 0.7rem;
+	color: var(--retold-text-dim);
+	margin-top: 1px;
+}
+.retold-remote-subimages-item-actions
+{
+	display: flex;
+	gap: 2px;
+	margin-left: 6px;
+	flex-shrink: 0;
+}
+.retold-remote-subimages-item-actions button
+{
+	background: transparent;
+	border: 1px solid var(--retold-border);
+	border-radius: 3px;
+	color: var(--retold-text-dim);
+	cursor: pointer;
+	transition: color 0.15s, border-color 0.15s;
+}
+.retold-remote-subimages-item-actions button:hover
+{
+	color: var(--retold-text);
+	border-color: var(--retold-accent);
 }
 
 /* ============================================================
@@ -3511,6 +3561,23 @@ html, body
 	font-family: inherit;
 }
 .retold-remote-collections-sort-dir:hover
+{
+	border-color: var(--retold-accent);
+	color: var(--retold-text-primary);
+}
+.retold-remote-collections-export-btn
+{
+	padding: 3px 8px;
+	border: 1px solid var(--retold-border);
+	border-radius: 3px;
+	background: transparent;
+	color: var(--retold-text-muted);
+	font-size: 0.72rem;
+	cursor: pointer;
+	font-family: inherit;
+	margin-left: auto;
+}
+.retold-remote-collections-export-btn:hover
 {
 	border-color: var(--retold-accent);
 	color: var(--retold-text-primary);

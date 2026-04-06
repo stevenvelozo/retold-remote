@@ -30,6 +30,9 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			{ Name: '-u, --ultravisor [url]', Description: 'Connect to Ultravisor mesh. URL defaults to http://localhost:54321 if omitted.', Default: '' });
 
 		this.options.CommandOptions.push(
+			{ Name: '--stack', Description: 'Run the full stack: spawn Ultravisor as a child process and connect to it. Uses XDG-style data paths under ~/.local/share and ~/.cache.', Default: false });
+
+		this.options.CommandOptions.push(
 			{ Name: '-l, --logfile [path]', Description: 'Write logs to a file (auto-generates timestamped name if path omitted).', Default: '' });
 
 		this.addCommand();
@@ -78,14 +81,26 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		}
 
 		let tmpSelf = this;
-		let tmpSetupServer = require('../RetoldRemote-Server-Setup.js');
-
 		let tmpHashedFilenames = !(this.CommandOptions.noHash);
+		let tmpStackMode = !!this.CommandOptions.stack;
 
-		let tmpCacheRoot = this.CommandOptions.cachePath
-			? libPath.resolve(this.CommandOptions.cachePath)
-			: null;
+		// Resolve XDG-style stack paths once (used by --stack mode)
+		let libStackLauncher = require('../RetoldRemote-Stack-Launcher.js');
+		let tmpStackPaths = libStackLauncher.resolveStackPaths();
+
+		// Cache root: explicit > stack default > package default
+		let tmpCacheRoot = null;
+		if (this.CommandOptions.cachePath)
+		{
+			tmpCacheRoot = libPath.resolve(this.CommandOptions.cachePath);
+		}
+		else if (tmpStackMode)
+		{
+			tmpCacheRoot = tmpStackPaths.RetoldCache;
+		}
+
 		let tmpCacheServer = this.CommandOptions.cacheServer || null;
+
 		// -u with no URL → true (Commander behavior for [optional]), default to localhost
 		let tmpUltravisorOpt = this.CommandOptions.ultravisor;
 		let tmpUltravisorURL = null;
@@ -98,65 +113,125 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			tmpUltravisorURL = tmpUltravisorOpt;
 		}
 
-		tmpSetupServer(
-			{
-				ContentPath: tmpContentPath,
-				DistPath: tmpDistPath,
-				Port: tmpPort,
-				HashedFilenames: tmpHashedFilenames,
-				CacheRoot: tmpCacheRoot,
-				CacheServer: tmpCacheServer,
-				UltravisorURL: tmpUltravisorURL
-			},
-			function (pError, pServerInfo)
-			{
-				if (pError)
-				{
-					tmpSelf.log.error(`Failed to start server: ${pError.message}`);
-					return fCallback(pError);
-				}
+		// In stack mode, automatically set the ultravisor URL
+		if (tmpStackMode && !tmpUltravisorURL)
+		{
+			tmpUltravisorURL = 'http://localhost:54321';
+		}
 
-				tmpSelf.log.info('');
-				tmpSelf.log.info('==========================================================');
-				tmpSelf.log.info(`  Retold Remote running on http://localhost:${pServerInfo.Port}`);
-				tmpSelf.log.info('==========================================================');
-				tmpSelf.log.info(`  Content: ${tmpContentPath}`);
-				tmpSelf.log.info(`  Assets:  ${tmpDistPath}`);
-				tmpSelf.log.info(`  Browse:  http://localhost:${pServerInfo.Port}/`);
-				if (pServerInfo.UltravisorBeacon && pServerInfo.UltravisorBeacon.isEnabled())
-				{
-					tmpSelf.log.info(`  Beacon:  registered with Ultravisor at ${tmpUltravisorURL}`);
-				}
-				else if (tmpUltravisorURL)
-				{
-					tmpSelf.log.info(`  Beacon:  not connected (Ultravisor may be unreachable)`);
-				}
-				tmpSelf.log.info('==========================================================');
-				tmpSelf.log.info('');
-				tmpSelf.log.info('  Press Ctrl+C to stop.');
-				tmpSelf.log.info('');
+		// Hold the stack info so we can clean up on exit
+		let tmpStackInfo = null;
 
-				// Graceful shutdown: disconnect beacon before exit
-				process.on('SIGINT', () =>
+		// Bind the actual server startup so we can call it after (optionally) launching ultravisor
+		let _startRetoldRemote = () =>
+		{
+			let tmpSetupServer = require('../RetoldRemote-Server-Setup.js');
+
+			tmpSetupServer(
 				{
+					ContentPath: tmpContentPath,
+					DistPath: tmpDistPath,
+					Port: tmpPort,
+					HashedFilenames: tmpHashedFilenames,
+					CacheRoot: tmpCacheRoot,
+					CacheServer: tmpCacheServer,
+					UltravisorURL: tmpUltravisorURL
+				},
+				function (pError, pServerInfo)
+				{
+					if (pError)
+					{
+						tmpSelf.log.error(`Failed to start server: ${pError.message}`);
+						if (tmpStackInfo)
+						{
+							libStackLauncher.stop(tmpStackInfo, () => {});
+						}
+						return fCallback(pError);
+					}
+
 					tmpSelf.log.info('');
-					tmpSelf.log.info('Shutting down...');
+					tmpSelf.log.info('==========================================================');
+					tmpSelf.log.info(`  Retold Remote running on http://localhost:${pServerInfo.Port}`);
+					tmpSelf.log.info('==========================================================');
+					tmpSelf.log.info(`  Content: ${tmpContentPath}`);
+					tmpSelf.log.info(`  Cache:   ${tmpCacheRoot || '(default)'}`);
+					tmpSelf.log.info(`  Browse:  http://localhost:${pServerInfo.Port}/`);
 					if (pServerInfo.UltravisorBeacon && pServerInfo.UltravisorBeacon.isEnabled())
 					{
-						pServerInfo.UltravisorBeacon.disconnectBeacon(() =>
-						{
-							process.exit(0);
-						});
+						tmpSelf.log.info(`  Beacon:  registered with Ultravisor at ${tmpUltravisorURL}`);
 					}
-					else
+					else if (tmpUltravisorURL)
 					{
-						process.exit(0);
+						tmpSelf.log.info(`  Beacon:  not connected (Ultravisor may be unreachable)`);
 					}
-				});
+					if (tmpStackMode)
+					{
+						tmpSelf.log.info(`  Stack:   ultravisor + retold-remote (orator-conversion embedded)`);
+					}
+					tmpSelf.log.info('==========================================================');
+					tmpSelf.log.info('');
+					tmpSelf.log.info('  Press Ctrl+C to stop.');
+					tmpSelf.log.info('');
 
-				// Intentionally do NOT call fCallback() here.
-				// The server should keep running.
-			});
+					// Graceful shutdown: disconnect beacon and stop child processes before exit
+					let _shutdown = () =>
+					{
+						tmpSelf.log.info('');
+						tmpSelf.log.info('Shutting down...');
+
+						let _finish = () =>
+						{
+							if (tmpStackInfo)
+							{
+								libStackLauncher.stop(tmpStackInfo, () => process.exit(0));
+							}
+							else
+							{
+								process.exit(0);
+							}
+						};
+
+						if (pServerInfo.UltravisorBeacon && pServerInfo.UltravisorBeacon.isEnabled())
+						{
+							pServerInfo.UltravisorBeacon.disconnectBeacon(_finish);
+						}
+						else
+						{
+							_finish();
+						}
+					};
+
+					process.on('SIGINT', _shutdown);
+					process.on('SIGTERM', _shutdown);
+
+					// Intentionally do NOT call fCallback() here.
+					// The server should keep running.
+				});
+		};
+
+		// In stack mode, launch ultravisor first, then start retold-remote
+		if (tmpStackMode)
+		{
+			libStackLauncher.start(
+				{
+					Logger: tmpSelf.log,
+					UltravisorPort: 54321
+				},
+				(pStackError, pStackInfo) =>
+				{
+					if (pStackError)
+					{
+						tmpSelf.log.error(`Stack launch failed: ${pStackError.message}`);
+						return fCallback(pStackError);
+					}
+					tmpStackInfo = pStackInfo;
+					_startRetoldRemote();
+				});
+		}
+		else
+		{
+			_startRetoldRemote();
+		}
 	}
 }
 

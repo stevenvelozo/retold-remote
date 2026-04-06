@@ -48,8 +48,11 @@ const libRetoldRemoteMetadataCache = require('../server/RetoldRemote-MetadataCac
 const libRetoldRemoteFileOperationService = require('../server/RetoldRemote-FileOperationService.js');
 const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortService.js');
 const libRetoldRemoteImageService = require('../server/RetoldRemote-ImageService.js');
+const libRetoldRemoteSubimageService = require('../server/RetoldRemote-SubimageService.js');
+const libRetoldRemoteCollectionExportService = require('../server/RetoldRemote-CollectionExportService.js');
 const libRetoldRemoteUltravisorDispatcher = require('../server/RetoldRemote-UltravisorDispatcher.js');
 const libRetoldRemoteUltravisorBeacon = require('../server/RetoldRemote-UltravisorBeacon.js');
+const libOratorConversion = require('orator-conversion');
 const libUrl = require('url');
 
 function setupRetoldRemoteServer(pOptions, fCallback)
@@ -189,6 +192,12 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 				ContentPath: tmpContentPath
 			});
 
+			// Set up the subimage region service
+			let tmpSubimageService = new libRetoldRemoteSubimageService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
 			// Set up the metadata cache service
 			let tmpMetadataCache = new libRetoldRemoteMetadataCache(tmpFable,
 			{
@@ -212,6 +221,12 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			let tmpCollectionService = new libRetoldRemoteCollectionService(tmpFable, {});
 			tmpCollectionService.setFileOperationService(tmpFileOperationService);
 
+			// Set up the collection export service
+			let tmpCollectionExportService = new libRetoldRemoteCollectionExportService(tmpFable,
+			{
+				ContentPath: tmpContentPath
+			});
+
 			// Set up the media service
 			let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
 			{
@@ -226,11 +241,23 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Set up the Ultravisor beacon for mesh registration
 			let tmpBeacon = new libRetoldRemoteUltravisorBeacon(tmpFable, {});
 
+			// Set up orator-conversion for document format conversion
+			tmpFable.serviceManager.addServiceType('OratorFileTranslation', libOratorConversion);
+			let tmpConversionService = tmpFable.serviceManager.instantiateServiceProvider('OratorFileTranslation',
+			{
+				RoutePrefix: '/api/conversion',
+				MaxFileSize: 100 * 1024 * 1024, // 100MB for large documents
+				LogLevel: 1
+			});
+
 			// Wire the dispatcher to services that can offload processing
 			tmpMediaService.setDispatcher(tmpDispatcher);
 			tmpVideoFrameService.setDispatcher(tmpDispatcher);
 			tmpAudioWaveformService.setDispatcher(tmpDispatcher);
 			tmpEbookService.setDispatcher(tmpDispatcher);
+
+			// Share the orator-conversion service with the ebook service for PDF conversion
+			tmpEbookService.setConversionService(tmpConversionService);
 			tmpImageService.setDispatcher(tmpDispatcher);
 
 			// Share tool capabilities with the image service so it can
@@ -238,10 +265,12 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Also provides the centrally-verified sharp module reference.
 			tmpImageService.setCapabilities(tmpMediaService.capabilities);
 
-			// Share the verified sharp module with the metadata cache
+			// Share the verified sharp module with the metadata cache, subimage, and export services
 			if (tmpMediaService.capabilities.sharpModule)
 			{
 				tmpMetadataCache.setSharpModule(tmpMediaService.capabilities.sharpModule);
+				tmpSubimageService.setSharpModule(tmpMediaService.capabilities.sharpModule);
+				tmpCollectionExportService.setSharpModule(tmpMediaService.capabilities.sharpModule);
 			}
 
 			tmpOrator.initialize(
@@ -470,6 +499,74 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Connect collection service API routes
 			tmpCollectionService.connectRoutes(tmpServiceServer);
 
+			// Connect subimage region service API routes
+			tmpSubimageService.connectRoutes(tmpServiceServer);
+
+			// Connect collection export service API routes
+			tmpCollectionExportService.connectRoutes(tmpServiceServer);
+
+			// Connect orator-conversion routes and register custom doc-to-pdf converter
+			if (tmpMediaService.capabilities.libreoffice)
+			{
+				let tmpSofficePath = 'soffice';
+				if (libFs.existsSync('/Applications/LibreOffice.app/Contents/MacOS/soffice'))
+				{
+					tmpSofficePath = '/Applications/LibreOffice.app/Contents/MacOS/soffice';
+				}
+
+				tmpConversionService.addConverter('doc-to-pdf',
+					(pInputBuffer, pRequest, fCallback) =>
+					{
+						// Write input to temp file, convert with LibreOffice, return PDF buffer
+						let tmpTempDir = require('os').tmpdir();
+						let tmpUniqueId = Date.now() + '_' + Math.random().toString(36).slice(2);
+						let tmpInputExt = (pRequest.query && pRequest.query.ext) || 'docx';
+						let tmpInputPath = libPath.join(tmpTempDir, 'retold_doc_' + tmpUniqueId + '.' + tmpInputExt);
+						let tmpOutputDir = libPath.join(tmpTempDir, 'retold_docout_' + tmpUniqueId);
+
+						libFs.mkdirSync(tmpOutputDir, { recursive: true });
+
+						try
+						{
+							libFs.writeFileSync(tmpInputPath, pInputBuffer);
+							libChildProcess.execSync(
+								'"' + tmpSofficePath + '" --headless --convert-to pdf --outdir "' + tmpOutputDir + '" "' + tmpInputPath + '"',
+								{ stdio: 'ignore', timeout: 120000 });
+
+							// Find the output PDF (LibreOffice names it after the input)
+							let tmpBaseName = libPath.basename(tmpInputPath, '.' + tmpInputExt);
+							let tmpOutputPath = libPath.join(tmpOutputDir, tmpBaseName + '.pdf');
+
+							if (!libFs.existsSync(tmpOutputPath))
+							{
+								// Clean up
+								try { libFs.unlinkSync(tmpInputPath); } catch (e) { /* */ }
+								try { libFs.rmSync(tmpOutputDir, { recursive: true }); } catch (e) { /* */ }
+								return fCallback(new Error('LibreOffice conversion produced no output.'));
+							}
+
+							let tmpPdfBuffer = libFs.readFileSync(tmpOutputPath);
+
+							// Clean up temp files
+							try { libFs.unlinkSync(tmpInputPath); } catch (e) { /* */ }
+							try { libFs.rmSync(tmpOutputDir, { recursive: true }); } catch (e) { /* */ }
+
+							return fCallback(null, tmpPdfBuffer, 'application/pdf');
+						}
+						catch (pError)
+						{
+							try { libFs.unlinkSync(tmpInputPath); } catch (e) { /* */ }
+							try { libFs.rmSync(tmpOutputDir, { recursive: true }); } catch (e) { /* */ }
+							return fCallback(new Error('Document conversion failed: ' + pError.message));
+						}
+					});
+
+				tmpFable.log.info('Orator-Conversion: doc-to-pdf converter registered (LibreOffice)');
+			}
+
+			tmpConversionService.connectRoutes();
+			tmpFable.log.info('Orator-Conversion: routes connected at /api/conversion/1.0/');
+
 			// Connect AI sort service API routes
 			tmpAISortService.connectRoutes(tmpServiceServer);
 
@@ -486,6 +583,10 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			{
 				tmpFable.log.info('Audio explorer state Bibliograph source initialized.');
 			});
+			tmpSubimageService.initializeState(() =>
+			{
+				tmpFable.log.info('Subimage region state Bibliograph source initialized.');
+			});
 			tmpEpubMetadataService.initialize(() =>
 			{
 				tmpFable.log.info('EPUB metadata service initialized.');
@@ -494,6 +595,81 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			{
 				// Non-fatal — if Ultravisor is down, processing stays local
 			});
+
+			// --- GET /api/media/pdf-text ---
+			// Extract text from a specific PDF page (or all pages if no page specified).
+			tmpServiceServer.get('/api/media/pdf-text',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+						let tmpPageNum = parseInt(tmpQuery.page, 10) || 0;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						let tmpExt = tmpRelPath.replace(/^.*\./, '').toLowerCase();
+						if (tmpExt !== 'pdf')
+						{
+							pResponse.send(400, { Success: false, Error: 'Not a PDF file.' });
+							return fNext();
+						}
+
+						let tmpPdfParse = require('pdf-parse');
+						let tmpBuffer = libFs.readFileSync(tmpAbsPath);
+
+						let tmpOptions = {};
+						if (tmpPageNum > 0)
+						{
+							// pdf-parse pagerender callback for specific page
+							tmpOptions.max = tmpPageNum;
+						}
+
+						tmpPdfParse(tmpBuffer, tmpOptions)
+							.then((pData) =>
+							{
+								pResponse.send(
+								{
+									Success: true,
+									Path: tmpRelPath,
+									PageCount: pData.numpages,
+									Text: pData.text,
+									RequestedPage: tmpPageNum || null
+								});
+								return fNext();
+							})
+							.catch((pPdfError) =>
+							{
+								pResponse.send(500, { Success: false, Error: 'PDF parse failed: ' + pPdfError.message });
+								return fNext();
+							});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
 
 			// --- GET /api/media/metadata ---
 			// Get cached metadata (with ID3/format tags) for a single file.
@@ -1307,9 +1483,17 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 						let tmpStat = libFs.statSync(tmpEbookPath);
 
+						// Determine content type based on file extension
+						let tmpEbookExt = tmpFilename.replace(/^.*\./, '').toLowerCase();
+						let tmpContentType = 'application/epub+zip';
+						if (tmpEbookExt === 'pdf')
+						{
+							tmpContentType = 'application/pdf';
+						}
+
 						pResponse.writeHead(200,
 						{
-							'Content-Type': 'application/epub+zip',
+							'Content-Type': tmpContentType,
 							'Content-Length': tmpStat.size,
 							'Cache-Control': 'public, max-age=86400'
 						});
@@ -1321,6 +1505,57 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						{
 							pResponse.send(500, { Error: 'Failed to serve ebook.' });
 							return fNext(false);
+						});
+					}
+					catch (pError)
+					{
+						pResponse.send(500, { Success: false, Error: pError.message });
+						return fNext();
+					}
+				});
+
+			// --- GET /api/media/doc-convert ---
+			// Convert a document (DOC, DOCX, RTF, ODT, WPD, etc.) to PDF.
+			tmpServiceServer.get('/api/media/doc-convert',
+				(pRequest, pResponse, fNext) =>
+				{
+					try
+					{
+						let tmpParsedUrl = libUrl.parse(pRequest.url, true);
+						let tmpQuery = tmpParsedUrl.query;
+						let tmpRelPath = tmpQuery.path;
+
+						if (!tmpRelPath || typeof (tmpRelPath) !== 'string')
+						{
+							pResponse.send(400, { Success: false, Error: 'Missing path parameter.' });
+							return fNext();
+						}
+
+						tmpRelPath = decodeURIComponent(tmpRelPath).replace(/^\/+/, '');
+						if (tmpRelPath.includes('..') || libPath.isAbsolute(tmpRelPath))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
+
+						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						if (!libFs.existsSync(tmpAbsPath))
+						{
+							pResponse.send(404, { Success: false, Error: 'File not found.' });
+							return fNext();
+						}
+
+						tmpEbookService.convertToPdf(tmpAbsPath, tmpRelPath,
+						(pError, pResult) =>
+						{
+							if (pError)
+							{
+								pResponse.send(400, { Success: false, Error: pError.message });
+								return fNext();
+							}
+
+							pResponse.send(pResult);
+							return fNext();
 						});
 					}
 					catch (pError)
@@ -2146,6 +2381,9 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						ArchiveService: tmpArchiveService,
 						VideoFrameService: tmpVideoFrameService,
 						AudioWaveformService: tmpAudioWaveformService,
+						SubimageService: tmpSubimageService,
+						CollectionExportService: tmpCollectionExportService,
+						ConversionService: tmpConversionService,
 						PathRegistry: tmpPathRegistry,
 						ParimeCache: tmpParimeCache,
 						MetadataCache: tmpMetadataCache,

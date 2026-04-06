@@ -23,6 +23,14 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._dziData = null;
 		this._osdLoaded = false;
 		this._loading = false;
+
+		// Selection mode state
+		this._selectionMode = false;
+		this._selectionTracker = null;
+		this._selectionOverlay = null;
+		this._selectionRegion = null; // { X, Y, Width, Height } in image coords
+		this._selectionStart = null;  // viewport point where drag began
+		this._savedRegions = [];      // loaded from server
 	}
 
 	/**
@@ -39,6 +47,14 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._currentPath = pFilePath;
 		this._dziData = null;
 		this._loading = false;
+
+		// Reset selection state
+		this._selectionMode = false;
+		this._selectionTracker = null;
+		this._selectionOverlay = null;
+		this._selectionRegion = null;
+		this._selectionStart = null;
+		this._savedRegions = [];
 
 		// Clean up existing viewer
 		if (this._osdViewer)
@@ -89,6 +105,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		tmpHTML += '<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()" title="Back (Esc)">&larr; Back</button>';
 		tmpHTML += '<div class="retold-remote-iex-title">Image Explorer &mdash; ' + tmpFmt.escapeHTML(tmpFileName) + '</div>';
 		tmpHTML += '<div class="retold-remote-iex-actions">';
+		tmpHTML += '<button class="retold-remote-iex-action-btn" id="RetoldRemote-IEX-SelectBtn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].toggleSelectionMode()" title="Select a region (s)">&#9986; Select</button>';
 		tmpHTML += '<button class="retold-remote-iex-action-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].viewInBrowser()" title="View in standard viewer">&#128444; View</button>';
 		tmpHTML += '</div>';
 		tmpHTML += '</div>';
@@ -111,6 +128,11 @@ class RetoldRemoteImageExplorerView extends libPictView
 		tmpHTML += '<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].zoomOut()" title="Zoom Out (-)">- Zoom Out</button>';
 		tmpHTML += '<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].zoomHome()" title="Fit to view (0)">Fit</button>';
 		tmpHTML += '<span style="flex:1;"></span>';
+		tmpHTML += '<span id="RetoldRemote-IEX-LabelInput" style="display:none;">';
+		tmpHTML += '<input type="text" id="RetoldRemote-IEX-LabelField" placeholder="Label this region\u2026" style="background:var(--retold-bg-input,#1e1e1e);color:var(--retold-text,#abb2bf);border:1px solid var(--retold-border,#3e4451);border-radius:4px;padding:2px 8px;font-size:0.78rem;width:180px;margin-right:4px;" onkeydown="if(event.key===\'Enter\'){pict.views[\'RetoldRemote-ImageExplorer\'].saveSelectionLabel();event.preventDefault();event.stopPropagation();}if(event.key===\'Escape\'){pict.views[\'RetoldRemote-ImageExplorer\'].cancelSelection();event.preventDefault();event.stopPropagation();}">';
+		tmpHTML += '<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].saveSelectionLabel()" style="font-size:0.75rem;padding:2px 8px;">Save</button>';
+		tmpHTML += '<button onclick="pict.views[\'RetoldRemote-ImageExplorer\'].cancelSelection()" style="font-size:0.75rem;padding:2px 8px;margin-left:2px;">Cancel</button>';
+		tmpHTML += '</span>';
 		tmpHTML += '<span id="RetoldRemote-IEX-Coords" style="color:var(--retold-text-dim);font-size:0.72rem;"></span>';
 		tmpHTML += '</div>';
 
@@ -129,9 +151,11 @@ class RetoldRemoteImageExplorerView extends libPictView
 		}
 
 		// Load OpenSeadragon, then decide whether to use simple image or DZI tiles
+		let tmpSelfShow = this;
 		this._ensureOSDLoaded(() =>
 		{
-			this._probeAndShow(pFilePath);
+			tmpSelfShow._probeAndShow(pFilePath);
+			tmpSelfShow._loadSavedRegions(pFilePath);
 		});
 	}
 
@@ -736,11 +760,592 @@ class RetoldRemoteImageExplorerView extends libPictView
 		}
 	}
 
+	// -----------------------------------------------------------------
+	// Selection mode — draw rectangles to create labeled subimage regions
+	// -----------------------------------------------------------------
+
+	/**
+	 * Toggle selection mode on/off.
+	 */
+	toggleSelectionMode()
+	{
+		if (this._selectionMode)
+		{
+			this._exitSelectionMode();
+		}
+		else
+		{
+			this._enterSelectionMode();
+		}
+	}
+
+	/**
+	 * Enter selection mode: disable panning, install drag tracker.
+	 */
+	_enterSelectionMode()
+	{
+		if (!this._osdViewer)
+		{
+			return;
+		}
+
+		this._selectionMode = true;
+
+		// Highlight the Select button
+		let tmpBtn = document.getElementById('RetoldRemote-IEX-SelectBtn');
+		if (tmpBtn)
+		{
+			tmpBtn.style.background = 'rgba(97, 175, 239, 0.4)';
+			tmpBtn.style.color = '#fff';
+		}
+
+		// Disable OSD panning so drag draws a selection instead
+		this._osdViewer.setMouseNavEnabled(false);
+
+		let tmpSelf = this;
+		let tmpViewerDiv = document.getElementById('RetoldRemote-IEX-Viewer');
+		if (!tmpViewerDiv)
+		{
+			return;
+		}
+		tmpViewerDiv.style.cursor = 'crosshair';
+
+		this._selectionTracker = new OpenSeadragon.MouseTracker(
+		{
+			element: tmpViewerDiv,
+			pressHandler: function (pEvent)
+			{
+				tmpSelf._onSelectionPress(pEvent);
+			},
+			dragHandler: function (pEvent)
+			{
+				tmpSelf._onSelectionDrag(pEvent);
+			},
+			releaseHandler: function (pEvent)
+			{
+				tmpSelf._onSelectionRelease(pEvent);
+			}
+		});
+	}
+
+	/**
+	 * Exit selection mode: re-enable panning, remove drag tracker.
+	 */
+	_exitSelectionMode()
+	{
+		this._selectionMode = false;
+
+		let tmpBtn = document.getElementById('RetoldRemote-IEX-SelectBtn');
+		if (tmpBtn)
+		{
+			tmpBtn.style.background = '';
+			tmpBtn.style.color = '';
+		}
+
+		if (this._osdViewer)
+		{
+			this._osdViewer.setMouseNavEnabled(true);
+		}
+
+		if (this._selectionTracker)
+		{
+			this._selectionTracker.destroy();
+			this._selectionTracker = null;
+		}
+
+		let tmpViewerDiv = document.getElementById('RetoldRemote-IEX-Viewer');
+		if (tmpViewerDiv)
+		{
+			tmpViewerDiv.style.cursor = '';
+		}
+
+		// Remove in-progress selection overlay (keep saved ones)
+		this._removeActiveSelectionOverlay();
+		this._selectionRegion = null;
+		this._selectionStart = null;
+
+		// Hide label input
+		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
+		if (tmpLabelWrap)
+		{
+			tmpLabelWrap.style.display = 'none';
+		}
+		let tmpCoords = document.getElementById('RetoldRemote-IEX-Coords');
+		if (tmpCoords)
+		{
+			tmpCoords.style.display = '';
+		}
+	}
+
+	/**
+	 * Handle the start of a selection drag.
+	 */
+	_onSelectionPress(pEvent)
+	{
+		if (!this._osdViewer)
+		{
+			return;
+		}
+
+		// Remove any previous in-progress selection overlay
+		this._removeActiveSelectionOverlay();
+
+		this._selectionStart = this._osdViewer.viewport.pointFromPixel(pEvent.position);
+
+		// Create the selection rectangle overlay element
+		let tmpOverlay = document.createElement('div');
+		tmpOverlay.id = 'RetoldRemote-IEX-ActiveSelection';
+		tmpOverlay.style.cssText = 'border: 2px solid rgba(97, 175, 239, 0.9); background: rgba(97, 175, 239, 0.15); pointer-events: none;';
+		this._selectionOverlay = tmpOverlay;
+
+		// Add the overlay at zero size, will expand during drag
+		this._osdViewer.addOverlay(
+		{
+			element: tmpOverlay,
+			location: new OpenSeadragon.Rect(
+				this._selectionStart.x, this._selectionStart.y, 0, 0)
+		});
+	}
+
+	/**
+	 * Handle selection dragging — update the rectangle size.
+	 */
+	_onSelectionDrag(pEvent)
+	{
+		if (!this._osdViewer || !this._selectionStart || !this._selectionOverlay)
+		{
+			return;
+		}
+
+		let tmpCurrent = this._osdViewer.viewport.pointFromPixel(pEvent.position);
+		let tmpX = Math.min(this._selectionStart.x, tmpCurrent.x);
+		let tmpY = Math.min(this._selectionStart.y, tmpCurrent.y);
+		let tmpW = Math.abs(tmpCurrent.x - this._selectionStart.x);
+		let tmpH = Math.abs(tmpCurrent.y - this._selectionStart.y);
+
+		this._osdViewer.updateOverlay(
+			this._selectionOverlay,
+			new OpenSeadragon.Rect(tmpX, tmpY, tmpW, tmpH));
+	}
+
+	/**
+	 * Handle selection release — compute image-coordinate region and show label input.
+	 */
+	_onSelectionRelease(pEvent)
+	{
+		if (!this._osdViewer || !this._selectionStart)
+		{
+			return;
+		}
+
+		let tmpEnd = this._osdViewer.viewport.pointFromPixel(pEvent.position);
+
+		// Convert viewport rectangle to image pixel coordinates
+		let tmpVpX = Math.min(this._selectionStart.x, tmpEnd.x);
+		let tmpVpY = Math.min(this._selectionStart.y, tmpEnd.y);
+		let tmpVpW = Math.abs(tmpEnd.x - this._selectionStart.x);
+		let tmpVpH = Math.abs(tmpEnd.y - this._selectionStart.y);
+
+		let tmpTopLeft = this._osdViewer.viewport.viewportToImageCoordinates(
+			new OpenSeadragon.Point(tmpVpX, tmpVpY));
+		let tmpBottomRight = this._osdViewer.viewport.viewportToImageCoordinates(
+			new OpenSeadragon.Point(tmpVpX + tmpVpW, tmpVpY + tmpVpH));
+
+		let tmpRegion =
+		{
+			X: Math.max(0, Math.round(tmpTopLeft.x)),
+			Y: Math.max(0, Math.round(tmpTopLeft.y)),
+			Width: Math.round(tmpBottomRight.x - tmpTopLeft.x),
+			Height: Math.round(tmpBottomRight.y - tmpTopLeft.y)
+		};
+
+		// Clamp to image dimensions
+		if (this._dziData)
+		{
+			if (tmpRegion.X + tmpRegion.Width > this._dziData.Width)
+			{
+				tmpRegion.Width = this._dziData.Width - tmpRegion.X;
+			}
+			if (tmpRegion.Y + tmpRegion.Height > this._dziData.Height)
+			{
+				tmpRegion.Height = this._dziData.Height - tmpRegion.Y;
+			}
+		}
+
+		// Ignore tiny selections (likely accidental clicks)
+		if (tmpRegion.Width < 5 || tmpRegion.Height < 5)
+		{
+			this._removeActiveSelectionOverlay();
+			return;
+		}
+
+		this._selectionRegion = tmpRegion;
+
+		// Show the inline label input in the controls bar
+		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
+		let tmpCoords = document.getElementById('RetoldRemote-IEX-Coords');
+		if (tmpLabelWrap)
+		{
+			tmpLabelWrap.style.display = '';
+		}
+		if (tmpCoords)
+		{
+			tmpCoords.style.display = 'none';
+		}
+
+		// Focus the label field
+		let tmpField = document.getElementById('RetoldRemote-IEX-LabelField');
+		if (tmpField)
+		{
+			tmpField.value = '';
+			tmpField.focus();
+		}
+	}
+
+	/**
+	 * Save the current selection with the entered label.
+	 */
+	saveSelectionLabel()
+	{
+		if (!this._selectionRegion)
+		{
+			return;
+		}
+
+		let tmpField = document.getElementById('RetoldRemote-IEX-LabelField');
+		let tmpLabel = tmpField ? tmpField.value.trim() : '';
+
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(this._currentPath) : encodeURIComponent(this._currentPath);
+
+		fetch('/api/media/subimage-regions',
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(
+			{
+				Path: this._currentPath,
+				Region:
+				{
+					Label: tmpLabel,
+					X: this._selectionRegion.X,
+					Y: this._selectionRegion.Y,
+					Width: this._selectionRegion.Width,
+					Height: this._selectionRegion.Height
+				}
+			})
+		})
+			.then((pResponse) => pResponse.json())
+			.then((pResult) =>
+			{
+				if (pResult && pResult.Success)
+				{
+					tmpSelf._savedRegions = pResult.Regions || [];
+
+					// Remove the active selection overlay and render persistent ones
+					tmpSelf._removeActiveSelectionOverlay();
+					tmpSelf._renderSavedRegionOverlays();
+
+					// Notify the user
+					let tmpToast = tmpSelf.pict.providers['RetoldRemote-ToastNotification'];
+					if (tmpToast)
+					{
+						tmpToast.showToast('Subimage region saved' + (tmpLabel ? ': ' + tmpLabel : ''));
+					}
+
+					// Update the sidebar panel if visible
+					let tmpSubPanel = tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];
+					if (tmpSubPanel)
+					{
+						tmpSubPanel.render();
+					}
+				}
+			})
+			.catch((pErr) =>
+			{
+				let tmpToast = tmpSelf.pict.providers['RetoldRemote-ToastNotification'];
+				if (tmpToast)
+				{
+					tmpToast.showToast('Failed to save region: ' + pErr.message);
+				}
+			});
+
+		// Hide label input, show coords
+		this._selectionRegion = null;
+		this._selectionStart = null;
+
+		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
+		if (tmpLabelWrap)
+		{
+			tmpLabelWrap.style.display = 'none';
+		}
+		let tmpCoords = document.getElementById('RetoldRemote-IEX-Coords');
+		if (tmpCoords)
+		{
+			tmpCoords.style.display = '';
+		}
+	}
+
+	/**
+	 * Cancel the current in-progress selection.
+	 */
+	cancelSelection()
+	{
+		this._removeActiveSelectionOverlay();
+		this._selectionRegion = null;
+		this._selectionStart = null;
+
+		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
+		if (tmpLabelWrap)
+		{
+			tmpLabelWrap.style.display = 'none';
+		}
+		let tmpCoords = document.getElementById('RetoldRemote-IEX-Coords');
+		if (tmpCoords)
+		{
+			tmpCoords.style.display = '';
+		}
+	}
+
+	/**
+	 * Remove the active (in-progress) selection overlay.
+	 */
+	_removeActiveSelectionOverlay()
+	{
+		let tmpActive = document.getElementById('RetoldRemote-IEX-ActiveSelection');
+		if (tmpActive && this._osdViewer)
+		{
+			try
+			{
+				this._osdViewer.removeOverlay(tmpActive);
+			}
+			catch (pErr)
+			{
+				// May not be an overlay; just remove from DOM
+				if (tmpActive.parentElement)
+				{
+					tmpActive.parentElement.removeChild(tmpActive);
+				}
+			}
+		}
+		this._selectionOverlay = null;
+	}
+
+	// -----------------------------------------------------------------
+	// Saved region overlays
+	// -----------------------------------------------------------------
+
+	/**
+	 * Load saved subimage regions from the server.
+	 *
+	 * @param {string} pFilePath - Relative file path
+	 */
+	_loadSavedRegions(pFilePath)
+	{
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(pFilePath) : encodeURIComponent(pFilePath);
+
+		fetch('/api/media/subimage-regions?path=' + tmpPathParam)
+			.then((pResponse) => pResponse.json())
+			.then((pResult) =>
+			{
+				if (pResult && pResult.Success && Array.isArray(pResult.Regions))
+				{
+					tmpSelf._savedRegions = pResult.Regions;
+					tmpSelf._renderSavedRegionOverlays();
+				}
+			})
+			.catch(() =>
+			{
+				// Silently ignore — regions are optional
+			});
+	}
+
+	/**
+	 * Render all saved regions as OSD overlays with colored borders and labels.
+	 */
+	_renderSavedRegionOverlays()
+	{
+		if (!this._osdViewer)
+		{
+			return;
+		}
+
+		// Remove existing saved-region overlays
+		let tmpExisting = document.querySelectorAll('.retold-remote-iex-region-overlay');
+		for (let i = 0; i < tmpExisting.length; i++)
+		{
+			try
+			{
+				this._osdViewer.removeOverlay(tmpExisting[i]);
+			}
+			catch (pErr)
+			{
+				if (tmpExisting[i].parentElement)
+				{
+					tmpExisting[i].parentElement.removeChild(tmpExisting[i]);
+				}
+			}
+		}
+
+		// Render each saved region
+		for (let i = 0; i < this._savedRegions.length; i++)
+		{
+			let tmpRegion = this._savedRegions[i];
+			this._addRegionOverlay(tmpRegion);
+		}
+	}
+
+	/**
+	 * Add a single region overlay to the OSD viewer.
+	 *
+	 * @param {object} pRegion - { ID, Label, X, Y, Width, Height }
+	 */
+	_addRegionOverlay(pRegion)
+	{
+		if (!this._osdViewer || !this._dziData)
+		{
+			return;
+		}
+
+		let tmpEl = document.createElement('div');
+		tmpEl.className = 'retold-remote-iex-region-overlay';
+		tmpEl.setAttribute('data-region-id', pRegion.ID);
+		tmpEl.style.cssText = 'border: 2px solid rgba(229, 192, 123, 0.85); background: rgba(229, 192, 123, 0.08); pointer-events: none; position: relative;';
+
+		// Label badge
+		if (pRegion.Label)
+		{
+			let tmpLabelEl = document.createElement('span');
+			tmpLabelEl.style.cssText = 'position:absolute;top:-1px;left:-1px;background:rgba(229,192,123,0.9);color:#282c34;font-size:0.65rem;padding:1px 5px;border-radius:0 0 3px 0;white-space:nowrap;pointer-events:none;';
+			tmpLabelEl.textContent = pRegion.Label;
+			tmpEl.appendChild(tmpLabelEl);
+		}
+
+		// Convert image coordinates to viewport coordinates
+		let tmpImageRect = new OpenSeadragon.Rect(pRegion.X, pRegion.Y, pRegion.Width, pRegion.Height);
+		let tmpViewportRect = this._osdViewer.viewport.imageToViewportRectangle(tmpImageRect);
+
+		this._osdViewer.addOverlay(
+		{
+			element: tmpEl,
+			location: tmpViewportRect
+		});
+	}
+
+	/**
+	 * Navigate to (zoom into) a specific saved region by ID.
+	 *
+	 * @param {string} pRegionID - The region ID to navigate to
+	 */
+	zoomToRegion(pRegionID)
+	{
+		if (!this._osdViewer || !this._dziData)
+		{
+			return;
+		}
+
+		let tmpRegion = null;
+		for (let i = 0; i < this._savedRegions.length; i++)
+		{
+			if (this._savedRegions[i].ID === pRegionID)
+			{
+				tmpRegion = this._savedRegions[i];
+				break;
+			}
+		}
+
+		if (!tmpRegion)
+		{
+			return;
+		}
+
+		// Convert image rect to viewport rect and fit to it
+		let tmpImageRect = new OpenSeadragon.Rect(tmpRegion.X, tmpRegion.Y, tmpRegion.Width, tmpRegion.Height);
+		let tmpViewportRect = this._osdViewer.viewport.imageToViewportRectangle(tmpImageRect);
+		this._osdViewer.viewport.fitBounds(tmpViewportRect);
+	}
+
+	/**
+	 * Delete a saved region by ID.
+	 *
+	 * @param {string} pRegionID - The region ID to delete
+	 */
+	deleteRegion(pRegionID)
+	{
+		let tmpSelf = this;
+		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
+		let tmpPathParam = tmpProvider ? tmpProvider._getPathParam(this._currentPath) : encodeURIComponent(this._currentPath);
+
+		fetch('/api/media/subimage-regions/' + encodeURIComponent(pRegionID) + '?path=' + tmpPathParam,
+		{
+			method: 'DELETE'
+		})
+			.then((pResponse) => pResponse.json())
+			.then((pResult) =>
+			{
+				if (pResult && pResult.Success)
+				{
+					tmpSelf._savedRegions = pResult.Regions || [];
+					tmpSelf._renderSavedRegionOverlays();
+
+					let tmpToast = tmpSelf.pict.providers['RetoldRemote-ToastNotification'];
+					if (tmpToast)
+					{
+						tmpToast.showToast('Region deleted');
+					}
+
+					// Update sidebar
+					let tmpSubPanel = tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];
+					if (tmpSubPanel)
+					{
+						tmpSubPanel.render();
+					}
+				}
+			})
+			.catch(() =>
+			{
+				// ignore
+			});
+	}
+
+	/**
+	 * Get the current selection region (for use by collection add).
+	 *
+	 * @returns {object|null} The current selection or null
+	 */
+	getActiveSelection()
+	{
+		return this._selectionRegion;
+	}
+
+	/**
+	 * Get the saved regions array.
+	 *
+	 * @returns {Array}
+	 */
+	getSavedRegions()
+	{
+		return this._savedRegions;
+	}
+
+	// -----------------------------------------------------------------
+	// Navigation
+	// -----------------------------------------------------------------
+
 	/**
 	 * Navigate back to the gallery / file listing.
 	 */
 	goBack()
 	{
+		// Clean up selection mode
+		if (this._selectionMode)
+		{
+			this._exitSelectionMode();
+		}
+
 		// Destroy the OSD viewer
 		if (this._osdViewer)
 		{

@@ -166,6 +166,29 @@ function handleViewerKey(pGalleryNav, pEvent)
 			pGalleryNav._cycleFitMode();
 			break;
 
+		case 's':
+			pEvent.preventDefault();
+			{
+				let tmpMediaViewer = pGalleryNav.pict.views['RetoldRemote-MediaViewer'];
+				if (tmpMediaViewer)
+				{
+					let tmpViewerMediaType = tmpRemote.CurrentViewerMediaType;
+					if (tmpViewerMediaType === 'document')
+					{
+						// Toggle region selection for EPUB or PDF
+						if (typeof tmpMediaViewer.ebookToggleRegionSelect === 'function' && tmpMediaViewer._activeRendition)
+						{
+							tmpMediaViewer.ebookToggleRegionSelect();
+						}
+						else if (typeof tmpMediaViewer.pdfToggleRegionSelect === 'function' && tmpMediaViewer._pdfDocument)
+						{
+							tmpMediaViewer.pdfToggleRegionSelect();
+						}
+					}
+				}
+			}
+			break;
+
 		case 'Enter':
 			pEvent.preventDefault();
 			pGalleryNav._streamWithVLC();
