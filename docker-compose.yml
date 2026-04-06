@@ -1,26 +1,61 @@
 # Retold Remote — Full Stack Docker Compose
 #
-# Designed to work with Synology Container Manager (Project feature)
-# as well as plain `docker compose up` on Linux/macOS/Windows.
+# This compose file defaults to using a PRE-BUILT image (`retold-stack:latest`)
+# so it works on Synology Container Manager without needing the source tree
+# or the Dockerfile on the NAS itself.
 #
-# Before running on Synology:
-#   1. Create the project folder:  /volume1/docker/retold-stack/
-#   2. Copy this file to that folder as docker-compose.yml
-#   3. Adjust the `media:` volume path below to point at your media folder
-#   4. In Container Manager, create a new Project → use existing docker-compose.yml
-#   5. Open http://your-nas-ip:7777/ in a browser
+# ============================================================
+# DEPLOYMENT PATHS
+# ============================================================
 #
-# On other hosts:
-#   docker compose up -d
-#   # Then browse to http://localhost:7777/
+# A) On Synology (recommended): build the image elsewhere, transfer it
+#    -----------------------------------------------------------------
+#    1. On your dev machine:
+#         cd retold-remote
+#         ./docker-build-and-save.sh
+#       This produces retold-stack-image.tar.gz (~1 GB).
+#
+#    2. Copy retold-stack-image.tar.gz AND this docker-compose.yml to
+#       /volume1/docker/retold-stack/ on the NAS via File Station or scp.
+#
+#    3. SSH into the NAS and load the image:
+#         cd /volume1/docker/retold-stack
+#         sudo docker load -i retold-stack-image.tar.gz
+#       (Or use Container Manager → Image → Add → From file.)
+#
+#    4. Edit the `media:` volume line below to point at your NAS folder.
+#
+#    5. In Container Manager → Project → Create:
+#         - Project name: retold-stack
+#         - Path:         /volume1/docker/retold-stack/
+#         - Source:       Use existing docker-compose.yml
+#       Click through and start.
+#
+#    6. Browse to http://your-nas-ip:7777/
+#
+# B) On any Docker host with the source tree present:
+#    -------------------------------------------------
+#    Uncomment the `build:` block below and comment out the `image:` line.
+#    Then:    docker compose up -d --build
+#
+# C) Pulling from a registry (if you've published the image):
+#    --------------------------------------------------------
+#    Change `image: retold-stack:latest` to your registry path, e.g.:
+#         image: ghcr.io/yourname/retold-stack:latest
+#    Then: docker compose pull && docker compose up -d
 
 services:
   retold-stack:
-    # Build from the local Dockerfile. Change to `image: retold-stack:latest`
-    # if you've built or pulled a pre-built image.
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # DEFAULT: use a locally-loaded image. Build it elsewhere with
+    # ./docker-build-and-save.sh and load it with `docker load`.
+    image: retold-stack:latest
+
+    # ALTERNATIVE: build from source. Only works when the entire source
+    # tree (Dockerfile, package.json, source/, web-application/, etc.)
+    # is present alongside this compose file.
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
 
     container_name: retold-stack
     hostname: retold-stack
@@ -62,7 +97,7 @@ services:
       - retold-config:/config
 
     environment:
-      # XDG paths are already baked into the Dockerfile; override here if desired.
+      # XDG paths are already baked into the image; override here if desired.
       - XDG_CACHE_HOME=/cache
       - XDG_DATA_HOME=/data
       - XDG_CONFIG_HOME=/config

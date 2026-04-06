@@ -141,20 +141,38 @@ When enabled (`-H` flag or `RETOLD_HASHED_FILENAMES=true`), real file paths are 
 
 ## Docker
 
-Retold Remote ships with two Dockerfiles and a Synology-ready `docker-compose.yml`. Both images run the full stack (Ultravisor + Retold Remote + embedded Orator-Conversion) as a single container.
+Retold Remote ships with two Dockerfiles, a `docker-compose.yml`, and a `docker-build-and-save.sh` helper. All images run the full stack (Ultravisor + Retold Remote + embedded Orator-Conversion) as a single container.
 
-> **Running on Synology?** See the dedicated [Synology Container Manager](synology.md) guide for a step-by-step walkthrough.
+> **Running on Synology?** See the dedicated [Synology Container Manager](synology.md) guide for a step-by-step walkthrough including how to build the image on a dev machine and transfer it to the NAS.
 
-### Quick Start (any Docker host)
+### Quick Start (any Docker host with the source tree)
+
+The compose file defaults to `image: retold-stack:latest` so it works on hosts that already have the image loaded. To build and run from the source tree in one go:
 
 ```bash
 cd retold-remote
-docker compose up -d
+
+# Build the image and tag it as retold-stack:latest
+docker build -t retold-stack:latest .
+
+# Start the stack
+MEDIA_PATH=/path/to/your/media docker compose up -d
 ```
 
 Then browse to `http://localhost:7777/`. The Ultravisor coordinator web interface is at `http://localhost:54321/`.
 
-Edit `docker-compose.yml` before starting to point the `/media` volume at your own content folder.
+If you'd rather have Compose build the image directly, edit `docker-compose.yml`:
+
+```yaml
+services:
+  retold-stack:
+    # image: retold-stack:latest    # ← comment this out
+    build:                          # ← uncomment this block
+      context: .
+      dockerfile: Dockerfile
+```
+
+Then `docker compose up -d --build` will build and start in one step.
 
 ### Dockerfile Variants
 
@@ -167,13 +185,24 @@ Both images have been verified to build and run the full stack on ARM64 (Apple S
 
 > **Note on audiowaveform:** Neither image installs `audiowaveform` because it is not in the default Debian repositories. Retold Remote automatically falls back to ffprobe + ffmpeg for waveform generation, which is slower but works identically. If you need the BBC `audiowaveform` tool for faster generation, add it via a custom Dockerfile step (build from source or a PPA).
 
-Switch variants by editing the `dockerfile:` line in `docker-compose.yml`:
+### Building and Saving for Transfer
 
-```yaml
-build:
-  context: .
-  dockerfile: Dockerfile.slim
+For deploying to a NAS or any host that doesn't have the source tree, use the `docker-build-and-save.sh` helper:
+
+```bash
+./docker-build-and-save.sh                # full image, host architecture
+./docker-build-and-save.sh slim           # slim variant
+./docker-build-and-save.sh --amd64        # cross-build for x86_64
+./docker-build-and-save.sh slim --arm64   # slim + arm64
 ```
+
+This produces a compressed tar file (`retold-stack-image.tar.gz` or `retold-stack-image-slim.tar.gz`) that you can copy to the target host and load with:
+
+```bash
+docker load -i retold-stack-image.tar.gz
+```
+
+Then start the stack with the included `docker-compose.yml` (which references `retold-stack:latest` by default). No source tree needed on the target host.
 
 ### Manual Docker Run
 
