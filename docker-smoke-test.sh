@@ -507,34 +507,166 @@ docker logs "$CONTAINER_NAME" 2>&1 | grep -q "beacon connected as" && \
 	_pass "Beacon registered with Ultravisor" || \
 	_fail "Beacon registration" "no 'beacon connected as' line in logs"
 
-# --- Shared-FS reachability ---
-_section "Shared-FS reachability strategy"
+# --- Shared-FS reachability (positive path) ---
+_section "Shared-FS reachability strategy (positive path)"
 
 # When retold-remote and orator-conversion run inside the same container,
 # they should both advertise the same MountID for the content path so the
 # Ultravisor reachability matrix can pick the 'shared-fs' strategy and skip
 # the HTTP file-transfer to staging entirely.
-docker logs "$CONTAINER_NAME" 2>&1 | grep -q "advertising shared mount" && \
-	_pass "retold-remote advertises shared mount on startup" || \
-	_fail "Shared mount advertisement" "no 'advertising shared mount' line in retold-remote logs"
+#
+# We assert three things here:
+#   1. The 'advertising shared mount' line appears on startup (both beacons
+#      receive the same SharedMounts array from Server-Setup)
+#   2. After triggering a dispatched thumbnail operation, at least one
+#      'File Transfer: shared-fs hit' line appears (proving the reachability
+#      matrix actually returned Strategy: shared-fs and the file-transfer
+#      task short-circuited without copying bytes)
+#   3. The operation returned HTTP 200 (end-to-end OK)
 
-# Trigger an Ultravisor-dispatched preview by hitting the medium image
-# preview endpoint with a max dimension that forces preview generation.
-# (The medium fixture is 6000px wide which is above the direct-serve
-# threshold so generatePreview() runs and prefers the dispatcher.)
-TRIGGER_OP_ID="op-sharedfs-$(date +%s)"
-curl -s -o /dev/null --max-time 60 \
-	-H "X-Op-Id: $TRIGGER_OP_ID" \
-	"http://localhost:7777/api/media/preview?path=02-medium-image.jpg&maxDim=2048" || true
+if docker logs "$CONTAINER_NAME" 2>&1 | grep -q "advertising shared mount"; then
+	_pass "Beacons advertise shared mount on startup"
+else
+	_fail "Shared mount advertisement" "no 'advertising shared mount' line in logs"
+fi
+
+# Trigger an Ultravisor-dispatched thumbnail on the LARGE fixture so the
+# dispatcher's local-first short-circuit does not kick in. The medium and
+# large thumbnails earlier in the script may have already primed the cache,
+# so use a unique width/height combo to force a fresh run.
+SHARED_FS_OP_ID="op-sharedfs-pos-$(date +%s)"
+SHARED_FS_CODE=$(curl -s -o /tmp/smoke-sharedfs-pos -w '%{http_code}' --max-time 60 \
+	-H "X-Op-Id: $SHARED_FS_OP_ID" \
+	"http://localhost:$HOST_PORT/api/media/thumbnail?path=03-large.jpg&width=173&height=173" 2>/dev/null || echo "000")
 
 # Give the dispatcher a moment to log the shared-fs hit
 sleep 1
 
-# Look for shared-fs evidence in the logs (either side of the work item)
-if docker logs "$CONTAINER_NAME" 2>&1 | grep -qE "shared-fs hit|Strategy: shared-fs|shared filesystem"; then
-	_pass "Shared-fs strategy used by dispatched operation"
+# Look for the definitive shared-fs signal in the logs.
+# The file-transfer task emits 'File Transfer: shared-fs hit, using <path>
+# directly (<N> bytes, no copy).' when the short-circuit fires.
+SHARED_FS_HIT_COUNT=$(docker logs "$CONTAINER_NAME" 2>&1 | grep -c "File Transfer: shared-fs hit" || true)
+RESOLVE_AUTO_DETECT_COUNT=$(docker logs "$CONTAINER_NAME" 2>&1 | grep -c "auto-detected shared-fs peer" || true)
+
+if [ "$SHARED_FS_CODE" = "200" ] && [ "$SHARED_FS_HIT_COUNT" -gt 0 ]; then
+	_pass "Shared-fs strategy used by dispatched thumbnail ($SHARED_FS_HIT_COUNT hit(s), auto-detect fired $RESOLVE_AUTO_DETECT_COUNT time(s))"
+elif [ "$SHARED_FS_CODE" = "200" ] && [ "$RESOLVE_AUTO_DETECT_COUNT" -gt 0 ]; then
+	# Auto-detect fired but the file-transfer short-circuit didn't log —
+	# this can happen if the requesting beacon was the source beacon, in
+	# which case we just ended up on the 'local' path. Still a pass.
+	_pass "Shared-fs auto-detect fired ($RESOLVE_AUTO_DETECT_COUNT time(s)); operation completed"
+elif [ "$SHARED_FS_CODE" = "200" ]; then
+	_warn "Thumbnail succeeded but no shared-fs signal in logs (may have hit local cache or dispatcher declined)"
 else
-	_warn "Shared-fs strategy not observed (operation may have hit cache or used direct strategy)"
+	_fail "Shared-fs positive path thumbnail" "HTTP $SHARED_FS_CODE"
+fi
+
+# Sanity-check: the shared-fs hit should mean zero bytes transferred.
+# Grep the transfer log line and pull the byte count.
+ZERO_BYTE_LINE=$(docker logs "$CONTAINER_NAME" 2>&1 | grep "File Transfer: shared-fs hit" | tail -1)
+if [ -n "$ZERO_BYTE_LINE" ]; then
+	_msg "    ${C_BLUE}[info]${C_RESET} $(echo "$ZERO_BYTE_LINE" | sed 's/.*File Transfer:/File Transfer:/')"
+fi
+
+# --- Shared-FS reachability (negative path via RETOLD_SHARED_FS_ENABLED=false) ---
+_section "Shared-FS reachability strategy (negative path)"
+
+# Tear down the positive-path container and start a fresh one with the
+# shared-fs advertisement DISABLED via the RETOLD_SHARED_FS_ENABLED=false
+# env var. This forces the reachability matrix to fall through to
+# 'direct' (HTTP file-transfer via localhost). The test confirms two things:
+#   1. The env var is actually plumbed through (log line 'SharedMounts advertisement DISABLED')
+#   2. When the env var is set, the file-transfer short-circuit does NOT fire
+#      (no 'File Transfer: shared-fs hit' lines) but the operation still
+#      completes successfully (the fallback direct-HTTP path is healthy)
+
+_msg "Restarting container with RETOLD_SHARED_FS_ENABLED=false..."
+docker stop "$CONTAINER_NAME" > /dev/null 2>&1 || true
+docker rm "$CONTAINER_NAME" > /dev/null 2>&1 || true
+
+CONTAINER_ID=$(docker run -d \
+	--name "$CONTAINER_NAME" \
+	-p "$HOST_PORT:7777" \
+	-p "$ULTRAVISOR_PORT:54321" \
+	-v "$FIXTURES_DIR:/media:ro" \
+	-e "RETOLD_SHARED_FS_ENABLED=false" \
+	"$IMAGE_TAG" 2>&1) || {
+		_fail "Negative-path container start" "docker run failed: $CONTAINER_ID"
+		# Don't exit — fall through to final report
+		CONTAINER_ID=""
+	}
+
+if [ -n "$CONTAINER_ID" ]; then
+	_msg "Waiting for services to be ready..."
+	WAIT_COUNT=0
+	MAX_WAIT=60
+	until curl -s -o /dev/null -w '%{http_code}' "http://localhost:$HOST_PORT/" 2>/dev/null | grep -q '200'; do
+		WAIT_COUNT=$((WAIT_COUNT + 1))
+		if [ "$WAIT_COUNT" -ge "$MAX_WAIT" ]; then
+			_fail "Negative-path container ready" "did not respond within ${MAX_WAIT}s"
+			docker logs "$CONTAINER_NAME" 2>&1 | tail -20
+			CONTAINER_ID=""
+			break
+		fi
+		sleep 1
+	done
+
+	if [ -n "$CONTAINER_ID" ]; then
+		_msg "Ready after ${WAIT_COUNT}s"
+
+		# Assertion 1: the env var gate fired
+		if docker logs "$CONTAINER_NAME" 2>&1 | grep -q "SharedMounts advertisement DISABLED"; then
+			_pass "RETOLD_SHARED_FS_ENABLED=false disables SharedMounts advertisement"
+		else
+			_fail "RETOLD_SHARED_FS_ENABLED env var" "expected 'SharedMounts advertisement DISABLED' line in logs"
+		fi
+
+		# Assertion 2: no 'advertising shared mount' line (the positive signal should be absent)
+		if docker logs "$CONTAINER_NAME" 2>&1 | grep -q "advertising shared mount"; then
+			_fail "Negative path: shared mount advertisement" "'advertising shared mount' line present despite env var"
+		else
+			_pass "Negative path: no shared mount advertised"
+		fi
+
+		# Trigger the same thumbnail operation as the positive path, with a
+		# distinct width so no cache can short-circuit it.
+		NEG_OP_ID="op-sharedfs-neg-$(date +%s)"
+		NEG_CODE=$(curl -s -o /tmp/smoke-sharedfs-neg -w '%{http_code}' --max-time 60 \
+			-H "X-Op-Id: $NEG_OP_ID" \
+			"http://localhost:$HOST_PORT/api/media/thumbnail?path=03-large.jpg&width=179&height=179" 2>/dev/null || echo "000")
+
+		sleep 1
+
+		# Assertion 3: the fallback path still works (HTTP 200)
+		if [ "$NEG_CODE" = "200" ]; then
+			_pass "Negative path: dispatched thumbnail still succeeds (direct/local fallback)"
+		else
+			_fail "Negative path: dispatched thumbnail" "HTTP $NEG_CODE"
+		fi
+
+		# Assertion 4: no 'File Transfer: shared-fs hit' lines (shared-fs
+		# never engaged because both beacons skipped the mount advertisement)
+		NEG_HIT_COUNT=$(docker logs "$CONTAINER_NAME" 2>&1 | grep -c "File Transfer: shared-fs hit" || true)
+		if [ "$NEG_HIT_COUNT" = "0" ]; then
+			_pass "Negative path: shared-fs short-circuit did NOT fire"
+		else
+			_fail "Negative path: shared-fs unexpectedly fired" "$NEG_HIT_COUNT hit(s) seen despite env var"
+		fi
+
+		# Assertion 5: the direct-HTTP fallback path actually ran. The
+		# file-transfer task logs '[FileTransfer] no SourceLocalPath in
+		# settings — running standard HTTP download path' when it falls
+		# through, which proves the direct strategy was used end-to-end.
+		NEG_DIRECT_COUNT=$(docker logs "$CONTAINER_NAME" 2>&1 | grep -c "running standard HTTP download path" || true)
+		if [ "$NEG_DIRECT_COUNT" -gt 0 ]; then
+			_pass "Negative path: standard HTTP download path engaged ($NEG_DIRECT_COUNT time(s))"
+		else
+			# Not fatal — some operations might short-circuit earlier (e.g.,
+			# local cache hit). Flag as a warning so the test still passes
+			# overall but humans notice when the coverage goes thin.
+			_warn "Negative path: no 'standard HTTP download path' log line observed — direct path may not have been exercised by this trigger"
+		fi
+	fi
 fi
 
 # --- Final report ---

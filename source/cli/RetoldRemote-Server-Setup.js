@@ -2546,21 +2546,39 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						// the Ultravisor reachability matrix can detect the overlap and
 						// pick the 'shared-fs' strategy instead of forcing a 374 MB
 						// HTTP file-transfer between two beacons in the same process.
+						//
+						// The RETOLD_SHARED_FS_ENABLED env var provides a test hook to
+						// disable the shared-fs advertisement. When set to 'false' or '0'
+						// both beacons skip SharedMounts, which forces the reachability
+						// matrix to fall through to 'direct' (HTTP file-transfer) or
+						// 'proxy'. This lets the docker smoke test exercise the legacy
+						// path to confirm nothing has regressed there.
 						let tmpHostID = libOs.hostname();
 						let tmpSharedMounts = [];
-						try
+						let tmpSharedFsEnvValue = (typeof process.env.RETOLD_SHARED_FS_ENABLED === 'string')
+							? process.env.RETOLD_SHARED_FS_ENABLED.trim().toLowerCase()
+							: '';
+						let tmpSharedFsEnabled = !(tmpSharedFsEnvValue === 'false' || tmpSharedFsEnvValue === '0' || tmpSharedFsEnvValue === 'no' || tmpSharedFsEnvValue === 'off');
+						if (!tmpSharedFsEnabled)
 						{
-							let tmpMountRoot = libPath.resolve(tmpContentPath);
-							let tmpStat = libFs.statSync(tmpMountRoot);
-							let tmpMountID = libCrypto.createHash('sha256')
-								.update(tmpStat.dev + ':' + tmpMountRoot)
-								.digest('hex').substring(0, 16);
-							tmpSharedMounts.push({ MountID: tmpMountID, Root: tmpMountRoot });
-							tmpFable.log.info(`Ultravisor Beacons: advertising shared mount [${tmpMountID}] = ${tmpMountRoot} (HostID: ${tmpHostID})`);
+							tmpFable.log.warn(`Ultravisor Beacons: RETOLD_SHARED_FS_ENABLED=${process.env.RETOLD_SHARED_FS_ENABLED} -- SharedMounts advertisement DISABLED (forcing direct/proxy transfer strategy).`);
 						}
-						catch (pMountError)
+						else
 						{
-							tmpFable.log.warn(`Ultravisor Beacons: could not stat content path for shared-fs detection: ${pMountError.message}`);
+							try
+							{
+								let tmpMountRoot = libPath.resolve(tmpContentPath);
+								let tmpStat = libFs.statSync(tmpMountRoot);
+								let tmpMountID = libCrypto.createHash('sha256')
+									.update(tmpStat.dev + ':' + tmpMountRoot)
+									.digest('hex').substring(0, 16);
+								tmpSharedMounts.push({ MountID: tmpMountID, Root: tmpMountRoot });
+								tmpFable.log.info(`Ultravisor Beacons: advertising shared mount [${tmpMountID}] = ${tmpMountRoot} (HostID: ${tmpHostID})`);
+							}
+							catch (pMountError)
+							{
+								tmpFable.log.warn(`Ultravisor Beacons: could not stat content path for shared-fs detection: ${pMountError.message}`);
+							}
 						}
 
 						tmpBeacon.connectBeacon(
