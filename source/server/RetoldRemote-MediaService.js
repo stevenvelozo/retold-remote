@@ -1009,13 +1009,36 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 
 	/**
 	 * Run ffprobe and parse the output.
-	 * Tries Ultravisor dispatch first, falls back to local execution.
+	 *
+	 * Strategy ordering (most efficient first):
+	 *   1. LOCAL ffprobe — when this process has the binary on PATH (the
+	 *      ToolDetector flagged `capabilities.ffprobe` true). Reads the
+	 *      container index in milliseconds, no Ultravisor pipeline involved,
+	 *      no file copies, no shared-fs negotiation. This is the right call
+	 *      for stack-mode deployments where retold-remote and orator-conversion
+	 *      live in the same image.
+	 *   2. DISPATCHED probe — only when the local binary is missing. Goes
+	 *      through the rr-media-probe operation graph (resolve → transfer →
+	 *      probe → result). With shared-fs the file isn't actually copied,
+	 *      but the operation graph still runs.
+	 *
+	 * The previous implementation had this BACKWARDS — it dispatched first
+	 * even when the local binary was available, which made every gallery
+	 * thumbnail probe pay an extra Ultravisor round trip.
 	 */
 	_ffprobe(pFullPath, fCallback)
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor operation trigger first
+		// Local-first: if ffprobe is on this host, just run it.
+		if (this.capabilities && this.capabilities.ffprobe)
+		{
+			return this._ffprobeLocal(pFullPath, fCallback);
+		}
+
+		// No local ffprobe — fall back to dispatching the probe through the
+		// Ultravisor mesh. This requires the dispatcher to be available and
+		// the file to be addressable through the File context.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -1045,13 +1068,15 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 							{
 								let tmpData = JSON.parse(tmpProcessOutput.Result);
 								let tmpParsed = tmpSelf._parseFfprobeData(tmpData);
-								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath}`);
+								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath} (no local ffprobe)`);
 								return fCallback(null, tmpParsed);
 							}
 						}
 						catch (pParseError)
 						{
-							// Fall through to local
+							// Fall through to local — even though the constructor
+							// said ffprobe was missing, the binary could have been
+							// installed since startup.
 						}
 					}
 
@@ -1062,6 +1087,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			}
 		}
 
+		// Last resort: try local even though detection said it was missing.
 		return this._ffprobeLocal(pFullPath, fCallback);
 	}
 

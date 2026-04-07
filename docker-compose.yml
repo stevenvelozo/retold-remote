@@ -103,7 +103,25 @@ services:
       - XDG_CONFIG_HOME=/config
       # Node memory limit — bump up for large libraries or raw camera formats.
       - NODE_OPTIONS=--max-old-space-size=2048
-      # Uncomment to see more verbose logging:
+
+      # Verbose diagnostic logging — Pict-style "log noisiness" on a 0-5 scale.
+      # When non-zero, retold-remote AND its embedded Ultravisor coordinator
+      # both emit detailed traces gated by `if (LogNoisiness >= N)` checks.
+      # Useful for debugging the shared-fs reachability path, dispatcher
+      # routing, and file-transfer short-circuit decisions.
+      #
+      #   0 = silent (production default)
+      #   1 = high-level decisions (e.g. "auto-detected shared-fs peer X")
+      #   2 = entry/exit of major code paths (resolve, transfer, auto-detect)
+      #   3 = per-candidate iteration in the reachability scanner
+      #   4 = per-mount comparison details
+      #   5 = absolutely everything
+      #
+      # Uncomment and set to 2 or 3 when troubleshooting why a shared-fs path
+      # isn't firing or why the file-transfer is or isn't short-circuiting.
+      # - RETOLD_LOG_NOISINESS=2
+
+      # Legacy debug-namespace logging (separate from LogNoisiness above):
       # - DEBUG=retold:*
 
     # Health check — waits until Retold Remote responds on its port.

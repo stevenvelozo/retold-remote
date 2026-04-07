@@ -110,6 +110,28 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 	let tmpFable = new libFable(tmpSettings);
 
+	// Apply LogNoisiness from RETOLD_LOG_NOISINESS env var (or pOptions override).
+	// Pict-style log noisiness is a 0-5 scale where 0 is silent (production
+	// default) and 5 shows everything. Diagnostic log statements throughout
+	// retold-remote and Ultravisor are gated with `if (this.fable.LogNoisiness
+	// >= N)` so they're free at level 0 and explosively detailed at level 4-5.
+	// Useful values:
+	//   1 — high-level decisions (auto-detected shared-fs peer X)
+	//   2 — entry points and decisions in shared-fs / dispatch paths
+	//   3 — per-candidate iteration in reachability
+	//   4 — per-mount comparison details
+	//   5 — everything
+	let tmpNoisy = parseInt(pOptions.LogNoisiness, 10);
+	if (isNaN(tmpNoisy))
+	{
+		tmpNoisy = parseInt(process.env.RETOLD_LOG_NOISINESS, 10);
+	}
+	if (!isNaN(tmpNoisy) && tmpNoisy > 0)
+	{
+		tmpFable.LogNoisiness = tmpNoisy;
+		tmpFable.log.info(`Retold-Remote: LogNoisiness=${tmpNoisy} (verbose diagnostics enabled).`);
+	}
+
 	// Ensure the content directory exists
 	if (!libFs.existsSync(tmpContentPath))
 	{

@@ -60,6 +60,11 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 		// Detect audiowaveform availability
 		this.hasAudiowaveform = this._detectCommand('audiowaveform --version');
 
+		// Detect local ffprobe at startup so _probeAudio can prefer it over
+		// dispatching through the Ultravisor pipeline. Same pattern as
+		// VideoFrameService — see _probeAudio for the strategy ordering.
+		this._ffprobeLocalAvailable = this._detectCommand('ffprobe -version');
+
 		// Apply explorer state persistence mixin
 		libExplorerStateMixin.apply(this, AUDIO_EXPLORER_STATE_SOURCE, 'audio-explorer');
 
@@ -151,7 +156,16 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 
 	/**
 	 * Probe an audio file with ffprobe to get metadata.
-	 * Tries Ultravisor dispatch first, falls back to local execution.
+	 *
+	 * Strategy ordering (most efficient first):
+	 *   1. LOCAL ffprobe — when this process has the binary on PATH (detected
+	 *      at constructor time). Reads the container index in milliseconds,
+	 *      no Ultravisor pipeline involved, no file copies. The right call
+	 *      for stack-mode deployments.
+	 *   2. DISPATCHED probe — only when the local binary is missing. Goes
+	 *      through the rr-media-probe operation graph (resolve → transfer →
+	 *      probe → result). With shared-fs the file isn't actually copied,
+	 *      but the operation graph still runs.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the audio file
 	 * @param {Function} fCallback - Callback(pError, { duration, sampleRate, channels, codec, bitrate, size })
@@ -160,7 +174,14 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor operation trigger first
+		// Local-first: if ffprobe is on this host, just run it.
+		if (this._ffprobeLocalAvailable)
+		{
+			return this._probeAudioLocal(pAbsPath, fCallback);
+		}
+
+		// No local ffprobe — fall back to dispatching the probe through the
+		// Ultravisor mesh.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -190,7 +211,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 							{
 								let tmpData = JSON.parse(tmpProcessOutput.Result);
 								let tmpParsed = tmpSelf._parseAudioProbeData(tmpData);
-								tmpSelf.fable.log.info(`ffprobe (audio) via operation trigger for ${tmpRelPath}`);
+								tmpSelf.fable.log.info(`ffprobe (audio) via operation trigger for ${tmpRelPath} (no local ffprobe)`);
 								return fCallback(null, tmpParsed);
 							}
 						}
@@ -206,6 +227,7 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 			}
 		}
 
+		// Last resort: try local even though detection said it was missing.
 		return this._probeAudioLocal(pAbsPath, fCallback);
 	}
 

@@ -541,23 +541,56 @@ function getOperations()
 	}));
 
 	// ── 9. Media Probe ─────────────────────────────────────────
-	tmpOperations.push(_buildPipelineOperation(
-	{
-		Hash: 'rr-media-probe',
+	// Custom graph (NOT _buildPipelineOperation) because MediaProbe returns
+	// its result as a JSON string in the work item's Outputs.Result field —
+	// it does NOT write a file to staging. The pipeline helper would tack on
+	// a send-result node looking for `probe.json` and log a noisy error every
+	// time the operation runs. Skip send-result entirely; the dispatcher
+	// reads the JSON directly from `pResult.TaskOutputs['rr-media-probe-process'].Result`.
+	let tmpMp = 'rr-media-probe';
+	let tmpMpNodes = [
+		_startNode(tmpMp, 50, 200),
+		_taskNode(tmpMp + '-resolve', 'resolve-address', 'Resolve Address', 220, 180,
+			{ Address: '{~D:Record.Operation.MediaAddress~}' },
+			['Address'], ['URL', 'Filename', 'BeaconName', 'LocalPath', 'Strategy']),
+		_taskNode(tmpMp + '-transfer', 'file-transfer', 'File Transfer', 440, 180,
+			{
+				SourceURL: '{~D:Record.TaskOutputs.' + tmpMp + '-resolve.URL~}',
+				SourceLocalPath: '{~D:Record.TaskOutputs.' + tmpMp + '-resolve.LocalPath~}',
+				Filename: '{~D:Record.TaskOutputs.' + tmpMp + '-resolve.Filename~}',
+				TimeoutMs: 300000
+			},
+			['SourceURL', 'SourceLocalPath', 'Filename', 'TimeoutMs'],
+			['LocalPath', 'BytesTransferred', 'DurationMs', 'Strategy']),
+		_taskNode(tmpMp + '-process', 'beacon-mediaconversion-mediaprobe', 'Probe Metadata', 660, 180,
+			{
+				AffinityKey: '{~D:Record.Operation.MediaAddress~}',
+				TimeoutMs: 300000
+			},
+			['InputFile'],
+			['Result', 'StdOut']),
+		_endNode(tmpMp, 880, 260)
+	];
+	let tmpMpConns = _chainConnections(tmpMp,
+		[tmpMp + '-start', tmpMp + '-resolve', tmpMp + '-transfer', tmpMp + '-process'],
+		tmpMp + '-end');
+	tmpMpConns.push({ Hash: tmpMp + '-s1', SourceNodeHash: tmpMp + '-resolve', SourcePortHash: tmpMp + '-resolve-so-URL', TargetNodeHash: tmpMp + '-transfer', TargetPortHash: tmpMp + '-transfer-si-SourceURL', Data: {} });
+	tmpMpConns.push({ Hash: tmpMp + '-s2', SourceNodeHash: tmpMp + '-resolve', SourcePortHash: tmpMp + '-resolve-so-Filename', TargetNodeHash: tmpMp + '-transfer', TargetPortHash: tmpMp + '-transfer-si-Filename', Data: {} });
+	tmpMpConns.push({ Hash: tmpMp + '-s3', SourceNodeHash: tmpMp + '-transfer', SourcePortHash: tmpMp + '-transfer-so-LocalPath', TargetNodeHash: tmpMp + '-process', TargetPortHash: tmpMp + '-process-si-InputFile', Data: {} });
+	// Resolve LocalPath → transfer SourceLocalPath (shared-fs zero-copy fast path)
+	tmpMpConns.push({ Hash: tmpMp + '-s4', SourceNodeHash: tmpMp + '-resolve', SourcePortHash: tmpMp + '-resolve-so-LocalPath', TargetNodeHash: tmpMp + '-transfer', TargetPortHash: tmpMp + '-transfer-si-SourceLocalPath', Data: {} });
+	tmpOperations.push({
+		Hash: tmpMp,
 		Name: 'Media Probe',
-		Description: 'Extract metadata from a media file via ffprobe. Pipeline: resolve → download → probe → send result. Trigger with Parameters: { MediaAddress }.',
+		Description: 'Extract metadata from a media file via ffprobe. Custom graph: resolve → transfer → probe → end. Result is JSON metadata only (no send-result; read TaskOutputs[<process>].Result). Trigger with Parameters: { MediaAddress }.',
 		Tags: ['media', 'probe', 'metadata'],
-		AddressParam: 'MediaAddress',
-		ProcessType: 'beacon-mediaconversion-mediaprobe',
-		ProcessTitle: 'Probe Metadata',
-		ProcessData:
-		{
-			TimeoutMs: 300000
-		},
-		ProcessSettings: ['InputFile'],
-		ProcessOutputs: ['Result', 'StdOut'],
-		OutputFile: 'probe.json'
-	}));
+		Author: 'retold-remote',
+		Version: '3.0.0',
+		Graph: { Nodes: tmpMpNodes, Connections: tmpMpConns, ViewState: { PanX: 0, PanY: 0, Zoom: 1, SelectedNodeHash: null, SelectedConnectionHash: null } },
+		SavedLayouts: [],
+		InitialGlobalState: {},
+		InitialOperationState: {}
+	});
 
 	return tmpOperations;
 }
