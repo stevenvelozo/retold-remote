@@ -44,6 +44,8 @@ class RetoldRemoteUltravisorBeacon extends libFableServiceProviderBase
 	 *   - ContentPath {string} Absolute path to content directory
 	 *   - ContentBaseURL {string} URL prefix for content access (e.g. 'http://localhost:7500/content/')
 	 *   - CacheRoot {string} Absolute path to cache directory
+	 *   - HostID {string} Override for the host identity (default: os.hostname())
+	 *   - SharedMounts {Array<{MountID, Root}>} Shared filesystem mounts to advertise
 	 * @param {Function} fCallback Called with (pError, pBeaconInfo)
 	 */
 	connectBeacon(pBeaconConfig, fCallback)
@@ -62,8 +64,10 @@ class RetoldRemoteUltravisorBeacon extends libFableServiceProviderBase
 		// Register the beacon service type with fable if not already present
 		this.fable.addServiceTypeIfNotExists('UltravisorBeacon', libBeaconService);
 
-		// Instantiate the beacon service with the provided config
-		this._BeaconService = this.fable.instantiateServiceProviderWithoutRegistration('UltravisorBeacon',
+		// Build the beacon options. SharedMounts is forwarded as-is — the caller
+		// (Server-Setup) computes the MountID hash so that both retold-remote and
+		// orator-conversion advertise the SAME id for the same on-disk mount.
+		let tmpBeaconOptions =
 			{
 				ServerURL: pBeaconConfig.ServerURL,
 				Name: pBeaconConfig.Name || 'retold-remote',
@@ -72,7 +76,18 @@ class RetoldRemoteUltravisorBeacon extends libFableServiceProviderBase
 				StagingPath: pBeaconConfig.StagingPath || process.cwd(),
 				Tags: pBeaconConfig.Tags || {},
 				BindAddresses: pBeaconConfig.BindAddresses || []
-			});
+			};
+		if (pBeaconConfig.HostID)
+		{
+			tmpBeaconOptions.HostID = pBeaconConfig.HostID;
+		}
+		if (Array.isArray(pBeaconConfig.SharedMounts) && pBeaconConfig.SharedMounts.length > 0)
+		{
+			tmpBeaconOptions.SharedMounts = pBeaconConfig.SharedMounts;
+		}
+
+		// Instantiate the beacon service with the provided config
+		this._BeaconService = this.fable.instantiateServiceProviderWithoutRegistration('UltravisorBeacon', tmpBeaconOptions);
 
 		// Register the File context (content root — the user's media folder)
 		if (pBeaconConfig.ContentPath)

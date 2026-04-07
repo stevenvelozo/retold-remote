@@ -182,15 +182,53 @@ class RetoldRemoteAudioExplorerView extends libPictView
 
 		let tmpURL = '/api/media/audio-waveform?path=' + tmpPathParam + '&peaks=2000';
 
-		fetch(tmpURL)
+		// Cancel any previous in-flight waveform fetch
+		this._cancelActiveOperation();
+
+		// Start an operation entry so the user sees what's happening
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		let tmpOp = tmpStatus ? tmpStatus.startOperation(
+		{
+			Label: 'Analyzing audio waveform',
+			Phase: 'Extracting peaks…',
+			Cancelable: true
+		}) : null;
+		if (tmpOp)
+		{
+			this._activeOperationId = tmpOp.OperationId;
+			this._activeAbortController = tmpOp.AbortController;
+		}
+
+		let tmpFetchOptions = {};
+		if (tmpOp && tmpOp.AbortController)
+		{
+			tmpFetchOptions.signal = tmpOp.AbortController.signal;
+		}
+		if (tmpOp)
+		{
+			tmpFetchOptions.headers = { 'X-Op-Id': tmpOp.OperationId };
+		}
+
+		fetch(tmpURL, tmpFetchOptions)
 			.then((pResponse) => pResponse.json())
 			.then((pData) =>
 			{
 				if (!pData || !pData.Success)
 				{
+					if (tmpOp && tmpStatus)
+					{
+						tmpStatus.errorOperation(tmpOp.OperationId, { message: pData ? pData.Error : 'Unknown error' });
+					}
 					tmpSelf._showError(pData ? pData.Error : 'Unknown error');
 					return;
 				}
+
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.completeOperation(tmpOp.OperationId);
+				}
+				tmpSelf._activeOperationId = null;
+				tmpSelf._activeAbortController = null;
 
 				tmpSelf._waveformData = pData;
 				tmpSelf._peaks = pData.Peaks || [];
@@ -198,8 +236,35 @@ class RetoldRemoteAudioExplorerView extends libPictView
 			})
 			.catch((pError) =>
 			{
+				if (pError && pError.name === 'AbortError')
+				{
+					return;
+				}
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.errorOperation(tmpOp.OperationId, pError);
+				}
 				tmpSelf._showError(pError.message);
 			});
+	}
+
+	/**
+	 * Cancel any in-flight waveform fetch. Called on navigate-away and
+	 * when launching a new waveform extraction.
+	 */
+	_cancelActiveOperation()
+	{
+		if (this._activeAbortController)
+		{
+			try { this._activeAbortController.abort(); } catch (pErr) { /* ignore */ }
+		}
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		if (this._activeOperationId && tmpStatus)
+		{
+			tmpStatus.cancelOperation(this._activeOperationId);
+		}
+		this._activeOperationId = null;
+		this._activeAbortController = null;
 	}
 
 	/**
@@ -981,6 +1046,9 @@ class RetoldRemoteAudioExplorerView extends libPictView
 	 */
 	goBack()
 	{
+		// Cancel any in-flight waveform extraction
+		this._cancelActiveOperation();
+
 		// Clean up resize observer
 		if (this._resizeObserver)
 		{

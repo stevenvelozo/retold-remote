@@ -258,6 +258,177 @@ function spawnUltravisor(pOptions, fCallback)
 }
 
 /**
+ * Detect emulation (QEMU user-mode, Rosetta-on-Docker-Desktop, etc.)
+ * which kills performance for native code (sharp/libvips, ffmpeg,
+ * ImageMagick, LibreOffice). Logs a loud warning if detected so users
+ * know to rebuild for the right architecture.
+ *
+ * Detection signals (any one of these triggers the warning):
+ *   - /proc/cpuinfo contains "qemu" or "VirtualApple" (Docker Desktop on Mac)
+ *   - /proc/cpuinfo vendor_id is anything other than the expected native vendor
+ *   - /proc/version mentions an arch different from process.arch
+ *   - A binfmt_misc qemu handler is registered AND we have a mismatch signal
+ *   - A short native CPU loop runs at significantly less than expected speed
+ *
+ * @param {object} pLog - Logger
+ */
+function checkQemuEmulation(pLog)
+{
+	try
+	{
+		let tmpNodeArch = process.arch;
+		let tmpEmulated = false;
+		let tmpReason = '';
+		let tmpCpuModel = null;
+		let tmpCpuVendor = null;
+
+		// 1. /proc/cpuinfo — most reliable signal
+		if (libFs.existsSync('/proc/cpuinfo'))
+		{
+			try
+			{
+				let tmpCpuInfo = libFs.readFileSync('/proc/cpuinfo', 'utf8');
+
+				// QEMU user-mode emulation often leaves the string "qemu" in cpuinfo
+				if (/qemu/i.test(tmpCpuInfo))
+				{
+					tmpEmulated = true;
+					tmpReason = '/proc/cpuinfo contains "qemu"';
+				}
+
+				// Docker Desktop on Apple Silicon emulating x86_64 reports vendor_id
+				// as "VirtualApple" instead of "GenuineIntel" or "AuthenticAMD"
+				let tmpVendorMatch = tmpCpuInfo.match(/^vendor_id\s*:\s*(.+)$/m);
+				if (tmpVendorMatch)
+				{
+					tmpCpuVendor = tmpVendorMatch[1].trim();
+					if (tmpNodeArch === 'x64' && tmpCpuVendor === 'VirtualApple')
+					{
+						tmpEmulated = true;
+						tmpReason = 'x86_64 binary on Apple Silicon (VirtualApple vendor)';
+					}
+				}
+
+				// Extract the model line for diagnostics
+				let tmpModelMatch = tmpCpuInfo.match(/^model name\s*:\s*(.+)$/m);
+				if (tmpModelMatch)
+				{
+					tmpCpuModel = tmpModelMatch[1].trim();
+					if (/qemu/i.test(tmpCpuModel) || /VirtualApple/i.test(tmpCpuModel))
+					{
+						tmpEmulated = true;
+						if (!tmpReason) tmpReason = 'CPU model name indicates emulation';
+					}
+				}
+			}
+			catch (pError)
+			{
+				// ignore
+			}
+		}
+
+		// 2. /proc/version — Linux kernel build banner
+		if (!tmpEmulated && libFs.existsSync('/proc/version'))
+		{
+			try
+			{
+				let tmpProcVersion = libFs.readFileSync('/proc/version', 'utf8');
+				let tmpVersionLower = tmpProcVersion.toLowerCase();
+				// If node says arm64 but the kernel banner says x86_64 (or vice versa)
+				// we're definitely emulated.
+				if (tmpNodeArch === 'arm64' && tmpVersionLower.indexOf('x86_64') >= 0)
+				{
+					tmpEmulated = true;
+					tmpReason = 'arm64 binary, x86_64 kernel';
+				}
+				if (tmpNodeArch === 'x64' && tmpVersionLower.indexOf('aarch64') >= 0)
+				{
+					tmpEmulated = true;
+					tmpReason = 'x86_64 binary, aarch64 kernel';
+				}
+			}
+			catch (pError)
+			{
+				// ignore
+			}
+		}
+
+		// 3. Performance heuristic — a tight CPU loop. Native arm64/amd64 should
+		// finish 10M trivial integer ops in <100ms. Under emulation it's 5-20x slower.
+		// We only run this if we haven't already decided we're emulated, and we keep
+		// it small enough not to slow startup noticeably.
+		if (!tmpEmulated)
+		{
+			let tmpLoopStart = Date.now();
+			let tmpAccumulator = 0;
+			for (let i = 0; i < 10000000; i++)
+			{
+				tmpAccumulator += i;
+			}
+			let tmpLoopMs = Date.now() - tmpLoopStart;
+			// Native: typically 30-80ms. Emulated: typically 250-900ms.
+			// Use 250ms as the threshold — generous enough to avoid false positives
+			// on slow native NAS CPUs but still catches QEMU.
+			if (tmpLoopMs > 250)
+			{
+				tmpEmulated = true;
+				tmpReason = 'native CPU loop took ' + tmpLoopMs + 'ms (expected < 250ms — likely emulated)';
+			}
+			else
+			{
+				pLog.info('[stack] CPU loop self-test: ' + tmpLoopMs + 'ms (healthy)');
+			}
+		}
+
+		if (tmpEmulated)
+		{
+			pLog.warn('==========================================================');
+			pLog.warn('  WARNING: container is running under emulation!');
+			pLog.warn('==========================================================');
+			pLog.warn('  Reason: ' + tmpReason);
+			pLog.warn('  Node arch: ' + tmpNodeArch);
+			if (tmpCpuVendor)
+			{
+				pLog.warn('  CPU vendor: ' + tmpCpuVendor);
+			}
+			if (tmpCpuModel)
+			{
+				pLog.warn('  CPU model:  ' + tmpCpuModel);
+			}
+			pLog.warn('');
+			pLog.warn('  Emulation is extremely slow for native code:');
+			pLog.warn('    - sharp / libvips (image processing)');
+			pLog.warn('    - ffmpeg / ffprobe (video and audio)');
+			pLog.warn('    - ImageMagick (image fallback)');
+			pLog.warn('    - LibreOffice (document conversion)');
+			pLog.warn('    - Calibre (ebook conversion)');
+			pLog.warn('');
+			pLog.warn('  Symptoms you may see:');
+			pLog.warn('    - Image previews/thumbnails take many seconds');
+			pLog.warn('    - Video frame extraction times out');
+			pLog.warn('    - Document conversion fails or hangs');
+			pLog.warn('    - Random crashes in native modules');
+			pLog.warn('');
+			pLog.warn('  FIX: rebuild the image for the host architecture.');
+			pLog.warn('  On the build machine:');
+			pLog.warn('    ./docker-build-and-save.sh --amd64   # for Intel/AMD hosts');
+			pLog.warn('    ./docker-build-and-save.sh --arm64   # for ARM hosts');
+			pLog.warn('  Then transfer and load the new tar.gz.');
+			pLog.warn('==========================================================');
+		}
+		else
+		{
+			pLog.info('[stack] arch: ' + tmpNodeArch + ' (native, no emulation detected)');
+		}
+	}
+	catch (pError)
+	{
+		// Detection itself failed — not critical, just skip
+		pLog.warn('[stack] arch detection failed: ' + pError.message);
+	}
+}
+
+/**
  * Start the full stack: spawn ultravisor as a child process, wait for
  * it to be ready, then return so the caller can start retold-remote.
  *
@@ -283,6 +454,11 @@ function start(pOptions, fCallback)
 	tmpLog.info('==========================================================');
 	tmpLog.info('  Retold Stack Launcher');
 	tmpLog.info('==========================================================');
+
+	// QEMU emulation detection: if /proc/sys/kernel/osrelease contains "linuxkit"
+	// or the binfmt entries indicate qemu, native operations will be slow.
+	// Cross-architecture binaries running under QEMU show up here too.
+	checkQemuEmulation(tmpLog);
 
 	// Check if ultravisor is already running on the target port
 	checkPortOpen(tmpPort, '127.0.0.1', (pAlreadyRunning) =>

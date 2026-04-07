@@ -15,6 +15,14 @@ const _ViewConfiguration =
 	Renderables: []
 };
 
+// Chunked rendering tuning constants
+const _CHUNKED_RENDER_THRESHOLD = 500;  // Below this, render synchronously in one shot
+const _CHUNK_FIRST_SIZE = 250;          // First chunk — appears within one frame
+const _CHUNK_SUBSEQUENT_SIZE = 500;     // Later chunks — larger for throughput
+
+// Thumbnail concurrency cap
+const _MAX_THUMBNAIL_CONCURRENCY = 8;
+
 class RetoldRemoteGalleryView extends libPictView
 {
 	constructor(pFable, pOptions, pServiceHash)
@@ -22,6 +30,59 @@ class RetoldRemoteGalleryView extends libPictView
 		super(pFable, pOptions, pServiceHash);
 
 		this._intersectionObserver = null;
+
+		// Chunked render state
+		this._activeRenderFrame = null;   // requestAnimationFrame id
+		this._activeRenderToken = 0;      // incremented to invalidate in-flight chunked renders
+
+		// Thumbnail loading queue
+		this._thumbnailQueue = [];
+		this._thumbnailInFlight = 0;
+	}
+
+	/**
+	 * Paint an immediate loading overlay in the gallery container.
+	 * Called by the application's loadFileList() before the fetch starts
+	 * so the user sees instant feedback when they click a folder.
+	 *
+	 * @param {string} pPath - Path being loaded (for display)
+	 */
+	showLoadingState(pPath)
+	{
+		let tmpContainer = document.getElementById('RetoldRemote-Gallery-Container');
+		if (!tmpContainer)
+		{
+			return;
+		}
+
+		let tmpFmt = this.pict.providers['RetoldRemote-FormattingUtilities'];
+		let tmpEscaped = tmpFmt ? tmpFmt.escapeHTML(pPath || '') : (pPath || '');
+
+		let tmpHTML = '<div class="retold-remote-gallery-loading">';
+		tmpHTML += '<div class="retold-remote-gallery-loading-spinner"></div>';
+		tmpHTML += '<div class="retold-remote-gallery-loading-text">Loading folder\u2026</div>';
+		if (tmpEscaped)
+		{
+			tmpHTML += '<div class="retold-remote-gallery-loading-path">' + tmpEscaped + '</div>';
+		}
+		tmpHTML += '</div>';
+
+		tmpContainer.innerHTML = tmpHTML;
+	}
+
+	/**
+	 * Cancel any chunked render currently in flight.
+	 * Call this before starting a new render, or when navigating away.
+	 */
+	cancelActiveRender()
+	{
+		if (this._activeRenderFrame !== null)
+		{
+			cancelAnimationFrame(this._activeRenderFrame);
+			this._activeRenderFrame = null;
+		}
+		// Bump the token so any in-flight chunked render from a closure bails out
+		this._activeRenderToken++;
 	}
 
 	// ──────────────────────────────────────────────
@@ -31,6 +92,10 @@ class RetoldRemoteGalleryView extends libPictView
 	/**
 	 * Render the gallery based on current state.
 	 * GalleryItems is already filtered+sorted by the pipeline provider.
+	 *
+	 * For folders with more than _CHUNKED_RENDER_THRESHOLD items, the render
+	 * is split into chunks scheduled via requestAnimationFrame so the UI
+	 * stays responsive. Smaller folders use the synchronous fast path.
 	 */
 	renderGallery()
 	{
@@ -39,6 +104,10 @@ class RetoldRemoteGalleryView extends libPictView
 		{
 			return;
 		}
+
+		// Cancel any chunked render already in flight — fast folder-to-folder
+		// navigation should not stack up render work.
+		this.cancelActiveRender();
 
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		let tmpItems = tmpRemote.GalleryItems || [];
@@ -69,59 +138,189 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '<div>Empty folder</div>';
 			tmpHTML += '</div>';
 			tmpContainer.innerHTML = tmpHTML;
+			this._restoreSearchFocus(tmpSearchHadFocus, tmpSearchSelStart, tmpSearchSelEnd);
+			return;
+		}
 
-			// Restore search focus even on empty results
-			if (tmpSearchHadFocus)
+		// SMALL FOLDER FAST PATH: for ≤ _CHUNKED_RENDER_THRESHOLD items, render
+		// everything synchronously in a single innerHTML assignment. This
+		// preserves the existing behavior for normal-sized folders.
+		if (tmpItems.length <= _CHUNKED_RENDER_THRESHOLD)
+		{
+			if (tmpViewMode === 'gallery')
 			{
-				let tmpNewSearch = document.getElementById('RetoldRemote-Gallery-Search');
-				if (tmpNewSearch)
-				{
-					tmpNewSearch.focus();
-					tmpNewSearch.setSelectionRange(tmpSearchSelStart, tmpSearchSelEnd);
-				}
+				tmpHTML += this._buildGridHTML(tmpItems, tmpThumbnailSize, tmpCursorIndex);
+			}
+			else
+			{
+				tmpHTML += this._buildListHTML(tmpItems, tmpCursorIndex);
+			}
+
+			tmpContainer.innerHTML = tmpHTML;
+			this._restoreSearchFocus(tmpSearchHadFocus, tmpSearchSelStart, tmpSearchSelEnd);
+			this._setupLazyLoading();
+
+			let tmpNavProvider = this.pict.providers['RetoldRemote-GalleryNavigation'];
+			if (tmpNavProvider)
+			{
+				tmpNavProvider.recalculateColumns();
+			}
+
+			let tmpTopBarView = this.pict.views['ContentEditor-TopBar'];
+			if (tmpTopBarView && tmpTopBarView.updateFilterIcon)
+			{
+				tmpTopBarView.updateFilterIcon();
 			}
 			return;
 		}
 
-		// Items are already filtered+sorted by the pipeline
+		// LARGE FOLDER CHUNKED PATH: paint the scaffolding now, then fill the
+		// items container in chunks via requestAnimationFrame so the main
+		// thread stays responsive.
+		let tmpItemsContainerID = 'RetoldRemote-GalleryItemsContainer';
+		let tmpProgressID = 'RetoldRemote-GalleryProgress';
+
 		if (tmpViewMode === 'gallery')
 		{
-			tmpHTML += this._buildGridHTML(tmpItems, tmpThumbnailSize, tmpCursorIndex);
+			tmpHTML += '<div class="retold-remote-grid size-' + tmpThumbnailSize + '" id="' + tmpItemsContainerID + '"></div>';
 		}
 		else
 		{
-			tmpHTML += this._buildListHTML(tmpItems, tmpCursorIndex);
+			tmpHTML += '<div class="retold-remote-list" id="' + tmpItemsContainerID + '"></div>';
 		}
+
+		tmpHTML += '<div class="retold-remote-gallery-progress" id="' + tmpProgressID + '">'
+			+ '<span class="retold-remote-gallery-progress-spinner"></span>'
+			+ '<span class="retold-remote-gallery-progress-text">Rendering 0 / ' + tmpItems.length.toLocaleString() + '\u2026</span>'
+			+ '</div>';
 
 		tmpContainer.innerHTML = tmpHTML;
+		this._restoreSearchFocus(tmpSearchHadFocus, tmpSearchSelStart, tmpSearchSelEnd);
 
-		// Restore search input focus and cursor position after re-render
-		if (tmpSearchHadFocus)
-		{
-			let tmpNewSearch = document.getElementById('RetoldRemote-Gallery-Search');
-			if (tmpNewSearch)
-			{
-				tmpNewSearch.focus();
-				tmpNewSearch.setSelectionRange(tmpSearchSelStart, tmpSearchSelEnd);
-			}
-		}
-
-		// Set up lazy loading for thumbnail images
-		this._setupLazyLoading();
-
-		// Recalculate column count for keyboard navigation
-		let tmpNavProvider = this.pict.providers['RetoldRemote-GalleryNavigation'];
-		if (tmpNavProvider)
-		{
-			tmpNavProvider.recalculateColumns();
-		}
-
-		// Update the top bar filter icon state
+		// Update the top bar filter icon state right away (doesn't need items)
 		let tmpTopBarView = this.pict.views['ContentEditor-TopBar'];
 		if (tmpTopBarView && tmpTopBarView.updateFilterIcon)
 		{
 			tmpTopBarView.updateFilterIcon();
 		}
+
+		// Start the chunked fill
+		this._renderGalleryChunked(tmpItems, tmpViewMode, tmpThumbnailSize, tmpCursorIndex,
+			tmpItemsContainerID, tmpProgressID);
+	}
+
+	/**
+	 * Restore search input focus and selection range after a full re-render.
+	 */
+	_restoreSearchFocus(pHadFocus, pSelStart, pSelEnd)
+	{
+		if (!pHadFocus)
+		{
+			return;
+		}
+		let tmpNewSearch = document.getElementById('RetoldRemote-Gallery-Search');
+		if (tmpNewSearch)
+		{
+			tmpNewSearch.focus();
+			tmpNewSearch.setSelectionRange(pSelStart, pSelEnd);
+		}
+	}
+
+	/**
+	 * Render the gallery items into the scaffolding container in chunks,
+	 * scheduling each chunk with requestAnimationFrame so the main thread
+	 * stays responsive. Updates the progress strip between chunks.
+	 *
+	 * @param {Array}  pItems             - Items to render
+	 * @param {string} pViewMode          - 'gallery' or 'list'
+	 * @param {string} pThumbnailSize     - 'small' | 'medium' | 'large'
+	 * @param {number} pCursorIndex       - Currently selected index
+	 * @param {string} pItemsContainerID  - DOM id of the inner items container
+	 * @param {string} pProgressID        - DOM id of the progress strip
+	 */
+	_renderGalleryChunked(pItems, pViewMode, pThumbnailSize, pCursorIndex, pItemsContainerID, pProgressID)
+	{
+		let tmpSelf = this;
+		let tmpToken = ++this._activeRenderToken;
+		let tmpTotal = pItems.length;
+		let tmpOffset = 0;
+
+		let _renderNextChunk = function ()
+		{
+			// If another render started while we were waiting, bail out
+			if (tmpToken !== tmpSelf._activeRenderToken)
+			{
+				return;
+			}
+
+			let tmpItemsContainer = document.getElementById(pItemsContainerID);
+			if (!tmpItemsContainer)
+			{
+				// Container was replaced (e.g., navigated away) — stop rendering
+				return;
+			}
+
+			// First chunk is smaller so it paints within one frame; later chunks
+			// are larger for throughput
+			let tmpChunkSize = (tmpOffset === 0) ? _CHUNK_FIRST_SIZE : _CHUNK_SUBSEQUENT_SIZE;
+			let tmpEnd = Math.min(tmpOffset + tmpChunkSize, tmpTotal);
+			let tmpSlice = pItems.slice(tmpOffset, tmpEnd);
+
+			let tmpChunkHTML;
+			if (pViewMode === 'gallery')
+			{
+				tmpChunkHTML = tmpSelf._buildGridItemsHTML(tmpSlice, pCursorIndex, tmpOffset);
+			}
+			else
+			{
+				tmpChunkHTML = tmpSelf._buildListItemsHTML(tmpSlice, pCursorIndex, tmpOffset);
+			}
+
+			tmpItemsContainer.insertAdjacentHTML('beforeend', tmpChunkHTML);
+
+			tmpOffset = tmpEnd;
+
+			// Update progress strip
+			let tmpProgressEl = document.getElementById(pProgressID);
+			if (tmpProgressEl)
+			{
+				let tmpProgressText = tmpProgressEl.querySelector('.retold-remote-gallery-progress-text');
+				if (tmpProgressText)
+				{
+					tmpProgressText.textContent = 'Rendering ' + tmpOffset.toLocaleString() + ' / ' + tmpTotal.toLocaleString() + '\u2026';
+				}
+			}
+
+			if (tmpOffset < tmpTotal)
+			{
+				// Incrementally wire up lazy loading for the chunk just appended
+				// so thumbnails start loading while later chunks are still rendering
+				tmpSelf._observeNewThumbnails();
+				tmpSelf._activeRenderFrame = requestAnimationFrame(_renderNextChunk);
+			}
+			else
+			{
+				// Final chunk rendered — tear down progress strip and finalize
+				tmpSelf._activeRenderFrame = null;
+
+				if (tmpProgressEl && tmpProgressEl.parentElement)
+				{
+					tmpProgressEl.parentElement.removeChild(tmpProgressEl);
+				}
+
+				tmpSelf._setupLazyLoading();
+
+				let tmpNavProvider = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
+				if (tmpNavProvider)
+				{
+					tmpNavProvider.recalculateColumns();
+				}
+			}
+		};
+
+		// Kick off the first chunk on the next frame — gives the browser time
+		// to paint the scaffolding + progress strip first
+		this._activeRenderFrame = requestAnimationFrame(_renderNextChunk);
 	}
 
 	// ──────────────────────────────────────────────
@@ -413,25 +612,44 @@ class RetoldRemoteGalleryView extends libPictView
 	// ──────────────────────────────────────────────
 
 	/**
-	 * Build the grid view HTML.
+	 * Build the grid view HTML — full wrapper + all items.
+	 * Used by the synchronous fast path for small folders.
 	 */
 	_buildGridHTML(pItems, pThumbnailSize, pCursorIndex)
 	{
 		let tmpHTML = '<div class="retold-remote-grid size-' + pThumbnailSize + '">';
+		tmpHTML += this._buildGridItemsHTML(pItems, pCursorIndex, 0);
+		tmpHTML += '</div>';
+		return tmpHTML;
+	}
+
+	/**
+	 * Build the per-item HTML for a grid view slice.
+	 *
+	 * @param {Array}  pItems      - The items to render (may be a slice of the full list)
+	 * @param {number} pCursorIndex - Index of the currently-selected item in the FULL list
+	 * @param {number} pStartIndex  - Index of pItems[0] within the full list (for data-index and click handlers)
+	 */
+	_buildGridItemsHTML(pItems, pCursorIndex, pStartIndex)
+	{
+		let tmpStartIndex = pStartIndex || 0;
+		let tmpHTML = '';
 		let tmpProvider = this.pict.providers['RetoldRemote-Provider'];
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
+		let tmpFmt = this.pict.providers['RetoldRemote-FormattingUtilities'];
 
 		for (let i = 0; i < pItems.length; i++)
 		{
 			let tmpItem = pItems[i];
-			let tmpSelectedClass = (i === pCursorIndex) ? ' selected' : '';
+			let tmpAbsoluteIndex = tmpStartIndex + i;
+			let tmpSelectedClass = (tmpAbsoluteIndex === pCursorIndex) ? ' selected' : '';
 			let tmpExtension = (tmpItem.Extension || '').toLowerCase();
 			let tmpCategory = this._getCategory(tmpExtension, tmpItem.Type);
 
 			tmpHTML += '<div class="retold-remote-tile' + tmpSelectedClass + '" '
-				+ 'data-index="' + i + '" '
-				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].onTileClick(' + i + ')" '
-				+ 'ondblclick="pict.views[\'RetoldRemote-Gallery\'].onTileDoubleClick(' + i + ')">';
+				+ 'data-index="' + tmpAbsoluteIndex + '" '
+				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].onTileClick(' + tmpAbsoluteIndex + ')" '
+				+ 'ondblclick="pict.views[\'RetoldRemote-Gallery\'].onTileDoubleClick(' + tmpAbsoluteIndex + ')">';
 
 			// Thumbnail area
 			tmpHTML += '<div class="retold-remote-tile-thumb">';
@@ -451,7 +669,7 @@ class RetoldRemoteGalleryView extends libPictView
 				let tmpThumbURL = tmpProvider.getThumbnailURL(tmpItem.Path, 400, 300);
 				if (tmpThumbURL)
 				{
-					tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '" loading="lazy">';
+					tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + tmpFmt.escapeHTML(tmpItem.Name) + '" loading="lazy">';
 				}
 				else
 				{
@@ -466,7 +684,7 @@ class RetoldRemoteGalleryView extends libPictView
 					let tmpThumbURL = tmpProvider.getThumbnailURL(tmpItem.Path, 400, 300);
 					if (tmpThumbURL)
 					{
-						tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '" loading="lazy">';
+						tmpHTML += '<img data-src="' + tmpThumbURL + '" alt="' + tmpFmt.escapeHTML(tmpItem.Name) + '" loading="lazy">';
 					}
 					else
 					{
@@ -497,12 +715,12 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '</div>'; // end thumb
 
 			// Label
-			tmpHTML += '<div class="retold-remote-tile-label" title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '">' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '</div>';
+			tmpHTML += '<div class="retold-remote-tile-label" title="' + tmpFmt.escapeHTML(tmpItem.Name) + '">' + tmpFmt.escapeHTML(tmpItem.Name) + '</div>';
 
 			// Meta
 			if (tmpItem.Type === 'file' && tmpItem.Size !== undefined)
 			{
-				tmpHTML += '<div class="retold-remote-tile-meta">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) + '</div>';
+				tmpHTML += '<div class="retold-remote-tile-meta">' + tmpFmt.formatFileSize(tmpItem.Size) + '</div>';
 			}
 			else if (tmpItem.Type === 'folder')
 			{
@@ -510,34 +728,51 @@ class RetoldRemoteGalleryView extends libPictView
 			}
 			else if (tmpItem.Type === 'archive')
 			{
-				tmpHTML += '<div class="retold-remote-tile-meta">Archive' + (tmpItem.Size ? ' · ' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) : '') + '</div>';
+				tmpHTML += '<div class="retold-remote-tile-meta">Archive' + (tmpItem.Size ? ' \u00b7 ' + tmpFmt.formatFileSize(tmpItem.Size) : '') + '</div>';
 			}
 
 			tmpHTML += '</div>'; // end tile
 		}
 
-		tmpHTML += '</div>'; // end grid
-
 		return tmpHTML;
 	}
 
 	/**
-	 * Build the list view HTML.
+	 * Build the list view HTML — full wrapper + all items.
+	 * Used by the synchronous fast path for small folders.
 	 */
 	_buildListHTML(pItems, pCursorIndex)
 	{
+		let tmpHTML = '<div class="retold-remote-list">';
+		tmpHTML += this._buildListItemsHTML(pItems, pCursorIndex, 0);
+		tmpHTML += '</div>';
+		return tmpHTML;
+	}
+
+	/**
+	 * Build the per-item HTML for a list view slice.
+	 *
+	 * @param {Array}  pItems       - The items to render (may be a slice of the full list)
+	 * @param {number} pCursorIndex - Index of the currently-selected item in the FULL list
+	 * @param {number} pStartIndex  - Index of pItems[0] within the full list
+	 */
+	_buildListItemsHTML(pItems, pCursorIndex, pStartIndex)
+	{
+		let tmpStartIndex = pStartIndex || 0;
 		let tmpRemote = this.pict.AppData.RetoldRemote;
 		let tmpShowExt = tmpRemote.ListShowExtension !== false;
 		let tmpShowSize = tmpRemote.ListShowSize !== false;
 		let tmpShowDate = tmpRemote.ListShowDate !== false;
 
-		let tmpHTML = '<div class="retold-remote-list">';
+		let tmpHTML = '';
 		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
+		let tmpFmt = this.pict.providers['RetoldRemote-FormattingUtilities'];
 
 		for (let i = 0; i < pItems.length; i++)
 		{
 			let tmpItem = pItems[i];
-			let tmpSelectedClass = (i === pCursorIndex) ? ' selected' : '';
+			let tmpAbsoluteIndex = tmpStartIndex + i;
+			let tmpSelectedClass = (tmpAbsoluteIndex === pCursorIndex) ? ' selected' : '';
 			let tmpIcon = '';
 			if (tmpIconProvider)
 			{
@@ -545,16 +780,16 @@ class RetoldRemoteGalleryView extends libPictView
 			}
 
 			tmpHTML += '<div class="retold-remote-list-row' + tmpSelectedClass + '" '
-				+ 'data-index="' + i + '" '
-				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].onTileClick(' + i + ')" '
-				+ 'ondblclick="pict.views[\'RetoldRemote-Gallery\'].onTileDoubleClick(' + i + ')">';
+				+ 'data-index="' + tmpAbsoluteIndex + '" '
+				+ 'onclick="pict.views[\'RetoldRemote-Gallery\'].onTileClick(' + tmpAbsoluteIndex + ')" '
+				+ 'ondblclick="pict.views[\'RetoldRemote-Gallery\'].onTileDoubleClick(' + tmpAbsoluteIndex + ')">';
 
 			tmpHTML += '<div class="retold-remote-list-icon">' + tmpIcon + '</div>';
-			tmpHTML += '<div class="retold-remote-list-name" title="' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '"'
-				+ ' ontouchstart="pict.views[\'RetoldRemote-Gallery\']._onNameTouchStart(event, \'' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name).replace(/'/g, '\\&#39;') + '\')"'
+			tmpHTML += '<div class="retold-remote-list-name" title="' + tmpFmt.escapeHTML(tmpItem.Name) + '"'
+				+ ' ontouchstart="pict.views[\'RetoldRemote-Gallery\']._onNameTouchStart(event, \'' + tmpFmt.escapeHTML(tmpItem.Name).replace(/'/g, '\\&#39;') + '\')"'
 				+ ' ontouchend="pict.views[\'RetoldRemote-Gallery\']._onNameTouchEnd(event)"'
 				+ ' ontouchcancel="pict.views[\'RetoldRemote-Gallery\']._onNameTouchEnd(event)"'
-				+ '>' + this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpItem.Name) + '</div>';
+				+ '>' + tmpFmt.escapeHTML(tmpItem.Name) + '</div>';
 
 			// Extension column
 			if (tmpShowExt)
@@ -576,7 +811,7 @@ class RetoldRemoteGalleryView extends libPictView
 			{
 				if ((tmpItem.Type === 'file' || tmpItem.Type === 'archive') && tmpItem.Size !== undefined)
 				{
-					tmpHTML += '<div class="retold-remote-list-size">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(tmpItem.Size) + '</div>';
+					tmpHTML += '<div class="retold-remote-list-size">' + tmpFmt.formatFileSize(tmpItem.Size) + '</div>';
 				}
 				else
 				{
@@ -589,7 +824,7 @@ class RetoldRemoteGalleryView extends libPictView
 			{
 				if (tmpItem.Modified)
 				{
-					tmpHTML += '<div class="retold-remote-list-date">' + this.pict.providers['RetoldRemote-FormattingUtilities'].formatShortDate(tmpItem.Modified) + '</div>';
+					tmpHTML += '<div class="retold-remote-list-date">' + tmpFmt.formatShortDate(tmpItem.Modified) + '</div>';
 				}
 				else
 				{
@@ -600,8 +835,6 @@ class RetoldRemoteGalleryView extends libPictView
 			tmpHTML += '</div>';
 		}
 
-		tmpHTML += '</div>';
-
 		return tmpHTML;
 	}
 
@@ -611,6 +844,8 @@ class RetoldRemoteGalleryView extends libPictView
 
 	/**
 	 * Set up IntersectionObserver for lazy-loading thumbnail images.
+	 * Uses a bounded concurrency queue so we don't stampede the server
+	 * with hundreds of parallel thumbnail requests on the initial render.
 	 */
 	_setupLazyLoading()
 	{
@@ -619,12 +854,13 @@ class RetoldRemoteGalleryView extends libPictView
 			this._intersectionObserver.disconnect();
 		}
 
-		let tmpImages = document.querySelectorAll('.retold-remote-tile-thumb img[data-src]');
-		if (tmpImages.length === 0)
-		{
-			return;
-		}
+		// Reset the concurrency queue. Any in-flight loads from the previous
+		// render will finish on their own; they just won't trigger queue drain
+		// because the counter is reset.
+		this._thumbnailQueue = [];
+		this._thumbnailInFlight = 0;
 
+		let tmpSelf = this;
 		this._intersectionObserver = new IntersectionObserver(
 			(pEntries) =>
 			{
@@ -633,18 +869,83 @@ class RetoldRemoteGalleryView extends libPictView
 					if (pEntries[i].isIntersecting)
 					{
 						let tmpImg = pEntries[i].target;
-						tmpImg.src = tmpImg.getAttribute('data-src');
-						tmpImg.removeAttribute('data-src');
-						this._intersectionObserver.unobserve(tmpImg);
+						tmpSelf._intersectionObserver.unobserve(tmpImg);
+						tmpSelf._enqueueThumbnail(tmpImg);
 					}
 				}
 			},
-			{ rootMargin: '200px' }
+			{ rootMargin: '100px' }
 		);
 
+		// Observe every img[data-src] currently in the DOM. Chunked renders
+		// also call _observeNewThumbnails() incrementally so thumbnails start
+		// loading while later chunks are still being built.
+		this._observeNewThumbnails();
+	}
+
+	/**
+	 * Observe any img[data-src] nodes that are not yet being watched by
+	 * the IntersectionObserver. Called incrementally from the chunked
+	 * render after each chunk is appended, so visible thumbnails in the
+	 * first chunk can start loading while later chunks render.
+	 */
+	_observeNewThumbnails()
+	{
+		if (!this._intersectionObserver)
+		{
+			return;
+		}
+		// Query only images still carrying data-src (new ones from the latest
+		// chunk, or ones that haven't intersected yet)
+		let tmpImages = document.querySelectorAll('.retold-remote-tile-thumb img[data-src]:not([data-observed])');
 		for (let i = 0; i < tmpImages.length; i++)
 		{
+			tmpImages[i].setAttribute('data-observed', '1');
 			this._intersectionObserver.observe(tmpImages[i]);
+		}
+	}
+
+	/**
+	 * Enqueue a thumbnail for lazy-loading with bounded concurrency.
+	 * Dispatches immediately if under the concurrency cap.
+	 *
+	 * @param {HTMLImageElement} pImg - The img element to load
+	 */
+	_enqueueThumbnail(pImg)
+	{
+		this._thumbnailQueue.push(pImg);
+		this._drainThumbnailQueue();
+	}
+
+	/**
+	 * Dispatch pending thumbnails until the in-flight count hits the cap.
+	 */
+	_drainThumbnailQueue()
+	{
+		let tmpSelf = this;
+		while (this._thumbnailInFlight < _MAX_THUMBNAIL_CONCURRENCY && this._thumbnailQueue.length > 0)
+		{
+			let tmpImg = this._thumbnailQueue.shift();
+			let tmpSrc = tmpImg.getAttribute('data-src');
+			if (!tmpSrc)
+			{
+				// Already loaded or cleared — skip
+				continue;
+			}
+
+			this._thumbnailInFlight++;
+
+			let _finish = function ()
+			{
+				tmpSelf._thumbnailInFlight--;
+				tmpSelf._drainThumbnailQueue();
+			};
+
+			tmpImg.addEventListener('load', _finish, { once: true });
+			tmpImg.addEventListener('error', _finish, { once: true });
+
+			tmpImg.src = tmpSrc;
+			tmpImg.removeAttribute('data-src');
 		}
 	}
 

@@ -10,6 +10,7 @@ const libProviderRetoldRemoteIcons = require('./providers/Pict-Provider-RetoldRe
 const libProviderRetoldRemoteTheme = require('./providers/Pict-Provider-RetoldRemoteTheme.js');
 const libProviderFormattingUtilities = require('./providers/Pict-Provider-FormattingUtilities.js');
 const libProviderToastNotification = require('./providers/Pict-Provider-ToastNotification.js');
+const libProviderOperationStatus = require('./providers/Pict-Provider-OperationStatus.js');
 const libProviderCollectionManager = require('./providers/Pict-Provider-CollectionManager.js');
 const libProviderAISortManager = require('./providers/Pict-Provider-AISortManager.js');
 
@@ -76,6 +77,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addProvider('RetoldRemote-Theme', libProviderRetoldRemoteTheme.default_configuration, libProviderRetoldRemoteTheme);
 		this.pict.addProvider('RetoldRemote-FormattingUtilities', libProviderFormattingUtilities.default_configuration, libProviderFormattingUtilities);
 		this.pict.addProvider('RetoldRemote-ToastNotification', libProviderToastNotification.default_configuration, libProviderToastNotification);
+		this.pict.addProvider('RetoldRemote-OperationStatus', libProviderOperationStatus.default_configuration, libProviderOperationStatus);
 		this.pict.addProvider('RetoldRemote-CollectionManager', libProviderCollectionManager.default_configuration, libProviderCollectionManager);
 		this.pict.addProvider('RetoldRemote-AISortManager', libProviderAISortManager.default_configuration, libProviderAISortManager);
 	}
@@ -505,6 +507,22 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		if (tmpPath === null && this.pict.AppData.PictFileBrowser && this.pict.AppData.PictFileBrowser.CurrentLocation)
 		{
 			tmpPath = this.pict.AppData.PictFileBrowser.CurrentLocation;
+		}
+
+		// Paint an immediate loading overlay in the gallery so the user gets
+		// visible feedback the moment a folder is clicked — before the fetch
+		// and before any rendering work. This prevents the "nothing happened"
+		// impression on folders with thousands of files.
+		let tmpGalleryView = tmpSelf.pict.views['RetoldRemote-Gallery'];
+		if (tmpGalleryView && typeof tmpGalleryView.showLoadingState === 'function')
+		{
+			tmpGalleryView.showLoadingState(tmpPath || '');
+		}
+
+		// Cancel any chunked render from a previous folder
+		if (tmpGalleryView && typeof tmpGalleryView.cancelActiveRender === 'function')
+		{
+			tmpGalleryView.cancelActiveRender();
 		}
 
 		let tmpURL = '/api/filebrowser/list';

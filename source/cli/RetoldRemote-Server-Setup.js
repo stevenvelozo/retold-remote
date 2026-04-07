@@ -26,6 +26,8 @@
 
 const libFs = require('fs');
 const libPath = require('path');
+const libOs = require('os');
+const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 
 const libFable = require('fable');
@@ -50,6 +52,7 @@ const libRetoldRemoteAISortService = require('../server/RetoldRemote-AISortServi
 const libRetoldRemoteImageService = require('../server/RetoldRemote-ImageService.js');
 const libRetoldRemoteSubimageService = require('../server/RetoldRemote-SubimageService.js');
 const libRetoldRemoteCollectionExportService = require('../server/RetoldRemote-CollectionExportService.js');
+const libRetoldRemoteOperationBroadcaster = require('../server/RetoldRemote-OperationBroadcaster.js');
 const libRetoldRemoteUltravisorDispatcher = require('../server/RetoldRemote-UltravisorDispatcher.js');
 const libRetoldRemoteUltravisorBeacon = require('../server/RetoldRemote-UltravisorBeacon.js');
 const libOratorConversion = require('orator-conversion');
@@ -241,6 +244,11 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Set up the Ultravisor beacon for mesh registration
 			let tmpBeacon = new libRetoldRemoteUltravisorBeacon(tmpFable, {});
 
+			// Set up the Operation Broadcaster — WebSocket pub/sub for
+			// long-running operation progress + cooperative cancellation.
+			// Attached to the HTTP server AFTER startService(), below.
+			let tmpOperationBroadcaster = new libRetoldRemoteOperationBroadcaster(tmpFable, {});
+
 			// Set up orator-conversion for document format conversion
 			tmpFable.serviceManager.addServiceType('OratorFileTranslation', libOratorConversion);
 			let tmpConversionService = tmpFable.serviceManager.instantiateServiceProvider('OratorFileTranslation',
@@ -255,6 +263,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			tmpVideoFrameService.setDispatcher(tmpDispatcher);
 			tmpAudioWaveformService.setDispatcher(tmpDispatcher);
 			tmpEbookService.setDispatcher(tmpDispatcher);
+
+			// Wire the operation broadcaster to services that emit progress.
+			// Services must gracefully handle a null broadcaster — this keeps
+			// them runnable outside the stack.
+			tmpMediaService.setBroadcaster(tmpOperationBroadcaster);
+			tmpVideoFrameService.setBroadcaster(tmpOperationBroadcaster);
+			tmpAudioWaveformService.setBroadcaster(tmpOperationBroadcaster);
+			tmpEbookService.setBroadcaster(tmpOperationBroadcaster);
+			tmpImageService.setBroadcaster(tmpOperationBroadcaster);
+			tmpCollectionExportService.setBroadcaster(tmpOperationBroadcaster);
 
 			// Share the orator-conversion service with the ebook service for PDF conversion
 			tmpEbookService.setConversionService(tmpConversionService);
@@ -280,6 +298,20 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Enable body parsing
 			tmpServiceServer.server.use(tmpServiceServer.bodyParser());
+
+			// X-Op-Id extraction middleware: stash the client-provided
+			// operation id on the request so route handlers can pass it
+			// into services (for progress emission + cancellation).
+			tmpServiceServer.server.use(
+				(pRequest, pResponse, fNext) =>
+				{
+					let tmpOpId = pRequest.headers && pRequest.headers['x-op-id'];
+					if (tmpOpId && typeof tmpOpId === 'string' && tmpOpId.length <= 128)
+					{
+						pRequest.OperationId = tmpOpId;
+					}
+					return fNext();
+				});
 
 			// Hash resolution middleware: if hashed filenames is enabled,
 			// intercept ?path= query params and resolve hashes to paths.
@@ -635,31 +667,62 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpPdfParse = require('pdf-parse');
-						let tmpBuffer = libFs.readFileSync(tmpAbsPath);
-
-						let tmpOptions = {};
-						if (tmpPageNum > 0)
+						// pdf-parse v2.x exports a PDFParse class with async methods.
+						// (v1.x used to export a default async function — that API is gone.)
+						let tmpPdfParseModule = require('pdf-parse');
+						let tmpPDFParseClass = tmpPdfParseModule.PDFParse;
+						if (typeof tmpPDFParseClass !== 'function')
 						{
-							// pdf-parse pagerender callback for specific page
-							tmpOptions.max = tmpPageNum;
+							pResponse.send(500, { Success: false, Error: 'pdf-parse module does not export PDFParse class. Update pdf-parse.' });
+							return fNext();
 						}
 
-						tmpPdfParse(tmpBuffer, tmpOptions)
+						let tmpBuffer = libFs.readFileSync(tmpAbsPath);
+						let tmpParser = new tmpPDFParseClass({ data: tmpBuffer });
+
+						let tmpExtractText;
+						if (tmpPageNum > 0)
+						{
+							// Single page text — first/last bound the range
+							tmpExtractText = tmpParser.getText({ first: tmpPageNum, last: tmpPageNum });
+						}
+						else
+						{
+							// All pages
+							tmpExtractText = tmpParser.getText();
+						}
+
+						tmpExtractText
 							.then((pData) =>
 							{
+								// pdf-parse v2 result shape: { text, total, pages: [...] } or similar
+								let tmpText = (pData && typeof pData.text === 'string') ? pData.text : '';
+								let tmpPageCount = (pData && typeof pData.total === 'number') ? pData.total
+									: (pData && Array.isArray(pData.pages)) ? pData.pages.length : 0;
+
 								pResponse.send(
 								{
 									Success: true,
 									Path: tmpRelPath,
-									PageCount: pData.numpages,
-									Text: pData.text,
+									PageCount: tmpPageCount,
+									Text: tmpText,
 									RequestedPage: tmpPageNum || null
 								});
+
+								// Release native resources
+								if (typeof tmpParser.destroy === 'function')
+								{
+									tmpParser.destroy().catch(() => { /* ignore */ });
+								}
+
 								return fNext();
 							})
 							.catch((pPdfError) =>
 							{
+								if (typeof tmpParser.destroy === 'function')
+								{
+									tmpParser.destroy().catch(() => { /* ignore */ });
+								}
 								pResponse.send(500, { Success: false, Error: 'PDF parse failed: ' + pPdfError.message });
 								return fNext();
 							});
@@ -872,7 +935,8 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							count: tmpQuery.count,
 							width: tmpQuery.width,
 							height: tmpQuery.height,
-							format: tmpQuery.format
+							format: tmpQuery.format,
+							OperationId: pRequest.OperationId || null
 						},
 						(pError, pResult) =>
 						{
@@ -1955,6 +2019,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						}
 
 						tmpImageService.generateDziTiles(tmpAbsPath, tmpRelPath,
+							{ OperationId: pRequest.OperationId || null },
 							(pError, pResult) =>
 							{
 								if (pError)
@@ -2010,6 +2075,18 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// --- GET /api/media/dzi-tile/:cacheKey/:level/:tile ---
 			// Serve an individual DZI tile image.
+			//
+			// OpenSeadragon's DziTileSource.configure() rewrites whatever Url
+			// we hand it and appends a "_files" suffix to the last path segment
+			// (that's how the standard DZI directory layout works — a foo.dzi
+			// descriptor expects the tiles in a sibling foo_files/ directory).
+			// So when we hand OSD `Url: '/api/media/dzi-tile/{cacheKey}/'` it
+			// rewrites the tilesUrl to `/api/media/dzi-tile/{cacheKey}_files/`
+			// and asks for tiles at `/api/media/dzi-tile/{cacheKey}_files/{level}/{x}_{y}.jpg`.
+			//
+			// Strip the trailing "_files" from the cacheKey before resolving so
+			// both the canonical URL (used by anything that bypasses OSD) and
+			// the OSD-generated URL hit the same on-disk cache directory.
 			tmpServiceServer.get('/api/media/dzi-tile/:cacheKey/:level/:tile',
 				(pRequest, pResponse, fNext) =>
 				{
@@ -2018,6 +2095,10 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						let tmpCacheKey = pRequest.params.cacheKey;
 						let tmpLevel = pRequest.params.level;
 						let tmpTile = pRequest.params.tile;
+						if (typeof tmpCacheKey === 'string' && tmpCacheKey.endsWith('_files'))
+						{
+							tmpCacheKey = tmpCacheKey.slice(0, -6);
+						}
 						let tmpPath = tmpImageService.getDziTilePath(tmpCacheKey, tmpLevel, tmpTile);
 
 						if (!tmpPath)
@@ -2373,6 +2454,29 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			tmpOrator.startService(
 				function ()
 				{
+					// Attach the operation broadcaster to the underlying Node
+					// http.Server so WebSocket upgrades on /ws/operations reach
+					// our pub/sub hub. The Restify server exposes the raw
+					// http.Server as `.server`.
+					try
+					{
+						let tmpHttpServer = tmpOrator.serviceServer && tmpOrator.serviceServer.server
+							? tmpOrator.serviceServer.server.server
+							: null;
+						if (tmpHttpServer)
+						{
+							tmpOperationBroadcaster.attachTo(tmpHttpServer);
+						}
+						else
+						{
+							tmpFable.log.warn('OperationBroadcaster: could not find underlying http.Server; WebSocket status unavailable');
+						}
+					}
+					catch (pAttachError)
+					{
+						tmpFable.log.warn('OperationBroadcaster attach failed: ' + pAttachError.message);
+					}
+
 					let tmpServerInfo =
 					{
 						Fable: tmpFable,
@@ -2384,6 +2488,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						SubimageService: tmpSubimageService,
 						CollectionExportService: tmpCollectionExportService,
 						ConversionService: tmpConversionService,
+						OperationBroadcaster: tmpOperationBroadcaster,
 						PathRegistry: tmpPathRegistry,
 						ParimeCache: tmpParimeCache,
 						MetadataCache: tmpMetadataCache,
@@ -2398,7 +2503,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					{
 						// Discover bind addresses from network interfaces
 						let tmpBindAddresses = [];
-						let tmpNetworkInterfaces = require('os').networkInterfaces();
+						let tmpNetworkInterfaces = libOs.networkInterfaces();
 						for (let tmpIfName of Object.keys(tmpNetworkInterfaces))
 						{
 							for (let tmpIf of tmpNetworkInterfaces[tmpIfName])
@@ -2412,6 +2517,30 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						// Always include loopback as a fallback
 						tmpBindAddresses.push({ IP: '127.0.0.1', Port: tmpPort, Protocol: 'http' });
 
+						// Shared-fs identity: when retold-remote and the in-process
+						// orator-conversion beacon both live in the same container/host,
+						// they share the same content mount. By computing one HostID and
+						// one MountID here and passing the SAME values to both beacons,
+						// the Ultravisor reachability matrix can detect the overlap and
+						// pick the 'shared-fs' strategy instead of forcing a 374 MB
+						// HTTP file-transfer between two beacons in the same process.
+						let tmpHostID = libOs.hostname();
+						let tmpSharedMounts = [];
+						try
+						{
+							let tmpMountRoot = libPath.resolve(tmpContentPath);
+							let tmpStat = libFs.statSync(tmpMountRoot);
+							let tmpMountID = libCrypto.createHash('sha256')
+								.update(tmpStat.dev + ':' + tmpMountRoot)
+								.digest('hex').substring(0, 16);
+							tmpSharedMounts.push({ MountID: tmpMountID, Root: tmpMountRoot });
+							tmpFable.log.info(`Ultravisor Beacons: advertising shared mount [${tmpMountID}] = ${tmpMountRoot} (HostID: ${tmpHostID})`);
+						}
+						catch (pMountError)
+						{
+							tmpFable.log.warn(`Ultravisor Beacons: could not stat content path for shared-fs detection: ${pMountError.message}`);
+						}
+
 						tmpBeacon.connectBeacon(
 							{
 								ServerURL: pOptions.UltravisorURL,
@@ -2420,7 +2549,9 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								ContentBaseURL: '/content/',
 								CacheRoot: tmpCacheRoot,
 								StagingPath: tmpCacheRoot || process.cwd(),
-								BindAddresses: tmpBindAddresses
+								BindAddresses: tmpBindAddresses,
+								HostID: tmpHostID,
+								SharedMounts: tmpSharedMounts
 							},
 							(pBeaconError) =>
 							{
@@ -2429,8 +2560,52 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 									tmpFable.log.warn(`Ultravisor Beacon: registration failed (server may not be running): ${pBeaconError.message}`);
 									tmpFable.log.warn('Ultravisor Beacon: server is still running. Beacon will not be active.');
 								}
-								// Non-fatal — return server info regardless
-								return fCallback(null, tmpServerInfo);
+
+								// Also register orator-conversion as a separate beacon
+								// so its MediaConversion capability (ImageResize, VideoExtractFrame,
+								// etc.) becomes available as auto-generated task types in the
+								// coordinator's catalog. Without this, operations like
+								// rr-image-thumbnail can't find their `beacon-mediaconversion-imageresize`
+								// process node and silently fall back to local processing.
+								//
+								// We pass the SAME HostID and SharedMounts as the retold-remote
+								// beacon above so the reachability matrix knows these two beacons
+								// can read each other's files directly through the shared mount.
+								try
+								{
+									let tmpConvStagingPath = libPath.join(tmpCacheRoot || process.cwd(), 'orator-conversion-staging');
+									tmpConversionService.connectBeacon(
+										{
+											ServerURL: pOptions.UltravisorURL,
+											Name: 'orator-conversion',
+											MaxConcurrent: 2,
+											StagingPath: tmpConvStagingPath,
+											BindAddresses: tmpBindAddresses,
+											FfmpegPath: 'ffmpeg',
+											FfprobePath: 'ffprobe',
+											HostID: tmpHostID,
+											SharedMounts: tmpSharedMounts
+										},
+										(pConvBeaconError) =>
+										{
+											if (pConvBeaconError)
+											{
+												tmpFable.log.warn('Orator-Conversion beacon registration failed: ' + pConvBeaconError.message);
+												tmpFable.log.warn('Orator-Conversion: media conversion task types will not be available; operations will fall back to local processing.');
+											}
+											else
+											{
+												tmpFable.log.info('Orator-Conversion beacon connected — MediaConversion capability registered with coordinator.');
+											}
+											// Non-fatal — return server info regardless
+											return fCallback(null, tmpServerInfo);
+										});
+								}
+								catch (pConvSetupError)
+								{
+									tmpFable.log.warn('Orator-Conversion beacon setup failed: ' + pConvSetupError.message);
+									return fCallback(null, tmpServerInfo);
+								}
 							});
 					}
 					else

@@ -50,6 +50,7 @@ const _ViewConfiguration =
 						</div>
 					</div>
 				</div>
+				<div class="retold-remote-operation-status" id="RetoldRemote-OperationStatus-Container"></div>
 			`
 		}
 	],

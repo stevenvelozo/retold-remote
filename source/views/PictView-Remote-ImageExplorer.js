@@ -459,8 +459,35 @@ class RetoldRemoteImageExplorerView extends libPictView
 			this._initSimpleViewer(null, tmpPreviewURL);
 		}
 
+		// Cancel any previous DZI fetch (fast navigation between big images)
+		this._cancelActiveDziOperation();
+
+		// Start operation tracking for the DZI generation
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		let tmpOp = tmpStatus ? tmpStatus.startOperation(
+		{
+			Label: 'Generating deep-zoom tiles',
+			Phase: 'Reading image…',
+			Cancelable: true
+		}) : null;
+		if (tmpOp)
+		{
+			this._activeDziOperationId = tmpOp.OperationId;
+			this._activeDziAbortController = tmpOp.AbortController;
+		}
+
+		let tmpFetchOptions = {};
+		if (tmpOp && tmpOp.AbortController)
+		{
+			tmpFetchOptions.signal = tmpOp.AbortController.signal;
+		}
+		if (tmpOp)
+		{
+			tmpFetchOptions.headers = { 'X-Op-Id': tmpOp.OperationId };
+		}
+
 		// 2. Generate DZI tiles in the background
-		fetch('/api/media/dzi?path=' + pPathParam)
+		fetch('/api/media/dzi?path=' + pPathParam, tmpFetchOptions)
 			.then((pResponse) => pResponse.json())
 			.then((pResult) =>
 			{
@@ -468,6 +495,10 @@ class RetoldRemoteImageExplorerView extends libPictView
 
 				if (!pResult || !pResult.Success)
 				{
+					if (tmpOp && tmpStatus)
+					{
+						tmpStatus.errorOperation(tmpOp.OperationId, { message: (pResult && pResult.Error) || 'DZI generation failed' });
+					}
 					// DZI generation failed — the preview is already showing
 					if (!tmpPreviewURL)
 					{
@@ -475,6 +506,13 @@ class RetoldRemoteImageExplorerView extends libPictView
 					}
 					return;
 				}
+
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.completeOperation(tmpOp.OperationId);
+				}
+				tmpSelf._activeDziOperationId = null;
+				tmpSelf._activeDziAbortController = null;
 
 				// 3. Swap the preview for the full DZI tile viewer
 				tmpSelf._dziData = pResult;
@@ -499,12 +537,39 @@ class RetoldRemoteImageExplorerView extends libPictView
 			.catch((pError) =>
 			{
 				tmpSelf._loading = false;
+				if (pError && pError.name === 'AbortError')
+				{
+					return;
+				}
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.errorOperation(tmpOp.OperationId, pError);
+				}
 				// Tiles failed — the preview is already showing, leave it
 				if (!tmpPreviewURL)
 				{
 					tmpSelf._showSimpleImage(pFilePath);
 				}
 			});
+	}
+
+	/**
+	 * Cancel any in-flight DZI generation. Called on navigate-away and
+	 * when launching a new explorer session.
+	 */
+	_cancelActiveDziOperation()
+	{
+		if (this._activeDziAbortController)
+		{
+			try { this._activeDziAbortController.abort(); } catch (pErr) { /* ignore */ }
+		}
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		if (this._activeDziOperationId && tmpStatus)
+		{
+			tmpStatus.cancelOperation(this._activeDziOperationId);
+		}
+		this._activeDziOperationId = null;
+		this._activeDziAbortController = null;
 	}
 
 	/**
@@ -1340,6 +1405,9 @@ class RetoldRemoteImageExplorerView extends libPictView
 	 */
 	goBack()
 	{
+		// Cancel any in-flight DZI generation
+		this._cancelActiveDziOperation();
+
 		// Clean up selection mode
 		if (this._selectionMode)
 		{
@@ -1372,6 +1440,9 @@ class RetoldRemoteImageExplorerView extends libPictView
 	 */
 	viewInBrowser()
 	{
+		// Cancel any in-flight DZI generation
+		this._cancelActiveDziOperation();
+
 		// Destroy the OSD viewer
 		if (this._osdViewer)
 		{

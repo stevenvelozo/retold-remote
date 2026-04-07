@@ -133,6 +133,11 @@ module.exports =
 	/**
 	 * Ensure pdf.js is loaded from CDN via dynamic import.
 	 *
+	 * Note: we intentionally wrap the dynamic import() call in a Function
+	 * constructor so that Browserify/Babel cannot see it at build time
+	 * and rewrite it into a require() call. pdf.js v4 is ESM-only, so we
+	 * have no choice but to use a true native dynamic import at runtime.
+	 *
 	 * @param {Function} fCallback - Called when pdf.js is ready
 	 */
 	_ensurePdfJsLoaded: function _ensurePdfJsLoaded(fCallback)
@@ -149,21 +154,103 @@ module.exports =
 			tmpLoadingEl.textContent = 'Loading PDF renderer...';
 		}
 
-		import(_PDF_JS_CDN_URL)
-			.then(function (pModule)
+		// Hide the dynamic import from the bundler by constructing it at runtime.
+		// Without this, Browserify rewrites `import(x)` into
+		// `new Promise(r => r(x)).then(s => _interopRequireWildcard(require(s)))`
+		// which fails in the browser because there's no `require` on the window.
+		let tmpDynamicImport;
+		try
+		{
+			tmpDynamicImport = new Function('url', 'return import(url);');
+		}
+		catch (pFuncError)
+		{
+			// Some strict CSP environments forbid new Function — fall back to a
+			// <script type="module"> tag injection (see below).
+			tmpDynamicImport = null;
+		}
+
+		let _handleLoaded = function (pModule)
+		{
+			window.pdfjsLib = pModule;
+			if (window.pdfjsLib.GlobalWorkerOptions)
 			{
-				window.pdfjsLib = pModule;
 				window.pdfjsLib.GlobalWorkerOptions.workerSrc = _PDF_JS_WORKER_CDN_URL;
-				fCallback();
-			})
-			.catch(function (pError)
+			}
+			fCallback();
+		};
+
+		let _handleError = function (pError)
+		{
+			let tmpEl = document.getElementById('RetoldRemote-PdfLoading');
+			if (tmpEl)
 			{
-				let tmpEl = document.getElementById('RetoldRemote-PdfLoading');
-				if (tmpEl)
-				{
-					tmpEl.textContent = 'Failed to load PDF renderer: ' + pError.message;
-				}
+				tmpEl.textContent = 'Failed to load PDF renderer: ' + (pError && pError.message ? pError.message : 'unknown error');
+			}
+			if (tmpSelf.pict && tmpSelf.pict.log)
+			{
+				tmpSelf.pict.log.error('PDF renderer load failed: ' + (pError && pError.stack ? pError.stack : pError));
+			}
+		};
+
+		if (tmpDynamicImport)
+		{
+			tmpDynamicImport(_PDF_JS_CDN_URL).then(_handleLoaded).catch(function (pImportError)
+			{
+				// If the Function-wrapped import fails for any reason, fall back
+				// to the script-tag loader below.
+				tmpSelf._loadPdfJsViaScriptTag(_handleLoaded, _handleError);
 			});
+		}
+		else
+		{
+			tmpSelf._loadPdfJsViaScriptTag(_handleLoaded, _handleError);
+		}
+	},
+
+	/**
+	 * Fallback loader that injects a <script type="module"> tag to import pdf.js.
+	 * Used when `new Function('return import(url)')` is blocked by CSP.
+	 *
+	 * @param {Function} fOnLoad  - Called with the loaded module namespace
+	 * @param {Function} fOnError - Called with any error
+	 */
+	_loadPdfJsViaScriptTag: function _loadPdfJsViaScriptTag(fOnLoad, fOnError)
+	{
+		try
+		{
+			// Generate a unique global name so we don't collide with concurrent loads.
+			let tmpResolverName = '__retoldPdfJsResolver_' + Date.now();
+			let tmpRejecterName = '__retoldPdfJsRejecter_' + Date.now();
+
+			let tmpScript = document.createElement('script');
+			tmpScript.type = 'module';
+			tmpScript.textContent =
+				'import("' + _PDF_JS_CDN_URL + '")' +
+				'  .then(function (m) { window["' + tmpResolverName + '"](m); })' +
+				'  .catch(function (e) { window["' + tmpRejecterName + '"](e); });';
+
+			window[tmpResolverName] = function (pModule)
+			{
+				delete window[tmpResolverName];
+				delete window[tmpRejecterName];
+				tmpScript.remove();
+				fOnLoad(pModule);
+			};
+			window[tmpRejecterName] = function (pError)
+			{
+				delete window[tmpResolverName];
+				delete window[tmpRejecterName];
+				tmpScript.remove();
+				fOnError(pError);
+			};
+
+			document.head.appendChild(tmpScript);
+		}
+		catch (pError)
+		{
+			fOnError(pError);
+		}
 	},
 
 	/**

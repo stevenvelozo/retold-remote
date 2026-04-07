@@ -357,15 +357,53 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			tmpURL += '&width=1920&height=1080';
 		}
 
-		fetch(tmpURL)
+		// Cancel any previous in-flight frame fetch (e.g. switching videos fast)
+		this._cancelActiveOperation();
+
+		// Start a new operation entry for this extraction
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		let tmpOp = tmpStatus ? tmpStatus.startOperation(
+		{
+			Label: 'Extracting video frames',
+			Phase: 'Starting…',
+			Cancelable: true
+		}) : null;
+		if (tmpOp)
+		{
+			this._activeOperationId = tmpOp.OperationId;
+			this._activeAbortController = tmpOp.AbortController;
+		}
+
+		let tmpFetchOptions = {};
+		if (tmpOp && tmpOp.AbortController)
+		{
+			tmpFetchOptions.signal = tmpOp.AbortController.signal;
+		}
+		if (tmpOp)
+		{
+			tmpFetchOptions.headers = { 'X-Op-Id': tmpOp.OperationId };
+		}
+
+		fetch(tmpURL, tmpFetchOptions)
 			.then((pResponse) => pResponse.json())
 			.then((pData) =>
 			{
 				if (!pData || !pData.Success)
 				{
+					if (tmpOp && tmpStatus)
+					{
+						tmpStatus.errorOperation(tmpOp.OperationId, { message: pData ? pData.Error : 'Unknown error' });
+					}
 					tmpSelf._showError(pData ? pData.Error : 'Unknown error');
 					return;
 				}
+
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.completeOperation(tmpOp.OperationId);
+				}
+				tmpSelf._activeOperationId = null;
+				tmpSelf._activeAbortController = null;
 
 				tmpSelf._frameData = pData;
 				tmpSelf._renderFrames();
@@ -375,8 +413,36 @@ class RetoldRemoteVideoExplorerView extends libPictView
 			})
 			.catch((pError) =>
 			{
+				// Silent abort — user navigated away or switched videos
+				if (pError && pError.name === 'AbortError')
+				{
+					return;
+				}
+				if (tmpOp && tmpStatus)
+				{
+					tmpStatus.errorOperation(tmpOp.OperationId, pError);
+				}
 				tmpSelf._showError(pError.message);
 			});
+	}
+
+	/**
+	 * Cancel any in-flight frame extraction for this explorer. Used on
+	 * navigate-away and when starting a fresh extraction.
+	 */
+	_cancelActiveOperation()
+	{
+		if (this._activeAbortController)
+		{
+			try { this._activeAbortController.abort(); } catch (pErr) { /* ignore */ }
+		}
+		let tmpStatus = this.pict.providers['RetoldRemote-OperationStatus'];
+		if (this._activeOperationId && tmpStatus)
+		{
+			tmpStatus.cancelOperation(this._activeOperationId);
+		}
+		this._activeOperationId = null;
+		this._activeAbortController = null;
 	}
 
 	/**
@@ -698,6 +764,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	 */
 	goBack()
 	{
+		this._cancelActiveOperation();
 		this._cleanupWindowListeners();
 
 		let tmpNav = this.pict.providers['RetoldRemote-GalleryNavigation'];
@@ -712,6 +779,7 @@ class RetoldRemoteVideoExplorerView extends libPictView
 	 */
 	playInBrowser()
 	{
+		this._cancelActiveOperation();
 		this._cleanupWindowListeners();
 
 		let tmpViewer = this.pict.views['RetoldRemote-MediaViewer'];

@@ -26,32 +26,128 @@ The fix: **build the image on a real computer (your laptop, desktop, dev worksta
 - At least **2 GB of free RAM** on the NAS for the running container
 - A few GB of free disk space on the NAS for the loaded image and cache
 - Your media folder somewhere on the NAS (e.g., `/volume1/media`, `/volume1/photo`, `/volume1/video`)
-- **Architecture matters**: most Synology models are AMD64 (Intel/AMD), some newer ARM-based ones are ARM64. Check your model's CPU type at [Synology's spec sheet](https://www.synology.com/en-global/products). The build script picks a sensible default but you can override it with `--arm64` or `--amd64`.
+
+## ⚠️ ARCHITECTURE — READ THIS FIRST ⚠️
+
+**This is the single most common cause of "videos and large images don't work" on a Synology.** Read it before building anything.
+
+### Most Synology NAS units are amd64
+
+Almost every Synology NAS — including all Celeron, Pentium, Atom, Ryzen, and Xeon-based models — is **amd64** (also called x86_64). Only a handful of low-end ARM-based models (e.g., DS118, DS220j, DS223j) are arm64.
+
+**Find your NAS architecture:**
+
+```bash
+ssh admin@your-nas
+uname -m
+# x86_64  → amd64 (most Synology models)
+# aarch64 → arm64 (a handful of low-end models)
+```
+
+Or check the [Synology spec sheet](https://www.synology.com/en-global/products) for your model under "CPU".
+
+### Most build machines are different from the NAS
+
+If you build the image on:
+
+| Build machine | Build machine arch | Synology arch | Cross-arch? |
+|---------------|--------------------|----|----|
+| MacBook Pro (M1/M2/M3/M4) | arm64 | amd64 (most) | **YES** |
+| MacBook Pro (Intel) | amd64 | amd64 (most) | No |
+| Linux desktop (Intel/AMD) | amd64 | amd64 (most) | No |
+| Raspberry Pi 4/5 | arm64 | amd64 (most) | **YES** |
+
+If you build on an Apple Silicon Mac and your NAS is amd64 (the most common case), **you must explicitly pass `--amd64` to the build script** or you'll get an arm64 image that runs on the NAS through QEMU emulation. Native code (sharp/libvips, ffmpeg, ImageMagick, LibreOffice, Calibre) is **5-20x slower under emulation and frequently times out** — which produces exactly the symptoms of "small thumbnails work, large image previews and video frame extraction don't work".
+
+### What the build script does about it
+
+As of the current version, `./docker-build-and-save.sh` **refuses to run** without an explicit `--amd64` or `--arm64` flag. There is no silent default. This is intentional — it's safer to fail fast than to silently produce a broken image.
+
+```bash
+# CORRECT — explicit target:
+./docker-build-and-save.sh --amd64               # for Intel/AMD Synology (most)
+./docker-build-and-save.sh --arm64               # for ARM-based Synology
+./docker-build-and-save.sh slim --amd64          # slim variant + amd64
+```
+
+### What the stack launcher does about it
+
+When the container starts, the stack launcher checks for emulation signals (CPU vendor `VirtualApple`, `qemu` strings in `/proc/cpuinfo`, kernel/binary architecture mismatch, slow CPU loop benchmark) and prints a giant red warning if any are detected:
+
+```
+==========================================================
+  WARNING: container is running under emulation!
+==========================================================
+  Reason: x86_64 binary on Apple Silicon (VirtualApple vendor)
+  Node arch: x64
+  CPU vendor: VirtualApple
+  ...
+  FIX: rebuild the image for the host architecture.
+    ./docker-build-and-save.sh --amd64
+==========================================================
+```
+
+If you see this warning in your container logs, **your image is the wrong architecture for the host**. Rebuild with the correct flag.
+
+### What the smoke test does about it
+
+The included `docker-smoke-test.sh` (run from your dev machine against any image tag) compares the image's stated architecture against the host arch and prints a warning before running the tests if they don't match. Failing tests under arch mismatch include a hint pointing at the rebuild command.
 
 ## Step-by-Step Setup
 
 ### 1. On your dev machine: build the image
 
-Clone the retold-remote repo (if you haven't already) and run the build script:
+Clone the retold-remote repo (if you haven't already) and run the build script. **You must pass `--amd64` or `--arm64`** — the script refuses to run without it (see the architecture section above for why).
 
 ```bash
 cd retold-remote
 
-# Full image (3 GB) — includes LibreOffice + Calibre for doc conversion:
-./docker-build-and-save.sh
+# Full image (3 GB) — includes LibreOffice + Calibre for doc conversion
+# Most Synology NAS units are amd64:
+./docker-build-and-save.sh --amd64
 
-# OR: slim image (1.8 GB) — no LibreOffice, no Calibre, no MOBI support:
-./docker-build-and-save.sh slim
+# OR: slim image (1.8 GB) — no LibreOffice, no Calibre, no MOBI support
+./docker-build-and-save.sh slim --amd64
 
-# Force a specific architecture if your NAS doesn't match your dev machine:
-./docker-build-and-save.sh --amd64        # most Synology Intel/AMD models
-./docker-build-and-save.sh slim --arm64   # ARM-based Synology + slim variant
+# OR: ARM-based Synology (rare — only DS118, DS220j, DS223j, etc.):
+./docker-build-and-save.sh --arm64
+./docker-build-and-save.sh slim --arm64
 ```
 
 This builds the image, then exports it to `retold-stack-image.tar.gz` (or `retold-stack-image-slim.tar.gz` for slim). Measured compressed sizes:
 
 - **Full** (`retold-stack-image.tar.gz`): ~900 MB compressed (3 GB uncompressed)
 - **Slim** (`retold-stack-image-slim.tar.gz`): ~425 MB compressed (1.81 GB uncompressed)
+
+### 1.5. (Optional but recommended) Smoke-test the image locally
+
+Before transferring the multi-hundred-MB image to your NAS, verify it works by running the included smoke test:
+
+```bash
+./docker-smoke-test.sh retold-stack:latest
+```
+
+This generates test fixtures (small/medium/large images, video, audio, PDF, RTF), spins up a temporary container against them, and exercises every API endpoint. You'll see output like:
+
+```
+Pre-flight checks
+------------------------------------------------------------
+Image:      retold-stack:latest
+Image arch: amd64
+Host arch:  arm64
+WARNING: Architecture mismatch!
+The image is amd64 but the host is arm64.
+The container will run under QEMU emulation, which is very slow...
+```
+
+That warning at the top is **normal and expected** when you're cross-building on a Mac for an amd64 NAS — but tests that use heavy native code may time out under emulation. **The image will still work fine on the actual NAS** because there's no emulation there. If all tests pass even under emulation, you're golden.
+
+If you want to skip emulation and just verify the build is correct, build a matching image for your build host arch and smoke-test that one too:
+
+```bash
+./docker-build-and-save.sh --arm64   # match your Mac
+./docker-smoke-test.sh retold-stack:latest    # tests run native, fast
+```
 
 ### 2. On the NAS: create the project folder
 
@@ -69,9 +165,26 @@ Copy two files into that folder:
 You can use File Station upload, scp, or rsync. Example via scp:
 
 ```bash
-scp retold-stack-image.tar.gz docker-compose.yml \
+# Use the -O flag to force the legacy SCP protocol — see the note below.
+scp -O retold-stack-image.tar.gz docker-compose.yml \
   admin@your-nas-ip:/volume1/docker/retold-stack/
 ```
+
+> **Heads up — OpenSSH 9.0+ scp gotcha:** Modern scp (OpenSSH 9.0 and later) defaults to SFTP under the hood, and Synology's SFTP daemon errors out with `dest open ".../foo/": No such file or directory` on trailing-slash directory destinations even when the directory exists and you have full read/write access.
+>
+> The `-O` flag forces the legacy SCP/RCP protocol and sidesteps the issue. If `-O` still gives you trouble, try one of these alternatives:
+>
+> ```bash
+> # Specify the destination filename explicitly (no trailing slash)
+> scp retold-stack-image.tar.gz \
+>   admin@your-nas-ip:/volume1/docker/retold-stack/retold-stack-image.tar.gz
+>
+> # Or use rsync, which is unaffected
+> rsync -avh --progress retold-stack-image.tar.gz docker-compose.yml \
+>   admin@your-nas-ip:/volume1/docker/retold-stack/
+> ```
+>
+> If even rsync fails with permission errors, check **DSM Control Panel → File Services → FTP → SFTP** and make sure **Enable SFTP service** is checked. SSH access and SFTP are separate switches in DSM.
 
 ### 4. Load the image on the NAS
 
@@ -312,6 +425,57 @@ If you want to expose Retold Remote over HTTPS via a domain name, use Synology's
 You can then access Retold Remote at `https://media.yourdomain.com/` with Synology's Let's Encrypt certificate.
 
 ## Troubleshooting
+
+### "Small images work but videos and large images don't" (the most common issue)
+
+If the gallery loads, small thumbnails appear, but anything that needs heavy processing (large image previews, video frame extraction, audio waveforms, document conversion) silently fails or hangs — **you almost certainly have an architecture mismatch**.
+
+**Quick diagnosis:**
+
+1. SSH into the NAS and check the container logs:
+   ```bash
+   sudo docker logs retold-stack 2>&1 | grep -E "WARNING|emulation|VirtualApple"
+   ```
+   If you see `WARNING: container is running under emulation!`, that's your answer.
+
+2. From your dev machine, run the smoke test against the same image you transferred:
+   ```bash
+   ./docker-smoke-test.sh retold-stack:latest
+   ```
+   It will report `Image arch: ...` and `Host arch: ...` and tell you exactly what to do.
+
+**Fix:**
+
+```bash
+# On your dev machine, rebuild with the correct target arch:
+./docker-build-and-save.sh --amd64    # most Synology models (Celeron/Pentium/Atom/Ryzen/Xeon)
+# Or:
+./docker-build-and-save.sh --arm64    # the few ARM-based Synology models
+
+# Transfer the new tar.gz to the NAS:
+scp -O retold-stack-image.tar.gz steven@your-nas:/volume1/docker/retold-stack/
+
+# On the NAS:
+sudo docker load -i /volume1/docker/retold-stack/retold-stack-image.tar.gz
+
+# Restart the project in Container Manager (Stop, then Start)
+```
+
+### scp error: `dest open ".../folder/": No such file or directory`
+
+This is the OpenSSH 9.0+ scp/SFTP gotcha. Modern scp uses SFTP under the hood, and Synology's SFTP daemon stumbles on trailing-slash directory paths even when the directory exists. **Fix:** add `-O` to force the legacy SCP protocol:
+
+```bash
+scp -O retold-stack-image.tar.gz steven@nas-ip:/volume1/docker/retold-stack/
+```
+
+If `-O` still doesn't work, try specifying the destination filename explicitly (no trailing slash), or use `rsync` instead:
+
+```bash
+rsync -avh --progress retold-stack-image.tar.gz steven@nas-ip:/volume1/docker/retold-stack/
+```
+
+If even rsync fails, check that SFTP is actually enabled at **DSM Control Panel → File Services → FTP → SFTP → Enable SFTP service**. SSH access and SFTP are separate toggles in DSM.
 
 ### Project creation error: "unable to evaluate symlinks in Dockerfile path"
 

@@ -55,6 +55,9 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		// Ultravisor dispatcher — set via setDispatcher()
 		this._dispatcher = null;
 
+		// Operation broadcaster — set via setBroadcaster()
+		this._broadcaster = null;
+
 		this.fable.log.info(`Media Service: capabilities = ${JSON.stringify(this.capabilities)}`);
 	}
 
@@ -66,6 +69,36 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 	setDispatcher(pDispatcher)
 	{
 		this._dispatcher = pDispatcher;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 *
+	 * @param {object} pBroadcaster - RetoldRemoteOperationBroadcaster instance
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	/**
+	 * Emit a progress event if a broadcaster is attached and an operation id
+	 * was supplied. Safe to call without either.
+	 */
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	/**
+	 * Check whether a given operation has been cancelled.
+	 */
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**

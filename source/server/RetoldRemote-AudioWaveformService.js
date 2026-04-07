@@ -54,6 +54,9 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 		// Ultravisor dispatcher — set via setDispatcher()
 		this._dispatcher = null;
 
+		// Operation broadcaster — set via setBroadcaster()
+		this._broadcaster = null;
+
 		// Detect audiowaveform availability
 		this.hasAudiowaveform = this._detectCommand('audiowaveform --version');
 
@@ -72,6 +75,27 @@ class RetoldRemoteAudioWaveformService extends libFableServiceProviderBase
 	setDispatcher(pDispatcher)
 	{
 		this._dispatcher = pDispatcher;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**

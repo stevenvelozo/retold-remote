@@ -54,6 +54,25 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		// Ultravisor dispatcher — set via setDispatcher()
 		this._dispatcher = null;
 
+		// Operation broadcaster — set via setBroadcaster()
+		this._broadcaster = null;
+
+		// One-time local ffprobe detection. If ffprobe is on this machine we
+		// always prefer to use it directly — running ffprobe locally is a
+		// metadata-only call (microseconds for an indexed file) and avoids the
+		// entire resolve→transfer→probe→result Ultravisor pipeline. Only when
+		// ffprobe is missing locally do we fall back to dispatching the probe
+		// to a beacon.
+		this._ffprobeLocalAvailable = this._detectLocalFfprobe();
+		if (this._ffprobeLocalAvailable)
+		{
+			this.fable.log.info('Video Frame Service: local ffprobe detected — probes will run in-process (no dispatch).');
+		}
+		else
+		{
+			this.fable.log.info('Video Frame Service: local ffprobe NOT found — will dispatch probes to a beacon.');
+		}
+
 		// Apply explorer state persistence mixin (initializeState,
 		// _buildExplorerStateKey, loadExplorerState, saveExplorerState)
 		libExplorerStateMixin.apply(this, EXPLORER_STATE_SOURCE, 'video-explorer');
@@ -73,6 +92,42 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	setDispatcher(pDispatcher)
 	{
 		this._dispatcher = pDispatcher;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 *
+	 * @param {object} pBroadcaster - RetoldRemoteOperationBroadcaster instance
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	/**
+	 * Helper: emit a progress event if a broadcaster is attached and the
+	 * caller supplied an operation id. Safe to call without either.
+	 *
+	 * @param {string} pOperationId - Opaque client-supplied operation id
+	 * @param {object} pPayload - { Phase, Current, Total, Message }
+	 */
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	/**
+	 * Helper: check whether the current operation has been cancelled.
+	 *
+	 * @param {string} pOperationId
+	 * @returns {boolean}
+	 */
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**
@@ -230,8 +285,39 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * One-time check for local ffprobe at constructor time. Synchronous because
+	 * the constructor is, and we want the cached answer ready before the first
+	 * probe call. The check itself is cheap (~50ms) and only runs once per
+	 * service lifetime.
+	 *
+	 * @returns {boolean} true if `ffprobe -version` returns 0 on this host
+	 */
+	_detectLocalFfprobe()
+	{
+		try
+		{
+			libChildProcess.execSync('ffprobe -version', { stdio: 'ignore', timeout: 5000 });
+			return true;
+		}
+		catch (pError)
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Probe a video file with ffprobe to get its duration.
-	 * Tries Ultravisor dispatch first, falls back to local execution.
+	 *
+	 * Strategy ordering (most efficient first):
+	 *   1. LOCAL ffprobe — when this process has the binary on PATH. ffprobe
+	 *      reads the container index and returns metadata in milliseconds; no
+	 *      Ultravisor pipeline involvement, no file copies, no shared-fs
+	 *      negotiation. This is the right call for stack-mode deployments
+	 *      where retold-remote and orator-conversion live in the same image.
+	 *   2. DISPATCHED probe — only when the local binary is missing. Goes
+	 *      through the rr-media-probe operation graph (resolve → transfer →
+	 *      probe → result). With shared-fs the file isn't actually copied,
+	 *      but the operation graph still runs.
 	 *
 	 * @param {string} pAbsPath - Absolute path to the video
 	 * @param {Function} fCallback - Callback(pError, { duration, width, height, codec })
@@ -240,7 +326,18 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 	{
 		let tmpSelf = this;
 
-		// Try Ultravisor operation trigger first
+		// Local-first: if ffprobe is on this host, just run it. The previous
+		// version did this BACKWARDS and dispatched even when local was
+		// available, which made every video frame extraction pay an extra
+		// Ultravisor round trip just to read the duration.
+		if (this._ffprobeLocalAvailable)
+		{
+			return this._probeVideoLocal(pAbsPath, fCallback);
+		}
+
+		// No local ffprobe — fall back to dispatching the probe through the
+		// Ultravisor mesh. This requires the dispatcher to be available and
+		// the file to be addressable through the File context.
 		if (this._dispatcher && this._dispatcher.isAvailable())
 		{
 			let tmpRelPath;
@@ -270,13 +367,15 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 							{
 								let tmpData = JSON.parse(tmpProcessOutput.Result);
 								let tmpParsed = tmpSelf._parseProbeData(tmpData);
-								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath}`);
+								tmpSelf.fable.log.info(`ffprobe via operation trigger for ${tmpRelPath} (no local ffprobe)`);
 								return fCallback(null, tmpParsed);
 							}
 						}
 						catch (pParseError)
 						{
-							// Fall through to local
+							// Fall through to a final local attempt — even though
+							// the constructor said ffprobe was missing, the binary
+							// could have been installed since startup.
 						}
 					}
 
@@ -286,6 +385,8 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			}
 		}
 
+		// Last resort: try local even though detection said it was missing.
+		// Returns the original ENOENT or similar if ffprobe really isn't there.
 		return this._probeVideoLocal(pAbsPath, fCallback);
 	}
 
@@ -543,6 +644,9 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		let tmpHeight = parseInt(pOptions.height, 10) || this.options.DefaultFrameHeight;
 		let tmpFormat = pOptions.format || this.options.DefaultFrameFormat;
 
+		// Operation tracking (optional — passed by caller via X-Op-Id)
+		let tmpOpId = pOptions.OperationId || null;
+
 		// Clamp values
 		tmpCount = Math.min(Math.max(tmpCount, 1), 100);
 		tmpWidth = Math.min(Math.max(tmpWidth, 64), 1920);
@@ -575,6 +679,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			{
 				let tmpManifest = JSON.parse(libFs.readFileSync(tmpManifestPath, 'utf8'));
 				this.fable.log.info(`Video frames cache hit for ${pRelPath}`);
+				this._emitProgress(tmpOpId, { Phase: 'cached', Message: 'Cached frames available' });
 				return fCallback(null, tmpManifest);
 			}
 			catch (pError)
@@ -584,12 +689,18 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		}
 
 		// Probe the video for duration
+		this._emitProgress(tmpOpId, { Phase: 'probing', Message: 'Probing video metadata' });
 		this._probeVideo(pAbsPath,
 			(pError, pVideoInfo) =>
 			{
 				if (pError || !pVideoInfo || !pVideoInfo.duration)
 				{
 					return fCallback(new Error('Could not probe video. ffprobe may not be available.'));
+				}
+
+				if (tmpSelf._isCancelled(tmpOpId))
+				{
+					return fCallback(new Error('Cancelled'));
 				}
 
 				let tmpDuration = pVideoInfo.duration;
@@ -609,9 +720,15 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 
 				tmpSelf.fable.log.info(`Extracting ${tmpTimestamps.length} frames from ${pRelPath} (${tmpDuration.toFixed(1)}s)`);
 
-				// Use async serial extraction when dispatcher is available,
-				// otherwise use synchronous loop for backward compatibility
-				let tmpUseAsync = !!(tmpSelf._dispatcher && tmpSelf._dispatcher.isAvailable());
+				// Three execution paths, in order of preference:
+				//   1. BATCH dispatch (dispatcher available) — single Ultravisor
+				//      operation that resolves the address once, transfers/short-
+				//      circuits the file once, and extracts all N frames in one
+				//      beacon work item. Replaces the previous N-trigger storm.
+				//   2. Local async loop (dispatcher unavailable, ffmpeg local) —
+				//      sequential extracts in-process, no Ultravisor.
+				//   3. Local sync loop (final fallback for ancient code paths)
+				let tmpUseBatch = !!(tmpSelf._dispatcher && tmpSelf._dispatcher.isAvailable());
 
 				let _finishExtraction = () =>
 				{
@@ -653,9 +770,20 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 					return fCallback(null, tmpResult);
 				};
 
-				if (tmpUseAsync)
+				// Emit initial progress before starting extraction
+				tmpSelf._emitProgress(tmpOpId,
 				{
-					// Serial async extraction
+					Phase: 'extracting',
+					Current: 0,
+					Total: tmpTimestamps.length,
+					Message: 'Extracting 0 of ' + tmpTimestamps.length + ' frames',
+					Cancelable: true
+				});
+
+				// Local serial-async fallback used by both the "no batch" path
+				// and the "batch failed" recovery path.
+				let _runLocalAsync = () =>
+				{
 					let tmpFrameIndex = 0;
 
 					let _extractNext = () =>
@@ -663,6 +791,13 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 						if (tmpFrameIndex >= tmpTimestamps.length)
 						{
 							return _finishExtraction();
+						}
+
+						// Cooperative cancellation check before each frame
+						if (tmpSelf._isCancelled(tmpOpId))
+						{
+							tmpSelf.fable.log.info('[VideoFrameService] cancelled mid-extraction for ' + pRelPath);
+							return fCallback(new Error('Cancelled'));
 						}
 
 						let tmpI = tmpFrameIndex;
@@ -695,17 +830,166 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 										// Frame file disappeared — skip
 									}
 								}
+								tmpSelf._emitProgress(tmpOpId,
+								{
+									Phase: 'extracting',
+									Current: tmpExtractedCount,
+									Total: tmpTimestamps.length,
+									Message: 'Extracting ' + tmpExtractedCount + ' of ' + tmpTimestamps.length + ' frames',
+									Cancelable: true
+								});
 								_extractNext();
 							});
 					};
 
 					_extractNext();
+				};
+
+				if (tmpUseBatch)
+				{
+					// ── BATCH path ──────────────────────────────────────────
+					// Build the per-frame spec list and dispatch a single batch
+					// operation. The orator-conversion beacon writes all frame
+					// files directly into our cache directory because we share
+					// the filesystem. After the operation completes we just stat
+					// each frame file and build our normal manifest.
+					let tmpRelPath;
+					try
+					{
+						tmpRelPath = libPath.relative(tmpSelf.contentPath, pAbsPath);
+					}
+					catch (pRelErr)
+					{
+						tmpRelPath = null;
+					}
+
+					if (!tmpRelPath || tmpRelPath.startsWith('..'))
+					{
+						tmpSelf.fable.log.warn(`[VideoFrameService] could not derive content-relative path for ${pAbsPath}; falling back to local extraction`);
+						return _runLocalAsync();
+					}
+
+					let tmpFrameSpecs = [];
+					let tmpFilenameToMeta = {};
+					for (let i = 0; i < tmpTimestamps.length; i++)
+					{
+						let tmpTimestamp = tmpTimestamps[i];
+						let tmpFrameFilename = `frame_${String(i).padStart(4, '0')}.${tmpFormat}`;
+						let tmpTimeStr = tmpSelf._formatFfmpegTimestamp(tmpTimestamp);
+						tmpFrameSpecs.push({ Timestamp: tmpTimeStr, Filename: tmpFrameFilename });
+						tmpFilenameToMeta[tmpFrameFilename] =
+							{
+								Index: i,
+								Timestamp: tmpTimestamp,
+								TimestampFormatted: tmpSelf._formatTimestamp(tmpTimestamp)
+							};
+					}
+
+					if (tmpSelf._isCancelled(tmpOpId))
+					{
+						return fCallback(new Error('Cancelled'));
+					}
+
+					tmpSelf.fable.log.info(`[VideoFrameService] dispatching batch extraction (${tmpFrameSpecs.length} frames) for ${pRelPath}`);
+
+					tmpSelf._dispatcher.triggerOperation('rr-video-frames-batch',
+						{
+							VideoAddress: '>retold-remote/File/' + tmpRelPath,
+							OutputDir: tmpCacheDir,
+							Frames: JSON.stringify(tmpFrameSpecs),
+							Width: tmpWidth,
+							TimeoutMs: 1800000
+						},
+						(pBatchError, pBatchResult) =>
+						{
+							if (pBatchError || !pBatchResult)
+							{
+								tmpSelf.fable.log.warn(`[VideoFrameService] batch dispatch failed: ${pBatchError ? pBatchError.message : 'no result'}; falling back to local`);
+								return _runLocalAsync();
+							}
+
+							// Pull the manifest out of the extract task's Result
+							let tmpManifest = null;
+							try
+							{
+								let tmpExtractOutputs = pBatchResult.TaskOutputs && pBatchResult.TaskOutputs['rr-video-frames-batch-extract'];
+								if (tmpExtractOutputs && tmpExtractOutputs.Result)
+								{
+									tmpManifest = JSON.parse(tmpExtractOutputs.Result);
+								}
+							}
+							catch (pParseError)
+							{
+								tmpSelf.fable.log.warn(`[VideoFrameService] could not parse batch result manifest: ${pParseError.message}`);
+							}
+
+							if (!tmpManifest || !Array.isArray(tmpManifest.Frames))
+							{
+								tmpSelf.fable.log.warn('[VideoFrameService] batch result missing manifest; falling back to local');
+								return _runLocalAsync();
+							}
+
+							// Walk the manifest, stat each output file, build our
+							// frames array. Skip any that didn't actually land on
+							// disk (filesystem races, partial failures, etc).
+							for (let i = 0; i < tmpManifest.Frames.length; i++)
+							{
+								let tmpEntry = tmpManifest.Frames[i];
+								if (!tmpEntry || !tmpEntry.Success || !tmpEntry.Filename)
+								{
+									continue;
+								}
+								let tmpFramePath = libPath.join(tmpCacheDir, tmpEntry.Filename);
+								try
+								{
+									let tmpFrameStat = libFs.statSync(tmpFramePath);
+									let tmpMeta = tmpFilenameToMeta[tmpEntry.Filename] || {};
+									tmpFrames.push(
+										{
+											Index: tmpMeta.Index !== undefined ? tmpMeta.Index : i,
+											Timestamp: tmpMeta.Timestamp,
+											TimestampFormatted: tmpMeta.TimestampFormatted,
+											Filename: tmpEntry.Filename,
+											Size: tmpFrameStat.size
+										});
+									tmpExtractedCount++;
+								}
+								catch (pStatErr)
+								{
+									// File missing — skip
+								}
+							}
+
+							tmpSelf._emitProgress(tmpOpId,
+							{
+								Phase: 'extracting',
+								Current: tmpExtractedCount,
+								Total: tmpTimestamps.length,
+								Message: 'Extracting ' + tmpExtractedCount + ' of ' + tmpTimestamps.length + ' frames',
+								Cancelable: true
+							});
+
+							if (tmpExtractedCount === 0)
+							{
+								tmpSelf.fable.log.warn('[VideoFrameService] batch returned 0 successful frames; falling back to local');
+								return _runLocalAsync();
+							}
+
+							return _finishExtraction();
+						});
 				}
 				else
 				{
 					// Synchronous extraction (original behavior)
 					for (let i = 0; i < tmpTimestamps.length; i++)
 					{
+						// Cooperative cancellation check before each frame
+						if (tmpSelf._isCancelled(tmpOpId))
+						{
+							tmpSelf.fable.log.info('[VideoFrameService] cancelled mid-extraction for ' + pRelPath);
+							return fCallback(new Error('Cancelled'));
+						}
+
 						let tmpTimestamp = tmpTimestamps[i];
 						let tmpFrameFilename = `frame_${String(i).padStart(4, '0')}.${tmpFormat}`;
 						let tmpFramePath = libPath.join(tmpCacheDir, tmpFrameFilename);
@@ -726,6 +1010,15 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 							});
 							tmpExtractedCount++;
 						}
+
+						tmpSelf._emitProgress(tmpOpId,
+						{
+							Phase: 'extracting',
+							Current: tmpExtractedCount,
+							Total: tmpTimestamps.length,
+							Message: 'Extracting ' + tmpExtractedCount + ' of ' + tmpTimestamps.length + ' frames',
+							Cancelable: true
+						});
 					}
 
 					_finishExtraction();

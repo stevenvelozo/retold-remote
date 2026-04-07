@@ -1082,26 +1082,55 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 			if (tmpStatus) tmpStatus.style.display = '';
 			if (tmpStatus) tmpStatus.textContent = 'Exporting\u2026';
 
-			fetch('/api/collections/' + encodeURIComponent(pGUID) + '/export',
+			// Start an operation entry so the status strip shows live progress
+			// (individual item count, cancel button, etc.)
+			let tmpOpStatus = tmpSelf.pict.providers['RetoldRemote-OperationStatus'];
+			let tmpOp = tmpOpStatus ? tmpOpStatus.startOperation(
+			{
+				Label: 'Exporting collection' + (pCollectionName ? ': ' + pCollectionName : ''),
+				Phase: 'Starting export…',
+				Cancelable: true
+			}) : null;
+
+			let tmpFetchOptions =
 			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ DestinationPath: tmpDestPath })
-			})
+			};
+			if (tmpOp && tmpOp.AbortController)
+			{
+				tmpFetchOptions.signal = tmpOp.AbortController.signal;
+			}
+			if (tmpOp)
+			{
+				tmpFetchOptions.headers['X-Op-Id'] = tmpOp.OperationId;
+			}
+
+			fetch('/api/collections/' + encodeURIComponent(pGUID) + '/export', tmpFetchOptions)
 				.then((pResponse) => pResponse.json())
 				.then((pResult) =>
 				{
 					if (pResult && pResult.Success)
 					{
+						if (tmpOp && tmpOpStatus)
+						{
+							tmpOpStatus.completeOperation(tmpOp.OperationId);
+						}
+
 						let tmpMsg = 'Exported ' + pResult.ExportedCount + ' of ' + pResult.TotalItems + ' items';
 						if (pResult.ErrorCount > 0)
 						{
 							tmpMsg += ' (' + pResult.ErrorCount + ' errors)';
 						}
+						if (pResult.Cancelled)
+						{
+							tmpMsg = 'Export cancelled after ' + pResult.ExportedCount + ' of ' + pResult.TotalItems + ' items';
+						}
 						tmpMsg += ' to ' + pResult.DestinationPath;
 
 						if (tmpStatus) tmpStatus.textContent = tmpMsg;
-						if (tmpBtn) tmpBtn.textContent = 'Done';
+						if (tmpBtn) tmpBtn.textContent = pResult.Cancelled ? 'Close' : 'Done';
 
 						let tmpToast = tmpSelf.pict.providers['RetoldRemote-ToastNotification'];
 						if (tmpToast)
@@ -1109,17 +1138,24 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 							tmpToast.showToast(tmpMsg);
 						}
 
-						// Auto-dismiss after a moment
-						setTimeout(() =>
+						// Auto-dismiss after a moment (only on success)
+						if (!pResult.Cancelled)
 						{
-							if (tmpDialog.parentElement)
+							setTimeout(() =>
 							{
-								tmpDialog.parentElement.removeChild(tmpDialog);
-							}
-						}, 3000);
+								if (tmpDialog.parentElement)
+								{
+									tmpDialog.parentElement.removeChild(tmpDialog);
+								}
+							}, 3000);
+						}
 					}
 					else
 					{
+						if (tmpOp && tmpOpStatus)
+						{
+							tmpOpStatus.errorOperation(tmpOp.OperationId, { message: (pResult && pResult.Error) || 'Export failed' });
+						}
 						let tmpErrMsg = (pResult && pResult.Error) || 'Export failed';
 						if (tmpStatus) tmpStatus.textContent = tmpErrMsg;
 						if (tmpStatus) tmpStatus.style.color = '#e06c75';
@@ -1129,6 +1165,17 @@ class RetoldRemoteCollectionsPanelView extends libPictView
 				})
 				.catch((pError) =>
 				{
+					if (pError && pError.name === 'AbortError')
+					{
+						if (tmpStatus) tmpStatus.textContent = 'Cancelled';
+						if (tmpBtn) tmpBtn.textContent = 'Close';
+						if (tmpBtn) tmpBtn.disabled = false;
+						return;
+					}
+					if (tmpOp && tmpOpStatus)
+					{
+						tmpOpStatus.errorOperation(tmpOp.OperationId, pError);
+					}
 					if (tmpStatus) tmpStatus.textContent = 'Request failed: ' + pError.message;
 					if (tmpStatus) tmpStatus.style.color = '#e06c75';
 					if (tmpBtn) tmpBtn.textContent = 'Retry';

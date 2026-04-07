@@ -92,6 +92,9 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 		// Orator-Conversion service reference — set via setConversionService()
 		this._conversionService = null;
 
+		// Operation broadcaster — set via setBroadcaster()
+		this._broadcaster = null;
+
 		this.fable.log.info('Ebook Service: using ParimeBinaryStorage (category: ebook-cache)');
 	}
 
@@ -114,6 +117,27 @@ class RetoldRemoteEbookService extends libFableServiceProviderBase
 	setDispatcher(pDispatcher)
 	{
 		this._dispatcher = pDispatcher;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**

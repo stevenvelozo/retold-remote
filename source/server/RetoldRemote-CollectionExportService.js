@@ -48,6 +48,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 		// External dependencies (set via setter methods)
 		this._sharp = null;
 		this._collectionService = null;
+		this._broadcaster = null;
 		this._hasFfmpeg = this._detectCommand('ffmpeg -version');
 
 		this.fable.log.info('Collection Export Service initialized');
@@ -72,6 +73,27 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 	setCollectionService(pService)
 	{
 		this._collectionService = pService;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**
@@ -586,6 +608,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 					let tmpGUID = pRequest.params.guid;
 					let tmpBody = pRequest.body || {};
 					let tmpDestRelPath = tmpBody.DestinationPath;
+					let tmpOpId = pRequest.OperationId || null;
 
 					if (!tmpGUID)
 					{
@@ -641,12 +664,46 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 							let tmpResults = [];
 							let tmpExportedCount = 0;
 							let tmpErrorCount = 0;
+							let tmpCancelled = false;
+
+							tmpSelf._emitProgress(tmpOpId,
+							{
+								Phase: 'exporting',
+								Current: 0,
+								Total: tmpItems.length,
+								Message: 'Exporting 0 of ' + tmpItems.length + ' items',
+								Cancelable: true
+							});
 
 							let tmpExportNext = function (pIdx)
 							{
+								// Cooperative cancel check before each item
+								if (tmpSelf._isCancelled(tmpOpId))
+								{
+									tmpCancelled = true;
+									pResponse.send(
+									{
+										Success: true,
+										Cancelled: true,
+										ExportedCount: tmpExportedCount,
+										ErrorCount: tmpErrorCount,
+										TotalItems: tmpItems.length,
+										DestinationPath: tmpDestRelPath,
+										Results: tmpResults
+									});
+									return fNext();
+								}
+
 								if (pIdx >= tmpItems.length)
 								{
 									// All done
+									tmpSelf._emitProgress(tmpOpId,
+									{
+										Phase: 'done',
+										Current: tmpExportedCount,
+										Total: tmpItems.length,
+										Message: 'Exported ' + tmpExportedCount + ' of ' + tmpItems.length + ' items'
+									});
 									pResponse.send(
 									{
 										Success: true,
@@ -677,6 +734,16 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 										}
 
 										tmpResults.push(tmpResult);
+
+										tmpSelf._emitProgress(tmpOpId,
+										{
+											Phase: 'exporting',
+											Current: pIdx + 1,
+											Total: tmpItems.length,
+											Message: 'Exported ' + (pIdx + 1) + ' of ' + tmpItems.length + ' items',
+											Cancelable: true
+										});
+
 										tmpExportNext(pIdx + 1);
 									});
 							};

@@ -159,16 +159,17 @@ function _buildPipelineOperation(pConfig)
 				Address: '{~D:Record.Operation.' + pConfig.AddressParam + '~}'
 			},
 			['Address'],
-			['URL', 'Filename', 'BeaconName']),
+			['URL', 'Filename', 'BeaconName', 'LocalPath', 'Strategy']),
 
 		_taskNode(tmpTransferHash, 'file-transfer', 'File Transfer', 490, 180,
 			{
 				SourceURL: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.URL~}',
+				SourceLocalPath: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.LocalPath~}',
 				Filename: '{~D:Record.TaskOutputs.' + tmpResolveHash + '.Filename~}',
 				TimeoutMs: pConfig.TransferTimeoutMs || 300000
 			},
-			['SourceURL', 'Filename', 'TimeoutMs'],
-			['LocalPath', 'BytesTransferred', 'DurationMs']),
+			['SourceURL', 'SourceLocalPath', 'Filename', 'TimeoutMs'],
+			['LocalPath', 'BytesTransferred', 'DurationMs', 'Strategy']),
 
 		_taskNode(tmpProcessHash, pConfig.ProcessType, pConfig.ProcessTitle, 760, 180,
 			pConfig.ProcessData,
@@ -204,6 +205,16 @@ function _buildPipelineOperation(pConfig)
 		SourcePortHash: tmpResolveHash + '-so-Filename',
 		TargetNodeHash: tmpTransferHash,
 		TargetPortHash: tmpTransferHash + '-si-Filename',
+		Data: {}
+	});
+
+	// Resolve LocalPath → transfer SourceLocalPath (shared-fs zero-copy fast path)
+	tmpConnections.push({
+		Hash: tmpHash + '-s4',
+		SourceNodeHash: tmpResolveHash,
+		SourcePortHash: tmpResolveHash + '-so-LocalPath',
+		TargetNodeHash: tmpTransferHash,
+		TargetPortHash: tmpTransferHash + '-si-SourceLocalPath',
 		Data: {}
 	});
 
@@ -299,14 +310,15 @@ function getOperations()
 		_startNode(tmpVfe, 50, 200),
 		_taskNode(tmpVfe + '-resolve', 'resolve-address', 'Resolve Address', 220, 180,
 			{ Address: '{~D:Record.Operation.VideoAddress~}' },
-			['Address'], ['URL', 'Filename', 'BeaconName']),
+			['Address'], ['URL', 'Filename', 'BeaconName', 'LocalPath', 'Strategy']),
 		_taskNode(tmpVfe + '-transfer', 'file-transfer', 'File Transfer', 440, 180,
 			{
 				SourceURL: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.URL~}',
+				SourceLocalPath: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.LocalPath~}',
 				Filename: '{~D:Record.TaskOutputs.' + tmpVfe + '-resolve.Filename~}',
 				TimeoutMs: 1800000
 			},
-			['SourceURL', 'Filename', 'TimeoutMs'], ['LocalPath', 'BytesTransferred', 'DurationMs']),
+			['SourceURL', 'SourceLocalPath', 'Filename', 'TimeoutMs'], ['LocalPath', 'BytesTransferred', 'DurationMs', 'Strategy']),
 		_taskNode(tmpVfe + '-probe', 'beacon-mediaconversion-mediaprobe', 'Probe Video', 660, 180,
 			{
 				AffinityKey: '{~D:Record.Operation.VideoAddress~}',
@@ -335,6 +347,8 @@ function getOperations()
 	tmpVfeConns.push({ Hash: tmpVfe + '-s2', SourceNodeHash: tmpVfe + '-resolve', SourcePortHash: tmpVfe + '-resolve-so-Filename', TargetNodeHash: tmpVfe + '-transfer', TargetPortHash: tmpVfe + '-transfer-si-Filename', Data: {} });
 	tmpVfeConns.push({ Hash: tmpVfe + '-s3', SourceNodeHash: tmpVfe + '-transfer', SourcePortHash: tmpVfe + '-transfer-so-LocalPath', TargetNodeHash: tmpVfe + '-probe', TargetPortHash: tmpVfe + '-probe-si-InputFile', Data: {} });
 	tmpVfeConns.push({ Hash: tmpVfe + '-s4', SourceNodeHash: tmpVfe + '-transfer', SourcePortHash: tmpVfe + '-transfer-so-LocalPath', TargetNodeHash: tmpVfe + '-extract', TargetPortHash: tmpVfe + '-extract-si-InputFile', Data: {} });
+	// Resolve LocalPath → transfer SourceLocalPath (shared-fs zero-copy fast path)
+	tmpVfeConns.push({ Hash: tmpVfe + '-s5', SourceNodeHash: tmpVfe + '-resolve', SourcePortHash: tmpVfe + '-resolve-so-LocalPath', TargetNodeHash: tmpVfe + '-transfer', TargetPortHash: tmpVfe + '-transfer-si-SourceLocalPath', Data: {} });
 	tmpOperations.push({
 		Hash: tmpVfe,
 		Name: 'Video Frame Extraction',
@@ -343,6 +357,72 @@ function getOperations()
 		Author: 'retold-remote',
 		Version: '3.0.0',
 		Graph: { Nodes: tmpVfeNodes, Connections: tmpVfeConns, ViewState: { PanX: 0, PanY: 0, Zoom: 1, SelectedNodeHash: null, SelectedConnectionHash: null } },
+		SavedLayouts: [],
+		InitialGlobalState: {},
+		InitialOperationState: {}
+	});
+
+	// ── 3b. Video Frames (BATCH) ────────────────────────────────
+	// Single dispatch that resolves the address once, transfers the file
+	// once (with shared-fs zero-copy when available), and extracts ALL N
+	// frames in a single beacon work item. Used by the video explorer to
+	// avoid the previous N×operation-graph dispatch storm where N frames
+	// produced 21 separate file transfers (1 probe + N extracts).
+	//
+	// Trigger Parameters:
+	//   { VideoAddress, OutputDir, Frames, Width }
+	//   OutputDir — absolute writable directory where frames will land. Set
+	//               to retold-remote's per-video cache directory; works in
+	//               stack mode (shared filesystem) and on multi-host setups
+	//               that bind-mount the same content tree.
+	//   Frames    — JSON-encoded [{ Timestamp, Filename }, ...]
+	//
+	// Returns (no send-result; read TaskOutputs[<extract-node>].Result):
+	//   JSON string with { FrameCount, SuccessCount, OutputDir, Frames: [...] }
+	let tmpVfb = 'rr-video-frames-batch';
+	let tmpVfbNodes = [
+		_startNode(tmpVfb, 50, 200),
+		_taskNode(tmpVfb + '-resolve', 'resolve-address', 'Resolve Address', 220, 180,
+			{ Address: '{~D:Record.Operation.VideoAddress~}' },
+			['Address'], ['URL', 'Filename', 'BeaconName', 'LocalPath', 'Strategy']),
+		_taskNode(tmpVfb + '-transfer', 'file-transfer', 'File Transfer', 440, 180,
+			{
+				SourceURL: '{~D:Record.TaskOutputs.' + tmpVfb + '-resolve.URL~}',
+				SourceLocalPath: '{~D:Record.TaskOutputs.' + tmpVfb + '-resolve.LocalPath~}',
+				Filename: '{~D:Record.TaskOutputs.' + tmpVfb + '-resolve.Filename~}',
+				TimeoutMs: 1800000
+			},
+			['SourceURL', 'SourceLocalPath', 'Filename', 'TimeoutMs'],
+			['LocalPath', 'BytesTransferred', 'DurationMs', 'Strategy']),
+		_taskNode(tmpVfb + '-extract', 'beacon-mediaconversion-videoextractframes', 'Extract Frames Batch', 660, 180,
+			{
+				OutputDir: '{~D:Record.Operation.OutputDir~}',
+				Frames: '{~D:Record.Operation.Frames~}',
+				Width: '{~D:Record.Operation.Width~}',
+				AffinityKey: '{~D:Record.Operation.VideoAddress~}',
+				TimeoutMs: 1800000
+			},
+			['InputFile', 'OutputDir', 'Frames', 'Width'],
+			['Result', 'StdOut']),
+		_endNode(tmpVfb, 880, 260)
+	];
+	let tmpVfbConns = _chainConnections(tmpVfb,
+		[tmpVfb + '-start', tmpVfb + '-resolve', tmpVfb + '-transfer', tmpVfb + '-extract'],
+		tmpVfb + '-end');
+	// State wires
+	tmpVfbConns.push({ Hash: tmpVfb + '-s1', SourceNodeHash: tmpVfb + '-resolve', SourcePortHash: tmpVfb + '-resolve-so-URL', TargetNodeHash: tmpVfb + '-transfer', TargetPortHash: tmpVfb + '-transfer-si-SourceURL', Data: {} });
+	tmpVfbConns.push({ Hash: tmpVfb + '-s2', SourceNodeHash: tmpVfb + '-resolve', SourcePortHash: tmpVfb + '-resolve-so-Filename', TargetNodeHash: tmpVfb + '-transfer', TargetPortHash: tmpVfb + '-transfer-si-Filename', Data: {} });
+	tmpVfbConns.push({ Hash: tmpVfb + '-s3', SourceNodeHash: tmpVfb + '-transfer', SourcePortHash: tmpVfb + '-transfer-so-LocalPath', TargetNodeHash: tmpVfb + '-extract', TargetPortHash: tmpVfb + '-extract-si-InputFile', Data: {} });
+	// Resolve LocalPath → transfer SourceLocalPath (shared-fs zero-copy fast path)
+	tmpVfbConns.push({ Hash: tmpVfb + '-s4', SourceNodeHash: tmpVfb + '-resolve', SourcePortHash: tmpVfb + '-resolve-so-LocalPath', TargetNodeHash: tmpVfb + '-transfer', TargetPortHash: tmpVfb + '-transfer-si-SourceLocalPath', Data: {} });
+	tmpOperations.push({
+		Hash: tmpVfb,
+		Name: 'Video Frames Batch',
+		Description: 'Single-dispatch batch frame extraction. resolve → transfer → extract-many. Trigger with Parameters: { VideoAddress, OutputDir, Frames (JSON), Width }. Result is JSON metadata only — frames are written to OutputDir and read directly by the dispatcher.',
+		Tags: ['retold-remote', 'media', 'video', 'frames', 'batch'],
+		Author: 'retold-remote',
+		Version: '3.0.0',
+		Graph: { Nodes: tmpVfbNodes, Connections: tmpVfbConns, ViewState: { PanX: 0, PanY: 0, Zoom: 1, SelectedNodeHash: null, SelectedConnectionHash: null } },
 		SavedLayouts: [],
 		InitialGlobalState: {},
 		InitialOperationState: {}

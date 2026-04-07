@@ -856,15 +856,26 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 
 		try
 		{
-			let tmpPdfParse = require('pdf-parse');
-			let tmpBuffer = libFs.readFileSync(pAbsPath);
+			// pdf-parse v2.x exports a PDFParse class with async getInfo().
+			// (v1.x used a default async function — that API is gone.)
+			let tmpPdfParseModule = require('pdf-parse');
+			let tmpPDFParseClass = tmpPdfParseModule.PDFParse;
+			if (typeof tmpPDFParseClass !== 'function')
+			{
+				this.fable.log.warn(`pdf-parse module does not export PDFParse class. PDF metadata disabled.`);
+				return fCallback(null, null);
+			}
 
-			tmpPdfParse(tmpBuffer)
+			let tmpBuffer = libFs.readFileSync(pAbsPath);
+			let tmpParser = new tmpPDFParseClass({ data: tmpBuffer });
+			let tmpSelf = this;
+
+			tmpParser.getInfo()
 				.then((pData) =>
 				{
 					let tmpDocData =
 					{
-						PageCount: pData.numpages || null,
+						PageCount: (pData && typeof pData.total === 'number') ? pData.total : null,
 						Title: null,
 						Author: null,
 						Subject: null,
@@ -875,7 +886,8 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 						ModifiedDate: null
 					};
 
-					if (pData.info)
+					// pdf-parse v2: pData.info is the document info dict
+					if (pData && pData.info)
 					{
 						tmpDocData.Title = pData.info.Title || null;
 						tmpDocData.Author = pData.info.Author || null;
@@ -887,11 +899,19 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 						tmpDocData.ModifiedDate = pData.info.ModDate || null;
 					}
 
+					if (typeof tmpParser.destroy === 'function')
+					{
+						tmpParser.destroy().catch(() => { /* ignore */ });
+					}
 					return fCallback(null, tmpDocData);
 				})
 				.catch((pError) =>
 				{
-					this.fable.log.warn(`PDF parse error for ${pAbsPath}: ${pError.message}`);
+					if (typeof tmpParser.destroy === 'function')
+					{
+						tmpParser.destroy().catch(() => { /* ignore */ });
+					}
+					tmpSelf.fable.log.warn(`PDF parse error for ${pAbsPath}: ${pError.message}`);
 					return fCallback(null, null);
 				});
 		}

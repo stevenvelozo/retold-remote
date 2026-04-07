@@ -81,6 +81,9 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		// Ultravisor dispatcher — set via setDispatcher()
 		this._dispatcher = null;
+
+		// Operation broadcaster — set via setBroadcaster()
+		this._broadcaster = null;
 	}
 
 	/**
@@ -91,6 +94,35 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	setDispatcher(pDispatcher)
 	{
 		this._dispatcher = pDispatcher;
+	}
+
+	/**
+	 * Set the operation broadcaster for progress events and cancellation.
+	 *
+	 * @param {object} pBroadcaster - RetoldRemoteOperationBroadcaster instance
+	 */
+	setBroadcaster(pBroadcaster)
+	{
+		this._broadcaster = pBroadcaster;
+	}
+
+	/**
+	 * Emit a progress event if a broadcaster is attached and an opId was supplied.
+	 */
+	_emitProgress(pOperationId, pPayload)
+	{
+		if (this._broadcaster && pOperationId)
+		{
+			this._broadcaster.broadcastProgress(pOperationId, pPayload);
+		}
+	}
+
+	/**
+	 * Check whether a given operation has been cancelled.
+	 */
+	_isCancelled(pOperationId)
+	{
+		return !!(this._broadcaster && pOperationId && this._broadcaster.isCancelled(pOperationId));
 	}
 
 	/**
@@ -776,6 +808,49 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				let tmpOutputPath = libPath.join(tmpCacheDir, tmpManifest.OutputFilename);
 				if (libFs.existsSync(tmpOutputPath))
 				{
+					// Repair stale manifests written by an older build that
+					// hardcoded OrigWidth/OrigHeight to 0 when using the
+					// dispatcher path. The front-end relies on these values to
+					// (a) display dimensions in the info bar and (b) decide
+					// whether to auto-trigger DZI tile generation. If we read
+					// them as 0 we can patch the manifest in place using sharp
+					// metadata, no full regeneration needed.
+					if ((!tmpManifest.OrigWidth || !tmpManifest.OrigHeight) && this._sharp)
+					{
+						try
+						{
+							this._sharp(pAbsPath, { limitInputPixels: false }).metadata()
+								.then((pMeta) =>
+								{
+									if (pMeta && pMeta.width && pMeta.height)
+									{
+										tmpManifest.OrigWidth = pMeta.width;
+										tmpManifest.OrigHeight = pMeta.height;
+										try
+										{
+											libFs.writeFileSync(tmpManifestPath, JSON.stringify(tmpManifest, null, '\t'));
+											this.fable.log.info(`Image preview manifest repaired with dimensions ${pMeta.width}×${pMeta.height} for ${pRelPath}`);
+										}
+										catch (pWriteError)
+										{
+											// Non-fatal — manifest still serves the cached image
+										}
+									}
+									this.fable.log.info(`Image preview cache hit for ${pRelPath}`);
+									return fCallback(null, tmpManifest);
+								})
+								.catch(() =>
+								{
+									this.fable.log.info(`Image preview cache hit for ${pRelPath}`);
+									return fCallback(null, tmpManifest);
+								});
+							return;
+						}
+						catch (pSharpError)
+						{
+							// Fall through to the original cache-hit return
+						}
+					}
 					this.fable.log.info(`Image preview cache hit for ${pRelPath}`);
 					return fCallback(null, tmpManifest);
 				}
@@ -1146,57 +1221,95 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			return fCallback(new Error('File is outside content root.'));
 		}
 
-		this._dispatcher.triggerOperation('rr-image-thumbnail',
+		// Read the source image's true dimensions BEFORE dispatching the resize.
+		// We need OrigWidth/OrigHeight in the response so the front-end can:
+		//   1. Display the correct image dimensions in the info bar
+		//   2. Decide whether to auto-trigger DZI tile generation (>4096px on
+		//      either side)
+		// Sharp's metadata read is just a header parse — extremely fast — and
+		// is available locally in stack mode. If sharp is not available, we
+		// fall back to 0,0 (which mirrors the older behavior but at least keeps
+		// the dispatch working).
+		let _readSourceMetadata = function (pCallback)
 		{
-			ImageAddress: '>retold-remote/File/' + tmpRelPath,
-			Width: pMaxDim,
-			Height: pMaxDim,
-			Format: 'jpeg',
-			Quality: this.options.PreviewQuality || 85
-		},
-		(pTriggerError, pResult) =>
-		{
-			if (pTriggerError || !pResult || !pResult.OutputBuffer)
+			if (!tmpSelf._sharp)
 			{
-				return fCallback(new Error('Operation trigger preview generation failed: ' + (pTriggerError ? pTriggerError.message : 'no output')));
+				return pCallback(null, { width: 0, height: 0 });
 			}
-
 			try
 			{
-				libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+				tmpSelf._sharp(pInputPath, { limitInputPixels: false }).metadata()
+					.then(function (pMeta)
+					{
+						pCallback(null, { width: pMeta.width || 0, height: pMeta.height || 0 });
+					})
+					.catch(function (pError)
+					{
+						tmpSelf.fable.log.warn(`Could not read source metadata for ${pRelPath}: ${pError.message}`);
+						pCallback(null, { width: 0, height: 0 });
+					});
 			}
-			catch (pWriteError)
+			catch (pSyncError)
 			{
-				return fCallback(new Error('Failed to write preview output: ' + pWriteError.message));
+				tmpSelf.fable.log.warn(`Sharp metadata threw for ${pRelPath}: ${pSyncError.message}`);
+				return pCallback(null, { width: 0, height: 0 });
 			}
+		};
 
-			let tmpResult =
+		_readSourceMetadata(function (pMetaErr, pSourceMeta)
+		{
+			tmpSelf._dispatcher.triggerOperation('rr-image-thumbnail',
 			{
-				Success: true,
-				SourcePath: pRelPath,
-				CacheKey: pCacheKey,
-				OutputFilename: pOutputFilename,
+				ImageAddress: '>retold-remote/File/' + tmpRelPath,
 				Width: pMaxDim,
 				Height: pMaxDim,
-				OrigWidth: 0,
-				OrigHeight: 0,
-				FileSize: pResult.OutputBuffer.length,
-				NeedsPreview: true,
-				IsRawFormat: pIsRaw,
-				GeneratedAt: new Date().toISOString()
-			};
-
-			try
+				Format: 'jpeg',
+				Quality: tmpSelf.options.PreviewQuality || 85
+			},
+			(pTriggerError, pResult) =>
 			{
-				libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
-			}
-			catch (pWriteError)
-			{
-				tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
-			}
+				if (pTriggerError || !pResult || !pResult.OutputBuffer)
+				{
+					return fCallback(new Error('Operation trigger preview generation failed: ' + (pTriggerError ? pTriggerError.message : 'no output')));
+				}
 
-			tmpSelf.fable.log.info(`Generated image preview (operation trigger): ${pRelPath}`);
-			return fCallback(null, tmpResult);
+				try
+				{
+					libFs.writeFileSync(pOutputPath, pResult.OutputBuffer);
+				}
+				catch (pWriteError)
+				{
+					return fCallback(new Error('Failed to write preview output: ' + pWriteError.message));
+				}
+
+				let tmpResult =
+				{
+					Success: true,
+					SourcePath: pRelPath,
+					CacheKey: pCacheKey,
+					OutputFilename: pOutputFilename,
+					Width: pMaxDim,
+					Height: pMaxDim,
+					OrigWidth: pSourceMeta.width || 0,
+					OrigHeight: pSourceMeta.height || 0,
+					FileSize: pResult.OutputBuffer.length,
+					NeedsPreview: true,
+					IsRawFormat: pIsRaw,
+					GeneratedAt: new Date().toISOString()
+				};
+
+				try
+				{
+					libFs.writeFileSync(pManifestPath, JSON.stringify(tmpResult, null, '\t'));
+				}
+				catch (pWriteError)
+				{
+					tmpSelf.fable.log.warn(`Could not write preview manifest: ${pWriteError.message}`);
+				}
+
+				tmpSelf.fable.log.info(`Generated image preview (operation trigger): ${pRelPath} (${tmpResult.OrigWidth}×${tmpResult.OrigHeight})`);
+				return fCallback(null, tmpResult);
+			});
 		});
 	}
 
@@ -1215,13 +1328,29 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	 * @param {string}   pRelPath  - Relative path (for the response)
 	 * @param {Function} fCallback - Callback(pError, pResult)
 	 */
-	generateDziTiles(pAbsPath, pRelPath, fCallback)
+	generateDziTiles(pAbsPath, pRelPath, pOptionsOrCallback, fCallback)
 	{
 		let tmpSelf = this;
 
+		// Backward-compatible: if third arg is a function, it's the callback
+		// (no options). Otherwise it's an options bag.
+		let tmpOptions;
+		let tmpCallback;
+		if (typeof pOptionsOrCallback === 'function')
+		{
+			tmpOptions = {};
+			tmpCallback = pOptionsOrCallback;
+		}
+		else
+		{
+			tmpOptions = pOptionsOrCallback || {};
+			tmpCallback = fCallback;
+		}
+		let tmpOpId = tmpOptions.OperationId || null;
+
 		if (!this._sharp)
 		{
-			return fCallback(new Error('sharp is not available.'));
+			return tmpCallback(new Error('sharp is not available.'));
 		}
 
 		// Get file stats for cache key
@@ -1232,7 +1361,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		}
 		catch (pError)
 		{
-			return fCallback(new Error('File not found.'));
+			return tmpCallback(new Error('File not found.'));
 		}
 
 		let tmpCacheKey = this._buildCacheKey(pAbsPath, tmpStat.mtimeMs, 'dzi');
@@ -1250,7 +1379,8 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 				if (libFs.existsSync(tmpDziPath))
 				{
 					this.fable.log.info(`DZI tile cache hit for ${pRelPath}`);
-					return fCallback(null, tmpManifest);
+					this._emitProgress(tmpOpId, { Phase: 'cached', Message: 'Cached tiles available' });
+					return tmpCallback(null, tmpManifest);
 				}
 			}
 			catch (pError)
@@ -1259,12 +1389,19 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			}
 		}
 
+		// Cancellation gate before the long work starts
+		if (this._isCancelled(tmpOpId))
+		{
+			return tmpCallback(new Error('Cancelled'));
+		}
+
 		// If another request is already generating tiles for this file,
 		// queue our callback to receive the same result.
 		if (this._dziInFlight.has(tmpCacheKey))
 		{
 			this.fable.log.info(`DZI tiles already generating, queuing: ${pRelPath}`);
-			this._dziInFlight.get(tmpCacheKey).push(fCallback);
+			this._emitProgress(tmpOpId, { Phase: 'queued', Message: 'Tile generation already in progress, waiting' });
+			this._dziInFlight.get(tmpCacheKey).push(tmpCallback);
 			return;
 		}
 		this._dziInFlight.set(tmpCacheKey, []);
@@ -1276,10 +1413,17 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		}
 
 		this.fable.log.info(`Generating DZI tiles: ${pRelPath}`);
+		this._emitProgress(tmpOpId,
+		{
+			Phase: 'reading',
+			Message: 'Reading image',
+			Cancelable: true
+		});
 
 		// For raw formats, convert first then tile the converted file
 		if (this._isRawFormat(pAbsPath))
 		{
+			this._emitProgress(tmpOpId, { Phase: 'raw-convert', Message: 'Converting raw camera file' });
 			this._ensureConvertedRaw(pAbsPath, tmpStat.mtimeMs, true, (pError, pConvertedPath) =>
 			{
 				if (pError)
@@ -1291,14 +1435,19 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 					{
 						tmpWaiters[i](tmpErr);
 					}
-					return fCallback(tmpErr);
+					return tmpCallback(tmpErr);
 				}
-				tmpSelf._doGenerateDziTiles(pConvertedPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, fCallback);
+				if (tmpSelf._isCancelled(tmpOpId))
+				{
+					tmpSelf._dziInFlight.delete(tmpCacheKey);
+					return tmpCallback(new Error('Cancelled'));
+				}
+				tmpSelf._doGenerateDziTiles(pConvertedPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, tmpOpId, tmpCallback);
 			});
 		}
 		else
 		{
-			this._doGenerateDziTiles(pAbsPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, fCallback);
+			this._doGenerateDziTiles(pAbsPath, pRelPath, tmpCacheKey, tmpCacheDir, tmpManifestPath, tmpOpId, tmpCallback);
 		}
 	}
 
@@ -1310,20 +1459,45 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 	 * @param {string}   pCacheKey     - Cache key
 	 * @param {string}   pCacheDir     - Cache directory
 	 * @param {string}   pManifestPath - Manifest file path
+	 * @param {string}   pOpId         - Optional operation id for progress events
 	 * @param {Function} fCallback     - Callback(pError, pResult)
 	 */
-	_doGenerateDziTiles(pInputPath, pRelPath, pCacheKey, pCacheDir, pManifestPath, fCallback)
+	_doGenerateDziTiles(pInputPath, pRelPath, pCacheKey, pCacheDir, pManifestPath, pOpId, fCallback)
 	{
 		let tmpSelf = this;
+
+		// Cancellation gate before metadata read
+		if (this._isCancelled(pOpId))
+		{
+			this._dziInFlight.delete(pCacheKey);
+			return fCallback(new Error('Cancelled'));
+		}
+
+		this._emitProgress(pOpId, { Phase: 'metadata', Message: 'Reading image dimensions', Cancelable: true });
 
 		// Get metadata first
 		this._sharp(pInputPath, { limitInputPixels: false }).metadata()
 			.then((pMetadata) =>
 			{
+				// Cancellation gate after metadata, before the expensive
+				// tile-generation sharp call
+				if (tmpSelf._isCancelled(pOpId))
+				{
+					tmpSelf._dziInFlight.delete(pCacheKey);
+					return fCallback(new Error('Cancelled'));
+				}
+
 				let tmpTileSize = tmpSelf.options.DziTileSize;
 				let tmpOverlap = tmpSelf.options.DziOverlap;
 				let tmpFormat = tmpSelf.options.DziFormat;
 				let tmpQuality = tmpSelf.options.DziQuality;
+
+				tmpSelf._emitProgress(pOpId,
+				{
+					Phase: 'tiling',
+					Message: 'Generating tiles for ' + pMetadata.width + '\u00d7' + pMetadata.height + ' image',
+					Cancelable: true
+				});
 
 				// The output filename for sharp's tile() is based on the
 				// input to toFile() — sharp generates:
@@ -1383,6 +1557,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 						}
 
 						tmpSelf.fable.log.info(`Generated DZI tiles: ${pRelPath} (${pMetadata.width}×${pMetadata.height})`);
+						tmpSelf._emitProgress(pOpId, { Phase: 'done', Message: 'Tile generation complete' });
 
 						// Notify queued waiters
 						let tmpWaiters = tmpSelf._dziInFlight.get(pCacheKey) || [];
