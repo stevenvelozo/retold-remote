@@ -57,6 +57,11 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 		// Sharp module reference (set by Server-Setup via setSharpModule)
 		this._sharp = null;
 
+		// In-memory cache for the folder-scoped region listing (Part D).
+		// null means "not populated"; an array means "populated with all
+		// file records". Mutations invalidate this via _invalidateFolderCache.
+		this._folderCache = null;
+
 		// Apply explorer state persistence mixin for the Bibliograph source
 		libExplorerStateMixin.apply(this, SUBIMAGE_SOURCE, 'subimage');
 
@@ -168,6 +173,102 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Invalidate the folder-regions cache. Called after any POST/PUT/DELETE
+	 * so subsequent folder-listing requests see fresh data.
+	 */
+	_invalidateFolderCache()
+	{
+		this._folderCache = null;
+	}
+
+	/**
+	 * List all regions across all files under a folder prefix. Uses an
+	 * in-memory cache (`this._folderCache`) that's populated on first call
+	 * after a mutation and reused until the next mutation invalidates it.
+	 *
+	 * The cache stores the complete `[{ Path, Regions }, ...]` list. The
+	 * folder filter is applied on every request (cheap — just a startsWith
+	 * check per entry).
+	 *
+	 * Empty pFolderPrefix returns everything.
+	 *
+	 * NOTE: mtime-hash orphans are NOT filtered out here. If a file was
+	 * modified after a region was created, the region stays in the cache
+	 * under its original mtime-hash key. The navigateToRegion flow is
+	 * expected to handle missing-file errors gracefully.
+	 *
+	 * @param {string}   pFolderPrefix - Folder prefix (trailing / stripped); '' means all
+	 * @param {Function} fCallback - (pError, pFiles) where pFiles is [{ Path, Regions }]
+	 */
+	_listRegionsByFolder(pFolderPrefix, fCallback)
+	{
+		let tmpSelf = this;
+		let tmpFilter = function (pAllFiles)
+		{
+			let tmpOut = [];
+			for (let i = 0; i < pAllFiles.length; i++)
+			{
+				let tmpEntry = pAllFiles[i];
+				if (!tmpEntry || !tmpEntry.Path) continue;
+				if (!Array.isArray(tmpEntry.Regions) || tmpEntry.Regions.length === 0) continue;
+				if (pFolderPrefix === ''
+					|| tmpEntry.Path === pFolderPrefix
+					|| tmpEntry.Path.indexOf(pFolderPrefix + '/') === 0)
+				{
+					tmpOut.push({ Path: tmpEntry.Path, Regions: tmpEntry.Regions });
+				}
+			}
+			tmpOut.sort((a, b) => (a.Path || '').localeCompare(b.Path || ''));
+			return tmpOut;
+		};
+
+		// Cache hit — apply filter and return
+		if (Array.isArray(this._folderCache))
+		{
+			return fCallback(null, tmpFilter(this._folderCache));
+		}
+
+		// Cache miss — enumerate Bibliograph records
+		this.fable.Bibliograph.readRecordKeys(SUBIMAGE_SOURCE,
+			(pError, pKeys) =>
+			{
+				if (pError)
+				{
+					return fCallback(pError);
+				}
+				if (!Array.isArray(pKeys) || pKeys.length === 0)
+				{
+					tmpSelf._folderCache = [];
+					return fCallback(null, []);
+				}
+
+				let tmpAll = [];
+				let tmpPending = pKeys.length;
+				for (let i = 0; i < pKeys.length; i++)
+				{
+					tmpSelf.fable.Bibliograph.read(SUBIMAGE_SOURCE, pKeys[i],
+						(pReadError, pRecord) =>
+						{
+							if (!pReadError && pRecord && pRecord.Path)
+							{
+								tmpAll.push(
+								{
+									Path: pRecord.Path,
+									Regions: Array.isArray(pRecord.Regions) ? pRecord.Regions : []
+								});
+							}
+							tmpPending--;
+							if (tmpPending <= 0)
+							{
+								tmpSelf._folderCache = tmpAll;
+								return fCallback(null, tmpFilter(tmpAll));
+							}
+						});
+				}
+			});
+	}
+
+	/**
 	 * Connect REST routes to the Orator service server.
 	 *
 	 * @param {object} pServiceServer - The Orator service server instance
@@ -178,7 +279,15 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 		let tmpContentPath = this.contentPath;
 
 		// -----------------------------------------------------------------
-		// GET /api/media/subimage-regions?path= — List all regions for an image
+		// GET /api/media/subimage-regions?path=         — regions for one file
+		// GET /api/media/subimage-regions?folder=<pref> — regions for all files
+		//                                                  under a folder prefix
+		// GET /api/media/subimage-regions?folder=       — regions for every file
+		//                                                  (use with caution)
+		//
+		// The folder form uses an in-memory cache (this._folderCache) that
+		// is invalidated by POST/PUT/DELETE mutations. First call after a
+		// mutation pays the O(n) cost; everything else is O(1) plus a filter.
 		// -----------------------------------------------------------------
 		pServiceServer.get('/api/media/subimage-regions',
 			(pRequest, pResponse, fNext) =>
@@ -186,8 +295,37 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 				try
 				{
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
-					let tmpRelPath = tmpSelf._sanitizePath(tmpParsedUrl.query.path);
 
+					// Folder mode — new in Part D of the regions work.
+					if (typeof tmpParsedUrl.query.folder === 'string')
+					{
+						let tmpFolderPrefix = tmpParsedUrl.query.folder.replace(/\/+$/, '').replace(/^\/+/, '');
+						if (tmpFolderPrefix.includes('..'))
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid folder parameter.' });
+							return fNext();
+						}
+						tmpSelf._listRegionsByFolder(tmpFolderPrefix,
+							(pError, pFiles) =>
+							{
+								if (pError)
+								{
+									pResponse.send(500, { Success: false, Error: pError.message });
+									return fNext();
+								}
+								pResponse.send(
+								{
+									Success: true,
+									Folder: tmpFolderPrefix,
+									Files: pFiles
+								});
+								return fNext();
+							});
+						return;
+					}
+
+					// Per-file mode (existing behavior)
+					let tmpRelPath = tmpSelf._sanitizePath(tmpParsedUrl.query.path);
 					if (!tmpRelPath)
 					{
 						pResponse.send(400, { Success: false, Error: 'Missing or invalid path parameter.' });
@@ -315,6 +453,10 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 										return fNext();
 									}
 
+									// Invalidate the folder cache so the next
+									// folder-listing request re-scans.
+									tmpSelf._invalidateFolderCache();
+
 									pResponse.send(
 									{
 										Success: true,
@@ -429,6 +571,10 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 										return fNext();
 									}
 
+									// Invalidate the folder cache — changes
+									// to label/bounds may affect listing results.
+									tmpSelf._invalidateFolderCache();
+
 									pResponse.send(
 									{
 										Success: true,
@@ -508,6 +654,10 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 										pResponse.send(500, { Success: false, Error: pSaveError.message });
 										return fNext();
 									}
+
+									// Invalidate the folder cache so the
+									// next folder-listing request re-scans.
+									tmpSelf._invalidateFolderCache();
 
 									pResponse.send(
 									{

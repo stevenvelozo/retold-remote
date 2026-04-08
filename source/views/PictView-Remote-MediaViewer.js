@@ -41,6 +41,14 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpRemote.CurrentViewerMediaType = pMediaType;
 		tmpRemote.VideoMenuActive = (pMediaType === 'video');
 
+		// Notify the layout so active sidebar panels (Info, Regions, etc.)
+		// refresh to the new file instead of keeping stale content.
+		let tmpLayout = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayout && typeof tmpLayout.notifyCurrentFileChanged === 'function')
+		{
+			tmpLayout.notifyCurrentFileChanged(pFilePath);
+		}
+
 		// Show viewer, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');
 		let tmpViewerContainer = document.getElementById('RetoldRemote-Viewer-Container');
@@ -178,6 +186,15 @@ class RetoldRemoteMediaViewerView extends libPictView
 		tmpRemote.CurrentViewerFile = pFilePath || '';
 		tmpRemote.CurrentViewerMediaType = 'image';
 		tmpRemote.VideoMenuActive = false;
+
+		// Notify the layout so active sidebar panels (Info, Regions, etc.)
+		// refresh. This is especially important when switching between
+		// collection items via the direct-image path.
+		let tmpLayout = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayout && typeof tmpLayout.notifyCurrentFileChanged === 'function')
+		{
+			tmpLayout.notifyCurrentFileChanged(pFilePath || '');
+		}
 
 		// Show viewer, hide gallery
 		let tmpGalleryContainer = document.getElementById('RetoldRemote-Gallery-Container');

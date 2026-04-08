@@ -4141,10 +4141,7 @@ let tmpCached=tmpBrowseProvider.getChildFolders(pPath);if(!tmpCached){if(typeof 
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],72:[function(require,module,exports){const libPictView=require('pict-view');// Chunked rendering constants — for folders with very large file counts
-// we render rows in chunks via requestAnimationFrame so the main thread
-// stays responsive instead of freezing on one massive assignContent call.
-const _CHUNKED_RENDER_THRESHOLD=500;const _CHUNK_FIRST_SIZE=200;const _CHUNK_SUBSEQUENT_SIZE=400;const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],72:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
 <div class="pict-fb-detail" id="Pict-FileBrowser-DetailList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-Breadcrumb"></div>
 	<div class="pict-fb-detail-header">
@@ -4167,36 +4164,12 @@ const _CHUNKED_RENDER_THRESHOLD=500;const _CHUNK_FIRST_SIZE=200;const _CHUNK_SUB
  *
  * Supports sorting by column header click and single-click selection
  * with double-click to open folders.
- */class PictViewFileBrowserListDetail extends libPictView{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_ViewConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this._cachedFileList=[];// Chunked render state
-this._activeRebuildFrame=null;this._activeRebuildToken=0;}/**
-	 * Cancel any in-flight chunked rebuild so it does not overlap with a
-	 * fresh navigation.
-	 */_cancelActiveRebuild(){if(this._activeRebuildFrame!==null&&typeof cancelAnimationFrame==='function'){cancelAnimationFrame(this._activeRebuildFrame);this._activeRebuildFrame=null;}this._activeRebuildToken++;}/**
+ */class PictViewFileBrowserListDetail extends libPictView{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_ViewConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this._cachedFileList=[];}/**
 	 * After rendering the container shell, populate the rows.
 	 */onAfterRender(pRenderable){// Render the container with the view hash
 let tmpContainerHTML=this.pict.parseTemplateByHash('FileBrowser-ListDetail-Container-Template',{ViewHash:this.Hash});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ListPane',tmpContainerHTML);this.rebuildList();this.rebuildBreadcrumb();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the file list rows.
-	 *
-	 * For folders with more than _CHUNKED_RENDER_THRESHOLD items, the render
-	 * is split into chunks scheduled via requestAnimationFrame so the main
-	 * thread stays responsive. Smaller folders use the synchronous fast path.
-	 */rebuildList(){// Cancel any in-flight chunked rebuild from a previous folder
-this._cancelActiveRebuild();let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(!tmpListProvider){return;}let tmpFileList=tmpListProvider.getSortedFileList();this._cachedFileList=tmpFileList;let tmpSelectedFile=tmpListProvider.getSelectedFile();if(tmpFileList.length===0){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ListDetail-Empty-Template',{Message:'This folder is empty'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-DetailRows',tmpEmptyHTML);return;}// SMALL FOLDER FAST PATH — keep the existing synchronous behavior
-// for normal-sized folders so there's no perceptible change.
-if(tmpFileList.length<=_CHUNKED_RENDER_THRESHOLD){let tmpHTML='';for(let i=0;i<tmpFileList.length;i++){tmpHTML+=this._buildRowHTML(tmpFileList[i],i,tmpSelectedFile);}this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-DetailRows',tmpHTML);return;}// LARGE FOLDER CHUNKED PATH — paint a loading row immediately, then
-// fill rows in chunks via requestAnimationFrame.
-let tmpLoadingHTML='<div class="retold-remote-filebrowser-loading-row">'+'Loading '+tmpFileList.length.toLocaleString()+' items\u2026'+'</div>';this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-DetailRows',tmpLoadingHTML);this._rebuildListChunked(tmpFileList,tmpSelectedFile);}/**
-	 * Build the HTML for a single row. Extracted so both the fast path
-	 * and the chunked path can share it.
-	 */_buildRowHTML(pEntry,pIndex,pSelectedFile){let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpIsSelected=pSelectedFile&&pSelectedFile.Name===pEntry.Name&&pSelectedFile.Path===pEntry.Path;let tmpRecord={Index:pIndex,Name:pEntry.Name,Icon:tmpListProvider.getEntryIcon(pEntry),SizeFormatted:pEntry.Type==='folder'?'--':tmpListProvider.formatFileSize(pEntry.Size),ModifiedFormatted:tmpListProvider.formatDate(pEntry.Modified),SelectedClass:tmpIsSelected?' selected':'',ClickHandler:"pict.views['"+this.Hash+"'].selectEntry("+pIndex+")",DblClickHandler:"pict.views['"+this.Hash+"'].openEntry("+pIndex+")"};return this.pict.parseTemplateByHash('FileBrowser-ListDetail-Row-Template',tmpRecord);}/**
-	 * Render the file list into chunks via requestAnimationFrame.
-	 * After the first chunk replaces the loading row, each subsequent
-	 * chunk is appended to the rows container.
-	 */_rebuildListChunked(pFileList,pSelectedFile){let tmpSelf=this;let tmpToken=++this._activeRebuildToken;let tmpTotal=pFileList.length;let tmpOffset=0;let _renderNextChunk=function(){if(tmpToken!==tmpSelf._activeRebuildToken){return;}let tmpRowsContainer=document.getElementById('Pict-FileBrowser-DetailRows');if(!tmpRowsContainer){return;}let tmpChunkSize=tmpOffset===0?_CHUNK_FIRST_SIZE:_CHUNK_SUBSEQUENT_SIZE;let tmpEnd=Math.min(tmpOffset+tmpChunkSize,tmpTotal);let tmpChunkHTML='';for(let i=tmpOffset;i<tmpEnd;i++){tmpChunkHTML+=tmpSelf._buildRowHTML(pFileList[i],i,pSelectedFile);}if(tmpOffset===0){// Replace the loading row on the first chunk
-tmpRowsContainer.innerHTML=tmpChunkHTML;}else{// Append subsequent chunks
-tmpRowsContainer.insertAdjacentHTML('beforeend',tmpChunkHTML);}tmpOffset=tmpEnd;if(tmpOffset<tmpTotal){tmpSelf._activeRebuildFrame=requestAnimationFrame(_renderNextChunk);}else{tmpSelf._activeRebuildFrame=null;}};if(typeof requestAnimationFrame==='function'){this._activeRebuildFrame=requestAnimationFrame(_renderNextChunk);}else{// No rAF (shouldn't happen in a browser, but be safe) — fall back
-// to synchronous render
-_renderNextChunk();while(tmpOffset<tmpTotal){_renderNextChunk();}}}/**
+	 */rebuildList(){let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(!tmpListProvider){return;}let tmpFileList=tmpListProvider.getSortedFileList();this._cachedFileList=tmpFileList;let tmpSelectedFile=tmpListProvider.getSelectedFile();if(tmpFileList.length===0){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ListDetail-Empty-Template',{Message:'This folder is empty'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-DetailRows',tmpEmptyHTML);return;}let tmpHTML='';for(let i=0;i<tmpFileList.length;i++){let tmpEntry=tmpFileList[i];let tmpIsSelected=tmpSelectedFile&&tmpSelectedFile.Name===tmpEntry.Name&&tmpSelectedFile.Path===tmpEntry.Path;let tmpRecord={Index:i,Name:tmpEntry.Name,Icon:tmpListProvider.getEntryIcon(tmpEntry),SizeFormatted:tmpEntry.Type==='folder'?'--':tmpListProvider.formatFileSize(tmpEntry.Size),ModifiedFormatted:tmpListProvider.formatDate(tmpEntry.Modified),SelectedClass:tmpIsSelected?' selected':'',ClickHandler:"pict.views['"+this.Hash+"'].selectEntry("+i+")",DblClickHandler:"pict.views['"+this.Hash+"'].openEntry("+i+")"};tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-ListDetail-Row-Template',tmpRecord);}this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-DetailRows',tmpHTML);}/**
 	 * Rebuild the breadcrumb navigation bar.
 	 */rebuildBreadcrumb(){let tmpCurrentLocation=this.getCurrentLocation();let tmpHTML='';// Root segment — use SVG home icon if provider is available
 let tmpIconProvider=this.pict.providers['Pict-FileBrowser-Icons'];let tmpHomeLabel=tmpIconProvider?tmpIconProvider.getIcon('home',16):'\uD83C\uDFE0';tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template',{Label:tmpHomeLabel,ClickHandler:"pict.views['"+this.Hash+"'].navigateToPath('')"});if(tmpCurrentLocation){let tmpParts=tmpCurrentLocation.split('/');let tmpAccumulatedPath='';for(let i=0;i<tmpParts.length;i++){tmpAccumulatedPath=tmpAccumulatedPath?tmpAccumulatedPath+'/'+tmpParts[i]:tmpParts[i];tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Separator-Template',{});if(i===tmpParts.length-1){// Last segment — not clickable
@@ -9580,7 +9553,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
 if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":90,"qs":92}],114:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],115:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');const libProviderFormattingUtilities=require('./providers/Pict-Provider-FormattingUtilities.js');const libProviderToastNotification=require('./providers/Pict-Provider-ToastNotification.js');const libProviderOperationStatus=require('./providers/Pict-Provider-OperationStatus.js');const libProviderCollectionManager=require('./providers/Pict-Provider-CollectionManager.js');const libProviderAISortManager=require('./providers/Pict-Provider-AISortManager.js');const libExtensionMaps=require('./RetoldRemote-ExtensionMaps.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
-const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewImageExplorer=require('./views/PictView-Remote-ImageExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');const libViewFileInfoPanel=require('./views/PictView-Remote-FileInfoPanel.js');const libViewSubimagesPanel=require('./views/PictView-Remote-SubimagesPanel.js');// Application configuration
+const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewImageExplorer=require('./views/PictView-Remote-ImageExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');const libViewFileInfoPanel=require('./views/PictView-Remote-FileInfoPanel.js');const libViewSubimagesPanel=require('./views/PictView-Remote-SubimagesPanel.js');const libViewRegionsBrowser=require('./views/PictView-Remote-RegionsBrowser.js');// Application configuration
 const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configuration.json');/**
  * Retold Remote Application
  *
@@ -9591,7 +9564,7 @@ const _DefaultConfiguration=require('./Pict-Application-RetoldRemote-Configurati
  */class RetoldRemoteApplication extends libContentEditorApplication{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);// Replace parent views with media-focused versions.
 // Re-registering with the same ViewIdentifier replaces the parent's view.
 this.pict.addView('ContentEditor-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('ContentEditor-TopBar',libViewTopBar.default_configuration,libViewTopBar);// Add new views
-this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);this.pict.addView('RetoldRemote-ImageExplorer',libViewImageExplorer.default_configuration,libViewImageExplorer);this.pict.addView('RetoldRemote-VLCSetup',libViewVLCSetup.default_configuration,libViewVLCSetup);this.pict.addView('RetoldRemote-CollectionsPanel',libViewCollectionsPanel.default_configuration,libViewCollectionsPanel);this.pict.addView('RetoldRemote-FileInfoPanel',libViewFileInfoPanel.default_configuration,libViewFileInfoPanel);this.pict.addView('RetoldRemote-SubimagesPanel',libViewSubimagesPanel.default_configuration,libViewSubimagesPanel);// Add new providers
+this.pict.addView('RetoldRemote-Gallery',libViewGallery.default_configuration,libViewGallery);this.pict.addView('RetoldRemote-MediaViewer',libViewMediaViewer.default_configuration,libViewMediaViewer);this.pict.addView('RetoldRemote-ImageViewer',libViewImageViewer.default_configuration,libViewImageViewer);this.pict.addView('RetoldRemote-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('RetoldRemote-VideoExplorer',libViewVideoExplorer.default_configuration,libViewVideoExplorer);this.pict.addView('RetoldRemote-AudioExplorer',libViewAudioExplorer.default_configuration,libViewAudioExplorer);this.pict.addView('RetoldRemote-ImageExplorer',libViewImageExplorer.default_configuration,libViewImageExplorer);this.pict.addView('RetoldRemote-VLCSetup',libViewVLCSetup.default_configuration,libViewVLCSetup);this.pict.addView('RetoldRemote-CollectionsPanel',libViewCollectionsPanel.default_configuration,libViewCollectionsPanel);this.pict.addView('RetoldRemote-FileInfoPanel',libViewFileInfoPanel.default_configuration,libViewFileInfoPanel);this.pict.addView('RetoldRemote-SubimagesPanel',libViewSubimagesPanel.default_configuration,libViewSubimagesPanel);this.pict.addView('RetoldRemote-RegionsBrowser',libViewRegionsBrowser.default_configuration,libViewRegionsBrowser);// Add new providers
 this.pict.addProvider('RetoldRemote-Provider',libProviderRetoldRemote.default_configuration,libProviderRetoldRemote);this.pict.addProvider('RetoldRemote-GalleryNavigation',libProviderGalleryNavigation.default_configuration,libProviderGalleryNavigation);this.pict.addProvider('RetoldRemote-GalleryFilterSort',libProviderGalleryFilterSort.default_configuration,libProviderGalleryFilterSort);this.pict.addProvider('RetoldRemote-Icons',libProviderRetoldRemoteIcons.default_configuration,libProviderRetoldRemoteIcons);this.pict.addProvider('RetoldRemote-Theme',libProviderRetoldRemoteTheme.default_configuration,libProviderRetoldRemoteTheme);this.pict.addProvider('RetoldRemote-FormattingUtilities',libProviderFormattingUtilities.default_configuration,libProviderFormattingUtilities);this.pict.addProvider('RetoldRemote-ToastNotification',libProviderToastNotification.default_configuration,libProviderToastNotification);this.pict.addProvider('RetoldRemote-OperationStatus',libProviderOperationStatus.default_configuration,libProviderOperationStatus);this.pict.addProvider('RetoldRemote-CollectionManager',libProviderCollectionManager.default_configuration,libProviderCollectionManager);this.pict.addProvider('RetoldRemote-AISortManager',libProviderAISortManager.default_configuration,libProviderAISortManager);}onAfterInitializeAsync(fCallback){// Expose pict on window for inline onclick handlers
 if(typeof window!=='undefined'){window.pict=this.pict;}// Initialize RetoldRemote-specific state
 this.pict.AppData.RetoldRemote={ActiveMode:'gallery',// 'gallery' or 'viewer'
@@ -9732,7 +9705,7 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;if(typeof tmpSettings.ListShowExtension==='boolean')tmpRemote.ListShowExtension=tmpSettings.ListShowExtension;if(typeof tmpSettings.ListShowSize==='boolean')tmpRemote.ListShowSize=tmpSettings.ListShowSize;if(typeof tmpSettings.ListShowDate==='boolean')tmpRemote.ListShowDate=tmpSettings.ListShowDate;if(typeof tmpSettings.CollectionsPanelOpen==='boolean')tmpRemote.CollectionsPanelOpen=tmpSettings.CollectionsPanelOpen;if(tmpSettings.CollectionsPanelWidth)tmpRemote.CollectionsPanelWidth=tmpSettings.CollectionsPanelWidth;if(tmpSettings.LastUsedCollectionGUID)tmpRemote.LastUsedCollectionGUID=tmpSettings.LastUsedCollectionGUID;if(tmpSettings.FavoritesGUID)tmpRemote.FavoritesGUID=tmpSettings.FavoritesGUID;if(tmpSettings.AISortSettings&&typeof tmpSettings.AISortSettings==='object'){if(tmpSettings.AISortSettings.AIEndpoint)tmpRemote.AISortSettings.AIEndpoint=tmpSettings.AISortSettings.AIEndpoint;if(tmpSettings.AISortSettings.AIModel)tmpRemote.AISortSettings.AIModel=tmpSettings.AISortSettings.AIModel;if(tmpSettings.AISortSettings.AIProvider)tmpRemote.AISortSettings.AIProvider=tmpSettings.AISortSettings.AIProvider;if(tmpSettings.AISortSettings.NamingTemplate)tmpRemote.AISortSettings.NamingTemplate=tmpSettings.AISortSettings.NamingTemplate;}}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./RetoldRemote-ExtensionMaps.js":117,"./providers/Pict-Provider-AISortManager.js":121,"./providers/Pict-Provider-CollectionManager.js":122,"./providers/Pict-Provider-FormattingUtilities.js":123,"./providers/Pict-Provider-GalleryFilterSort.js":124,"./providers/Pict-Provider-GalleryNavigation.js":125,"./providers/Pict-Provider-OperationStatus.js":126,"./providers/Pict-Provider-RetoldRemote.js":127,"./providers/Pict-Provider-RetoldRemoteIcons.js":128,"./providers/Pict-Provider-RetoldRemoteTheme.js":129,"./providers/Pict-Provider-ToastNotification.js":130,"./views/PictView-Remote-AudioExplorer.js":141,"./views/PictView-Remote-CollectionsPanel.js":142,"./views/PictView-Remote-FileInfoPanel.js":143,"./views/PictView-Remote-Gallery.js":144,"./views/PictView-Remote-ImageExplorer.js":145,"./views/PictView-Remote-ImageViewer.js":146,"./views/PictView-Remote-Layout.js":147,"./views/PictView-Remote-MediaViewer.js":148,"./views/PictView-Remote-SettingsPanel.js":149,"./views/PictView-Remote-SubimagesPanel.js":150,"./views/PictView-Remote-TopBar.js":151,"./views/PictView-Remote-VLCSetup.js":152,"./views/PictView-Remote-VideoExplorer.js":153,"pict-section-filebrowser":63,"retold-content-system":100}],116:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./RetoldRemote-ExtensionMaps.js":117,"./providers/Pict-Provider-AISortManager.js":121,"./providers/Pict-Provider-CollectionManager.js":122,"./providers/Pict-Provider-FormattingUtilities.js":123,"./providers/Pict-Provider-GalleryFilterSort.js":124,"./providers/Pict-Provider-GalleryNavigation.js":125,"./providers/Pict-Provider-OperationStatus.js":126,"./providers/Pict-Provider-RetoldRemote.js":127,"./providers/Pict-Provider-RetoldRemoteIcons.js":128,"./providers/Pict-Provider-RetoldRemoteTheme.js":129,"./providers/Pict-Provider-ToastNotification.js":130,"./views/PictView-Remote-AudioExplorer.js":141,"./views/PictView-Remote-CollectionsPanel.js":142,"./views/PictView-Remote-FileInfoPanel.js":143,"./views/PictView-Remote-Gallery.js":144,"./views/PictView-Remote-ImageExplorer.js":145,"./views/PictView-Remote-ImageViewer.js":146,"./views/PictView-Remote-Layout.js":147,"./views/PictView-Remote-MediaViewer.js":148,"./views/PictView-Remote-RegionsBrowser.js":149,"./views/PictView-Remote-SettingsPanel.js":150,"./views/PictView-Remote-SubimagesPanel.js":151,"./views/PictView-Remote-TopBar.js":152,"./views/PictView-Remote-VLCSetup.js":153,"./views/PictView-Remote-VideoExplorer.js":154,"pict-section-filebrowser":63,"retold-content-system":100}],116:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
@@ -10428,7 +10401,10 @@ let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.FolderCursorHistory[tmpCu
 	 * Close the viewer and return to gallery mode.
 	 */closeViewer(){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='gallery';// Clear viewer file state so collection/favorites resolution
 // falls through to the gallery cursor instead of a stale path
-tmpRemote.CurrentViewerFile='';tmpRemote.CurrentViewerMediaType='';// Exit collection browsing mode
+tmpRemote.CurrentViewerFile='';tmpRemote.CurrentViewerMediaType='';// Notify the layout so any active sidebar tab (Info, Regions, etc.)
+// transitions to its empty state instead of retaining stale content
+// from the file the user just closed.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged('');}// Exit collection browsing mode
 tmpRemote.BrowsingCollection=false;tmpRemote.BrowsingCollectionIndex=-1;let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');// Stop any playing video/audio and release resources before hiding the viewer
 let tmpVideo=document.querySelector('#RetoldRemote-Viewer-Container video');let tmpAudio=document.querySelector('#RetoldRemote-Viewer-Container audio');if(tmpVideo){tmpVideo.pause();tmpVideo.removeAttribute('src');tmpVideo.load();}if(tmpAudio){tmpAudio.pause();tmpAudio.removeAttribute('src');tmpAudio.load();}if(tmpGalleryContainer)tmpGalleryContainer.style.display='';if(tmpViewerContainer)tmpViewerContainer.style.display='none';// Clean up swipe and DF exit listeners
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){if(tmpMediaViewer._cleanupSwipe){tmpMediaViewer._cleanupSwipe();}if(tmpMediaViewer._cleanupDFExitHotspot){tmpMediaViewer._cleanupDFExitHotspot();}}// Restore the hash to the browse route (use hashed identifier when available)
@@ -10967,7 +10943,10 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();tmpIEX.goBack();break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],135:[function(require,module,exports){/**
+ */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();// Escape unwinds one layer at a time: first exit edit mode
+// (if active), then exit new-region selection mode (if active),
+// and only close the whole explorer if neither is active.
+if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._selectionMode){tmpIEX._exitSelectionMode();}else{tmpIEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],135:[function(require,module,exports){/**
  * Sidebar file list keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -11283,7 +11262,9 @@ this._mainCanvas=null;this._overviewCanvas=null;this._resizeObserver=null;}/**
 	 * @param {string} pFilePath - Relative file path
 	 * @param {number} [pSelectionStart] - Optional selection start in seconds
 	 * @param {number} [pSelectionEnd] - Optional selection end in seconds
-	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='audio-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='audio';this._currentPath=pFilePath;this._waveformData=null;this._peaks=[];this._viewStart=0;this._viewEnd=1;this._segmentURL=null;// Store passed-in selection times (in seconds) to apply after waveform loads
+	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='audio-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='audio';this._currentPath=pFilePath;// Notify the layout so active sidebar panels (Info, Regions, etc.)
+// refresh to the new file instead of keeping stale content.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath);}this._waveformData=null;this._peaks=[];this._viewStart=0;this._viewEnd=1;this._segmentURL=null;// Store passed-in selection times (in seconds) to apply after waveform loads
 this._pendingSelectionStartSec=typeof pSelectionStart==='number'&&pSelectionStart>=0?pSelectionStart:-1;this._pendingSelectionEndSec=typeof pSelectionEnd==='number'&&pSelectionEnd>=0?pSelectionEnd:-1;this._selectionStart=-1;this._selectionEnd=-1;// Update the hash.  Replace (not push) when coming from #/view/ to
 // prevent back-button loops when auto-launched from the media viewer.
 let tmpFragProvider=this.pict.providers['RetoldRemote-Provider'];let tmpFragId=tmpFragProvider?tmpFragProvider.getFragmentIdentifier(pFilePath):pFilePath;let tmpNewHash='#/explore-audio/'+tmpFragId;let tmpCurrentHash=window.location.hash||'';if(tmpCurrentHash.indexOf('#/view/')===0){history.replaceState(null,'',tmpNewHash);}else{window.location.hash=tmpNewHash;}// Show viewer container, hide gallery
@@ -11763,12 +11744,24 @@ let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||t
 this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;// { X, Y, Width, Height } in image coords
 this._selectionStart=null;// viewport point where drag began
 this._savedRegions=[];// loaded from server
-}/**
+// Viewer-ready flag — set to true when the OSD viewer's 'open' event
+// fires and the viewport coordinate math is safe to run. This MUST
+// reset on every viewer destroy (including the DZI preview→tile swap)
+// so the saved-region overlays get re-rendered against the new viewer.
+this._viewerReady=false;// Edit mode state (Part B)
+this._editingRegionID=null;this._editDragMode=null;// 'tl'|'tr'|'bl'|'br'|'t'|'r'|'b'|'l'|'body'|null
+this._editDragStart=null;// viewport point where edit drag began
+this._editOriginalRect=null;// OSD Rect captured at press time for delta math
+this._editTracker=null;}/**
 	 * Show the image explorer for a given image file.
 	 *
 	 * @param {string} pFilePath - Relative file path
-	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='image-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='image';this._currentPath=pFilePath;this._dziData=null;this._loading=false;// Reset selection state
-this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;this._selectionStart=null;this._savedRegions=[];// Clean up existing viewer
+	 */showExplorer(pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='image-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='image';this._currentPath=pFilePath;this._dziData=null;this._loading=false;// Notify the layout so any active sidebar tab (Info, Regions, etc.)
+// refreshes to this file instead of showing stale content from the
+// previous file. See PictView-Remote-Layout.js#notifyCurrentFileChanged.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath);}// Reset selection state
+this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;this._selectionStart=null;this._savedRegions=[];this._viewerReady=false;// Reset any in-progress edit mode (Part B)
+this._editingRegionID=null;this._editDragMode=null;this._editDragStart=null;this._editOriginalRect=null;if(this._editTracker){try{this._editTracker.destroy();}catch(pErr){/* ignore */}this._editTracker=null;}// Clean up existing viewer
 if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
 }this._osdViewer=null;}// Update URL hash.
 // When the current hash is #/view/ for the same file (i.e. the media
@@ -11828,7 +11821,10 @@ let tmpRawExts={'nef':true,'nrw':true,'cr2':true,'cr3':true,'crw':true,'arw':tru
 	 * @param {string} pExplicitURL - Optional explicit URL to use instead of content URL
 	 *                                (used for raw camera formats that need a converted preview)
 	 */_initSimpleViewer(pFilePath,pExplicitURL){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');let tmpControls=document.getElementById('RetoldRemote-IEX-Controls');if(tmpLoading)tmpLoading.style.display='none';if(tmpViewerDiv)tmpViewerDiv.style.display='block';if(tmpControls)tmpControls.style.display='';let tmpSelf=this;let tmpContentURL;if(pExplicitURL){tmpContentURL=pExplicitURL;}else{let tmpProvider=this.pict.providers['RetoldRemote-Provider'];tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);}this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:{type:'image',url:tmpContentURL},prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});this._osdViewer.addHandler('zoom',function(){tmpSelf._updateZoomLabel();});this._osdViewer.addHandler('open',function(){// Capture actual image dimensions from the loaded source
-let tmpTiledImage=tmpSelf._osdViewer.world.getItemAt(0);if(tmpTiledImage){let tmpContentSize=tmpTiledImage.getContentSize();if(tmpContentSize){tmpSelf._dziData={Width:tmpContentSize.x,Height:tmpContentSize.y};}}tmpSelf._updateZoomLabel();});if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
+let tmpTiledImage=tmpSelf._osdViewer.world.getItemAt(0);if(tmpTiledImage){let tmpContentSize=tmpTiledImage.getContentSize();if(tmpContentSize){tmpSelf._dziData={Width:tmpContentSize.x,Height:tmpContentSize.y};}}tmpSelf._updateZoomLabel();// Viewer is ready — mark the flag and re-render any saved regions
+// that were loaded before the viewer was open. This is the single
+// source of truth for "overlays render when ready" (see Part A).
+tmpSelf._viewerReady=true;if(tmpSelf._savedRegions&&tmpSelf._savedRegions.length>0){tmpSelf._renderSavedRegionOverlays();}});if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
 	 * Show the preview image immediately, then generate DZI tiles and swap.
 	 *
 	 * @param {string} pFilePath    - Relative file path
@@ -11841,8 +11837,13 @@ this._cancelActiveDziOperation();// Start operation tracking for the DZI generat
 let tmpStatus=this.pict.providers['RetoldRemote-OperationStatus'];let tmpOp=tmpStatus?tmpStatus.startOperation({Label:'Generating deep-zoom tiles',Phase:'Reading image…',Cancelable:true}):null;if(tmpOp){this._activeDziOperationId=tmpOp.OperationId;this._activeDziAbortController=tmpOp.AbortController;}let tmpFetchOptions={};if(tmpOp&&tmpOp.AbortController){tmpFetchOptions.signal=tmpOp.AbortController.signal;}if(tmpOp){tmpFetchOptions.headers={'X-Op-Id':tmpOp.OperationId};}// 2. Generate DZI tiles in the background
 fetch('/api/media/dzi?path='+pPathParam,tmpFetchOptions).then(pResponse=>pResponse.json()).then(pResult=>{tmpSelf._loading=false;if(!pResult||!pResult.Success){if(tmpOp&&tmpStatus){tmpStatus.errorOperation(tmpOp.OperationId,{message:pResult&&pResult.Error||'DZI generation failed'});}// DZI generation failed — the preview is already showing
 if(!tmpPreviewURL){tmpSelf._showSimpleImage(pFilePath);}return;}if(tmpOp&&tmpStatus){tmpStatus.completeOperation(tmpOp.OperationId);}tmpSelf._activeDziOperationId=null;tmpSelf._activeDziAbortController=null;// 3. Swap the preview for the full DZI tile viewer
-tmpSelf._dziData=pResult;tmpSelf._showInfo(pResult);// Destroy the preview viewer and replace with tile viewer
-if(tmpSelf._osdViewer){try{tmpSelf._osdViewer.destroy();}catch(e){/* ignore */}tmpSelf._osdViewer=null;}// Clear the viewer div for fresh OSD init
+tmpSelf._dziData=pResult;tmpSelf._showInfo(pResult);// Destroy the preview viewer and replace with tile viewer.
+// Reset _viewerReady so the new viewer's open handler
+// re-renders saved overlays against the new viewer instance.
+// Any overlays attached to the preview viewer are gone once
+// it's destroyed, so we MUST re-render from _savedRegions
+// against the new viewer.
+if(tmpSelf._osdViewer){try{tmpSelf._osdViewer.destroy();}catch(e){/* ignore */}tmpSelf._osdViewer=null;}tmpSelf._viewerReady=false;// Clear the viewer div for fresh OSD init
 let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(tmpViewerDiv){tmpViewerDiv.innerHTML='';}tmpSelf._initViewer(pResult);}).catch(pError=>{tmpSelf._loading=false;if(pError&&pError.name==='AbortError'){return;}if(tmpOp&&tmpStatus){tmpStatus.errorOperation(tmpOp.OperationId,pError);}// Tiles failed — the preview is already showing, leave it
 if(!tmpPreviewURL){tmpSelf._showSimpleImage(pFilePath);}});}/**
 	 * Cancel any in-flight DZI generation. Called on navigate-away and
@@ -11866,7 +11867,10 @@ let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');let tmpViewer
 // We serve them at: /api/media/dzi-tile/{cacheKey}/{level}/{col}_{row}.{format}
 let tmpTileSource={Image:{xmlns:'http://schemas.microsoft.com/deepzoom/2008',Url:'/api/media/dzi-tile/'+encodeURIComponent(pDziData.CacheKey)+'/',Format:pDziData.Format,Overlap:String(pDziData.Overlap),TileSize:String(pDziData.TileSize),Size:{Width:String(pDziData.Width),Height:String(pDziData.Height)}}};this._osdViewer=OpenSeadragon({id:'RetoldRemote-IEX-Viewer',tileSources:tmpTileSource,prefixUrl:'',showNavigationControl:false,showNavigator:true,navigatorPosition:'BOTTOM_RIGHT',navigatorSizeRatio:0.15,animationTime:0.3,blendTime:0.1,minZoomLevel:0.1,maxZoomLevel:20,visibilityRatio:0.5,constrainDuringPan:false,gestureSettingsMouse:{scrollToZoom:true,clickToZoom:true,dblClickToZoom:true,flickEnabled:false},gestureSettingsTouch:{pinchToZoom:true,flickEnabled:true,flickMinSpeed:120,flickMomentum:0.25}});// Track zoom level changes
 this._osdViewer.addHandler('zoom',function(pEvent){tmpSelf._updateZoomLabel();});// Track mouse position for coordinate display
-this._osdViewer.addHandler('open',function(){tmpSelf._updateZoomLabel();});// Mouse tracker for coordinates
+this._osdViewer.addHandler('open',function(){tmpSelf._updateZoomLabel();// Viewer is ready — mark the flag and re-render any saved regions
+// that may have loaded before the tile viewer finished opening
+// (or before the preview→tile swap completed). See Part A notes.
+tmpSelf._viewerReady=true;if(tmpSelf._savedRegions&&tmpSelf._savedRegions.length>0){tmpSelf._renderSavedRegionOverlays();}});// Mouse tracker for coordinates
 if(typeof OpenSeadragon.MouseTracker!=='undefined'){new OpenSeadragon.MouseTracker({element:tmpViewerDiv,moveHandler:function(pEvent){tmpSelf._updateCoords(pEvent.position);}});}}/**
 	 * Update the zoom level display.
 	 */_updateZoomLabel(){if(!this._osdViewer){return;}let tmpZoomLabel=document.getElementById('RetoldRemote-IEX-ZoomLabel');if(tmpZoomLabel){let tmpZoom=this._osdViewer.viewport.getZoom(true);// Convert viewport zoom to percentage of "home" zoom
@@ -11905,18 +11909,23 @@ this._osdViewer.addOverlay({element:tmpOverlay,location:new OpenSeadragon.Rect(t
 	 * Handle selection release — compute image-coordinate region and show label input.
 	 */_onSelectionRelease(pEvent){if(!this._osdViewer||!this._selectionStart){return;}let tmpEnd=this._osdViewer.viewport.pointFromPixel(pEvent.position);// Convert viewport rectangle to image pixel coordinates
 let tmpVpX=Math.min(this._selectionStart.x,tmpEnd.x);let tmpVpY=Math.min(this._selectionStart.y,tmpEnd.y);let tmpVpW=Math.abs(tmpEnd.x-this._selectionStart.x);let tmpVpH=Math.abs(tmpEnd.y-this._selectionStart.y);let tmpTopLeft=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpX,tmpVpY));let tmpBottomRight=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpX+tmpVpW,tmpVpY+tmpVpH));let tmpRegion={X:Math.max(0,Math.round(tmpTopLeft.x)),Y:Math.max(0,Math.round(tmpTopLeft.y)),Width:Math.round(tmpBottomRight.x-tmpTopLeft.x),Height:Math.round(tmpBottomRight.y-tmpTopLeft.y)};// Clamp to image dimensions
-if(this._dziData){if(tmpRegion.X+tmpRegion.Width>this._dziData.Width){tmpRegion.Width=this._dziData.Width-tmpRegion.X;}if(tmpRegion.Y+tmpRegion.Height>this._dziData.Height){tmpRegion.Height=this._dziData.Height-tmpRegion.Y;}}// Ignore tiny selections (likely accidental clicks)
+this._clampRegionToImage(tmpRegion);// Ignore tiny selections (likely accidental clicks)
 if(tmpRegion.Width<5||tmpRegion.Height<5){this._removeActiveSelectionOverlay();return;}this._selectionRegion=tmpRegion;// Show the inline label input in the controls bar
 let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpLabelWrap){tmpLabelWrap.style.display='';}if(tmpCoords){tmpCoords.style.display='none';}// Focus the label field
 let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');if(tmpField){tmpField.value='';tmpField.focus();}}/**
-	 * Save the current selection with the entered label.
-	 */saveSelectionLabel(){if(!this._selectionRegion){return;}let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');let tmpLabel=tmpField?tmpField.value.trim():'';let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Path:this._currentPath,Region:{Label:tmpLabel,X:this._selectionRegion.X,Y:this._selectionRegion.Y,Width:this._selectionRegion.Width,Height:this._selectionRegion.Height}})}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._savedRegions=pResult.Regions||[];// Remove the active selection overlay and render persistent ones
+	 * Save a NEW selection (drawn by the user) with the entered label.
+	 * Renamed from saveSelectionLabel so the public saveSelectionLabel()
+	 * can dispatch to either this or the edit-mode PUT helper based on
+	 * whether _editingRegionID is set.
+	 */_saveNewRegionLabel(){if(!this._selectionRegion){return;}let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');let tmpLabel=tmpField?tmpField.value.trim():'';let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Path:this._currentPath,Region:{Label:tmpLabel,X:this._selectionRegion.X,Y:this._selectionRegion.Y,Width:this._selectionRegion.Width,Height:this._selectionRegion.Height}})}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._savedRegions=pResult.Regions||[];// Remove the active selection overlay and render persistent ones
 tmpSelf._removeActiveSelectionOverlay();tmpSelf._renderSavedRegionOverlays();// Notify the user
 let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Subimage region saved'+(tmpLabel?': '+tmpLabel:''));}// Update the sidebar panel if visible
 let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel){tmpSubPanel.render();}}}).catch(pErr=>{let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Failed to save region: '+pErr.message);}});// Hide label input, show coords
 this._selectionRegion=null;this._selectionStart=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
-	 * Cancel the current in-progress selection.
-	 */cancelSelection(){this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
+	 * Cancel a new in-progress selection. Renamed from cancelSelection
+	 * so the public cancelSelection() can dispatch to either this or
+	 * _exitRegionEditMode based on state.
+	 */_cancelNewSelection(){this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
 	 * Remove the active (in-progress) selection overlay.
 	 */_removeActiveSelectionOverlay(){let tmpActive=document.getElementById('RetoldRemote-IEX-ActiveSelection');if(tmpActive&&this._osdViewer){try{this._osdViewer.removeOverlay(tmpActive);}catch(pErr){// May not be an overlay; just remove from DOM
 if(tmpActive.parentElement){tmpActive.parentElement.removeChild(tmpActive);}}}this._selectionOverlay=null;}// -----------------------------------------------------------------
@@ -11925,18 +11934,55 @@ if(tmpActive.parentElement){tmpActive.parentElement.removeChild(tmpActive);}}}th
 /**
 	 * Load saved subimage regions from the server.
 	 *
+	 * Stores the regions in `_savedRegions` and triggers a render IF the
+	 * viewer is already open. Otherwise the open handler will call the
+	 * render once it fires — this is the single source of truth for
+	 * "render when ready", avoiding the race between the regions fetch
+	 * and the OSD 'open' event.
+	 *
+	 * Captures pFilePath in closure so a stale async response from an
+	 * earlier file doesn't overwrite the regions of a later-opened file
+	 * during rapid navigation.
+	 *
 	 * @param {string} pFilePath - Relative file path
-	 */_loadSavedRegions(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/subimage-regions?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success&&Array.isArray(pResult.Regions)){tmpSelf._savedRegions=pResult.Regions;tmpSelf._renderSavedRegionOverlays();}}).catch(()=>{// Silently ignore — regions are optional
+	 */_loadSavedRegions(pFilePath){let tmpSelf=this;let tmpRequestedPath=pFilePath;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/subimage-regions?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{// Abort if the user has already navigated to a different file.
+if(tmpSelf._currentPath!==tmpRequestedPath){return;}if(pResult&&pResult.Success&&Array.isArray(pResult.Regions)){tmpSelf._savedRegions=pResult.Regions;if(tmpSelf._viewerReady){tmpSelf._renderSavedRegionOverlays();}// If not ready yet, the viewer's 'open' handler will
+// detect _savedRegions.length > 0 and render.
+}}).catch(()=>{// Silently ignore — regions are optional
 });}/**
 	 * Render all saved regions as OSD overlays with colored borders and labels.
-	 */_renderSavedRegionOverlays(){if(!this._osdViewer){return;}// Remove existing saved-region overlays
-let tmpExisting=document.querySelectorAll('.retold-remote-iex-region-overlay');for(let i=0;i<tmpExisting.length;i++){try{this._osdViewer.removeOverlay(tmpExisting[i]);}catch(pErr){if(tmpExisting[i].parentElement){tmpExisting[i].parentElement.removeChild(tmpExisting[i]);}}}// Render each saved region
-for(let i=0;i<this._savedRegions.length;i++){let tmpRegion=this._savedRegions[i];this._addRegionOverlay(tmpRegion);}}/**
+	 *
+	 * Idempotent: safely removes any existing saved-region overlays (scoped
+	 * to the current viewer's container to avoid clobbering overlays in
+	 * other viewer instances during rapid swaps) before re-adding each
+	 * region. Can be called any number of times after the viewer's 'open'
+	 * event has fired.
+	 */_renderSavedRegionOverlays(){if(!this._osdViewer){return;}// Remove existing saved-region overlays scoped to this viewer's
+// container (NOT the whole document — during the DZI preview→tile
+// swap two viewer instances may briefly coexist).
+let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(tmpViewerDiv){let tmpExisting=tmpViewerDiv.querySelectorAll('.retold-remote-iex-region-overlay');for(let i=0;i<tmpExisting.length;i++){try{this._osdViewer.removeOverlay(tmpExisting[i]);}catch(pErr){if(tmpExisting[i].parentElement){tmpExisting[i].parentElement.removeChild(tmpExisting[i]);}}}}// Render each saved region
+for(let i=0;i<this._savedRegions.length;i++){let tmpRegion=this._savedRegions[i];this._addRegionOverlay(tmpRegion);}// If an edit is in progress, re-append drag handles to the
+// freshly-rendered overlay element. (The old overlay element was
+// destroyed above, so the handles went with it.)
+if(this._editingRegionID&&tmpViewerDiv){let tmpEditingEl=tmpViewerDiv.querySelector('.retold-remote-iex-region-overlay[data-region-id="'+this._editingRegionID+'"]');if(tmpEditingEl){this._appendEditHandles(tmpEditingEl);}}}/**
 	 * Add a single region overlay to the OSD viewer.
 	 *
+	 * Saved overlays use `pointer-events: auto` so the double-click edit
+	 * handler can fire; a `mousedown` listener calls `stopPropagation()`
+	 * so single-click pan still works outside the overlay rectangles.
+	 * See Part B (edit mode) for the full interaction model.
+	 *
 	 * @param {object} pRegion - { ID, Label, X, Y, Width, Height }
-	 */_addRegionOverlay(pRegion){if(!this._osdViewer||!this._dziData){return;}let tmpEl=document.createElement('div');tmpEl.className='retold-remote-iex-region-overlay';tmpEl.setAttribute('data-region-id',pRegion.ID);tmpEl.style.cssText='border: 2px solid rgba(229, 192, 123, 0.85); background: rgba(229, 192, 123, 0.08); pointer-events: none; position: relative;';// Label badge
-if(pRegion.Label){let tmpLabelEl=document.createElement('span');tmpLabelEl.style.cssText='position:absolute;top:-1px;left:-1px;background:rgba(229,192,123,0.9);color:#282c34;font-size:0.65rem;padding:1px 5px;border-radius:0 0 3px 0;white-space:nowrap;pointer-events:none;';tmpLabelEl.textContent=pRegion.Label;tmpEl.appendChild(tmpLabelEl);}// Convert image coordinates to viewport coordinates
+	 */_addRegionOverlay(pRegion){if(!this._osdViewer){return;}let tmpSelf=this;let tmpEl=document.createElement('div');tmpEl.className='retold-remote-iex-region-overlay';tmpEl.setAttribute('data-region-id',pRegion.ID);tmpEl.style.cssText='border: 2px solid rgba(229, 192, 123, 0.85); background: rgba(229, 192, 123, 0.08); pointer-events: auto; position: relative; cursor: pointer;';// Label badge
+if(pRegion.Label){let tmpLabelEl=document.createElement('span');tmpLabelEl.className='retold-remote-iex-region-label';tmpLabelEl.style.cssText='position:absolute;top:-1px;left:-1px;background:rgba(229,192,123,0.9);color:#282c34;font-size:0.65rem;padding:1px 5px;border-radius:0 0 3px 0;white-space:nowrap;pointer-events:none;';tmpLabelEl.textContent=pRegion.Label;tmpEl.appendChild(tmpLabelEl);}// Highlight the currently-edited region and dim others.
+if(this._editingRegionID&&this._editingRegionID===pRegion.ID){tmpEl.style.border='2px solid rgba(97, 175, 239, 0.95)';tmpEl.style.background='rgba(97, 175, 239, 0.15)';tmpEl.style.opacity='1';}else if(this._editingRegionID){tmpEl.style.opacity='0.35';}// Single mousedown on a saved overlay does NOT enter edit mode
+// (that would steal pan). Just stop propagation so OSD's click-to-
+// zoom / pan-drag doesn't happen inside the rectangle. Actual edit-
+// mode entry happens on double-click (see below).
+tmpEl.addEventListener('mousedown',function(pEvent){// Only block propagation when NOT already in edit mode on this region.
+// When editing this region, the viewer-level edit tracker handles
+// press/drag/release on the overlay and its handles.
+if(tmpSelf._editingRegionID!==pRegion.ID){pEvent.stopPropagation();}});tmpEl.addEventListener('dblclick',function(pEvent){pEvent.stopPropagation();pEvent.preventDefault();tmpSelf._enterRegionEditMode(pRegion.ID);});// Convert image coordinates to viewport coordinates
 let tmpImageRect=new OpenSeadragon.Rect(pRegion.X,pRegion.Y,pRegion.Width,pRegion.Height);let tmpViewportRect=this._osdViewer.viewport.imageToViewportRectangle(tmpImageRect);this._osdViewer.addOverlay({element:tmpEl,location:tmpViewportRect});}/**
 	 * Navigate to (zoom into) a specific saved region by ID.
 	 *
@@ -11974,7 +12020,120 @@ if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.style.display='none';}let tmpBody=document.getElementById('RetoldRemote-IEX-Body');if(tmpBody){let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpBody.innerHTML='<div class="retold-remote-iex-error">'+'<div class="retold-remote-iex-error-message">'+tmpFmt.escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()">Back to Image</button>'+'</div>';}}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":88}],146:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
+	 */_showError(pMessage){let tmpLoading=document.getElementById('RetoldRemote-IEX-Loading');if(tmpLoading){tmpLoading.style.display='none';}let tmpBody=document.getElementById('RetoldRemote-IEX-Body');if(tmpBody){let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];tmpBody.innerHTML='<div class="retold-remote-iex-error">'+'<div class="retold-remote-iex-error-message">'+tmpFmt.escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-iex-nav-btn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].goBack()">Back to Image</button>'+'</div>';}}// -----------------------------------------------------------------
+// Shared helpers
+// -----------------------------------------------------------------
+/**
+	 * Clamp a region's X/Y/Width/Height to the image dimensions,
+	 * mutating the passed object in place. No-op if the image dimensions
+	 * aren't known yet.
+	 *
+	 * Reused by both the new-region release handler and the edit-mode
+	 * drag/resize logic so bounds-checking stays consistent.
+	 *
+	 * @param {object} pRegion - { X, Y, Width, Height } mutated in place
+	 */_clampRegionToImage(pRegion){if(!pRegion)return;// Non-negative origin
+if(pRegion.X<0){pRegion.Width+=pRegion.X;pRegion.X=0;}if(pRegion.Y<0){pRegion.Height+=pRegion.Y;pRegion.Y=0;}// Fit within image width/height
+if(this._dziData){if(pRegion.X+pRegion.Width>this._dziData.Width){pRegion.Width=this._dziData.Width-pRegion.X;}if(pRegion.Y+pRegion.Height>this._dziData.Height){pRegion.Height=this._dziData.Height-pRegion.Y;}}// Enforce minimum size (5×5)
+if(pRegion.Width<5)pRegion.Width=5;if(pRegion.Height<5)pRegion.Height=5;}// -----------------------------------------------------------------
+// Edit mode for saved regions (Part B)
+// -----------------------------------------------------------------
+/**
+	 * Enter edit mode for a specific saved region. Highlights the region,
+	 * dims the others, appends drag handles, and installs drag listeners
+	 * for move/resize. Also populates the inline label input with the
+	 * region's current label so the user can edit it in place.
+	 *
+	 * Entering edit mode automatically exits new-region selection mode
+	 * (they're mutually exclusive).
+	 *
+	 * @param {string} pRegionID - ID of the region to edit
+	 */_enterRegionEditMode(pRegionID){// Find the region
+let tmpRegion=null;for(let i=0;i<this._savedRegions.length;i++){if(this._savedRegions[i].ID===pRegionID){tmpRegion=this._savedRegions[i];break;}}if(!tmpRegion){return;}// Mutually exclusive with new-region selection mode
+if(this._selectionMode){this._exitSelectionMode();}// If already editing a different region, exit that first
+if(this._editingRegionID&&this._editingRegionID!==pRegionID){this._exitRegionEditMode();}this._editingRegionID=pRegionID;this._editDragMode=null;this._editDragStart=null;this._editOriginalRect=null;// Disable OSD panning while in edit mode so drags on the handles
+// don't also pan the viewer.
+if(this._osdViewer){this._osdViewer.setMouseNavEnabled(false);}// Re-render overlays so the selected one gets highlight/other dimmed.
+// _addRegionOverlay checks this._editingRegionID for styling, and
+// _renderSavedRegionOverlays re-appends the drag handles via
+// _appendEditHandles now that this._editingRegionID is set.
+this._renderSavedRegionOverlays();// Show the inline label input with the current label pre-filled
+let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');if(tmpLabelWrap)tmpLabelWrap.style.display='';if(tmpCoords)tmpCoords.style.display='none';if(tmpField){tmpField.value=tmpRegion.Label||'';// Repurpose the Save button to save the edited region rather
+// than create a new one. We swap the onclick via a flag.
+tmpField.setAttribute('data-edit-mode','1');tmpField.focus();tmpField.select();}}/**
+	 * Exit edit mode, cleaning up handles, restoring overlay styles,
+	 * and re-enabling OSD panning.
+	 */_exitRegionEditMode(){this._editingRegionID=null;this._editDragMode=null;this._editDragStart=null;this._editOriginalRect=null;// Remove any lingering document-level drag listeners (should be
+// gone already, but be defensive)
+if(this._editDocMoveHandler){document.removeEventListener('mousemove',this._editDocMoveHandler);this._editDocMoveHandler=null;}if(this._editDocUpHandler){document.removeEventListener('mouseup',this._editDocUpHandler);this._editDocUpHandler=null;}// Re-enable OSD panning
+if(this._osdViewer){this._osdViewer.setMouseNavEnabled(true);}// Re-render overlays to restore normal styling (no highlight/dim)
+this._renderSavedRegionOverlays();// Hide the label input
+let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');if(tmpLabelWrap)tmpLabelWrap.style.display='none';if(tmpCoords)tmpCoords.style.display='';if(tmpField){tmpField.removeAttribute('data-edit-mode');tmpField.value='';}}/**
+	 * Append 8 drag handles (4 corners + 4 edges) to a region overlay.
+	 * Each handle has a 16×16 invisible hit area over a 6×6 visual dot
+	 * so they're easy to grab on both mouse and touch.
+	 *
+	 * @param {HTMLElement} pOverlayEl - The overlay element to decorate
+	 */_appendEditHandles(pOverlayEl){let tmpSelf=this;let tmpHandles=[{key:'tl',css:'top:-8px;left:-8px;cursor:nwse-resize;'},{key:'tr',css:'top:-8px;right:-8px;cursor:nesw-resize;'},{key:'bl',css:'bottom:-8px;left:-8px;cursor:nesw-resize;'},{key:'br',css:'bottom:-8px;right:-8px;cursor:nwse-resize;'},{key:'t',css:'top:-8px;left:50%;transform:translateX(-50%);cursor:ns-resize;'},{key:'b',css:'bottom:-8px;left:50%;transform:translateX(-50%);cursor:ns-resize;'},{key:'l',css:'top:50%;left:-8px;transform:translateY(-50%);cursor:ew-resize;'},{key:'r',css:'top:50%;right:-8px;transform:translateY(-50%);cursor:ew-resize;'}];for(let i=0;i<tmpHandles.length;i++){let tmpHandleInfo=tmpHandles[i];let tmpH=document.createElement('div');tmpH.className='retold-remote-iex-edit-handle';tmpH.setAttribute('data-handle',tmpHandleInfo.key);tmpH.style.cssText='position:absolute;width:16px;height:16px;pointer-events:auto;z-index:10;'+tmpHandleInfo.css;// Visible dot inside the hit area
+let tmpDot=document.createElement('div');tmpDot.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#61afef;border:1.5px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.5);';tmpH.appendChild(tmpDot);tmpH.addEventListener('mousedown',function(pEvent){pEvent.stopPropagation();pEvent.preventDefault();tmpSelf._onEditHandlePress(tmpHandleInfo.key,pEvent);});pOverlayEl.appendChild(tmpH);}// Body drag (move) — the overlay element itself
+pOverlayEl.addEventListener('mousedown',function(pEvent){// Only handle body clicks when clicking the overlay itself (not a child handle)
+if(pEvent.target!==pOverlayEl){return;}if(tmpSelf._editingRegionID!==pOverlayEl.getAttribute('data-region-id')){return;}pEvent.stopPropagation();pEvent.preventDefault();tmpSelf._onEditHandlePress('body',pEvent);});// Make the overlay element display cursor:move while in edit mode
+pOverlayEl.style.cursor='move';}/**
+	 * Start an edit-mode drag. Captures the starting point and the
+	 * overlay's current rect, installs document-level move/up listeners,
+	 * and tracks which handle (or body) the drag is operating on.
+	 *
+	 * @param {string} pHandleKey - 'tl'|'tr'|'bl'|'br'|'t'|'r'|'b'|'l'|'body'
+	 * @param {MouseEvent} pEvent
+	 */_onEditHandlePress(pHandleKey,pEvent){if(!this._osdViewer)return;if(!this._editingRegionID)return;let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(!tmpViewerDiv)return;this._editDragMode=pHandleKey;// Capture starting viewport point (converted from client coords)
+let tmpRect=tmpViewerDiv.getBoundingClientRect();let tmpLocalX=pEvent.clientX-tmpRect.left;let tmpLocalY=pEvent.clientY-tmpRect.top;this._editDragStart=this._osdViewer.viewport.pointFromPixel(new OpenSeadragon.Point(tmpLocalX,tmpLocalY));// Capture the overlay's current viewport rect (from the saved region)
+let tmpRegion=this._findSavedRegion(this._editingRegionID);if(!tmpRegion){this._editDragMode=null;return;}let tmpImageRect=new OpenSeadragon.Rect(tmpRegion.X,tmpRegion.Y,tmpRegion.Width,tmpRegion.Height);this._editOriginalRect=this._osdViewer.viewport.imageToViewportRectangle(tmpImageRect);// Install document-level move + up listeners. Using native DOM
+// listeners rather than OSD MouseTracker so the drag isn't
+// constrained to the viewer div — the user can drag past the edge.
+let tmpSelf=this;this._editDocMoveHandler=function(pMoveEvent){tmpSelf._onEditHandleMove(pMoveEvent);};this._editDocUpHandler=function(pUpEvent){tmpSelf._onEditHandleRelease(pUpEvent);};document.addEventListener('mousemove',this._editDocMoveHandler);document.addEventListener('mouseup',this._editDocUpHandler);}/**
+	 * Update the overlay rect during an edit drag.
+	 *
+	 * @param {MouseEvent} pEvent
+	 */_onEditHandleMove(pEvent){if(!this._osdViewer||!this._editDragStart||!this._editOriginalRect||!this._editDragMode){return;}let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(!tmpViewerDiv)return;let tmpRect=tmpViewerDiv.getBoundingClientRect();let tmpLocalX=pEvent.clientX-tmpRect.left;let tmpLocalY=pEvent.clientY-tmpRect.top;let tmpCurrent=this._osdViewer.viewport.pointFromPixel(new OpenSeadragon.Point(tmpLocalX,tmpLocalY));let tmpDx=tmpCurrent.x-this._editDragStart.x;let tmpDy=tmpCurrent.y-this._editDragStart.y;// Apply the delta to the original rect based on drag mode
+let tmpX=this._editOriginalRect.x;let tmpY=this._editOriginalRect.y;let tmpW=this._editOriginalRect.width;let tmpH=this._editOriginalRect.height;switch(this._editDragMode){case'body':tmpX+=tmpDx;tmpY+=tmpDy;break;case'tl':tmpX+=tmpDx;tmpY+=tmpDy;tmpW-=tmpDx;tmpH-=tmpDy;break;case'tr':tmpY+=tmpDy;tmpW+=tmpDx;tmpH-=tmpDy;break;case'bl':tmpX+=tmpDx;tmpW-=tmpDx;tmpH+=tmpDy;break;case'br':tmpW+=tmpDx;tmpH+=tmpDy;break;case't':tmpY+=tmpDy;tmpH-=tmpDy;break;case'b':tmpH+=tmpDy;break;case'l':tmpX+=tmpDx;tmpW-=tmpDx;break;case'r':tmpW+=tmpDx;break;}// Handle inversion: if width or height went negative, flip
+if(tmpW<0){tmpX+=tmpW;tmpW=-tmpW;}if(tmpH<0){tmpY+=tmpH;tmpH=-tmpH;}// Get the overlay element and update its position
+let tmpOverlayEl=tmpViewerDiv.querySelector('.retold-remote-iex-region-overlay[data-region-id="'+this._editingRegionID+'"]');if(tmpOverlayEl){this._osdViewer.updateOverlay(tmpOverlayEl,new OpenSeadragon.Rect(tmpX,tmpY,tmpW,tmpH));}}/**
+	 * Finalize an edit drag: convert viewport rect back to image coords,
+	 * clamp, mutate the saved region optimistically, and PUT to the server.
+	 */_onEditHandleRelease(pEvent){// Remove document-level listeners
+if(this._editDocMoveHandler){document.removeEventListener('mousemove',this._editDocMoveHandler);this._editDocMoveHandler=null;}if(this._editDocUpHandler){document.removeEventListener('mouseup',this._editDocUpHandler);this._editDocUpHandler=null;}if(!this._osdViewer||!this._editingRegionID||!this._editDragMode){this._editDragMode=null;return;}let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(!tmpViewerDiv){this._editDragMode=null;return;}let tmpOverlayEl=tmpViewerDiv.querySelector('.retold-remote-iex-region-overlay[data-region-id="'+this._editingRegionID+'"]');if(!tmpOverlayEl){this._editDragMode=null;return;}// Get the current viewport rect from the overlay registry
+let tmpOverlayRec=this._osdViewer.getOverlayById(tmpOverlayEl);if(!tmpOverlayRec||!tmpOverlayRec.location){this._editDragMode=null;return;}let tmpVpRect=tmpOverlayRec.location;let tmpTopLeft=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpRect.x,tmpVpRect.y));let tmpBottomRight=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpRect.x+tmpVpRect.width,tmpVpRect.y+tmpVpRect.height));let tmpNewRegion={X:Math.round(tmpTopLeft.x),Y:Math.round(tmpTopLeft.y),Width:Math.round(tmpBottomRight.x-tmpTopLeft.x),Height:Math.round(tmpBottomRight.y-tmpTopLeft.y)};this._clampRegionToImage(tmpNewRegion);// Find the saved region and store the previous rect for revert-on-fail
+let tmpRegion=this._findSavedRegion(this._editingRegionID);if(!tmpRegion){this._editDragMode=null;return;}let tmpPrevious={X:tmpRegion.X,Y:tmpRegion.Y,Width:tmpRegion.Width,Height:tmpRegion.Height};// Only PUT if something actually changed
+if(tmpPrevious.X===tmpNewRegion.X&&tmpPrevious.Y===tmpNewRegion.Y&&tmpPrevious.Width===tmpNewRegion.Width&&tmpPrevious.Height===tmpNewRegion.Height){this._editDragMode=null;return;}// Optimistic update: mutate local state and PUT in background
+tmpRegion.X=tmpNewRegion.X;tmpRegion.Y=tmpNewRegion.Y;tmpRegion.Width=tmpNewRegion.Width;tmpRegion.Height=tmpNewRegion.Height;this._editDragMode=null;this._putRegionUpdate(tmpRegion.ID,{X:tmpNewRegion.X,Y:tmpNewRegion.Y,Width:tmpNewRegion.Width,Height:tmpNewRegion.Height},tmpPrevious);}/**
+	 * Save the label being edited (called from the Save button and Enter key
+	 * when data-edit-mode is set on the label field). Dispatches to either
+	 * the new-region saver or the edit-mode PUT based on state.
+	 */saveSelectionLabel(){// If we're in edit mode, save the label via PUT instead of creating
+// a new region.
+if(this._editingRegionID){let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');let tmpNewLabel=tmpField?tmpField.value.trim():'';let tmpRegion=this._findSavedRegion(this._editingRegionID);if(!tmpRegion){this._exitRegionEditMode();return;}let tmpPreviousLabel=tmpRegion.Label||'';if(tmpNewLabel===tmpPreviousLabel){// No change — just exit edit mode
+this._exitRegionEditMode();return;}// Optimistic update
+tmpRegion.Label=tmpNewLabel;let tmpRegionID=this._editingRegionID;this._exitRegionEditMode();this._putRegionUpdate(tmpRegionID,{Label:tmpNewLabel},{Label:tmpPreviousLabel});return;}// Not in edit mode — fall through to the original new-region save
+return this._saveNewRegionLabel();}/**
+	 * PUT a partial update for a region (label or geometry). Reverts the
+	 * passed `pPrevious` fields on failure and shows a toast.
+	 *
+	 * @param {string} pRegionID - Region ID
+	 * @param {object} pFields   - Fields to update (subset of Label/X/Y/Width/Height)
+	 * @param {object} pPrevious - Previous values for revert-on-failure
+	 */_putRegionUpdate(pRegionID,pFields,pPrevious){let tmpSelf=this;let tmpBody=Object.assign({Path:this._currentPath},pFields);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success){// Revert optimistic changes
+tmpSelf._revertRegion(pRegionID,pPrevious);tmpSelf._renderSavedRegionOverlays();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){let tmpMsg=pResult&&pResult.Error?'Failed to save: '+pResult.Error:'Failed to save region update (file may have been modified).';tmpToast.showToast(tmpMsg);}return;}// Success — the server response contains the authoritative list
+if(Array.isArray(pResult.Regions)){tmpSelf._savedRegions=pResult.Regions;}tmpSelf._renderSavedRegionOverlays();// Update sidebar — use refresh() to force a re-fetch so the
+// panel picks up the updated geometry/label instead of using
+// its stale cached _regions array.
+let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.refresh==='function'){tmpSubPanel.refresh();}let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region updated');}}).catch(pError=>{// Revert optimistic changes
+tmpSelf._revertRegion(pRegionID,pPrevious);tmpSelf._renderSavedRegionOverlays();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Network error saving region: '+pError.message);}});}/**
+	 * Revert in-memory region fields to a previous snapshot.
+	 */_revertRegion(pRegionID,pPrevious){if(!pPrevious)return;let tmpRegion=this._findSavedRegion(pRegionID);if(!tmpRegion)return;for(let tmpKey in pPrevious){tmpRegion[tmpKey]=pPrevious[tmpKey];}}/**
+	 * Look up a saved region by ID.
+	 */_findSavedRegion(pRegionID){for(let i=0;i<this._savedRegions.length;i++){if(this._savedRegions[i].ID===pRegionID){return this._savedRegions[i];}}return null;}/**
+	 * Cancel handler — also exits edit mode if active.
+	 */cancelSelection(){if(this._editingRegionID){this._exitRegionEditMode();return;}return this._cancelNewSelection();}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":88}],146:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
 	 *
@@ -12075,7 +12234,24 @@ if(pTab==='favorites'){this.renderFavoritesList();}// Info tab: render the file 
 if(pTab==='info'){let tmpInfoView=this.pict.views['RetoldRemote-FileInfoPanel'];if(tmpInfoView){tmpInfoView.render();}}// Collections tab: move the collections container into the mobile pane
 if(pTab==='collections'){let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpMobilePane=document.getElementById('RetoldRemote-Collections-MobilePane');if(tmpCollContainer&&tmpMobilePane&&!tmpMobilePane.contains(tmpCollContainer)){tmpMobilePane.appendChild(tmpCollContainer);}// Render and fetch collections
 let tmpCollView=this.pict.views['RetoldRemote-CollectionsPanel'];if(tmpCollView){tmpCollView.render();}let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.fetchCollections();}}else{// Return collections container to its original home when leaving collections tab
-let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpOrigParent=document.querySelector('.retold-remote-collections-inner');if(tmpCollContainer&&tmpOrigParent&&!tmpOrigParent.contains(tmpCollContainer)){tmpOrigParent.appendChild(tmpCollContainer);}}}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartY=0;let tmpStartWidth=0;let tmpStartHeight=0;function getClientPos(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return{x:pEvent.touches[0].clientX,y:pEvent.touches[0].clientY};}return{x:pEvent.clientX,y:pEvent.clientY};}function onDragStart(pEvent){tmpSelf._sidebarDragging=true;let tmpPos=getClientPos(pEvent);tmpStartX=tmpPos.x;tmpStartY=tmpPos.y;tmpStartWidth=tmpWrap.offsetWidth;tmpStartHeight=tmpWrap.offsetHeight;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);pEvent.preventDefault();}function onDragMove(pEvent){if(!tmpSelf._sidebarDragging){return;}let tmpPos=getClientPos(pEvent);if(tmpSelf.isMobileDrawer()){// Vertical resize (top drawer)
+let tmpCollContainer=document.getElementById('RetoldRemote-Collections-Container');let tmpOrigParent=document.querySelector('.retold-remote-collections-inner');if(tmpCollContainer&&tmpOrigParent&&!tmpOrigParent.contains(tmpCollContainer)){tmpOrigParent.appendChild(tmpCollContainer);}}}/**
+	 * Notify the layout that the currently-viewed file has changed (or been
+	 * cleared). This re-renders whichever sidebar panel is currently visible
+	 * so stale file-scoped content (Info metadata, Regions list, etc.) gets
+	 * refreshed without the user having to click the tab again.
+	 *
+	 * Call this from every viewer that mutates tmpRemote.CurrentViewerFile,
+	 * and from the gallery clear path. Do NOT call it on intra-file navigation
+	 * (PDF page changes, EPUB chapter changes) — those don't change the file.
+	 *
+	 * @param {string} pFilePath - The new current file path (or '' when clearing)
+	 */notifyCurrentFileChanged(pFilePath){// Find the currently-active sidebar tab
+let tmpActiveTab=document.querySelector('.content-editor-sidebar-tab.active');if(!tmpActiveTab){return;}let tmpTab=tmpActiveTab.getAttribute('data-tab');// Re-render whichever panel owns file-scoped state. The panel's own
+// render() already detects whether the file actually changed (via its
+// internal _currentPath comparison) and re-fetches only when needed.
+if(tmpTab==='subimages'){let tmpSubimagesView=this.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubimagesView){tmpSubimagesView.render();}}else if(tmpTab==='info'){let tmpInfoView=this.pict.views['RetoldRemote-FileInfoPanel'];if(tmpInfoView){tmpInfoView.render();}}// Other tabs (files, favorites, settings, collections) are not
+// file-scoped, so there's nothing to refresh on file change.
+}_setupResizeHandle(){let tmpSelf=this;let tmpHandle=document.querySelector('.content-editor-resize-handle');let tmpWrap=document.querySelector('.content-editor-sidebar-wrap');if(!tmpHandle||!tmpWrap){return;}let tmpStartX=0;let tmpStartY=0;let tmpStartWidth=0;let tmpStartHeight=0;function getClientPos(pEvent){if(pEvent.touches&&pEvent.touches.length>0){return{x:pEvent.touches[0].clientX,y:pEvent.touches[0].clientY};}return{x:pEvent.clientX,y:pEvent.clientY};}function onDragStart(pEvent){tmpSelf._sidebarDragging=true;let tmpPos=getClientPos(pEvent);tmpStartX=tmpPos.x;tmpStartY=tmpPos.y;tmpStartWidth=tmpWrap.offsetWidth;tmpStartHeight=tmpWrap.offsetHeight;tmpHandle.classList.add('dragging');document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);pEvent.preventDefault();}function onDragMove(pEvent){if(!tmpSelf._sidebarDragging){return;}let tmpPos=getClientPos(pEvent);if(tmpSelf.isMobileDrawer()){// Vertical resize (top drawer)
 let tmpNewHeight=tmpStartHeight+(tmpPos.y-tmpStartY);let tmpMaxHeight=Math.round(window.innerHeight*0.7);tmpNewHeight=Math.max(80,Math.min(tmpNewHeight,tmpMaxHeight));tmpWrap.style.height=tmpNewHeight+'px';}else{// Horizontal resize (sidebar)
 let tmpNewWidth=tmpStartWidth+(tmpPos.x-tmpStartX);tmpNewWidth=Math.max(150,Math.min(tmpNewWidth,600));tmpWrap.style.width=tmpNewWidth+'px';}pEvent.preventDefault();}function onDragEnd(){tmpSelf._sidebarDragging=false;tmpHandle.classList.remove('dragging');document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Persist dimensions
 let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;if(tmpSelf.isMobileDrawer()){tmpRemote.SidebarDrawerHeight=tmpWrap.offsetHeight;}else{tmpRemote.SidebarWidth=tmpWrap.offsetWidth;}tmpSelf.pict.PictApplication.saveSettings();// Recalculate gallery columns
@@ -12097,7 +12273,9 @@ tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();t
 	 *
 	 * @param {string} pFilePath  - Relative file path
 	 * @param {string} pMediaType - 'image', 'video', 'audio', 'document', or 'other'
-	 */showMedia(pFilePath,pMediaType){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType=pMediaType;tmpRemote.VideoMenuActive=pMediaType==='video';// Show viewer, hide gallery
+	 */showMedia(pFilePath,pMediaType){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType=pMediaType;tmpRemote.VideoMenuActive=pMediaType==='video';// Notify the layout so active sidebar panels (Info, Regions, etc.)
+// refresh to the new file instead of keeping stale content.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath);}// Show viewer, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpContentURL=tmpProvider?tmpProvider.getContentURL(pFilePath):'/content/'+encodeURIComponent(pFilePath);// Build the viewer HTML
 let tmpHTML='<div class="retold-remote-viewer">';// Header with nav
 tmpHTML+='<div class="retold-remote-viewer-header">';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-viewer-title">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(tmpFileName)+'</div>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" id="RetoldRemote-HeaderExploreBtn" onclick="pict.views[\'RetoldRemote-ImageExplorer\'].showExplorer(pict.AppData.RetoldRemote.CurrentViewerFile)" title="Explore image (e)" style="display:none;">&#128269; Explore</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9634;</button>';tmpHTML+='</div>';// Body with media content
@@ -12123,7 +12301,10 @@ let tmpTopBar=this.pict.views['ContentEditor-TopBar'];if(tmpTopBar){tmpTopBar.up
 	 * @param {string} pURL          - Direct image URL
 	 * @param {string} pDisplayTitle - Title to show in the viewer header
 	 * @param {string} [pFilePath]   - Original file path (for state tracking)
-	 */showDirectImage(pURL,pDisplayTitle,pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath||'';tmpRemote.CurrentViewerMediaType='image';tmpRemote.VideoMenuActive=false;// Show viewer, hide gallery
+	 */showDirectImage(pURL,pDisplayTitle,pFilePath){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='viewer';tmpRemote.CurrentViewerFile=pFilePath||'';tmpRemote.CurrentViewerMediaType='image';tmpRemote.VideoMenuActive=false;// Notify the layout so active sidebar panels (Info, Regions, etc.)
+// refresh. This is especially important when switching between
+// collection items via the direct-image path.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath||'');}// Show viewer, hide gallery
 let tmpGalleryContainer=document.getElementById('RetoldRemote-Gallery-Container');let tmpViewerContainer=document.getElementById('RetoldRemote-Viewer-Container');if(tmpGalleryContainer)tmpGalleryContainer.style.display='none';if(tmpViewerContainer)tmpViewerContainer.style.display='block';let tmpEscapedTitle=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pDisplayTitle);// Build the viewer HTML (same chrome as showMedia, but with a direct <img>)
 let tmpHTML='<div class="retold-remote-viewer">';// Header with nav
 tmpHTML+='<div class="retold-remote-viewer-header">';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].closeViewer()" title="Back (Esc)">&larr; Back</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].prevFile()" title="Previous (k)">&lsaquo; Prev</button>';tmpHTML+='<div class="retold-remote-viewer-title">'+tmpEscapedTitle+'</div>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\'].nextFile()" title="Next (j)">Next &rsaquo;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.providers[\'RetoldRemote-GalleryNavigation\']._toggleFileInfo()" title="Info (i)">&#9432;</button>';tmpHTML+='<button class="retold-remote-viewer-nav-btn" onclick="pict.views[\'RetoldRemote-MediaViewer\'].toggleDistractionFree()" title="Distraction-Free (d)">&#9634;</button>';tmpHTML+='</div>';// Body with the frame image
@@ -12231,7 +12412,228 @@ tmpSelf._loadPdfViewer(tmpPdfURL,pFilePath);}).catch(pError=>{if(tmpContent){let
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":138,"./MediaViewer-EbookViewer":139,"./MediaViewer-PdfViewer":140,"pict-view":88}],149:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":138,"./MediaViewer-EbookViewer":139,"./MediaViewer-PdfViewer":140,"pict-view":88}],149:[function(require,module,exports){const libPictView=require('pict-view');/**
+ * Regions Browser — folder-scoped listing of saved subimage regions
+ * across all files.
+ *
+ * Opened from the topbar &#9635; button. Shows a folder tree on the left
+ * and a list of files with their regions on the right. Click a region
+ * to close the browser and jump to it.
+ *
+ * Backing data: GET /api/media/subimage-regions?folder=<prefix>
+ * Returns { Success, Folder, Files: [{ Path, Regions }] }
+ *
+ * Scales via a server-side in-memory cache keyed on a full enumeration
+ * of the Bibliograph subimage-regions source. The folder prefix is
+ * applied as a client-visible filter; the cache is invalidated on every
+ * mutation so updates are near-instantaneous in the typical case.
+ */const _ViewConfiguration={ViewIdentifier:"RetoldRemote-RegionsBrowser",DefaultRenderable:"RetoldRemote-RegionsBrowser",DefaultDestinationAddress:"#RetoldRemote-RegionsBrowser-Overlay",AutoRender:false,CSS:`
+		#RetoldRemote-RegionsBrowser-Overlay
+		{
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: rgba(0, 0, 0, 0.85);
+			z-index: 10000;
+			display: none;
+			flex-direction: column;
+		}
+		#RetoldRemote-RegionsBrowser-Overlay.active { display: flex; }
+		.rrrb-header
+		{
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 8px 14px;
+			background: var(--retold-bg-panel, #282c34);
+			border-bottom: 1px solid var(--retold-border, #3e4451);
+			color: var(--retold-text, #abb2bf);
+		}
+		.rrrb-header-title
+		{
+			font-size: 0.95rem;
+			font-weight: 600;
+			flex: 1;
+		}
+		.rrrb-header button
+		{
+			background: var(--retold-bg-input, #1e1e1e);
+			color: var(--retold-text, #abb2bf);
+			border: 1px solid var(--retold-border, #3e4451);
+			border-radius: 4px;
+			padding: 4px 10px;
+			font-size: 0.78rem;
+			cursor: pointer;
+		}
+		.rrrb-body
+		{
+			flex: 1;
+			display: flex;
+			overflow: hidden;
+		}
+		.rrrb-tree
+		{
+			width: 260px;
+			overflow-y: auto;
+			background: var(--retold-bg-panel, #21252b);
+			border-right: 1px solid var(--retold-border, #3e4451);
+			padding: 8px 0;
+		}
+		.rrrb-tree-node
+		{
+			padding: 5px 14px;
+			color: var(--retold-text, #abb2bf);
+			cursor: pointer;
+			font-size: 0.82rem;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.rrrb-tree-node:hover { background: var(--retold-bg-hover, rgba(255,255,255,0.05)); }
+		.rrrb-tree-node.active
+		{
+			background: var(--retold-accent, rgba(97,175,239,0.15));
+			color: var(--retold-text-bright, #e0e0e0);
+			font-weight: 600;
+		}
+		.rrrb-tree-count
+		{
+			color: var(--retold-text-dim, #707880);
+			font-size: 0.72rem;
+			margin-left: 4px;
+		}
+		.rrrb-list
+		{
+			flex: 1;
+			overflow-y: auto;
+			background: var(--retold-bg, #181a1f);
+			padding: 8px 14px;
+		}
+		.rrrb-list-empty
+		{
+			color: var(--retold-text-dim, #707880);
+			text-align: center;
+			padding: 40px 20px;
+			font-size: 0.9rem;
+		}
+		.rrrb-file-group
+		{
+			margin-bottom: 16px;
+			border: 1px solid var(--retold-border, #3e4451);
+			border-radius: 6px;
+			background: var(--retold-bg-panel, #21252b);
+			overflow: hidden;
+		}
+		.rrrb-file-header
+		{
+			padding: 8px 12px;
+			background: var(--retold-bg-panel-alt, #282c34);
+			color: var(--retold-text, #abb2bf);
+			font-size: 0.82rem;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.rrrb-file-name
+		{
+			flex: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.rrrb-file-count
+		{
+			color: var(--retold-text-dim, #707880);
+			font-size: 0.72rem;
+		}
+		.rrrb-regions
+		{
+			padding: 6px 12px 10px 12px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+		.rrrb-region
+		{
+			background: var(--retold-bg-input, #1e1e1e);
+			border: 1px solid var(--retold-border, #3e4451);
+			border-radius: 4px;
+			padding: 5px 10px;
+			font-size: 0.75rem;
+			color: var(--retold-text, #abb2bf);
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.rrrb-region:hover { background: var(--retold-bg-hover, rgba(255,255,255,0.08)); border-color: var(--retold-accent, #61afef); }
+		.rrrb-region-label { font-weight: 600; }
+		.rrrb-region-dims { color: var(--retold-text-dim, #707880); font-size: 0.68rem; }
+	`,Templates:[{Hash:"RetoldRemote-RegionsBrowser",Template:/*html*/`
+				<div id="RetoldRemote-RegionsBrowser-Overlay">
+					<div class="rrrb-header">
+						<div class="rrrb-header-title" id="RetoldRemote-RegionsBrowser-Title">Regions Browser</div>
+						<button onclick="pict.views['RetoldRemote-RegionsBrowser'].refresh()" title="Reload">&#8635; Reload</button>
+						<button onclick="pict.views['RetoldRemote-RegionsBrowser'].close()" title="Close (Esc)">&#10005; Close</button>
+					</div>
+					<div class="rrrb-body">
+						<div class="rrrb-tree" id="RetoldRemote-RegionsBrowser-Tree"></div>
+						<div class="rrrb-list" id="RetoldRemote-RegionsBrowser-List"></div>
+					</div>
+				</div>
+			`}],Renderables:[{RenderableHash:"RetoldRemote-RegionsBrowser",TemplateHash:"RetoldRemote-RegionsBrowser",DestinationAddress:"#RetoldRemote-RegionsBrowser-Container"}]};class RetoldRemoteRegionsBrowserView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Server response: [{ Path, Regions: [...] }, ...]
+this._allFiles=[];// Currently-highlighted folder in the tree. '' = root (all files).
+this._selectedFolder='';// Keydown handler ref for add/remove
+this._keyHandler=null;}/**
+	 * Open the browser overlay, render the UI, and fetch the full list
+	 * of regions from the server.
+	 */open(){// Ensure the overlay container exists in the DOM
+this._ensureOverlayContainer();// Render the shell
+this.render();// Make the overlay visible
+let tmpOverlay=document.getElementById('RetoldRemote-RegionsBrowser-Overlay');if(tmpOverlay)tmpOverlay.classList.add('active');// Seed the selected folder from the gallery's current location
+let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCurrentLocation=this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation||'';this._selectedFolder=tmpCurrentLocation.replace(/\/+$/,'').replace(/^\/+/,'');// Install Escape-to-close
+let tmpSelf=this;this._keyHandler=function(pEvent){if(pEvent.key==='Escape'){pEvent.preventDefault();pEvent.stopPropagation();tmpSelf.close();}};document.addEventListener('keydown',this._keyHandler,true);// Fetch regions from the server
+this._fetchRegions();}/**
+	 * Close the browser overlay.
+	 */close(){let tmpOverlay=document.getElementById('RetoldRemote-RegionsBrowser-Overlay');if(tmpOverlay)tmpOverlay.classList.remove('active');if(this._keyHandler){document.removeEventListener('keydown',this._keyHandler,true);this._keyHandler=null;}}/**
+	 * Re-fetch the full regions list from the server (bypassing the
+	 * in-memory cache on the server is not possible, but this will
+	 * return the current cached values).
+	 */refresh(){this._fetchRegions();}/**
+	 * Ensure the overlay destination container exists in the DOM tree.
+	 * Appends it to the body on first call.
+	 */_ensureOverlayContainer(){let tmpContainer=document.getElementById('RetoldRemote-RegionsBrowser-Container');if(!tmpContainer){tmpContainer=document.createElement('div');tmpContainer.id='RetoldRemote-RegionsBrowser-Container';document.body.appendChild(tmpContainer);}}/**
+	 * Fetch all regions from the server (empty folder prefix returns
+	 * everything, which is cheap thanks to the server-side cache).
+	 */_fetchRegions(){let tmpSelf=this;let tmpListEl=document.getElementById('RetoldRemote-RegionsBrowser-List');let tmpTreeEl=document.getElementById('RetoldRemote-RegionsBrowser-Tree');if(tmpListEl)tmpListEl.innerHTML='<div class="rrrb-list-empty">Loading\u2026</div>';if(tmpTreeEl)tmpTreeEl.innerHTML='';fetch('/api/media/subimage-regions?folder=').then(pResponse=>pResponse.json()).then(pResult=>{if(!pResult||!pResult.Success||!Array.isArray(pResult.Files)){tmpSelf._allFiles=[];tmpSelf._renderTree();tmpSelf._renderList();return;}tmpSelf._allFiles=pResult.Files;tmpSelf._renderTree();tmpSelf._renderList();}).catch(pError=>{if(tmpListEl){tmpListEl.innerHTML='<div class="rrrb-list-empty">Failed to load: '+(pError&&pError.message?pError.message:'unknown error')+'</div>';}});}/**
+	 * Build the folder tree from the list of files and render it.
+	 * Folders are derived from the parent directories of each file path.
+	 */_renderTree(){let tmpTreeEl=document.getElementById('RetoldRemote-RegionsBrowser-Tree');if(!tmpTreeEl)return;// Build a map of folder → total region count
+let tmpFolderCounts={};tmpFolderCounts['']=0;// root
+for(let i=0;i<this._allFiles.length;i++){let tmpEntry=this._allFiles[i];let tmpRegionCount=Array.isArray(tmpEntry.Regions)?tmpEntry.Regions.length:0;tmpFolderCounts['']+=tmpRegionCount;let tmpParts=(tmpEntry.Path||'').split('/');tmpParts.pop();// remove file name
+let tmpAcc='';for(let j=0;j<tmpParts.length;j++){tmpAcc=tmpAcc?tmpAcc+'/'+tmpParts[j]:tmpParts[j];tmpFolderCounts[tmpAcc]=(tmpFolderCounts[tmpAcc]||0)+tmpRegionCount;}}// Sort folder keys alphabetically, root first
+let tmpFolderKeys=Object.keys(tmpFolderCounts);tmpFolderKeys.sort();let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];let tmpHTML='';// Always show root at the top
+let tmpRootActive=this._selectedFolder===''?' active':'';tmpHTML+='<div class="rrrb-tree-node'+tmpRootActive+'" onclick="pict.views[\'RetoldRemote-RegionsBrowser\'].selectFolder(\'\')">';tmpHTML+='&#128193; <em>All folders</em>';tmpHTML+='<span class="rrrb-tree-count">('+tmpFolderCounts['']+')</span>';tmpHTML+='</div>';for(let i=0;i<tmpFolderKeys.length;i++){let tmpKey=tmpFolderKeys[i];if(tmpKey==='')continue;let tmpDepth=tmpKey.split('/').length;let tmpName=tmpKey.split('/').pop();let tmpActive=this._selectedFolder===tmpKey?' active':'';let tmpIndent='padding-left:'+(14+(tmpDepth-1)*14)+'px;';tmpHTML+='<div class="rrrb-tree-node'+tmpActive+'" style="'+tmpIndent+'"'+' onclick="pict.views[\'RetoldRemote-RegionsBrowser\'].selectFolder(\''+tmpKey.replace(/'/g,"\\'")+'\')">';tmpHTML+='&#128193; '+tmpFmt.escapeHTML(tmpName);tmpHTML+='<span class="rrrb-tree-count">('+tmpFolderCounts[tmpKey]+')</span>';tmpHTML+='</div>';}tmpTreeEl.innerHTML=tmpHTML;}/**
+	 * Render the file/region list for the currently-selected folder.
+	 */_renderList(){let tmpListEl=document.getElementById('RetoldRemote-RegionsBrowser-List');if(!tmpListEl)return;let tmpFmt=this.pict.providers['RetoldRemote-FormattingUtilities'];let tmpFolder=this._selectedFolder||'';// Filter files by the selected folder prefix
+let tmpFilteredFiles=[];for(let i=0;i<this._allFiles.length;i++){let tmpEntry=this._allFiles[i];if(!tmpEntry||!tmpEntry.Path)continue;if(tmpFolder===''||tmpEntry.Path===tmpFolder||tmpEntry.Path.indexOf(tmpFolder+'/')===0){tmpFilteredFiles.push(tmpEntry);}}// Update the header title
+let tmpTitleEl=document.getElementById('RetoldRemote-RegionsBrowser-Title');if(tmpTitleEl){let tmpLabel=tmpFolder||'All folders';let tmpTotal=0;for(let i=0;i<tmpFilteredFiles.length;i++){tmpTotal+=(tmpFilteredFiles[i].Regions||[]).length;}tmpTitleEl.textContent='Regions Browser — '+tmpLabel+' ('+tmpTotal+' region'+(tmpTotal===1?'':'s')+' in '+tmpFilteredFiles.length+' file'+(tmpFilteredFiles.length===1?'':'s')+')';}if(tmpFilteredFiles.length===0){tmpListEl.innerHTML='<div class="rrrb-list-empty">No regions in this folder yet.</div>';return;}let tmpHTML='';for(let i=0;i<tmpFilteredFiles.length;i++){let tmpEntry=tmpFilteredFiles[i];let tmpFileName=(tmpEntry.Path||'').replace(/^.*\//,'');let tmpRegions=tmpEntry.Regions||[];tmpHTML+='<div class="rrrb-file-group">';tmpHTML+='<div class="rrrb-file-header">';tmpHTML+='<span class="rrrb-file-name" title="'+tmpFmt.escapeHTML(tmpEntry.Path)+'">'+tmpFmt.escapeHTML(tmpFileName)+'</span>';tmpHTML+='<span class="rrrb-file-count">'+tmpRegions.length+' region'+(tmpRegions.length===1?'':'s')+'</span>';tmpHTML+='</div>';tmpHTML+='<div class="rrrb-regions">';for(let j=0;j<tmpRegions.length;j++){let tmpRegion=tmpRegions[j];let tmpLabel=tmpRegion.Label||'(unlabeled)';let tmpDims='';if(typeof tmpRegion.Width==='number'&&typeof tmpRegion.Height==='number'){tmpDims=tmpRegion.Width+'×'+tmpRegion.Height;}else if(tmpRegion.PageNumber){tmpDims='p.'+tmpRegion.PageNumber;}tmpHTML+='<div class="rrrb-region" onclick="pict.views[\'RetoldRemote-RegionsBrowser\'].navigateTo('+'\''+tmpEntry.Path.replace(/'/g,"\\'")+'\','+'\''+tmpRegion.ID+'\')">';tmpHTML+='<span class="rrrb-region-label">'+tmpFmt.escapeHTML(tmpLabel)+'</span>';if(tmpDims){tmpHTML+='<span class="rrrb-region-dims">'+tmpFmt.escapeHTML(tmpDims)+'</span>';}tmpHTML+='</div>';}tmpHTML+='</div>';tmpHTML+='</div>';}tmpListEl.innerHTML=tmpHTML;}/**
+	 * User clicked a folder in the tree — update the selection and
+	 * re-render the list pane.
+	 *
+	 * @param {string} pFolder - Folder prefix ('' for root)
+	 */selectFolder(pFolder){this._selectedFolder=pFolder||'';this._renderTree();this._renderList();}/**
+	 * User clicked a region — close the browser, navigate to the file,
+	 * and zoom to the region. Handles images (via ImageExplorer) and
+	 * documents (via MediaViewer).
+	 *
+	 * @param {string} pFilePath - Full relative path of the file
+	 * @param {string} pRegionID - ID of the region to zoom to
+	 */navigateTo(pFilePath,pRegionID){this.close();let tmpSelf=this;let tmpExt=pFilePath.split('.').pop().toLowerCase();let tmpIsImage=['jpg','jpeg','png','gif','bmp','webp','tiff','tif','svg'].indexOf(tmpExt)>=0;// Use the image explorer for images, media viewer for everything else
+if(tmpIsImage){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pFilePath);// Wait for the explorer and its regions to load before zooming
+setTimeout(function(){let tmpIEX2=tmpSelf.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX2&&typeof tmpIEX2.zoomToRegion==='function'){tmpIEX2.zoomToRegion(pRegionID);}},900);return;}}// Fallback: open in the media viewer
+let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.showMedia(pFilePath,tmpIsImage?'image':'document');// Defer the jump-to-region call to after the viewer settles
+setTimeout(function(){let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.navigateToRegion==='function'){tmpSubPanel.navigateToRegion(pRegionID);}},900);}}}RetoldRemoteRegionsBrowserView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteRegionsBrowserView;},{"pict-view":88}],150:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Gallery</div>';// View mode
@@ -12284,7 +12686,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 	 * @returns {string}
 	 */_escapeHTML(pStr){if(!pStr)return'';return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}/**
 	 * Re-run the filter/sort pipeline and refresh the gallery.
-	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":88}],150:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
+	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":88}],151:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
  * Subimages Panel — sidebar tab showing labeled subimage regions
  * for the currently viewed image file.
  *
@@ -12329,7 +12731,7 @@ let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpRemote.ActiveMode
 	 * @param {string} pRegionID - The region ID to delete
 	 */deleteRegion(pRegionID){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX&&tmpIEX._currentPath===this._currentPath){// Delegate to the explorer which handles the API call and overlay removal
 tmpIEX.deleteRegion(pRegionID);}else{// Delete directly via API
-let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":88}],151:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
+let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":88}],152:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
 				<div class="retold-remote-topbar">
 					<button class="retold-remote-topbar-sidebar-toggle" id="RetoldRemote-TopBar-SidebarToggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar"></button>
 					<button class="retold-remote-topbar-df-toggle" id="RetoldRemote-TopBar-DFToggle" onclick="pict.views['ContentEditor-TopBar'].toggleDistractionFree()" title="Distraction-free mode (d)"></button>
@@ -12337,6 +12739,7 @@ let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];le
 					<div class="retold-remote-topbar-info" id="RetoldRemote-TopBar-Info"></div>
 					<div class="retold-remote-topbar-actions">
 						<button class="retold-remote-topbar-aisort-btn" id="RetoldRemote-TopBar-AISortBtn" onclick="pict.views['ContentEditor-TopBar'].triggerAISort()" title="AI Sort (generate sort plan for current folder)" style="display:none;">Ai</button>
+						<button class="retold-remote-topbar-btn retold-remote-topbar-regions-btn" id="RetoldRemote-TopBar-RegionsBtn" onclick="pict.views['RetoldRemote-RegionsBrowser'] && pict.views['RetoldRemote-RegionsBrowser'].open()" title="Browse all regions by folder">&#9635;</button>
 						<button class="retold-remote-topbar-btn retold-remote-topbar-addcoll-btn" id="RetoldRemote-TopBar-AddToCollectionBtn" onclick="pict.views['ContentEditor-TopBar'].addToCollection(event)" title="Add to collection">&#9733;</button>
 						<button class="retold-remote-topbar-btn retold-remote-topbar-favorites-btn" id="RetoldRemote-TopBar-FavoritesBtn" onclick="pict.views['ContentEditor-TopBar'].toggleFavorite()" title="Toggle favorite (h)">&#9825;</button>
 						<button class="retold-remote-topbar-sidebar-toggle retold-remote-topbar-collections-btn" id="RetoldRemote-TopBar-CollectionsBtn" onclick="pict.views['ContentEditor-TopBar'].toggleCollections()" title="Toggle Collections panel (b)">&#9733;</button>
@@ -12440,7 +12843,7 @@ tmpBtn.style.position='relative';tmpBtn.appendChild(tmpDropdown);// Close on out
 setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pClickEvent=>{if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpBtn){tmpSelf._closeAddToCollectionDropdown();}});},10);});}/**
 	 * Close the add-to-collection dropdown.
 	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}// Clear any pending clip context that was never consumed
-let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":88}],152:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":88}],153:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
 if(/Macintosh/i.test(tmpUA)&&typeof navigator!=='undefined'&&navigator.maxTouchPoints>1){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
 let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
 let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
@@ -12460,7 +12863,7 @@ return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\
 // protocol to use it.  The handler URL-decodes the argument because
 // the client percent-encodes the URL to prevent Windows from
 // stripping colons in nested http:// URLs.
-return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":88}],153:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
+return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":88}],154:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
 this._selectionModeActive=false;this._selectionStartTime=-1;this._selectionEndTime=-1;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// 'start', 'end', or null
 // Cached provider references (resolved lazily)
 this._fmt=null;this._provider=null;}// -----------------------------------------------------------------
@@ -12511,7 +12914,9 @@ tmpCollMgr.setPendingClipContext({Type:'video-clip',Start:tmpStart,End:tmpEnd});
 	 * @param {string} pFilePath - Relative file path
 	 * @param {number} [pSelectionStart] - Optional selection start time (seconds)
 	 * @param {number} [pSelectionEnd] - Optional selection end time (seconds)
-	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='video-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='video';this._currentPath=pFilePath;this._frameData=null;this._selectedFrameIndex=-1;this._customFrames=[];this._selectionModeActive=false;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// Apply passed-in selection range, or reset
+	 */showExplorer(pFilePath,pSelectionStart,pSelectionEnd){let tmpRemote=this.pict.AppData.RetoldRemote;tmpRemote.ActiveMode='video-explorer';tmpRemote.CurrentViewerFile=pFilePath;tmpRemote.CurrentViewerMediaType='video';this._currentPath=pFilePath;// Notify the layout so active sidebar panels (Info, Regions, etc.)
+// refresh to the new file instead of keeping stale content.
+let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath);}this._frameData=null;this._selectedFrameIndex=-1;this._customFrames=[];this._selectionModeActive=false;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// Apply passed-in selection range, or reset
 // _selectionFromCaller prevents _loadSavedCustomFrames from
 // overwriting an explicit selection (e.g. when opening a saved clip)
 if(typeof pSelectionStart==='number'&&pSelectionStart>=0&&typeof pSelectionEnd==='number'&&pSelectionEnd>=0){this._selectionStartTime=pSelectionStart;this._selectionEndTime=pSelectionEnd;this._selectionFromCaller=true;}else{this._selectionStartTime=-1;this._selectionEndTime=-1;this._selectionFromCaller=false;}// Clean up any window-level event listeners from previous session
@@ -12601,7 +13006,7 @@ let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimel
 	 *
 	 * @param {string} pMessage - Error message
 	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}// -- Mix in method groups from sub-modules --------------------------------
-Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":154,"./VideoExplorer-Preview":155,"./VideoExplorer-Selection":156,"pict-view":88}],154:[function(require,module,exports){/**
+Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":155,"./VideoExplorer-Preview":156,"./VideoExplorer-Selection":157,"pict-view":88}],155:[function(require,module,exports){/**
  * VideoExplorer — Custom Frames Mixin
  *
  * Methods for extracting individual frames at arbitrary timestamps,
@@ -12683,7 +13088,7 @@ tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});},/**
 	 *
 	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
 	 * @returns {number} Seconds
-	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],155:[function(require,module,exports){/**
+	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],156:[function(require,module,exports){/**
  * VideoExplorer — Frame Preview Mixin
  *
  * Full-screen frame preview overlay with keyboard navigation
@@ -12736,7 +13141,7 @@ this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stop
 	 * Update the preview to show the frame at the current position.
 	 */_updatePreviewFrame:function _updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
 let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
-this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],156:[function(require,module,exports){/**
+this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],157:[function(require,module,exports){/**
  * VideoExplorer — Selection Mixin
  *
  * Methods for timeline range selection: toggling selection mode,

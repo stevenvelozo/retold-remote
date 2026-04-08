@@ -556,6 +556,15 @@ class GalleryNavigationProvider extends libPictProvider
 		tmpRemote.CurrentViewerFile = '';
 		tmpRemote.CurrentViewerMediaType = '';
 
+		// Notify the layout so any active sidebar tab (Info, Regions, etc.)
+		// transitions to its empty state instead of retaining stale content
+		// from the file the user just closed.
+		let tmpLayout = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayout && typeof tmpLayout.notifyCurrentFileChanged === 'function')
+		{
+			tmpLayout.notifyCurrentFileChanged('');
+		}
+
 		// Exit collection browsing mode
 		tmpRemote.BrowsingCollection = false;
 		tmpRemote.BrowsingCollectionIndex = -1;

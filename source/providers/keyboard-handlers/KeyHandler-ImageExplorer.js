@@ -16,7 +16,21 @@ function handleImageExplorerKey(pGalleryNav, pEvent)
 	{
 		case 'Escape':
 			pEvent.preventDefault();
-			tmpIEX.goBack();
+			// Escape unwinds one layer at a time: first exit edit mode
+			// (if active), then exit new-region selection mode (if active),
+			// and only close the whole explorer if neither is active.
+			if (tmpIEX._editingRegionID)
+			{
+				tmpIEX._exitRegionEditMode();
+			}
+			else if (tmpIEX._selectionMode)
+			{
+				tmpIEX._exitSelectionMode();
+			}
+			else
+			{
+				tmpIEX.goBack();
+			}
 			break;
 		case '+':
 		case '=':

@@ -269,6 +269,51 @@ class RetoldRemoteLayoutView extends libPictView
 
 	}
 
+	/**
+	 * Notify the layout that the currently-viewed file has changed (or been
+	 * cleared). This re-renders whichever sidebar panel is currently visible
+	 * so stale file-scoped content (Info metadata, Regions list, etc.) gets
+	 * refreshed without the user having to click the tab again.
+	 *
+	 * Call this from every viewer that mutates tmpRemote.CurrentViewerFile,
+	 * and from the gallery clear path. Do NOT call it on intra-file navigation
+	 * (PDF page changes, EPUB chapter changes) — those don't change the file.
+	 *
+	 * @param {string} pFilePath - The new current file path (or '' when clearing)
+	 */
+	notifyCurrentFileChanged(pFilePath)
+	{
+		// Find the currently-active sidebar tab
+		let tmpActiveTab = document.querySelector('.content-editor-sidebar-tab.active');
+		if (!tmpActiveTab)
+		{
+			return;
+		}
+		let tmpTab = tmpActiveTab.getAttribute('data-tab');
+
+		// Re-render whichever panel owns file-scoped state. The panel's own
+		// render() already detects whether the file actually changed (via its
+		// internal _currentPath comparison) and re-fetches only when needed.
+		if (tmpTab === 'subimages')
+		{
+			let tmpSubimagesView = this.pict.views['RetoldRemote-SubimagesPanel'];
+			if (tmpSubimagesView)
+			{
+				tmpSubimagesView.render();
+			}
+		}
+		else if (tmpTab === 'info')
+		{
+			let tmpInfoView = this.pict.views['RetoldRemote-FileInfoPanel'];
+			if (tmpInfoView)
+			{
+				tmpInfoView.render();
+			}
+		}
+		// Other tabs (files, favorites, settings, collections) are not
+		// file-scoped, so there's nothing to refresh on file change.
+	}
+
 	_setupResizeHandle()
 	{
 		let tmpSelf = this;

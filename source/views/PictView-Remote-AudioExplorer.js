@@ -62,6 +62,14 @@ class RetoldRemoteAudioExplorerView extends libPictView
 		tmpRemote.CurrentViewerFile = pFilePath;
 		tmpRemote.CurrentViewerMediaType = 'audio';
 		this._currentPath = pFilePath;
+
+		// Notify the layout so active sidebar panels (Info, Regions, etc.)
+		// refresh to the new file instead of keeping stale content.
+		let tmpLayout = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayout && typeof tmpLayout.notifyCurrentFileChanged === 'function')
+		{
+			tmpLayout.notifyCurrentFileChanged(pFilePath);
+		}
 		this._waveformData = null;
 		this._peaks = [];
 		this._viewStart = 0;

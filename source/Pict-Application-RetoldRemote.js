@@ -32,6 +32,7 @@ const libViewVLCSetup = require('./views/PictView-Remote-VLCSetup.js');
 const libViewCollectionsPanel = require('./views/PictView-Remote-CollectionsPanel.js');
 const libViewFileInfoPanel = require('./views/PictView-Remote-FileInfoPanel.js');
 const libViewSubimagesPanel = require('./views/PictView-Remote-SubimagesPanel.js');
+const libViewRegionsBrowser = require('./views/PictView-Remote-RegionsBrowser.js');
 
 // Application configuration
 const _DefaultConfiguration = require('./Pict-Application-RetoldRemote-Configuration.json');
@@ -68,6 +69,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addView('RetoldRemote-CollectionsPanel', libViewCollectionsPanel.default_configuration, libViewCollectionsPanel);
 		this.pict.addView('RetoldRemote-FileInfoPanel', libViewFileInfoPanel.default_configuration, libViewFileInfoPanel);
 		this.pict.addView('RetoldRemote-SubimagesPanel', libViewSubimagesPanel.default_configuration, libViewSubimagesPanel);
+		this.pict.addView('RetoldRemote-RegionsBrowser', libViewRegionsBrowser.default_configuration, libViewRegionsBrowser);
 
 		// Add new providers
 		this.pict.addProvider('RetoldRemote-Provider', libProviderRetoldRemote.default_configuration, libProviderRetoldRemote);

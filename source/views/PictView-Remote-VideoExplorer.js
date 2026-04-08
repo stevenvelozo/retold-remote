@@ -203,6 +203,14 @@ class RetoldRemoteVideoExplorerView extends libPictView
 		tmpRemote.CurrentViewerFile = pFilePath;
 		tmpRemote.CurrentViewerMediaType = 'video';
 		this._currentPath = pFilePath;
+
+		// Notify the layout so active sidebar panels (Info, Regions, etc.)
+		// refresh to the new file instead of keeping stale content.
+		let tmpLayout = this.pict.views['ContentEditor-Layout'];
+		if (tmpLayout && typeof tmpLayout.notifyCurrentFileChanged === 'function')
+		{
+			tmpLayout.notifyCurrentFileChanged(pFilePath);
+		}
 		this._frameData = null;
 		this._selectedFrameIndex = -1;
 		this._customFrames = [];
