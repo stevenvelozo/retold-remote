@@ -11743,6 +11743,7 @@ let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFi
 let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":88}],145:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;this._loading=false;// Selection mode state
 this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;// { X, Y, Width, Height } in image coords
 this._selectionStart=null;// viewport point where drag began
+this._selectionStartScreenPos=null;// screen-pixel position of press (for click-vs-drag filter)
 this._savedRegions=[];// loaded from server
 // Viewer-ready flag — set to true when the OSD viewer's 'open' event
 // fires and the viewport coordinate math is safe to run. This MUST
@@ -11760,7 +11761,7 @@ this._editTracker=null;}/**
 // refreshes to this file instead of showing stale content from the
 // previous file. See PictView-Remote-Layout.js#notifyCurrentFileChanged.
 let tmpLayout=this.pict.views['ContentEditor-Layout'];if(tmpLayout&&typeof tmpLayout.notifyCurrentFileChanged==='function'){tmpLayout.notifyCurrentFileChanged(pFilePath);}// Reset selection state
-this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;this._selectionStart=null;this._savedRegions=[];this._viewerReady=false;// Reset any in-progress edit mode (Part B)
+this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;this._selectionStart=null;this._selectionStartScreenPos=null;this._savedRegions=[];this._viewerReady=false;// Reset any in-progress edit mode (Part B)
 this._editingRegionID=null;this._editDragMode=null;this._editDragStart=null;this._editOriginalRect=null;if(this._editTracker){try{this._editTracker.destroy();}catch(pErr){/* ignore */}this._editTracker=null;}// Clean up existing viewer
 if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
 }this._osdViewer=null;}// Update URL hash.
@@ -11897,20 +11898,37 @@ let tmpBtn=document.getElementById('RetoldRemote-IEX-SelectBtn');if(tmpBtn){tmpB
 this._osdViewer.setMouseNavEnabled(false);let tmpSelf=this;let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(!tmpViewerDiv){return;}tmpViewerDiv.style.cursor='crosshair';this._selectionTracker=new OpenSeadragon.MouseTracker({element:tmpViewerDiv,pressHandler:function(pEvent){tmpSelf._onSelectionPress(pEvent);},dragHandler:function(pEvent){tmpSelf._onSelectionDrag(pEvent);},releaseHandler:function(pEvent){tmpSelf._onSelectionRelease(pEvent);}});}/**
 	 * Exit selection mode: re-enable panning, remove drag tracker.
 	 */_exitSelectionMode(){this._selectionMode=false;let tmpBtn=document.getElementById('RetoldRemote-IEX-SelectBtn');if(tmpBtn){tmpBtn.style.background='';tmpBtn.style.color='';}if(this._osdViewer){this._osdViewer.setMouseNavEnabled(true);}if(this._selectionTracker){this._selectionTracker.destroy();this._selectionTracker=null;}let tmpViewerDiv=document.getElementById('RetoldRemote-IEX-Viewer');if(tmpViewerDiv){tmpViewerDiv.style.cursor='';}// Remove in-progress selection overlay (keep saved ones)
-this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;// Hide label input
+this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;this._selectionStartScreenPos=null;// Hide label input
 let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
 	 * Handle the start of a selection drag.
 	 */_onSelectionPress(pEvent){if(!this._osdViewer){return;}// Remove any previous in-progress selection overlay
-this._removeActiveSelectionOverlay();this._selectionStart=this._osdViewer.viewport.pointFromPixel(pEvent.position);// Create the selection rectangle overlay element
+this._removeActiveSelectionOverlay();// Capture BOTH the screen-pixel position (for the click-vs-drag
+// test on release) and the viewport-space point (for the overlay
+// math during the drag). We need the screen-pixel reference to
+// filter out accidental clicks — on a high-res image the viewport
+// pixel math would mis-classify sensor-jitter as a real drag.
+this._selectionStartScreenPos={x:pEvent.position.x,y:pEvent.position.y};this._selectionStart=this._osdViewer.viewport.pointFromPixel(pEvent.position);// Create the selection rectangle overlay element
 let tmpOverlay=document.createElement('div');tmpOverlay.id='RetoldRemote-IEX-ActiveSelection';tmpOverlay.style.cssText='border: 2px solid rgba(97, 175, 239, 0.9); background: rgba(97, 175, 239, 0.15); pointer-events: none;';this._selectionOverlay=tmpOverlay;// Add the overlay at zero size, will expand during drag
 this._osdViewer.addOverlay({element:tmpOverlay,location:new OpenSeadragon.Rect(this._selectionStart.x,this._selectionStart.y,0,0)});}/**
 	 * Handle selection dragging — update the rectangle size.
 	 */_onSelectionDrag(pEvent){if(!this._osdViewer||!this._selectionStart||!this._selectionOverlay){return;}let tmpCurrent=this._osdViewer.viewport.pointFromPixel(pEvent.position);let tmpX=Math.min(this._selectionStart.x,tmpCurrent.x);let tmpY=Math.min(this._selectionStart.y,tmpCurrent.y);let tmpW=Math.abs(tmpCurrent.x-this._selectionStart.x);let tmpH=Math.abs(tmpCurrent.y-this._selectionStart.y);this._osdViewer.updateOverlay(this._selectionOverlay,new OpenSeadragon.Rect(tmpX,tmpY,tmpW,tmpH));}/**
 	 * Handle selection release — compute image-coordinate region and show label input.
-	 */_onSelectionRelease(pEvent){if(!this._osdViewer||!this._selectionStart){return;}let tmpEnd=this._osdViewer.viewport.pointFromPixel(pEvent.position);// Convert viewport rectangle to image pixel coordinates
+	 */_onSelectionRelease(pEvent){if(!this._osdViewer||!this._selectionStart){return;}// Screen-pixel click-vs-drag filter. If the mouse moved less than
+// CLICK_THRESHOLD screen pixels between press and release, treat
+// this as a click (not a selection) and bail. This MUST be checked
+// in screen pixels, not image pixels, because on a high-resolution
+// image a 1-screen-pixel jitter can translate to 6+ image pixels,
+// which would otherwise slip past the image-pixel min-size guard
+// below and pop the label dialog on a single click.
+const CLICK_THRESHOLD=5;if(this._selectionStartScreenPos){let tmpDx=Math.abs(pEvent.position.x-this._selectionStartScreenPos.x);let tmpDy=Math.abs(pEvent.position.y-this._selectionStartScreenPos.y);if(tmpDx<CLICK_THRESHOLD&&tmpDy<CLICK_THRESHOLD){this._removeActiveSelectionOverlay();this._selectionStart=null;this._selectionStartScreenPos=null;return;}}let tmpEnd=this._osdViewer.viewport.pointFromPixel(pEvent.position);// Convert viewport rectangle to image pixel coordinates
 let tmpVpX=Math.min(this._selectionStart.x,tmpEnd.x);let tmpVpY=Math.min(this._selectionStart.y,tmpEnd.y);let tmpVpW=Math.abs(tmpEnd.x-this._selectionStart.x);let tmpVpH=Math.abs(tmpEnd.y-this._selectionStart.y);let tmpTopLeft=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpX,tmpVpY));let tmpBottomRight=this._osdViewer.viewport.viewportToImageCoordinates(new OpenSeadragon.Point(tmpVpX+tmpVpW,tmpVpY+tmpVpH));let tmpRegion={X:Math.max(0,Math.round(tmpTopLeft.x)),Y:Math.max(0,Math.round(tmpTopLeft.y)),Width:Math.round(tmpBottomRight.x-tmpTopLeft.x),Height:Math.round(tmpBottomRight.y-tmpTopLeft.y)};// Clamp to image dimensions
-this._clampRegionToImage(tmpRegion);// Ignore tiny selections (likely accidental clicks)
-if(tmpRegion.Width<5||tmpRegion.Height<5){this._removeActiveSelectionOverlay();return;}this._selectionRegion=tmpRegion;// Show the inline label input in the controls bar
+this._clampRegionToImage(tmpRegion);// Defensive net: ignore tiny selections in image pixels. The
+// screen-pixel CLICK_THRESHOLD guard above catches accidental
+// clicks; this check covers the remaining case of a drag that's
+// large in screen pixels but degenerate in image pixels (e.g.
+// the user somehow ended up dragging entirely outside the image
+// bounds so everything got clamped away).
+if(tmpRegion.Width<5||tmpRegion.Height<5){this._removeActiveSelectionOverlay();this._selectionStart=null;this._selectionStartScreenPos=null;return;}this._selectionRegion=tmpRegion;// Show the inline label input in the controls bar
 let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpLabelWrap){tmpLabelWrap.style.display='';}if(tmpCoords){tmpCoords.style.display='none';}// Focus the label field
 let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');if(tmpField){tmpField.value='';tmpField.focus();}}/**
 	 * Save a NEW selection (drawn by the user) with the entered label.
@@ -11921,11 +11939,11 @@ let tmpField=document.getElementById('RetoldRemote-IEX-LabelField');if(tmpField)
 tmpSelf._removeActiveSelectionOverlay();tmpSelf._renderSavedRegionOverlays();// Notify the user
 let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Subimage region saved'+(tmpLabel?': '+tmpLabel:''));}// Update the sidebar panel if visible
 let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel){tmpSubPanel.render();}}}).catch(pErr=>{let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Failed to save region: '+pErr.message);}});// Hide label input, show coords
-this._selectionRegion=null;this._selectionStart=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
+this._selectionRegion=null;this._selectionStart=null;this._selectionStartScreenPos=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
 	 * Cancel a new in-progress selection. Renamed from cancelSelection
 	 * so the public cancelSelection() can dispatch to either this or
 	 * _exitRegionEditMode based on state.
-	 */_cancelNewSelection(){this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
+	 */_cancelNewSelection(){this._removeActiveSelectionOverlay();this._selectionRegion=null;this._selectionStart=null;this._selectionStartScreenPos=null;let tmpLabelWrap=document.getElementById('RetoldRemote-IEX-LabelInput');if(tmpLabelWrap){tmpLabelWrap.style.display='none';}let tmpCoords=document.getElementById('RetoldRemote-IEX-Coords');if(tmpCoords){tmpCoords.style.display='';}}/**
 	 * Remove the active (in-progress) selection overlay.
 	 */_removeActiveSelectionOverlay(){let tmpActive=document.getElementById('RetoldRemote-IEX-ActiveSelection');if(tmpActive&&this._osdViewer){try{this._osdViewer.removeOverlay(tmpActive);}catch(pErr){// May not be an overlay; just remove from DOM
 if(tmpActive.parentElement){tmpActive.parentElement.removeChild(tmpActive);}}}this._selectionOverlay=null;}// -----------------------------------------------------------------
@@ -12034,8 +12052,14 @@ if(this._osdViewer){try{this._osdViewer.destroy();}catch(pErr){// ignore
 	 * @param {object} pRegion - { X, Y, Width, Height } mutated in place
 	 */_clampRegionToImage(pRegion){if(!pRegion)return;// Non-negative origin
 if(pRegion.X<0){pRegion.Width+=pRegion.X;pRegion.X=0;}if(pRegion.Y<0){pRegion.Height+=pRegion.Y;pRegion.Y=0;}// Fit within image width/height
-if(this._dziData){if(pRegion.X+pRegion.Width>this._dziData.Width){pRegion.Width=this._dziData.Width-pRegion.X;}if(pRegion.Y+pRegion.Height>this._dziData.Height){pRegion.Height=this._dziData.Height-pRegion.Y;}}// Enforce minimum size (5×5)
-if(pRegion.Width<5)pRegion.Width=5;if(pRegion.Height<5)pRegion.Height=5;}// -----------------------------------------------------------------
+if(this._dziData){if(pRegion.X+pRegion.Width>this._dziData.Width){pRegion.Width=this._dziData.Width-pRegion.X;}if(pRegion.Y+pRegion.Height>this._dziData.Height){pRegion.Height=this._dziData.Height-pRegion.Y;}}// Note: do NOT enforce a minimum size here. Callers must do their
+// own "ignore accidental click" check in SCREEN pixels before
+// calling this helper. Enforcing a minimum here would bump a
+// zero-size selection up to the minimum and cause the caller's
+// image-pixel min-size guard to silently pass, which created the
+// bug where a single click on a high-res image popped up the
+// label dialog as if the user had dragged.
+}// -----------------------------------------------------------------
 // Edit mode for saved regions (Part B)
 // -----------------------------------------------------------------
 /**

@@ -28,9 +28,10 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._selectionMode = false;
 		this._selectionTracker = null;
 		this._selectionOverlay = null;
-		this._selectionRegion = null; // { X, Y, Width, Height } in image coords
-		this._selectionStart = null;  // viewport point where drag began
-		this._savedRegions = [];      // loaded from server
+		this._selectionRegion = null;        // { X, Y, Width, Height } in image coords
+		this._selectionStart = null;         // viewport point where drag began
+		this._selectionStartScreenPos = null; // screen-pixel position of press (for click-vs-drag filter)
+		this._savedRegions = [];             // loaded from server
 
 		// Viewer-ready flag — set to true when the OSD viewer's 'open' event
 		// fires and the viewport coordinate math is safe to run. This MUST
@@ -76,6 +77,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._selectionOverlay = null;
 		this._selectionRegion = null;
 		this._selectionStart = null;
+		this._selectionStartScreenPos = null;
 		this._savedRegions = [];
 		this._viewerReady = false;
 
@@ -986,6 +988,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._removeActiveSelectionOverlay();
 		this._selectionRegion = null;
 		this._selectionStart = null;
+		this._selectionStartScreenPos = null;
 
 		// Hide label input
 		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
@@ -1013,6 +1016,12 @@ class RetoldRemoteImageExplorerView extends libPictView
 		// Remove any previous in-progress selection overlay
 		this._removeActiveSelectionOverlay();
 
+		// Capture BOTH the screen-pixel position (for the click-vs-drag
+		// test on release) and the viewport-space point (for the overlay
+		// math during the drag). We need the screen-pixel reference to
+		// filter out accidental clicks — on a high-res image the viewport
+		// pixel math would mis-classify sensor-jitter as a real drag.
+		this._selectionStartScreenPos = { x: pEvent.position.x, y: pEvent.position.y };
 		this._selectionStart = this._osdViewer.viewport.pointFromPixel(pEvent.position);
 
 		// Create the selection rectangle overlay element
@@ -1061,6 +1070,27 @@ class RetoldRemoteImageExplorerView extends libPictView
 			return;
 		}
 
+		// Screen-pixel click-vs-drag filter. If the mouse moved less than
+		// CLICK_THRESHOLD screen pixels between press and release, treat
+		// this as a click (not a selection) and bail. This MUST be checked
+		// in screen pixels, not image pixels, because on a high-resolution
+		// image a 1-screen-pixel jitter can translate to 6+ image pixels,
+		// which would otherwise slip past the image-pixel min-size guard
+		// below and pop the label dialog on a single click.
+		const CLICK_THRESHOLD = 5;
+		if (this._selectionStartScreenPos)
+		{
+			let tmpDx = Math.abs(pEvent.position.x - this._selectionStartScreenPos.x);
+			let tmpDy = Math.abs(pEvent.position.y - this._selectionStartScreenPos.y);
+			if (tmpDx < CLICK_THRESHOLD && tmpDy < CLICK_THRESHOLD)
+			{
+				this._removeActiveSelectionOverlay();
+				this._selectionStart = null;
+				this._selectionStartScreenPos = null;
+				return;
+			}
+		}
+
 		let tmpEnd = this._osdViewer.viewport.pointFromPixel(pEvent.position);
 
 		// Convert viewport rectangle to image pixel coordinates
@@ -1085,10 +1115,17 @@ class RetoldRemoteImageExplorerView extends libPictView
 		// Clamp to image dimensions
 		this._clampRegionToImage(tmpRegion);
 
-		// Ignore tiny selections (likely accidental clicks)
+		// Defensive net: ignore tiny selections in image pixels. The
+		// screen-pixel CLICK_THRESHOLD guard above catches accidental
+		// clicks; this check covers the remaining case of a drag that's
+		// large in screen pixels but degenerate in image pixels (e.g.
+		// the user somehow ended up dragging entirely outside the image
+		// bounds so everything got clamped away).
 		if (tmpRegion.Width < 5 || tmpRegion.Height < 5)
 		{
 			this._removeActiveSelectionOverlay();
+			this._selectionStart = null;
+			this._selectionStartScreenPos = null;
 			return;
 		}
 
@@ -1190,6 +1227,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		// Hide label input, show coords
 		this._selectionRegion = null;
 		this._selectionStart = null;
+		this._selectionStartScreenPos = null;
 
 		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
 		if (tmpLabelWrap)
@@ -1213,6 +1251,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		this._removeActiveSelectionOverlay();
 		this._selectionRegion = null;
 		this._selectionStart = null;
+		this._selectionStartScreenPos = null;
 
 		let tmpLabelWrap = document.getElementById('RetoldRemote-IEX-LabelInput');
 		if (tmpLabelWrap)
@@ -1670,9 +1709,13 @@ class RetoldRemoteImageExplorerView extends libPictView
 			}
 		}
 
-		// Enforce minimum size (5×5)
-		if (pRegion.Width < 5) pRegion.Width = 5;
-		if (pRegion.Height < 5) pRegion.Height = 5;
+		// Note: do NOT enforce a minimum size here. Callers must do their
+		// own "ignore accidental click" check in SCREEN pixels before
+		// calling this helper. Enforcing a minimum here would bump a
+		// zero-size selection up to the minimum and cause the caller's
+		// image-pixel min-size guard to silently pass, which created the
+		// bug where a single click on a high-res image popped up the
+		// label dialog as if the user had dragged.
 	}
 
 	// -----------------------------------------------------------------

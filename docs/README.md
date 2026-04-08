@@ -39,7 +39,8 @@ See [Stack Launcher](stack-launcher.md) for what `retold-stack` does and how the
 - **Code/text viewer** with syntax highlighting for 30+ languages
 - **Archive browsing** into zip, 7z, rar, tar.gz, cbz, and cbr files as virtual folders
 - **Filtering and sorting** by media type, extension, file size, date, and text search (with regex)
-- **Subimage regions** — draw labeled rectangles on images, ebook pages, and PDF pages; persisted per file
+- **Subimage regions** — draw labeled rectangles on images, ebook pages, and PDF pages; persisted per file. Double-click an existing region to resize, move, or rename it in place.
+- **Regions Browser** — topbar button opens a folder-scoped view of every saved region across every file; drill down by folder tree, click any region to jump to it.
 - **Collections & Export** — bookmark files, image crops, video clips, audio clips, and document regions; export the whole collection to a folder with proper file cutting
 - **Stack mode** — single command launches Ultravisor coordinator + Retold Remote + embedded Orator-Conversion with sane XDG data paths
 - **Ultravisor offload** — heavy work (frame extraction, waveforms, conversions) dispatched to a beacon worker on a faster machine
@@ -177,10 +178,11 @@ In the frame preview overlay:
 | `-` | Zoom out |
 | `0` | Reset zoom |
 | `s` | Toggle region selection mode (draw rectangles) |
+| Double-click a region | Enter edit mode (resize, move, rename) |
 | `a` | Quick-add to collection (current region if selected) |
 | `b` | Toggle collection panel |
 | `h` | Toggle favorite |
-| `Esc` | Back to viewer |
+| `Esc` | Unwind one layer (edit mode → selection mode → back to viewer) |
 
 ### Document Viewer (PDF / EPUB)
 
@@ -270,7 +272,8 @@ Without these tools the application still works -- images serve directly, videos
 | GET | `/api/media/doc-convert?path=` | Convert DOC/DOCX/RTF/ODT/WPD/etc. to PDF |
 | GET | `/api/media/ebook/:cacheKey/:filename` | Serve converted ebook or PDF |
 | GET | `/api/media/pdf-text?path=&page=` | Extract text from a PDF page |
-| GET | `/api/media/subimage-regions?path=` | List labeled regions for an image, ebook, or PDF |
+| GET | `/api/media/subimage-regions?path=` | List labeled regions for a single file |
+| GET | `/api/media/subimage-regions?folder=<prefix>` | List labeled regions for every file under a folder prefix (empty prefix = everything). Backed by an in-memory cache invalidated on mutations. |
 | POST | `/api/media/subimage-regions` | Add a labeled region (visual or text-selection) |
 | PUT | `/api/media/subimage-regions/:id` | Update a region's label or coordinates |
 | DELETE | `/api/media/subimage-regions/:id?path=` | Remove a labeled region |
