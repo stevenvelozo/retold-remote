@@ -1,0 +1,235 @@
+{
+	"Generated": "2026-04-09T23:24:42.180Z",
+	"GitHubOrg": "stevenvelozo",
+	"DefaultBranch": "master",
+	"Groups": [
+		{
+			"Name": "Debug",
+			"Key": "debug",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "dist",
+					"Repo": "dist",
+					"Group": "debug",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Dist",
+			"Key": "dist",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "indoctrinate_content_staging",
+					"Repo": "indoctrinate_content_staging",
+					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "retold-cache",
+					"Repo": "retold-cache",
+					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Source",
+			"Key": "source",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "cli",
+					"Repo": "cli",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "providers",
+					"Repo": "providers",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "server",
+					"Repo": "server",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "views",
+					"Repo": "views",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Web-application",
+			"Key": "web-application",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "css",
+					"Repo": "css",
+					"Group": "web-application",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "docs",
+					"Repo": "docs",
+					"Group": "web-application",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [
+						{
+							"Title": "Home",
+							"Path": "README.md"
+						},
+						{
+							"Title": "Getting Started",
+							"Children": [
+								{
+									"Title": "Server Setup & Docker",
+									"Path": "server-setup.md"
+								},
+								{
+									"Title": "Stack Launcher",
+									"Path": "stack-launcher.md"
+								},
+								{
+									"Title": "Synology Container Manager",
+									"Path": "synology.md"
+								},
+								{
+									"Title": "Ultravisor Integration",
+									"Path": "ultravisor-integration.md"
+								},
+								{
+									"Title": "Ultravisor Beacon Tool Setup",
+									"Path": "ultravisor-configuration.md"
+								}
+							]
+						},
+						{
+							"Title": "Media Viewers",
+							"Children": [
+								{
+									"Title": "Image Viewer",
+									"Path": "image-viewer.md"
+								},
+								{
+									"Title": "Video Viewer",
+									"Path": "video-viewer.md"
+								},
+								{
+									"Title": "Audio Viewer",
+									"Path": "audio-viewer.md"
+								},
+								{
+									"Title": "eBook Reader",
+									"Path": "ebook-reader.md"
+								}
+							]
+						},
+						{
+							"Title": "Explorers",
+							"Children": [
+								{
+									"Title": "Image Explorer",
+									"Path": "image-explorer.md"
+								},
+								{
+									"Title": "Video Explorer",
+									"Path": "video-explorer.md"
+								},
+								{
+									"Title": "Audio Explorer",
+									"Path": "audio-explorer.md"
+								}
+							]
+						},
+						{
+							"Title": "Features",
+							"Children": [
+								{
+									"Title": "Collections",
+									"Path": "collections.md"
+								},
+								{
+									"Title": "File Metadata",
+									"Path": "metadata.md"
+								}
+							]
+						}
+					],
+					"DocFiles": [
+						"README.md",
+						"_cover.md",
+						"_sidebar.md",
+						"_topbar.md",
+						"audio-explorer.md",
+						"audio-viewer.md",
+						"collections.md",
+						"ebook-reader.md",
+						"image-explorer.md",
+						"image-viewer.md",
+						"metadata.md",
+						"server-setup.md",
+						"stack-launcher.md",
+						"synology.md",
+						"ultravisor-configuration.md",
+						"ultravisor-integration.md",
+						"video-explorer.md",
+						"video-viewer.md"
+					]
+				},
+				{
+					"Name": "js",
+					"Repo": "js",
+					"Group": "web-application",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		}
+	]
+}
