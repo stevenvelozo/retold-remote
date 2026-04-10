@@ -85,19 +85,19 @@ PDF files are rendered using a full **pdf.js** canvas pipeline. The library is l
 
 The controls bar exposes:
 
-- **← Prev** / **Next →** — page navigation
-- **Page input** — type a page number and press Enter to jump
-- **Zoom In / Out / Fit** — adjust scale (0.25x – 5x)
+- **<- Prev** / **Next ->** -- page navigation
+- **Page input** -- type a page number and press Enter to jump
+- **Zoom In / Out / Fit** -- adjust scale (0.25x - 5x)
 
 ### Text Selection
 
-PDF.js renders an invisible text layer over the canvas, so native browser text selection works. Drag to select text, then click **💾 Save Selection** to capture it as a labeled region.
+PDF.js renders an invisible text layer over the canvas, so native browser text selection works. Drag to select text, then click ** Save Selection** to capture it as a labeled region.
 
 The capture stores: page number, selected text, optional label.
 
 ### Visual Region Selection
 
-Click **✂ Select Region** to enter visual selection mode. A crosshair cursor appears over the page canvas. Drag a rectangle, release, and a label input appears in the controls bar.
+Click ** Select Region** to enter visual selection mode. A crosshair cursor appears over the page canvas. Drag a rectangle, release, and a label input appears in the controls bar.
 
 The capture stores: page number, X/Y/Width/Height in PDF units (so the region remaps correctly at any zoom level), optional label.
 
@@ -137,21 +137,21 @@ The EPUB reader supports the same labeled-region capture pattern as PDF and imag
 ### Save Text Selection
 
 1. Select text in the rendered EPUB content (works through the epub.js iframe via `getContents()`)
-2. Click **💾 Save Selection** in the controls bar
+2. Click ** Save Selection** in the controls bar
 3. Enter a label and save
 
 The capture stores:
 
-- **CFI** (Canonical Fragment Identifier) — exact location for re-navigating later
-- **Spine index** — which section of the book
-- **Chapter title** — best-effort lookup from the TOC
-- **Selected text** — the actual highlighted prose
+- **CFI** (Canonical Fragment Identifier) -- exact location for re-navigating later
+- **Spine index** -- which section of the book
+- **Chapter title** -- best-effort lookup from the TOC
+- **Selected text** -- the actual highlighted prose
 
 Click a saved text selection in the **Regions** sidebar tab to navigate back to its exact location via `rendition.display(cfi)`.
 
 ### Visual Region Selection
 
-Click **✂ Select Region** to overlay a transparent crosshair on the rendered page. Drag a rectangle to capture a visual area. The capture stores X/Y/Width/Height plus the viewport dimensions at capture time (so coordinates can be remapped if the window is resized later).
+Click ** Select Region** to overlay a transparent crosshair on the rendered page. Drag a rectangle to capture a visual area. The capture stores X/Y/Width/Height plus the viewport dimensions at capture time (so coordinates can be remapped if the window is resized later).
 
 ## Limitations
 

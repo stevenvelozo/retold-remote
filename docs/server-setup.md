@@ -166,8 +166,8 @@ If you'd rather have Compose build the image directly, edit `docker-compose.yml`
 ```yaml
 services:
   retold-stack:
-    # image: retold-stack:latest    # ← comment this out
-    build:                          # ← uncomment this block
+    # image: retold-stack:latest    # <- comment this out
+    build:                          # <- uncomment this block
       context: .
       dockerfile: Dockerfile
 ```
@@ -181,7 +181,7 @@ Both images have been verified to build and run the full stack on ARM64 (Apple S
 | File | Measured Size | Includes | Use for |
 |------|---------------|----------|---------|
 | `Dockerfile` | **3.0 GB** | Everything: ffmpeg, ImageMagick, 7z, poppler, pdftk, LibreOffice, Calibre, exiftool, dcraw | Full document conversion (DOC, DOCX, RTF, ODT, WPD, MOBI, PPT, XLS, etc.) |
-| `Dockerfile.slim` | **1.81 GB** | Same but without LibreOffice and Calibre | Image/video/audio/PDF/EPUB only — no doc/docx/mobi conversion |
+| `Dockerfile.slim` | **1.81 GB** | Same but without LibreOffice and Calibre | Image/video/audio/PDF/EPUB only -- no doc/docx/mobi conversion |
 
 > **Note on audiowaveform:** Neither image installs `audiowaveform` because it is not in the default Debian repositories. Retold Remote automatically falls back to ffprobe + ffmpeg for waveform generation, which is slower but works identically. If you need the BBC `audiowaveform` tool for faster generation, add it via a custom Dockerfile step (build from source or a PPA).
 
@@ -243,7 +243,7 @@ Inside the container, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, and `XDG_CONFIG_HOME` a
 | Port | Purpose |
 |------|---------|
 | **7777** | Retold Remote web UI (the main thing you browse to) |
-| **54321** | Ultravisor coordinator API + web interface (optional — useful for monitoring) |
+| **54321** | Ultravisor coordinator API + web interface (optional -- useful for monitoring) |
 
 Both are pinned to fixed ports via the `-p 7777` flag in the default CMD, overriding the usual random 7000-7999 behavior.
 
@@ -260,13 +260,13 @@ Remove the `--no-hash` flag to re-enable hashed filenames, or change `/media` if
 ### Image Size Notes
 
 - `node:20-slim` base: ~180 MB
-- Full `Dockerfile` (with LibreOffice + Calibre): ~2.5 GB — Calibre alone is ~1 GB, LibreOffice is ~600 MB
-- `Dockerfile.slim`: ~1.8 GB — drops both big dependencies
+- Full `Dockerfile` (with LibreOffice + Calibre): ~2.5 GB -- Calibre alone is ~1 GB, LibreOffice is ~600 MB
+- `Dockerfile.slim`: ~1.8 GB -- drops both big dependencies
 - Omit `ffmpeg` and `audiowaveform` too if you don't need video/audio processing, for a ~1 GB image
 
 ### Child Process Note
 
-The stack launcher spawns Ultravisor as a child process using `node` and the resolved `ultravisor` bin path. This works inside Docker without any special configuration — the child runs in the same container PID namespace and its logs are streamed through the main process's stdout with `[ultravisor]` prefixes.
+The stack launcher spawns Ultravisor as a child process using `node` and the resolved `ultravisor` bin path. This works inside Docker without any special configuration -- the child runs in the same container PID namespace and its logs are streamed through the main process's stdout with `[ultravisor]` prefixes.
 
 ## Archive Browsing
 

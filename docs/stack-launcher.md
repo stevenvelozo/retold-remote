@@ -1,6 +1,6 @@
 # Stack Launcher
 
-The `--stack` flag (and the `retold-stack` shortcut) brings up the full Retold stack as a single command: an embedded Ultravisor coordinator, the Retold Remote media browser, and Orator-Conversion (embedded inside Retold Remote). Point it at any directory and it just works — sane XDG-style data paths, automatic readiness polling, and graceful shutdown of all child processes.
+The `--stack` flag (and the `retold-stack` shortcut) brings up the full Retold stack as a single command: an embedded Ultravisor coordinator, the Retold Remote media browser, and Orator-Conversion (embedded inside Retold Remote). Point it at any directory and it just works -- sane XDG-style data paths, automatic readiness polling, and graceful shutdown of all child processes.
 
 ## Quick Start
 
@@ -149,7 +149,7 @@ Press `Ctrl+C` once. The launcher will:
 5. Send `SIGKILL` if it has not exited
 6. Exit the main process
 
-If the launcher reused an already-running Ultravisor (rather than spawning one), it will not kill that Ultravisor — it only manages processes it started itself.
+If the launcher reused an already-running Ultravisor (rather than spawning one), it will not kill that Ultravisor -- it only manages processes it started itself.
 
 ## Architecture
 
@@ -191,7 +191,7 @@ Use `--stack` when you want a single command that brings up the full Retold expe
 - **Heavy media processing offloaded** through the Ultravisor beacon (video frame extraction, audio waveforms, ebook conversion, PDF page rendering)
 - **Document conversion** via the embedded Orator-Conversion service (with the `doc-to-pdf` converter for Word, RTF, ODT, WordPerfect, etc.)
 - **Persistent state** across launches (the Ultravisor datastore lives at a stable XDG location)
-- **No port juggling** — Ultravisor on its standard port 54321, Retold Remote on a random high port
+- **No port juggling** -- Ultravisor on its standard port 54321, Retold Remote on a random high port
 
 Use the bare `retold-remote serve` command (without `--stack`) when you just want a quick gallery browser without the coordinator infrastructure.
 
@@ -199,8 +199,8 @@ Use the bare `retold-remote serve` command (without `--stack`) when you just wan
 
 | Feature | `retold-remote serve` | `retold-stack` |
 |---------|----------------------|----------------|
-| Gallery browser | ✓ | ✓ |
-| Image/video/audio viewers | ✓ | ✓ |
+| Gallery browser | [x] | [x] |
+| Image/video/audio viewers | [x] | [x] |
 | Document conversion (doc, rtf, etc.) | Embedded only | Embedded + dispatched |
 | Heavy work offloading | No | Yes (via Ultravisor) |
 | Spawns child processes | No | Yes (Ultravisor) |
