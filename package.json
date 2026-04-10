@@ -46,7 +46,7 @@
         "pdf-parse": "^2.4.5",
         "pict": "^1.0.361",
         "pict-application": "^1.0.33",
-        "pict-docuserve": "^0.0.32",
+        "pict-docuserve": "^0.1.1",
         "pict-provider": "^1.0.12",
         "pict-section-code": "^1.0.4",
         "pict-section-filebrowser": "^0.0.2",
@@ -64,7 +64,7 @@
     },
     "devDependencies": {
         "puppeteer": "^24.40.0",
-        "quackage": "^1.0.65"
+        "quackage": "^1.1.0"
     },
     "copyFilesSettings": {
         "whenFileExists": "overwrite"
