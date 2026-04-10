@@ -1,4 +1,4 @@
-# Retold Remote <small>Documentation</small>
+# Retold Remote
 
 > A browser-based media server and NAS file explorer
 

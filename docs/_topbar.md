@@ -1,3 +1,3 @@
-# Retold Remote <small>docs</small>
+# Retold Remote
 
 - [Back to App](/)
