@@ -19,7 +19,7 @@
     ],
     "scripts": {
         "start": "node source/cli/RetoldRemote-CLI-Run.js",
-	"stack": "node source/cli/RetoldRemote-Stack-Run.js",
+        "stack": "node source/cli/RetoldRemote-Stack-Run.js",
         "build": "npx quack build && npx quack copy",
         "test": "npx mocha -u tdd --exit --timeout 30000 test/*_tests.js",
         "prepack": "npm run build",
@@ -46,7 +46,6 @@
         "pdf-parse": "^2.4.5",
         "pict": "^1.0.361",
         "pict-application": "^1.0.33",
-        "pict-docuserve": "^0.1.1",
         "pict-provider": "^1.0.12",
         "pict-section-code": "^1.0.4",
         "pict-section-filebrowser": "^0.0.2",
@@ -63,6 +62,7 @@
         "sharp": "^0.34.5"
     },
     "devDependencies": {
+        "pict-docuserve": "^0.1.5",
         "puppeteer": "^24.40.0",
         "quackage": "^1.1.0"
     },
