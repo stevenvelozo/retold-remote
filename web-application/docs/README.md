@@ -35,15 +35,15 @@ See [Stack Launcher](stack-launcher.md) for what `retold-stack` does and how the
 - **Audio viewer** with waveform visualization, selection-based playback, and segment extraction
 - **eBook reader** for EPUB and MOBI with table of contents, page navigation, text selection capture, and visual region selection
 - **PDF viewer** with full pdf.js rendering, page navigation, text layer selection, and visual region selection
-- **Document conversion** for DOC, DOCX, RTF, ODT, WPD, ODP, PPT(X), ODS, XLS(X) — converted to PDF on the fly via Orator-Conversion + LibreOffice
+- **Document conversion** for DOC, DOCX, RTF, ODT, WPD, ODP, PPT(X), ODS, XLS(X) -- converted to PDF on the fly via Orator-Conversion + LibreOffice
 - **Code/text viewer** with syntax highlighting for 30+ languages
 - **Archive browsing** into zip, 7z, rar, tar.gz, cbz, and cbr files as virtual folders
 - **Filtering and sorting** by media type, extension, file size, date, and text search (with regex)
-- **Subimage regions** — draw labeled rectangles on images, ebook pages, and PDF pages; persisted per file. Double-click an existing region to resize, move, or rename it in place.
-- **Regions Browser** — topbar button opens a folder-scoped view of every saved region across every file; drill down by folder tree, click any region to jump to it.
-- **Collections & Export** — bookmark files, image crops, video clips, audio clips, and document regions; export the whole collection to a folder with proper file cutting
-- **Stack mode** — single command launches Ultravisor coordinator + Retold Remote + embedded Orator-Conversion with sane XDG data paths
-- **Ultravisor offload** — heavy work (frame extraction, waveforms, conversions) dispatched to a beacon worker on a faster machine
+- **Subimage regions** -- draw labeled rectangles on images, ebook pages, and PDF pages; persisted per file. Double-click an existing region to resize, move, or rename it in place.
+- **Regions Browser** -- topbar button opens a folder-scoped view of every saved region across every file; drill down by folder tree, click any region to jump to it.
+- **Collections & Export** -- bookmark files, image crops, video clips, audio clips, and document regions; export the whole collection to a folder with proper file cutting
+- **Stack mode** -- single command launches Ultravisor coordinator + Retold Remote + embedded Orator-Conversion with sane XDG data paths
+- **Ultravisor offload** -- heavy work (frame extraction, waveforms, conversions) dispatched to a beacon worker on a faster machine
 - **15 themes** from greyscale to retro and cyberpunk
 - **Full keyboard navigation** across every mode
 - **Media type override** to force any file open as image, video, audio, or text (keys 1-4)
@@ -182,7 +182,7 @@ In the frame preview overlay:
 | `a` | Quick-add to collection (current region if selected) |
 | `b` | Toggle collection panel |
 | `h` | Toggle favorite |
-| `Esc` | Unwind one layer (edit mode → selection mode → back to viewer) |
+| `Esc` | Unwind one layer (edit mode -> selection mode -> back to viewer) |
 
 ### Document Viewer (PDF / EPUB)
 
@@ -192,7 +192,7 @@ In the frame preview overlay:
 | `a` | Quick-add document region to collection |
 | `Esc` | Back to gallery |
 
-In the PDF viewer, page navigation buttons and a page input are in the controls bar. The text layer supports native browser text selection — use the **Save Selection** button to capture selected text as a labeled region.
+In the PDF viewer, page navigation buttons and a page input are in the controls bar. The text layer supports native browser text selection -- use the **Save Selection** button to capture selected text as a labeled region.
 
 In the EPUB reader, the controls bar exposes **Save Selection** (captures the selected text + CFI) and **Select Region** (draws a rectangle over the rendered page).
 

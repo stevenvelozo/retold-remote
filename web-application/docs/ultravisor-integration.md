@@ -2,7 +2,7 @@
 
 retold-remote can offload heavy media processing to a remote machine running an Ultravisor beacon worker. This is useful when the server (e.g. a NAS) has limited CPU and RAM but needs to process large video files, raw camera images, audio waveforms, and ebook conversions.
 
-> **Tip:** If you just want to run Ultravisor and Retold Remote together on the same machine without configuring anything, use the [Stack Launcher](stack-launcher.md) — `retold-stack /path/to/media` spawns Ultravisor as a child process automatically with sane XDG-style data paths. This page covers the case where Ultravisor runs on a *different* machine.
+> **Tip:** If you just want to run Ultravisor and Retold Remote together on the same machine without configuring anything, use the [Stack Launcher](stack-launcher.md) -- `retold-stack /path/to/media` spawns Ultravisor as a child process automatically with sane XDG-style data paths. This page covers the case where Ultravisor runs on a *different* machine.
 
 ## How It Works
 
@@ -11,13 +11,13 @@ When configured, retold-remote dispatches shell commands (ffmpeg, ffprobe, dcraw
 ```
 NAS (retold-remote)                 Fast Machine (Ultravisor)
 ┌──────────────────────┐            ┌──────────────────────┐
-│ Request → Check Cache│            │ Ultravisor Server    │
+│ Request -> Check Cache│            │ Ultravisor Server    │
 │   ↓ (miss)           │   HTTP     │   └─ Beacon Worker   │
 │ Dispatch command  ───┼──────────►│      1. Download src │
 │                      │            │      2. Run command  │
 │ ◄─ base64 result  ◄──┼────────────┤      3. Return output│
 │   ↓                  │            │                      │
-│ Decode → Cache       │            └──────────────────────┘
+│ Decode -> Cache       │            └──────────────────────┘
 │ Serve response       │
 │                      │
 │ ↓ (dispatch fails)   │

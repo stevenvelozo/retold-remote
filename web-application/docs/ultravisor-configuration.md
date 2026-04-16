@@ -23,10 +23,10 @@ brew install ffmpeg
 
 ### Windows
 
-1. Download a release build from [gyan.dev/ffmpeg](https://www.gyan.dev/ffmpeg/builds/) — choose the **ffmpeg-release-full** zip.
+1. Download a release build from [gyan.dev/ffmpeg](https://www.gyan.dev/ffmpeg/builds/) -- choose the **ffmpeg-release-full** zip.
 2. Extract to a permanent location, e.g. `C:\ffmpeg`.
 3. Add `C:\ffmpeg\bin` to the system PATH:
-   - Open **Settings → System → About → Advanced system settings → Environment Variables**.
+   - Open **Settings -> System -> About -> Advanced system settings -> Environment Variables**.
    - Edit the **Path** variable under System variables and add `C:\ffmpeg\bin`.
 4. Open a new terminal and verify:
 
@@ -56,7 +56,7 @@ brew install imagemagick
 
 ### Windows
 
-1. Download the installer from [imagemagick.org/script/download.php](https://imagemagick.org/script/download.php) — choose the **Win64 dynamic** installer.
+1. Download the installer from [imagemagick.org/script/download.php](https://imagemagick.org/script/download.php) -- choose the **Win64 dynamic** installer.
 2. During installation, check **Add application directory to your system path** and **Install legacy utilities (e.g. convert)**.
 3. Open a new terminal and verify:
 
@@ -139,8 +139,8 @@ brew install audiowaveform
 
 audiowaveform does not provide official Windows binaries. Options:
 
-1. **WSL** (recommended) — install Ubuntu via WSL and follow the Ubuntu instructions above. Run the beacon worker inside WSL.
-2. **Build from source** — requires CMake, Visual Studio, and the Boost, libmad, libsndfile, and libgd libraries. See the [audiowaveform GitHub repo](https://github.com/bbc/audiowaveform) for build instructions.
+1. **WSL** (recommended) -- install Ubuntu via WSL and follow the Ubuntu instructions above. Run the beacon worker inside WSL.
+2. **Build from source** -- requires CMake, Visual Studio, and the Boost, libmad, libsndfile, and libgd libraries. See the [audiowaveform GitHub repo](https://github.com/bbc/audiowaveform) for build instructions.
 
 ## ebook-convert (Calibre)
 

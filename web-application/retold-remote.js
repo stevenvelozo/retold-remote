@@ -1237,7 +1237,7 @@ if(startDot===-1)startDot=i;else if(preDotState!==1)preDotState=1;}else if(start
 // have a good chance at having a non-empty extension
 preDotState=-1;}}if(startDot===-1||end===-1||// We saw a non-dot character immediately before the dot
 preDotState===0||// The (right-most) trimmed path component is exactly '..'
-preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":89}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
+preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":103}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
 MainViewportViewIdentifier:'Default-View',MainViewportRenderableHash:false,MainViewportDestinationAddress:false,MainViewportDefaultDataAddress:false,// Whether or not we should automatically render the main viewport and other autorender views after we initialize the pict application
 AutoSolveAfterInitialize:true,AutoRenderMainViewportViewAfterInitialize:true,AutoRenderViewsAfterInitialize:false,AutoLoginAfterInitialize:false,AutoLoadDataAfterLogin:false,ConfigurationOnlyViews:[],Manifests:{},// The prefix to prepend on all template destination hashes
 IdentifierAddressPrefix:'PICT-'};/**
@@ -1443,13 +1443,20 @@ tmpLoadedViews.sort((a,b)=>{return this.pict.views[a].options.AutoRenderOrdinal-
 const libDocumentationProvider=require('./providers/Pict-Provider-Docuserve-Documentation.js');// Views
 const libViewLayout=require('./views/PictView-Docuserve-Layout.js');const libViewTopBar=require('./views/PictView-Docuserve-TopBar.js');const libViewSidebar=require('./views/PictView-Docuserve-Sidebar.js');const libViewSplash=require('./views/PictView-Docuserve-Splash.js');const libViewContent=require('./views/PictView-Docuserve-Content.js');const libViewSearch=require('./views/PictView-Docuserve-Search.js');class DocuserveApplication extends libPictApplication{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Add the documentation provider
 this.pict.addProvider('Docuserve-Documentation',libDocumentationProvider.default_configuration,libDocumentationProvider);// Add views
-this.pict.addView('Docuserve-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('Docuserve-TopBar',libViewTopBar.default_configuration,libViewTopBar);this.pict.addView('Docuserve-Sidebar',libViewSidebar.default_configuration,libViewSidebar);this.pict.addView('Docuserve-Splash',libViewSplash.default_configuration,libViewSplash);this.pict.addView('Docuserve-Content',libViewContent.default_configuration,libViewContent);this.pict.addView('Docuserve-Search',libViewSearch.default_configuration,libViewSearch);}onAfterInitializeAsync(fCallback){// Initialize application state
-this.pict.AppData.Docuserve={CatalogLoaded:false,Catalog:null,CoverLoaded:false,Cover:null,SidebarLoaded:false,SidebarGroups:[],TopBarLoaded:false,TopBar:null,ErrorPageLoaded:false,ErrorPageHTML:null,KeywordIndexLoaded:false,KeywordDocumentCount:0,CurrentGroup:'',CurrentModule:'',CurrentPath:'',// Whether the sidebar is currently visible
+this.pict.addView('Docuserve-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('Docuserve-TopBar',libViewTopBar.default_configuration,libViewTopBar);this.pict.addView('Docuserve-Sidebar',libViewSidebar.default_configuration,libViewSidebar);this.pict.addView('Docuserve-Splash',libViewSplash.default_configuration,libViewSplash);this.pict.addView('Docuserve-Content',libViewContent.default_configuration,libViewContent);this.pict.addView('Docuserve-Search',libViewSearch.default_configuration,libViewSearch);}onAfterInitializeAsync(fCallback){// Apply saved theme preference BEFORE first layout render to avoid
+// a flash of the wrong color scheme.  The TopBar view wires up the
+// toggle UI and rebroadcasts this same choice after it renders.
+try{let tmpPath=(window.location.pathname||'/').replace(/\/[^/]*$/,'/');let tmpKey='docuserve-theme:'+window.location.origin+tmpPath;let tmpSaved=localStorage.getItem(tmpKey);if(tmpSaved==='light'||tmpSaved==='dark'){document.documentElement.setAttribute('data-theme',tmpSaved);}}catch(e){// localStorage unavailable; fall through to system preference.
+}// Initialize application state
+this.pict.AppData.Docuserve={CatalogLoaded:false,Catalog:null,CoverLoaded:false,Cover:null,SidebarLoaded:false,SidebarGroups:[],TopBarLoaded:false,TopBar:null,VersionLoaded:false,Version:null,ErrorPageLoaded:false,ErrorPageHTML:null,KeywordIndexLoaded:false,KeywordDocumentCount:0,CurrentGroup:'',CurrentModule:'',CurrentPath:'',// Whether the sidebar is currently visible
 SidebarVisible:true,// Base URL for local docs (relative to where the app is served)
 DocsBaseURL:'',// URL for the catalog JSON
 CatalogURL:'retold-catalog.json'};// Load the catalog, then render the layout
-let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];tmpDocProvider.loadCatalog(()=>{// Set the page title from _cover.md or _topbar.md
-let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){document.title=tmpDocuserve.Cover.Title.replace(/<[^>]*>/g,'');}else if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar&&tmpDocuserve.TopBar.Brand){document.title=tmpDocuserve.TopBar.Brand.replace(/<[^>]*>/g,'');}// Render the layout shell, which triggers child view rendering
+let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];tmpDocProvider.loadCatalog(()=>{// Set the page title to match the stamped <title> pattern
+// "<DisplayName> v<Version> Documentation" so the browser
+// tab and the static HTML metadata stay in sync.  Falls back
+// to the cover/topbar brand alone when no version is loaded.
+let tmpDocuserve=this.pict.AppData.Docuserve;let tmpDisplayName='';if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){tmpDisplayName=tmpDocuserve.Cover.Title.replace(/<[^>]*>/g,'').trim();}else if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar&&tmpDocuserve.TopBar.Brand){tmpDisplayName=tmpDocuserve.TopBar.Brand.replace(/<[^>]*>/g,'').trim();}if(tmpDisplayName){if(tmpDocuserve.VersionLoaded&&tmpDocuserve.Version&&tmpDocuserve.Version.Version){document.title=`${tmpDisplayName} v${tmpDocuserve.Version.Version} Documentation`;}else{document.title=tmpDisplayName;}}// Render the layout shell, which triggers child view rendering
 this.pict.views['Docuserve-Layout'].render();return super.onAfterInitializeAsync(fCallback);});}/**
 	 * Read the current window.location.hash and dispatch to the correct handler.
 	 *
@@ -1555,9 +1562,9 @@ return tmpBaseDir+pSrc;};}/**
 	 */loadCatalog(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpCatalogURL=this.pict.AppData.Docuserve.CatalogURL||'retold-catalog.json';let tmpLoadOptionalFiles=()=>{// Load _cover.md, _sidebar.md, _topbar.md, errorpage.md and keyword index in parallel.
 // When all are done, if we still have no sidebar data, try to auto-discover
 // a README.md so the site works with plain markdown folders.
-let tmpPending=5;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// If no sidebar data was populated by catalog or _sidebar.md,
+let tmpPending=6;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// If no sidebar data was populated by catalog or _sidebar.md,
 // try to auto-discover a README.md to provide minimal navigation.
-if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info(`Docuserve: No catalog at [${tmpCatalogURL}]; running in standalone mode.`);return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
+if(!this.pict.AppData.Docuserve.SidebarGroups||this.pict.AppData.Docuserve.SidebarGroups.length<1){this.autoDiscoverSidebar(tmpCallback);}else{return tmpCallback();}}};this.loadCover(tmpFinish);this.loadSidebar(tmpFinish);this.loadTopbar(tmpFinish);this.loadErrorPage(tmpFinish);this.loadKeywordIndex(tmpFinish);this.loadVersion(tmpFinish);};fetch(tmpCatalogURL).then(pResponse=>{if(!pResponse.ok){this.log.info(`Docuserve: No catalog at [${tmpCatalogURL}]; running in standalone mode.`);return null;}return pResponse.json();}).then(pCatalog=>{if(pCatalog){this._Catalog=pCatalog;this.pict.AppData.Docuserve.Catalog=pCatalog;this.pict.AppData.Docuserve.CatalogLoaded=true;// Build sidebar navigation data from the catalog as default
 this.buildSidebarData(pCatalog);}tmpLoadOptionalFiles();}).catch(pError=>{this.log.info(`Docuserve: Catalog load error (${pError}); continuing in standalone mode.`);tmpLoadOptionalFiles();});}/**
 	 * Auto-discover sidebar content when no catalog or _sidebar.md is available.
 	 *
@@ -1634,6 +1641,15 @@ let tmpHeadingMatch=tmpLine.match(/^#+\s+(.+)/);if(tmpHeadingMatch){tmpTopBar.Br
 let tmpBulletMatch=tmpLine.match(/^[-*+]\s+(.*)/);if(tmpBulletMatch){let tmpContent=tmpBulletMatch[1].trim();let tmpLinkMatch=tmpContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpLinkMatch){let tmpText=tmpLinkMatch[1].trim();let tmpHref=tmpLinkMatch[2].trim();// External links (http/https) go to the right side
 if(tmpHref.match(/^https?:\/\//)){tmpTopBar.ExternalLinks.push({Text:tmpText,Href:tmpHref});}else{// Internal link — convert to hash route
 let tmpRoute=this.convertSidebarLink(tmpHref);tmpTopBar.NavLinks.push({Text:tmpText,Href:tmpRoute});}}continue;}}return tmpTopBar;}/**
+	 * Fetch and parse _version.json — an optional sidecar generated by
+	 * `quack prepare-docs` that describes the module version, generation
+	 * timestamp and git commit for display in the topbar and sidebar.
+	 *
+	 * Parsed result stored in this.pict.AppData.Docuserve.Version:
+	 *   { Name, Version, Description, GeneratedAt, GitCommit }
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */loadVersion(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpDocsBase=this.pict.AppData.Docuserve.DocsBaseURL||'';fetch(tmpDocsBase+'_version.json').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pVersion=>{if(!pVersion){this.log.info('Docuserve: No _version.json found; version placard disabled.');return tmpCallback();}this.pict.AppData.Docuserve.Version=pVersion;this.pict.AppData.Docuserve.VersionLoaded=true;return tmpCallback();}).catch(pError=>{this.log.warn(`Docuserve: Error loading _version.json: ${pError}`);return tmpCallback();});}/**
 	 * Fetch and parse errorpage.md into HTML for use as a custom error page.
 	 *
 	 * The errorpage.md is a standard markdown file.  If it contains the
@@ -1828,7 +1844,7 @@ let tmpParts=tmpPath.split('/');if(tmpParts.length>=2){if(this.isGroupInCatalog(
 if(pCurrentGroup&&pCurrentModule){// Determine the directory of the current document
 let tmpDocDir='';if(pCurrentDocPath){let tmpDirParts=pCurrentDocPath.split('/');if(tmpDirParts.length>1){tmpDirParts.pop();// Remove filename
 tmpDocDir=tmpDirParts.join('/')+'/';}}return'#/doc/'+pCurrentGroup+'/'+pCurrentModule+'/'+tmpDocDir+tmpPath;}// Local doc page (no module context)
-if(tmpPath.match(/\.md$/)){let tmpPageKey=tmpPath.replace(/\.md$/,'');return'#/page/'+tmpPageKey;}return'#/page/'+tmpPath;}}module.exports=DocuserveDocumentationProvider;module.exports.default_configuration={ProviderIdentifier:"Docuserve-Documentation",AutoInitialize:true,AutoInitializeOrdinal:0};},{"lunr":32,"pict-provider":55,"pict-section-content":59}],48:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"Docuserve-Content",DefaultRenderable:"Docuserve-Content-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,// The parent pict-section-content CSS must be included here because
+if(tmpPath.match(/\.md$/)){let tmpPageKey=tmpPath.replace(/\.md$/,'');return'#/page/'+tmpPageKey;}return'#/page/'+tmpPath;}}module.exports=DocuserveDocumentationProvider;module.exports.default_configuration={ProviderIdentifier:"Docuserve-Documentation",AutoInitialize:true,AutoInitializeOrdinal:0};},{"lunr":32,"pict-provider":58,"pict-section-content":62}],48:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"Docuserve-Content",DefaultRenderable:"Docuserve-Content-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,// The parent pict-section-content CSS must be included here because
 // pict-view's Object.assign replaces the CSS property entirely when
 // the child provides its own.  We cannot read the parent's
 // default_configuration.CSS at module scope because browserify's
@@ -1838,65 +1854,70 @@ CSS:/*css*/`
 			padding: 2em 3em;
 			max-width: 900px;
 			margin: 0 auto;
+			color: var(--docuserve-text);
 		}
 		.pict-content-loading {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			min-height: 200px;
-			color: #8A7F72;
+			color: var(--docuserve-text-dim);
 			font-size: 1em;
 		}
 		.pict-content h1 {
 			font-size: 2em;
-			color: #3D3229;
-			border-bottom: 1px solid #DDD6CA;
+			color: var(--docuserve-text-strong);
+			border-bottom: 1px solid var(--docuserve-border);
 			padding-bottom: 0.3em;
 			margin-top: 0;
 		}
 		.pict-content h2 {
 			font-size: 1.5em;
-			color: #3D3229;
-			border-bottom: 1px solid #EAE3D8;
+			color: var(--docuserve-text-strong);
+			border-bottom: 1px solid var(--docuserve-border-soft);
 			padding-bottom: 0.25em;
 			margin-top: 1.5em;
 		}
 		.pict-content h3 {
 			font-size: 1.25em;
-			color: #3D3229;
+			color: var(--docuserve-text-strong);
 			margin-top: 1.25em;
 		}
 		.pict-content h4, .pict-content h5, .pict-content h6 {
-			color: #5E5549;
+			color: var(--docuserve-text-muted);
 			margin-top: 1em;
 		}
 		.pict-content p {
 			line-height: 1.7;
-			color: #423D37;
+			color: var(--docuserve-text);
 			margin: 0.75em 0;
 		}
 		.pict-content a {
-			color: #2E7D74;
+			color: var(--docuserve-accent);
 			text-decoration: none;
 		}
 		.pict-content a:hover {
 			text-decoration: underline;
 		}
+		/* Plain <pre> (no wrap) - rare; keep for safety */
 		.pict-content pre {
-			background: #3D3229;
-			color: #E8E0D4;
+			background: var(--docuserve-code-bg);
+			color: var(--docuserve-code-text);
 			padding: 1.25em;
 			border-radius: 6px;
+			border: 1px solid var(--docuserve-code-border);
 			overflow-x: auto;
 			line-height: 1.5;
 			font-size: 0.9em;
 		}
+		/* Inline code */
 		.pict-content code {
-			background: #F0ECE4;
+			background: var(--docuserve-inline-code-bg);
 			padding: 0.15em 0.4em;
 			border-radius: 3px;
 			font-size: 0.9em;
-			color: #9E6B47;
+			color: var(--docuserve-inline-code-text);
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
 		}
 		.pict-content pre code {
 			background: none;
@@ -1904,15 +1925,17 @@ CSS:/*css*/`
 			color: inherit;
 			font-size: inherit;
 		}
+		/* Fenced code block wrapper emitted by pict-section-content */
 		.pict-content-code-wrap {
 			position: relative;
 			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
 			font-size: 14px;
 			line-height: 1.5;
 			border-radius: 6px;
+			border: 1px solid var(--docuserve-code-border);
 			overflow: auto;
 			margin: 1em 0;
-			background: #3D3229;
+			background: var(--docuserve-code-bg);
 		}
 		.pict-content-code-wrap .pict-content-code-line-numbers {
 			position: absolute;
@@ -1921,11 +1944,12 @@ CSS:/*css*/`
 			width: 40px;
 			padding: 1.25em 0;
 			text-align: right;
-			background: #342A22;
-			border-right: 1px solid #4A3F35;
-			color: #8A7F72;
-			font-size: 13px;
-			line-height: 1.5;
+			background: var(--docuserve-code-gutter-bg);
+			border-right: 1px solid var(--docuserve-code-gutter-border);
+			color: var(--docuserve-code-gutter-text);
+			font-family: inherit;
+			font-size: inherit;
+			line-height: inherit;
 			user-select: none;
 			pointer-events: none;
 			box-sizing: border-box;
@@ -1936,10 +1960,11 @@ CSS:/*css*/`
 		}
 		.pict-content-code-wrap pre {
 			margin: 0;
-			background: #3D3229;
-			color: #E8E0D4;
+			background: var(--docuserve-code-bg);
+			color: var(--docuserve-code-text);
 			padding: 1.25em 1.25em 1.25em 52px;
-			border-radius: 6px;
+			border: none;
+			border-radius: 0;
 			overflow-x: auto;
 			line-height: 1.5;
 			font-size: inherit;
@@ -1951,23 +1976,37 @@ CSS:/*css*/`
 			font-size: inherit;
 			font-family: inherit;
 		}
-		.pict-content-code-wrap .keyword { color: #C678DD; }
-		.pict-content-code-wrap .string { color: #98C379; }
-		.pict-content-code-wrap .number { color: #D19A66; }
-		.pict-content-code-wrap .comment { color: #7F848E; font-style: italic; }
-		.pict-content-code-wrap .operator { color: #56B6C2; }
-		.pict-content-code-wrap .punctuation { color: #E8E0D4; }
-		.pict-content-code-wrap .function-name { color: #61AFEF; }
-		.pict-content-code-wrap .property { color: #E06C75; }
-		.pict-content-code-wrap .tag { color: #E06C75; }
-		.pict-content-code-wrap .attr-name { color: #D19A66; }
-		.pict-content-code-wrap .attr-value { color: #98C379; }
+		/* Syntax tokens — these rules must match the span classes emitted by
+		   pict-section-code's highlighter.  Also apply without .pict-content-code-wrap
+		   as a belt-and-suspenders for any <pre><code> not emitted from a fence. */
+		.pict-content-code-wrap .keyword,
+		.pict-content pre code .keyword { color: var(--docuserve-tok-keyword); }
+		.pict-content-code-wrap .string,
+		.pict-content pre code .string { color: var(--docuserve-tok-string); }
+		.pict-content-code-wrap .number,
+		.pict-content pre code .number { color: var(--docuserve-tok-number); }
+		.pict-content-code-wrap .comment,
+		.pict-content pre code .comment { color: var(--docuserve-tok-comment); font-style: italic; }
+		.pict-content-code-wrap .operator,
+		.pict-content pre code .operator { color: var(--docuserve-tok-operator); }
+		.pict-content-code-wrap .punctuation,
+		.pict-content pre code .punctuation { color: var(--docuserve-tok-punctuation); }
+		.pict-content-code-wrap .function-name,
+		.pict-content pre code .function-name { color: var(--docuserve-tok-function); }
+		.pict-content-code-wrap .property,
+		.pict-content pre code .property { color: var(--docuserve-tok-property); }
+		.pict-content-code-wrap .tag,
+		.pict-content pre code .tag { color: var(--docuserve-tok-tag); }
+		.pict-content-code-wrap .attr-name,
+		.pict-content pre code .attr-name { color: var(--docuserve-tok-attr-name); }
+		.pict-content-code-wrap .attr-value,
+		.pict-content pre code .attr-value { color: var(--docuserve-tok-attr-value); }
 		.pict-content blockquote {
-			border-left: 4px solid #2E7D74;
+			border-left: 4px solid var(--docuserve-blockquote-border);
 			margin: 1em 0;
 			padding: 0.5em 1em;
-			background: #F7F5F0;
-			color: #5E5549;
+			background: var(--docuserve-blockquote-bg);
+			color: var(--docuserve-blockquote-text);
 		}
 		.pict-content blockquote p {
 			margin: 0.25em 0;
@@ -1978,11 +2017,11 @@ CSS:/*css*/`
 		}
 		.pict-content li {
 			margin: 0.25em 0;
-			color: #423D37;
+			color: var(--docuserve-text);
 		}
 		.pict-content hr {
 			border: none;
-			border-top: 1px solid #DDD6CA;
+			border-top: 1px solid var(--docuserve-border);
 			margin: 2em 0;
 		}
 		.pict-content table {
@@ -1991,30 +2030,51 @@ CSS:/*css*/`
 			margin: 1em 0;
 		}
 		.pict-content table th {
-			background: #F5F0E8;
-			border: 1px solid #DDD6CA;
+			background: var(--docuserve-table-header-bg);
+			border: 1px solid var(--docuserve-border);
 			padding: 0.6em 0.8em;
 			text-align: left;
 			font-weight: 600;
-			color: #3D3229;
+			color: var(--docuserve-text-strong);
 		}
 		.pict-content table td {
-			border: 1px solid #DDD6CA;
+			border: 1px solid var(--docuserve-border);
 			padding: 0.5em 0.8em;
-			color: #423D37;
+			color: var(--docuserve-text);
 		}
 		.pict-content table tr:nth-child(even) {
-			background: #F7F5F0;
+			background: var(--docuserve-table-row-alt-bg);
 		}
 		.pict-content img {
 			max-width: 100%;
 			height: auto;
 		}
 		.pict-content pre.mermaid {
-			background: #fff;
-			color: #3D3229;
+			background: var(--docuserve-mermaid-bg);
+			color: #2A241E;
 			text-align: center;
 			padding: 1em;
+			border: 1px solid var(--docuserve-border-soft);
+		}
+		/* Force dark text inside mermaid SVGs so diagrams stay readable
+		   in dark mode (mermaid bg is always light). */
+		.pict-content pre.mermaid text,
+		.pict-content pre.mermaid .nodeLabel,
+		.pict-content pre.mermaid .edgeLabel,
+		.pict-content pre.mermaid .label,
+		.pict-content pre.mermaid .cluster-label,
+		.pict-content pre.mermaid span,
+		.pict-content pre.mermaid foreignObject p,
+		.pict-content pre.mermaid foreignObject div,
+		.pict-content pre.mermaid foreignObject span {
+			color: #2A241E !important;
+			fill: #2A241E !important;
+		}
+		.pict-content pre.mermaid .edgePath .path {
+			stroke: #5E5549 !important;
+		}
+		.pict-content pre.mermaid .arrowheadPath {
+			fill: #5E5549 !important;
 		}
 		.pict-content .pict-content-katex-display {
 			text-align: center;
@@ -2028,12 +2088,12 @@ CSS:/*css*/`
 		.docuserve-module-external-link {
 			padding: 0.5em 0;
 			margin-bottom: 0.5em;
-			border-bottom: 1px solid #EAE3D8;
+			border-bottom: 1px solid var(--docuserve-border-soft);
 			font-size: 0.85em;
 			text-align: right;
 		}
 		.docuserve-module-external-link a {
-			color: #2E7D74;
+			color: var(--docuserve-accent);
 			text-decoration: none;
 		}
 		.docuserve-module-external-link a:hover {
@@ -2042,19 +2102,253 @@ CSS:/*css*/`
 		.docuserve-not-found {
 			text-align: center;
 			padding: 3em 1em;
-			color: #5E5549;
+			color: var(--docuserve-text-muted);
 		}
 		.docuserve-not-found h2 {
-			color: #8A7F72;
+			color: var(--docuserve-text-dim);
 			font-size: 1.5em;
 			border-bottom: none;
 		}
 		.docuserve-not-found code {
-			background: #F0ECE4;
+			background: var(--docuserve-inline-code-bg);
 			padding: 0.15em 0.4em;
 			border-radius: 3px;
 			font-size: 0.9em;
-			color: #9E6B47;
+			color: var(--docuserve-inline-code-text);
+		}
+
+		/* Fullscreen viewer for images and mermaid diagrams (click-to-zoom) */
+		.pict-content [data-fullscreen-source] {
+			cursor: zoom-in;
+			outline: 1px solid transparent;
+			outline-offset: 3px;
+			border-radius: 4px;
+			transition: outline-color 0.15s ease;
+		}
+		.pict-content [data-fullscreen-source]:hover {
+			outline-color: var(--docuserve-accent);
+		}
+		/* Code block container with hover-revealed action buttons */
+		.pict-content-code-container {
+			position: relative;
+			display: flex;
+			align-items: flex-start;
+			gap: 8px;
+			margin: 1em 0;
+		}
+		.pict-content-code-container > .pict-content-code-wrap {
+			margin: 0;
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+		.pict-content-code-actions {
+			position: sticky;
+			top: 64px;
+			align-self: flex-start;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 0 0 auto;
+			padding-top: 6px;
+			opacity: 0;
+			transform: translateX(-4px);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+		}
+		.pict-content-code-container:hover .pict-content-code-actions,
+		.pict-content-code-container:focus-within .pict-content-code-actions {
+			opacity: 1;
+			transform: translateX(0);
+			pointer-events: auto;
+		}
+		.pict-content-code-action-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			padding: 0;
+			background: var(--docuserve-bg-elevated);
+			color: var(--docuserve-text-muted);
+			border: 1px solid var(--docuserve-border);
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+		}
+		.pict-content-code-action-btn svg {
+			display: block;
+			width: 14px;
+			height: 14px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.6;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-content-code-action-btn:hover {
+			background: var(--docuserve-accent);
+			color: #FFFFFF;
+			border-color: var(--docuserve-accent);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+		}
+		.pict-content-code-action-btn:focus-visible {
+			outline: 2px solid var(--docuserve-accent);
+			outline-offset: 2px;
+		}
+		.pict-content-code-action-btn.is-copied {
+			background: var(--docuserve-accent);
+			color: #FFFFFF;
+			border-color: var(--docuserve-accent);
+		}
+		.pict-content-code-action-btn.is-copy-failed {
+			background: #B23A3A;
+			color: #FFFFFF;
+			border-color: #B23A3A;
+		}
+		.pict-fullscreen-overlay {
+			position: fixed;
+			inset: 0;
+			z-index: 9999;
+			display: flex;
+			flex-direction: column;
+			background: rgba(0, 0, 0, 0.62);
+			backdrop-filter: blur(6px);
+			-webkit-backdrop-filter: blur(6px);
+			color: var(--docuserve-text);
+		}
+		.pict-fullscreen-overlay[hidden] {
+			display: none;
+		}
+		.pict-fullscreen-titlebar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1em;
+			height: 48px;
+			padding: 0 1em;
+			background: var(--docuserve-bg-elevated);
+			color: var(--docuserve-text-strong);
+			border-bottom: 1px solid var(--docuserve-border);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+			flex: 0 0 auto;
+		}
+		.pict-fullscreen-title {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			font-size: 0.95em;
+			font-weight: 600;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			color: var(--docuserve-text-strong);
+		}
+		.pict-fullscreen-controls {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.pict-fullscreen-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			background: transparent;
+			border: 1px solid transparent;
+			border-radius: 6px;
+			color: var(--docuserve-text-muted);
+			cursor: pointer;
+			transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+		}
+		.pict-fullscreen-btn svg {
+			display: block;
+			width: 16px;
+			height: 16px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-fullscreen-btn:hover {
+			background: var(--docuserve-border-soft);
+			color: var(--docuserve-text-strong);
+		}
+		.pict-fullscreen-btn:focus-visible {
+			outline: 2px solid var(--docuserve-accent);
+			outline-offset: 2px;
+		}
+		.pict-fullscreen-close:hover {
+			background: var(--docuserve-accent);
+			color: #FFFFFF;
+		}
+		.pict-fullscreen-stage {
+			flex: 1 1 auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			padding: 1.5em;
+			cursor: zoom-in;
+			touch-action: none;
+		}
+		.pict-fullscreen-stage.is-zoomed {
+			cursor: grab;
+		}
+		.pict-fullscreen-stage.is-panning {
+			cursor: grabbing;
+		}
+		.pict-fullscreen-content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			max-width: 100%;
+			max-height: 100%;
+			transform-origin: center center;
+			transition: transform 0.05s linear;
+			will-change: transform;
+		}
+		.pict-fullscreen-content > * {
+			box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+		}
+		.pict-fullscreen-content .pict-fullscreen-img {
+			max-width: 90vw;
+			max-height: calc(100vh - 96px);
+			width: auto;
+			height: auto;
+			object-fit: contain;
+			background: var(--docuserve-bg-elevated);
+			padding: 12px;
+			border-radius: 6px;
+		}
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg {
+			width: min(90vw, 1400px);
+			height: auto;
+			max-height: calc(100vh - 96px);
+			background: var(--docuserve-mermaid-bg);
+			color: #2A241E;
+			padding: 16px;
+			border-radius: 6px;
+		}
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg text,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg .nodeLabel,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg .edgeLabel,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg .label,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg span,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg foreignObject p,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg foreignObject div,
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg foreignObject span {
+			color: #2A241E !important;
+			fill: #2A241E !important;
+		}
+		.pict-fullscreen-content .pict-fullscreen-codewrap {
+			max-width: 90vw;
+			max-height: calc(100vh - 96px);
+			margin: 0;
+			overflow: auto;
+			box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
 		}
 	`,Templates:[{Hash:"Docuserve-Content-Template",Template:/*html*/`
 <div class="pict-content" id="Docuserve-Content-Body">
@@ -2069,7 +2363,7 @@ CSS:/*css*/`
 	 * @param {string} pHTMLContent - The HTML to display
 	 */displayContent(pHTMLContent){let tmpHTML=pHTMLContent;let tmpGroup=this.pict.AppData.Docuserve.CurrentGroup;let tmpModule=this.pict.AppData.Docuserve.CurrentModule;if(tmpGroup&&tmpModule){let tmpDocProvider=this.pict.providers['Docuserve-Documentation'];if(tmpDocProvider){let tmpPagesURL=tmpDocProvider.resolveGitHubPagesURL(tmpGroup,tmpModule);if(tmpPagesURL){tmpHTML='<div class="docuserve-module-external-link">'+'<a href="'+tmpPagesURL+'" target="_blank" rel="noopener">'+'&#x2197; View '+tmpModule+' documentation site'+'</a>'+'</div>'+tmpHTML;}}}super.displayContent(tmpHTML,'Docuserve-Content-Body');}/**
 	 * Show a loading indicator.
-	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":59}],49:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */showLoading(){super.showLoading('Loading documentation...','Docuserve-Content-Body');}}module.exports=DocuserveContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":62}],49:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Layout",DefaultRenderable:"Docuserve-Layout-Shell",DefaultDestinationAddress:"#Docuserve-Application-Container",AutoRender:false,CSS:/*css*/`
 		#Docuserve-Application-Container {
 			display: flex;
 			flex-direction: column;
@@ -2108,7 +2402,7 @@ this.pict.CSSMap.injectCSS();// Resolve the current hash on initial load
 this.pict.PictApplication.resolveHash();// Listen for hash changes so that plain <a href="#/..."> links trigger
 // navigation.  This covers sidebar links, splash action buttons,
 // in-content links, and browser back/forward navigation.
-if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-search {
 			padding: 2em 3em;
 			max-width: 900px;
@@ -2205,13 +2499,17 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-sidebar {
-			border-right: 1px solid #DDD6CA;
+			display: flex;
+			flex-direction: column;
+			background: var(--docuserve-sidebar-bg);
+			border-right: 1px solid var(--docuserve-sidebar-border);
 			padding: 1em 0;
 			padding-top: 0;
 			min-height: 100%;
 			position: relative;
+			transition: background-color 0.15s ease;
 		}
 		.docuserve-sidebar-header {
 			display: flex;
@@ -2221,31 +2519,33 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 		.docuserve-sidebar-close {
 			background: none;
 			border: none;
-			color: #8A7F72;
+			color: var(--docuserve-text-dim);
 			font-size: 1.2em;
 			cursor: pointer;
 			padding: 0.2em 0.4em;
 			line-height: 1;
 		}
 		.docuserve-sidebar-close:hover {
-			color: #2E7D74;
+			color: var(--docuserve-accent);
 		}
 		.docuserve-sidebar-search {
 			padding: 0 1em 1em 1em;
-			border-bottom: 1px solid #EAE3D8;
+			border-bottom: 1px solid var(--docuserve-sidebar-border-soft);
 			margin-bottom: 0.5em;
 		}
 		.docuserve-sidebar-search input {
 			width: 100%;
 			padding: 0.5em 0.75em;
-			border: 1px solid #D4CCBE;
+			background: var(--docuserve-sidebar-search-bg);
+			color: var(--docuserve-text);
+			border: 1px solid var(--docuserve-sidebar-search-border);
 			border-radius: 4px;
 			font-size: 0.85em;
 			outline: none;
 			box-sizing: border-box;
 		}
 		.docuserve-sidebar-search input:focus {
-			border-color: #2E7D74;
+			border-color: var(--docuserve-accent);
 		}
 		.docuserve-sidebar-search-results {
 			margin-top: 0.5em;
@@ -2253,7 +2553,7 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 		.docuserve-sidebar-search-results a {
 			display: block;
 			padding: 0.4em 0.5em;
-			color: #423D37;
+			color: var(--docuserve-sidebar-text);
 			text-decoration: none;
 			font-size: 0.82em;
 			border-radius: 3px;
@@ -2261,29 +2561,29 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 			cursor: pointer;
 		}
 		.docuserve-sidebar-search-results a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
+			background-color: var(--docuserve-sidebar-hover-bg);
+			color: var(--docuserve-sidebar-hover-text);
 		}
 		.docuserve-sidebar-search-result-title {
 			font-weight: 600;
-			color: #3D3229;
+			color: var(--docuserve-text-strong);
 		}
 		.docuserve-sidebar-search-results a:hover .docuserve-sidebar-search-result-title {
-			color: #2E7D74;
+			color: var(--docuserve-sidebar-hover-text);
 		}
 		.docuserve-sidebar-search-result-meta {
 			font-size: 0.9em;
-			color: #8A7F72;
+			color: var(--docuserve-text-dim);
 		}
 		.docuserve-sidebar-search-all {
 			display: block;
 			padding: 0.4em 0.5em;
 			font-size: 0.82em;
-			color: #2E7D74;
+			color: var(--docuserve-accent);
 			text-decoration: none;
 			font-weight: 600;
 			cursor: pointer;
-			border-top: 1px solid #EAE3D8;
+			border-top: 1px solid var(--docuserve-sidebar-border-soft);
 			margin-top: 0.25em;
 			padding-top: 0.5em;
 		}
@@ -2298,13 +2598,13 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 			letter-spacing: 0.03em;
 		}
 		.docuserve-sidebar-home a {
-			color: #5E5549;
+			color: var(--docuserve-sidebar-module-text);
 			text-decoration: none;
 			cursor: pointer;
 			user-select: none;
 		}
 		.docuserve-sidebar-home a:hover {
-			color: #2E7D74;
+			color: var(--docuserve-sidebar-hover-text);
 		}
 		.docuserve-sidebar-group {
 			margin-top: 0.25em;
@@ -2314,7 +2614,7 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 			padding: 0.5em 1.25em;
 			font-weight: 600;
 			font-size: 0.85em;
-			color: #5E5549;
+			color: var(--docuserve-sidebar-group-title);
 			text-decoration: none;
 			text-transform: uppercase;
 			letter-spacing: 0.03em;
@@ -2323,12 +2623,12 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 			transition: background-color 0.1s, color 0.1s;
 		}
 		.docuserve-sidebar-group-title:hover {
-			color: #2E7D74;
-			background-color: #EAE3D8;
+			color: var(--docuserve-sidebar-hover-text);
+			background-color: var(--docuserve-sidebar-hover-bg);
 		}
 		a.docuserve-sidebar-group-title.active {
-			color: #2E7D74;
-			background-color: #E0EDEB;
+			color: var(--docuserve-sidebar-active-text);
+			background-color: var(--docuserve-sidebar-active-bg);
 		}
 		.docuserve-sidebar-modules {
 			list-style: none;
@@ -2341,29 +2641,29 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 		.docuserve-sidebar-modules a {
 			display: block;
 			padding: 0.3em 1.25em 0.3em 2em;
-			color: #5E5549;
+			color: var(--docuserve-sidebar-module-text);
 			text-decoration: none;
 			font-size: 0.85em;
 			transition: background-color 0.1s, color 0.1s;
 			cursor: pointer;
 		}
 		.docuserve-sidebar-modules a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
+			background-color: var(--docuserve-sidebar-hover-bg);
+			color: var(--docuserve-sidebar-hover-text);
 		}
 		.docuserve-sidebar-modules a.active {
-			color: #2E7D74;
+			color: var(--docuserve-sidebar-active-text);
 			font-weight: 600;
-			background-color: #E0EDEB;
+			background-color: var(--docuserve-sidebar-active-bg);
 		}
 		.docuserve-sidebar-modules .no-docs {
 			display: block;
 			padding: 0.3em 1.25em 0.3em 2em;
-			color: #A39889;
+			color: var(--docuserve-text-dim);
 			font-size: 0.85em;
 		}
 		.docuserve-sidebar-module-nav {
-			border-top: 1px solid #EAE3D8;
+			border-top: 1px solid var(--docuserve-sidebar-border-soft);
 			margin-top: 0.5em;
 			padding-top: 0.5em;
 		}
@@ -2371,22 +2671,50 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 			padding: 0.4em 1.25em;
 			font-weight: 600;
 			font-size: 0.8em;
-			color: #8A7F72;
+			color: var(--docuserve-text-dim);
 			text-transform: uppercase;
 			letter-spacing: 0.02em;
 		}
 		.docuserve-sidebar-module-nav a {
 			display: block;
 			padding: 0.25em 1.25em 0.25em 2.25em;
-			color: #5E5549;
+			color: var(--docuserve-sidebar-module-text);
 			text-decoration: none;
 			font-size: 0.82em;
 			transition: background-color 0.1s, color 0.1s;
 			cursor: pointer;
 		}
 		.docuserve-sidebar-module-nav a:hover {
-			background-color: #EAE3D8;
-			color: #2E7D74;
+			background-color: var(--docuserve-sidebar-hover-bg);
+			color: var(--docuserve-sidebar-hover-text);
+		}
+		.docuserve-sidebar-footer {
+			margin-top: auto;
+			padding: 0.9em 1.25em 1em 1.25em;
+			border-top: 1px solid var(--docuserve-sidebar-border-soft);
+		}
+		.docuserve-sidebar-footer:empty {
+			display: none;
+		}
+		.docuserve-version-placard {
+			font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+			line-height: 1.35;
+		}
+		.docuserve-version-name {
+			font-size: 0.78em;
+			font-weight: 600;
+			color: var(--docuserve-text-muted);
+			letter-spacing: 0.02em;
+		}
+		.docuserve-version-number {
+			font-size: 0.82em;
+			font-weight: 500;
+			color: var(--docuserve-accent);
+		}
+		.docuserve-version-meta {
+			font-size: 0.7em;
+			color: var(--docuserve-text-dim);
+			margin-top: 0.15em;
 		}
 	`,Templates:[{Hash:"Docuserve-Sidebar-Template",Template:/*html*/`
 <div class="docuserve-sidebar">
@@ -2402,9 +2730,14 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 	</div>
 	<div id="Docuserve-Sidebar-Groups"></div>
 	<div id="Docuserve-Sidebar-ModuleNav"></div>
+	<div id="Docuserve-Sidebar-Footer" class="docuserve-sidebar-footer"></div>
 </div>
-`}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();// Conditionally show the search box if the keyword index is loaded
+`}],Renderables:[{RenderableHash:"Docuserve-Sidebar-Content",TemplateHash:"Docuserve-Sidebar-Template",DestinationAddress:"#Docuserve-Sidebar-Container",RenderMethod:"replace"}]};class DocusserveSidebarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._SidebarSearchDebounceTimer=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderSidebarGroups();this.renderSidebarFooter();// Conditionally show the search box if the keyword index is loaded
 let tmpSearchContainer=document.getElementById('Docuserve-Sidebar-Search');if(tmpSearchContainer&&this.pict.AppData.Docuserve.KeywordIndexLoaded){tmpSearchContainer.style.display='';let tmpInput=document.getElementById('Docuserve-Sidebar-Search-Input');if(tmpInput){tmpInput.addEventListener('input',()=>{if(this._SidebarSearchDebounceTimer){clearTimeout(this._SidebarSearchDebounceTimer);}this._SidebarSearchDebounceTimer=setTimeout(()=>{this.performSidebarSearch(tmpInput.value);},250);});}}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Render the sidebar footer placard showing module name, version,
+	 * build timestamp and git commit from _version.json.  Hides the
+	 * footer entirely when no version data is loaded.
+	 */renderSidebarFooter(){let tmpFooterEl=document.getElementById('Docuserve-Sidebar-Footer');if(!tmpFooterEl){return;}let tmpDocuserve=this.pict.AppData.Docuserve;if(!tmpDocuserve.VersionLoaded||!tmpDocuserve.Version||!tmpDocuserve.Version.Version){tmpFooterEl.innerHTML='';return;}let tmpVersion=tmpDocuserve.Version;let tmpHTML='<div class="docuserve-version-placard">';if(tmpVersion.Name){tmpHTML+='<div class="docuserve-version-name">'+this.escapeHTML(tmpVersion.Name)+'</div>';}tmpHTML+='<div class="docuserve-version-number">v'+this.escapeHTML(tmpVersion.Version)+'</div>';let tmpMetaParts=[];if(tmpVersion.GeneratedAt){let tmpDate=String(tmpVersion.GeneratedAt).match(/^(\d{4}-\d{2}-\d{2})/);if(tmpDate){tmpMetaParts.push('built '+tmpDate[1]);}}if(tmpVersion.GitCommit){tmpMetaParts.push(tmpVersion.GitCommit);}if(tmpMetaParts.length>0){tmpHTML+='<div class="docuserve-version-meta">'+this.escapeHTML(tmpMetaParts.join(' · '))+'</div>';}tmpHTML+='</div>';tmpFooterEl.innerHTML=tmpHTML;}/**
 	 * Render the sidebar group navigation from catalog data.
 	 */renderSidebarGroups(){let tmpGroups=this.pict.AppData.Docuserve.SidebarGroups;if(!tmpGroups||tmpGroups.length<1){// Empty sidebar -- don't show a permanent loading message
 this.pict.ContentAssignment.assignContent('#Docuserve-Sidebar-Groups','');return;}let tmpHTML='';for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];tmpHTML+='<div class="docuserve-sidebar-group">';// Determine the route for the group title: use the group's own route,
@@ -2430,7 +2763,7 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-splash {
 			display: flex;
 			flex-direction: column;
@@ -2439,30 +2772,30 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 			min-height: calc(100vh - 56px);
 			padding: 3em 2em;
 			text-align: center;
-			background: linear-gradient(135deg, #F5F0E8 0%, #E4EFED 100%);
+			background: var(--docuserve-bg);
 		}
 		.docuserve-splash h1 {
 			font-size: 3em;
 			font-weight: 700;
-			color: #3D3229;
+			color: var(--docuserve-text-strong);
 			margin: 0 0 0.25em 0;
 		}
 		.docuserve-splash h1 small {
 			font-size: 0.4em;
 			font-weight: 400;
-			color: #7A7568;
+			color: var(--docuserve-text-dim);
 			vertical-align: middle;
 			margin-left: 0.15em;
 		}
 		.docuserve-splash-tagline {
 			font-size: 1.25em;
-			color: #7A7568;
+			color: var(--docuserve-text-muted);
 			margin-bottom: 1.5em;
 			font-style: italic;
 		}
 		.docuserve-splash-description {
 			font-size: 1em;
-			color: #5E5549;
+			color: var(--docuserve-text-muted);
 			max-width: 600px;
 			line-height: 1.7;
 			margin-bottom: 2em;
@@ -2476,25 +2809,25 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 			margin-bottom: 2.5em;
 		}
 		.docuserve-splash-highlight-card {
-			background: #fff;
-			border: 1px solid #DDD6CA;
+			background: var(--docuserve-bg-elevated);
+			border: 1px solid var(--docuserve-border);
 			border-radius: 8px;
 			padding: 1.25em;
 			text-align: left;
 			transition: box-shadow 0.2s, border-color 0.2s;
 		}
 		.docuserve-splash-highlight-card:hover {
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-			border-color: #2E7D74;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			border-color: var(--docuserve-accent);
 		}
 		.docuserve-splash-highlight-card h3 {
 			margin: 0 0 0.5em 0;
-			color: #3D3229;
+			color: var(--docuserve-text-strong);
 			font-size: 1em;
 		}
 		.docuserve-splash-highlight-card p {
 			margin: 0;
-			color: #7A7568;
+			color: var(--docuserve-text-muted);
 			font-size: 0.85em;
 			line-height: 1.5;
 		}
@@ -2515,20 +2848,20 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 			cursor: pointer;
 		}
 		.docuserve-splash-actions .primary {
-			background-color: #2E7D74;
+			background-color: var(--docuserve-accent);
 			color: #fff;
 		}
 		.docuserve-splash-actions .primary:hover {
-			background-color: #256861;
+			background-color: var(--docuserve-accent-hover);
 		}
 		.docuserve-splash-actions .secondary {
-			background-color: #fff;
-			color: #3D3229;
-			border: 2px solid #2E7D74;
+			background-color: var(--docuserve-bg-elevated);
+			color: var(--docuserve-text-strong);
+			border: 2px solid var(--docuserve-accent);
 		}
 		.docuserve-splash-actions .secondary:hover {
-			border-color: #256861;
-			color: #2E7D74;
+			border-color: var(--docuserve-accent-hover);
+			color: var(--docuserve-accent);
 		}
 	`,Templates:[{Hash:"Docuserve-Splash-Template",Template:/*html*/`
 <div class="docuserve-splash">
@@ -2567,36 +2900,57 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-topbar {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			background-color: #3D3229;
-			color: #E8E0D4;
+			background-color: var(--docuserve-topbar-bg);
+			color: var(--docuserve-topbar-text);
 			padding: 0 1.5em;
 			height: 56px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 			position: sticky;
 			top: 0;
 			z-index: 100;
+			transition: background-color 0.15s ease, color 0.15s ease;
 		}
 		.docuserve-topbar-brand {
 			font-size: 1.25em;
 			font-weight: 600;
 			letter-spacing: 0.02em;
-			color: #E8E0D4;
+			color: var(--docuserve-topbar-text);
 			text-decoration: none;
 			cursor: pointer;
 		}
 		.docuserve-topbar-brand small {
 			font-size: 0.65em;
 			font-weight: 400;
-			color: #8A7F72;
+			color: var(--docuserve-topbar-text-dim);
 			margin-left: 0.2em;
 		}
 		.docuserve-topbar-brand:hover {
 			color: #fff;
+		}
+		.docuserve-topbar-brandgroup {
+			display: flex;
+			align-items: baseline;
+			gap: 0.6em;
+		}
+		.docuserve-topbar-version {
+			font-size: 0.75em;
+			font-weight: 500;
+			color: var(--docuserve-topbar-version-text);
+			background-color: var(--docuserve-topbar-version-bg);
+			border: 1px solid var(--docuserve-topbar-version-border);
+			padding: 0.12em 0.5em;
+			border-radius: 10px;
+			font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+			letter-spacing: 0.02em;
+			white-space: nowrap;
+		}
+		.docuserve-topbar-version:empty {
+			display: none;
 		}
 		.docuserve-topbar-nav {
 			display: flex;
@@ -2604,7 +2958,7 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 			gap: 0.25em;
 		}
 		.docuserve-topbar-nav a {
-			color: #B5AA9A;
+			color: var(--docuserve-topbar-text-muted);
 			text-decoration: none;
 			padding: 0.5em 0.75em;
 			border-radius: 4px;
@@ -2613,7 +2967,7 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 			cursor: pointer;
 		}
 		.docuserve-topbar-nav a:hover {
-			background-color: #524438;
+			background-color: var(--docuserve-topbar-hover-bg);
 			color: #fff;
 		}
 		.docuserve-topbar-links {
@@ -2622,7 +2976,7 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 			gap: 0.5em;
 		}
 		.docuserve-topbar-links a {
-			color: #8A7F72;
+			color: var(--docuserve-topbar-text-dim);
 			text-decoration: none;
 			font-size: 0.85em;
 			padding: 0.4em 0.6em;
@@ -2630,14 +2984,55 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 			transition: background-color 0.15s, color 0.15s;
 		}
 		.docuserve-topbar-links a:hover {
-			background-color: #524438;
-			color: #E8E0D4;
+			background-color: var(--docuserve-topbar-hover-bg);
+			color: var(--docuserve-topbar-text);
+		}
+		.docuserve-topbar-theme {
+			display: inline-flex;
+			align-items: center;
+			gap: 2px;
+			margin: 0 0.35em 0 0.15em;
+			padding: 2px;
+			background: rgba(255, 255, 255, 0.035);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			border-radius: 999px;
+		}
+		.docuserve-topbar-theme-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 24px;
+			height: 24px;
+			padding: 0;
+			background: transparent;
+			border: none;
+			border-radius: 999px;
+			color: var(--docuserve-topbar-text-dim);
+			cursor: pointer;
+			transition: background-color 0.15s ease, color 0.15s ease;
+		}
+		.docuserve-topbar-theme-btn svg {
+			display: block;
+			width: 14px;
+			height: 14px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.docuserve-topbar-theme-btn:hover {
+			color: var(--docuserve-topbar-text);
+		}
+		.docuserve-topbar-theme-btn[aria-pressed="true"] {
+			background: var(--docuserve-topbar-hover-bg);
+			color: var(--docuserve-topbar-text);
 		}
 		.docuserve-topbar-toggle {
 			display: none;
 			background: none;
 			border: none;
-			color: #B5AA9A;
+			color: var(--docuserve-topbar-text-muted);
 			font-size: 1.3em;
 			cursor: pointer;
 			padding: 0.3em 0.5em;
@@ -2653,25 +3048,524 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 		}
 	`,Templates:[{Hash:"Docuserve-TopBar-Template",Template:/*html*/`
 <div class="docuserve-topbar">
-	<a id="Docuserve-TopBar-Brand" class="docuserve-topbar-brand" href="#/Home"></a>
+	<div class="docuserve-topbar-brandgroup">
+		<a id="Docuserve-TopBar-Brand" class="docuserve-topbar-brand" href="#/Home"></a>
+		<span id="Docuserve-TopBar-Version" class="docuserve-topbar-version" title=""></span>
+	</div>
 	<div id="Docuserve-TopBar-Nav" class="docuserve-topbar-nav"></div>
 	<div class="docuserve-topbar-right">
 		<div id="Docuserve-TopBar-Links" class="docuserve-topbar-links"></div>
+		<div id="Docuserve-TopBar-Theme" class="docuserve-topbar-theme" role="group" aria-label="Theme">
+			<button type="button" class="docuserve-topbar-theme-btn" data-theme-choice="system" aria-label="Use system theme" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.75" y="2.5" width="12.5" height="8.5" rx="1.25"></rect><line x1="5.5" y1="13.5" x2="10.5" y2="13.5"></line><line x1="8" y1="11" x2="8" y2="13.5"></line></svg></button>
+			<button type="button" class="docuserve-topbar-theme-btn" data-theme-choice="light" aria-label="Use light theme" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.25"></circle><line x1="8" y1="1.25" x2="8" y2="2.75"></line><line x1="8" y1="13.25" x2="8" y2="14.75"></line><line x1="1.25" y1="8" x2="2.75" y2="8"></line><line x1="13.25" y1="8" x2="14.75" y2="8"></line><line x1="3.25" y1="3.25" x2="4.3" y2="4.3"></line><line x1="11.7" y1="11.7" x2="12.75" y2="12.75"></line><line x1="3.25" y1="12.75" x2="4.3" y2="11.7"></line><line x1="11.7" y1="4.3" x2="12.75" y2="3.25"></line></svg></button>
+			<button type="button" class="docuserve-topbar-theme-btn" data-theme-choice="dark" aria-label="Use dark theme" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.25 9.5A5.5 5.5 0 0 1 6.5 2.75a5.5 5.5 0 1 0 6.75 6.75z"></path></svg></button>
+		</div>
 		<button id="Docuserve-TopBar-Toggle" class="docuserve-topbar-toggle" onclick="{~P~}.views['Docuserve-Sidebar'].toggleSidebar()">&#9776;</button>
 	</div>
 </div>
-`}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+`}],Renderables:[{RenderableHash:"Docuserve-TopBar-Content",TemplateHash:"Docuserve-TopBar-Template",DestinationAddress:"#Docuserve-TopBar-Container",RenderMethod:"replace"}]};class DocuserveTopBarView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this.renderTopBarContent();this.initThemeToggle();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Build the localStorage key for the theme preference, namespaced by
+	 * origin + base path so multiple docs deployments on the same host
+	 * remember independently.
+	 */getThemeStorageKey(){try{let tmpPath=(window.location.pathname||'/').replace(/\/[^/]*$/,'/');return'docuserve-theme:'+window.location.origin+tmpPath;}catch(e){return'docuserve-theme';}}/**
+	 * Wire up the three-state system/light/dark theme toggle button group.
+	 * Loads the saved preference, applies it to <html data-theme="...">,
+	 * and attaches click handlers to each button.
+	 */initThemeToggle(){let tmpGroupEl=document.getElementById('Docuserve-TopBar-Theme');if(!tmpGroupEl){return;}let tmpButtons=tmpGroupEl.querySelectorAll('.docuserve-topbar-theme-btn');let tmpStorageKey=this.getThemeStorageKey();let tmpSaved=null;try{tmpSaved=localStorage.getItem(tmpStorageKey);}catch(e){}if(tmpSaved!=='light'&&tmpSaved!=='dark'&&tmpSaved!=='system'){tmpSaved='system';}this.applyTheme(tmpSaved,tmpButtons,tmpStorageKey);for(let i=0;i<tmpButtons.length;i++){let tmpButton=tmpButtons[i];tmpButton.addEventListener('click',()=>{let tmpChoice=tmpButton.getAttribute('data-theme-choice');this.applyTheme(tmpChoice,tmpButtons,tmpStorageKey);});}}/**
+	 * Apply a theme choice to the document root, update pressed state on
+	 * the three buttons, and persist the choice.  `system` removes any
+	 * explicit data-theme attribute so the CSS media query takes over.
+	 */applyTheme(pChoice,pButtons,pStorageKey){if(pChoice==='light'){document.documentElement.setAttribute('data-theme','light');}else if(pChoice==='dark'){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.removeAttribute('data-theme');pChoice='system';}try{localStorage.setItem(pStorageKey,pChoice);}catch(e){}if(pButtons){for(let i=0;i<pButtons.length;i++){let tmpButton=pButtons[i];let tmpActive=tmpButton.getAttribute('data-theme-choice')===pChoice;tmpButton.setAttribute('aria-pressed',tmpActive?'true':'false');}}}/**
 	 * Populate the top bar from _topbar.md data or fall back to defaults.
-	 */renderTopBarContent(){let tmpDocuserve=this.pict.AppData.Docuserve;let tmpBrandEl=document.getElementById('Docuserve-TopBar-Brand');let tmpNavEl=document.getElementById('Docuserve-TopBar-Nav');let tmpLinksEl=document.getElementById('Docuserve-TopBar-Links');if(!tmpBrandEl||!tmpNavEl||!tmpLinksEl){return;}if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar){// Data-driven from _topbar.md
+	 */renderTopBarContent(){let tmpDocuserve=this.pict.AppData.Docuserve;let tmpBrandEl=document.getElementById('Docuserve-TopBar-Brand');let tmpNavEl=document.getElementById('Docuserve-TopBar-Nav');let tmpLinksEl=document.getElementById('Docuserve-TopBar-Links');let tmpVersionEl=document.getElementById('Docuserve-TopBar-Version');if(!tmpBrandEl||!tmpNavEl||!tmpLinksEl){return;}this.renderVersionChip(tmpVersionEl,tmpDocuserve);if(tmpDocuserve.TopBarLoaded&&tmpDocuserve.TopBar){// Data-driven from _topbar.md
 let tmpTopBar=tmpDocuserve.TopBar;// Brand
 tmpBrandEl.innerHTML=this.sanitizeTitle(tmpTopBar.Brand||'Documentation');// Navigation links (centre)
 let tmpNavHTML='<a href="#/Home">Home</a>';for(let i=0;i<tmpTopBar.NavLinks.length;i++){let tmpLink=tmpTopBar.NavLinks[i];tmpNavHTML+='<a href="'+tmpLink.Href+'">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpNavEl.innerHTML=tmpNavHTML;// External links (right side) — search link first if keyword index is available
 let tmpLinksHTML='';if(tmpDocuserve.KeywordIndexLoaded){tmpLinksHTML+='<a href="#/search/">Search</a>';}for(let i=0;i<tmpTopBar.ExternalLinks.length;i++){let tmpLink=tmpTopBar.ExternalLinks[i];tmpLinksHTML+='<a href="'+this.escapeHTML(tmpLink.Href)+'" target="_blank" rel="noopener">'+this.escapeHTML(tmpLink.Text)+'</a>';}tmpLinksEl.innerHTML=tmpLinksHTML;}else{// Fallback: use brand from cover or a default, and just show Home
 let tmpBrand='Documentation';if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tmpDocuserve.Cover.Title){tmpBrand=tmpDocuserve.Cover.Title;}else if(tmpDocuserve.CatalogLoaded&&tmpDocuserve.Catalog&&tmpDocuserve.Catalog.Name){tmpBrand=tmpDocuserve.Catalog.Name;}tmpBrandEl.innerHTML=this.sanitizeTitle(tmpBrand);tmpNavEl.innerHTML='<a href="#/Home">Home</a>';tmpLinksEl.innerHTML=tmpDocuserve.KeywordIndexLoaded?'<a href="#/search/">Search</a>':'';}}/**
+	 * Populate the topbar version chip from _version.json data.  Hides
+	 * the element (empty innerHTML) when no version data is loaded.
+	 */renderVersionChip(pElement,pDocuserve){if(!pElement){return;}if(!pDocuserve.VersionLoaded||!pDocuserve.Version||!pDocuserve.Version.Version){pElement.innerHTML='';pElement.setAttribute('title','');return;}let tmpVersion=pDocuserve.Version;pElement.innerHTML='v'+this.escapeHTML(tmpVersion.Version);let tmpTooltipParts=[];if(tmpVersion.Name){tmpTooltipParts.push(tmpVersion.Name+' v'+tmpVersion.Version);}else{tmpTooltipParts.push('v'+tmpVersion.Version);}if(tmpVersion.GeneratedAt){tmpTooltipParts.push('built '+this.formatVersionDate(tmpVersion.GeneratedAt));}if(tmpVersion.GitCommit){tmpTooltipParts.push(tmpVersion.GitCommit);}pElement.setAttribute('title',tmpTooltipParts.join(' · '));}/**
+	 * Format an ISO timestamp as YYYY-MM-DD, tolerating bad input.
+	 */formatVersionDate(pISO){if(!pISO){return'';}let tmpMatch=String(pISO).match(/^(\d{4}-\d{2}-\d{2})/);return tmpMatch?tmpMatch[1]:String(pISO);}/**
 	 * Sanitize a title string, preserving only <small> tags.
 	 */sanitizeTitle(pText){if(!pText){return'';}return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
 	 * Escape HTML special characters.
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],54:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],55:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],54:[function(require,module,exports){/**
+ * Vocabulary popover CSS — injected by the provider into the Pict
+ * CSS cascade so any app that registers the provider gets the
+ * popover styles for free.
+ *
+ * The .pict-vocab-term class is applied by pict-section-content's
+ * _applyVocabularyLinks() method on each detected term. The
+ * .vocab-popover class is the positioned tooltip that appears on
+ * hover.
+ *
+ * CSS custom properties (--bg-secondary, --border-color, --accent,
+ * --text-primary, --text-secondary, --text-muted) are expected to
+ * be defined by the host app's theme. Falls back to reasonable
+ * dark-theme defaults if the properties are missing.
+ */module.exports=`
+/* ── Vocabulary term marker ─────────────────────────── */
+.pict-vocab-term {
+	border-bottom: 1px dotted var(--accent, #2a8a7a);
+	cursor: help;
+}
+
+/* ── Popover ────────────────────────────────────────── */
+.vocab-popover {
+	position: fixed;
+	z-index: 10000;
+	max-width: 320px;
+	padding: 12px 16px;
+	background: var(--bg-secondary, #1a2a2a);
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	font-size: 0.85em;
+	line-height: 1.5;
+	color: var(--text-primary, #d0dada);
+}
+
+.vocab-popover-title {
+	font-weight: bold;
+	margin-bottom: 6px;
+	color: var(--accent, #2a8a7a);
+}
+
+.vocab-popover-short {
+	margin-bottom: 8px;
+	color: var(--text-secondary, #8ca0a0);
+}
+
+.vocab-popover-link {
+	color: var(--accent, #2a8a7a);
+	text-decoration: none;
+	font-size: 0.85em;
+}
+.vocab-popover-link:hover {
+	text-decoration: underline;
+}
+
+/* ── Vocabulary Manager View ────────────────────────── */
+.vocab-layout {
+	display: flex;
+	height: calc(100vh - 80px);
+	gap: 0;
+}
+
+.vocab-sidebar {
+	width: 260px;
+	min-width: 200px;
+	border-right: 1px solid var(--border-color, #2a3a3a);
+	overflow-y: auto;
+	background: var(--bg-secondary, #1a2a2a);
+	display: flex;
+	flex-direction: column;
+}
+
+.vocab-sidebar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 14px;
+	border-bottom: 1px solid var(--border-color, #2a3a3a);
+}
+
+.vocab-content {
+	flex: 1;
+	overflow-y: auto;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.vocab-list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 6px 0;
+}
+
+.vocab-item {
+	padding: 6px 14px;
+	cursor: pointer;
+	font-size: 0.85em;
+	color: var(--text-secondary, #8ca0a0);
+	border-left: 3px solid transparent;
+}
+.vocab-item:hover {
+	background: var(--bg-hover, #2a3a3a);
+}
+.vocab-item-active {
+	background: var(--bg-hover, #2a3a3a);
+	color: var(--text-primary, #d0dada);
+	border-left-color: var(--accent, #2a8a7a);
+}
+
+.vocab-item-title {
+	font-weight: 600;
+	color: var(--text-primary, #d0dada);
+}
+.vocab-item-short {
+	font-size: 0.78em;
+	color: var(--text-muted, #6a8080);
+	margin-top: 2px;
+	line-height: 1.3;
+}
+
+.vocab-filter {
+	margin: 8px 10px;
+	padding: 6px 10px;
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 4px;
+	background: var(--bg-primary, #0e1818);
+	color: var(--text-primary, #d0dada);
+	font-size: 0.85em;
+}
+.vocab-filter:focus {
+	border-color: var(--accent, #2a8a7a);
+	outline: none;
+}
+
+.vocab-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--border-color, #2a3a3a);
+	background: var(--bg-secondary, #1a2a2a);
+}
+
+.vocab-slug {
+	flex: 1;
+	font-family: 'SF Mono', Menlo, Monaco, monospace;
+	font-size: 0.82em;
+	color: var(--text-muted, #6a8080);
+}
+
+.vocab-btn {
+	padding: 4px 12px;
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 4px;
+	background: var(--bg-primary, #0e1818);
+	color: var(--text-secondary, #8ca0a0);
+	cursor: pointer;
+	font-size: 0.82em;
+}
+.vocab-btn:hover {
+	background: var(--bg-hover, #2a3a3a);
+}
+.vocab-btn-primary {
+	background: var(--accent, #2a8a7a);
+	border-color: var(--accent, #2a8a7a);
+	color: #fff;
+}
+.vocab-btn-danger {
+	color: #D9534F;
+	border-color: #D9534F;
+}
+.vocab-btn-danger:hover {
+	background: #D9534F;
+	border-color: #D9534F;
+	color: #fff;
+}
+
+.vocab-rendered {
+	flex: 1;
+	padding: 20px 24px;
+	overflow-y: auto;
+	line-height: 1.6;
+}
+
+.vocab-editor {
+	flex: 1;
+	width: 100%;
+	padding: 16px 20px;
+	border: none;
+	background: var(--bg-primary, #0e1818);
+	color: var(--text-primary, #d0dada);
+	font-family: 'SF Mono', Menlo, Monaco, monospace;
+	font-size: 0.85em;
+	line-height: 1.5;
+	resize: none;
+}
+.vocab-editor:focus {
+	outline: none;
+}
+
+.vocab-empty {
+	padding: 40px 24px;
+	text-align: center;
+	color: var(--text-muted, #6a8080);
+	font-size: 0.9em;
+}
+
+/* ── Term preview (expanded active item) ───────────── */
+.vocab-item-preview-short {
+	margin-top: 6px;
+	padding: 6px 0;
+	color: var(--text-secondary, #8ca0a0);
+	font-size: 0.8em;
+	line-height: 1.4;
+	border-bottom: 1px solid var(--border-color, #2a3a3a);
+}
+.vocab-item-preview-body {
+	margin-top: 6px;
+	padding: 8px 10px;
+	background: var(--bg-primary, #0e1818);
+	border-radius: 4px;
+	color: var(--text-muted, #6a8080);
+	white-space: pre-wrap;
+	font-family: 'SF Mono', Menlo, Monaco, monospace;
+	font-size: 0.72em;
+	line-height: 1.4;
+	max-height: 200px;
+	overflow-y: auto;
+}
+.vocab-item-preview-actions {
+	margin-top: 6px;
+	padding-bottom: 2px;
+}
+
+/* ── Create-term modal overlay ─────────────────────── */
+.vocab-create-overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10001;
+	background: rgba(0, 0, 0, 0.35);
+}
+.vocab-create-overlay.open {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.vocab-create-panel {
+	background: var(--bg-primary, #0e1818);
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 10px;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+	width: 360px;
+	max-width: 90vw;
+	overflow: hidden;
+}
+.vocab-create-body {
+	padding: 24px 22px 16px;
+}
+.vocab-create-title {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--text-primary, #d0dada);
+	margin-bottom: 12px;
+	text-align: center;
+}
+.vocab-create-input {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px 12px;
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 5px;
+	background: var(--bg-secondary, #1a2a2a);
+	color: var(--text-primary, #d0dada);
+	font-size: 0.88rem;
+	font-family: 'SF Mono', Menlo, Monaco, monospace;
+}
+.vocab-create-input:focus {
+	border-color: var(--accent, #2a8a7a);
+	outline: none;
+}
+.vocab-create-actions {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	padding: 0 22px 16px;
+}
+.vocab-create-footer {
+	padding: 10px 22px;
+	border-top: 1px solid var(--border-color, #2a3a3a);
+	font-size: 0.72rem;
+	color: var(--text-muted, #6a8080);
+	text-align: center;
+}
+.vocab-create-footer kbd {
+	display: inline-block;
+	padding: 1px 5px;
+	font-size: 0.68rem;
+	font-family: monospace;
+	background: var(--bg-secondary, #1a2a2a);
+	border: 1px solid var(--border-color, #2a3a3a);
+	border-radius: 3px;
+	color: var(--text-secondary, #8ca0a0);
+}
+`;},{}],55:[function(require,module,exports){/**
+ * Pict Provider: Vocabulary
+ *
+ * Manages a vocabulary/glossary term index and provides:
+ *   - A resolver callback for pict-section-content's parseMarkdown
+ *     auto-linking system (the 4th parameter to parseMarkdown)
+ *   - Popover hover handlers for rendered .pict-vocab-term elements
+ *   - Term access for glossary UI views
+ *
+ * The provider is source-agnostic — terms can be loaded from:
+ *   - A pre-built object: loadIndex({slug: {title, short}})
+ *   - A URL: loadFromURL('/api/vocabulary/index', fCallback)
+ *   - Application-specific code (e.g. Meadow database query)
+ *
+ * @author Steven Velozo <steven@velozo.com>
+ * @license MIT
+ */const libPictProvider=require('pict-provider');const libCSS=require('./Pict-Provider-Vocabulary-CSS.js');class PictProviderVocabulary extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='PictProviderVocabulary';// The term index: { slug: { title, short } }
+this._Index={};// Inject the vocabulary CSS into the Pict CSS cascade.
+// Uses the CSSMap.addCSS() API so injectCSS() picks it up.
+if(this.pict&&this.pict.CSSMap&&typeof this.pict.CSSMap.addCSS==='function'){this.pict.CSSMap.addCSS('Pict-Provider-Vocabulary',libCSS,500);}}// ================================================================
+// Loading terms
+// ================================================================
+/**
+	 * Load terms from a pre-built index object.
+	 * @param {object} pIndex - { slug: { title: string, short: string } }
+	 */loadIndex(pIndex){this._Index=pIndex||{};}/**
+	 * Load terms from a URL. Expects a JSON response with an
+	 * `Index` key: { Index: { slug: { title, short } } }.
+	 * @param {string} pURL
+	 * @param {function} [fCallback] - (pError) callback
+	 */loadFromURL(pURL,fCallback){let tmpSelf=this;if(typeof fetch==='undefined'){// Server-side / test — no fetch
+if(fCallback)fCallback(null);return;}fetch(pURL).then(function(pResponse){return pResponse.json();}).then(function(pData){tmpSelf._Index=pData&&pData.Index||{};if(fCallback)fCallback(null);}).catch(function(pError){if(tmpSelf.log)tmpSelf.log.warn('VocabularyProvider: fetch failed: '+pError.message);if(fCallback)fCallback(pError);});}// ================================================================
+// Resolver for pict-section-content
+// ================================================================
+/**
+	 * Return a resolver callback suitable as the 4th parameter to
+	 * pict-section-content's parseMarkdown(). Returns null if no
+	 * terms are loaded (parseMarkdown will skip vocabulary linking).
+	 *
+	 * Usage:
+	 *   let resolver = vocabProvider.getResolver();
+	 *   contentProvider.parseMarkdown(md, null, null, resolver);
+	 */getResolver(){let tmpIndex=this._Index;if(!tmpIndex||Object.keys(tmpIndex).length===0){return null;}return function(pWord){let tmpEntry=tmpIndex[pWord];if(!tmpEntry)return null;return{slug:pWord,title:tmpEntry.title,short:tmpEntry.short};};}// ================================================================
+// Term access for glossary views
+// ================================================================
+/**
+	 * Return all terms as a sorted array of { slug, title, short }.
+	 */getTerms(){let tmpSlugs=Object.keys(this._Index).sort();let tmpTerms=[];for(let i=0;i<tmpSlugs.length;i++){let tmpSlug=tmpSlugs[i];let tmpEntry=this._Index[tmpSlug];tmpTerms.push({slug:tmpSlug,title:tmpEntry.title||tmpSlug,short:tmpEntry.short||''});}return tmpTerms;}/**
+	 * Return a single term by slug, or null if not found.
+	 */getTerm(pSlug){let tmpEntry=this._Index[pSlug];if(!tmpEntry)return null;return{slug:pSlug,title:tmpEntry.title||pSlug,short:tmpEntry.short||''};}/**
+	 * Return the raw index object (for serialization or debugging).
+	 */getIndex(){return this._Index;}// ================================================================
+// Popover wiring
+// ================================================================
+/**
+	 * Wire hover handlers on all .pict-vocab-term elements inside
+	 * the given container. Shows a positioned popover with the term
+	 * title, short definition, and a "Read more →" link.
+	 *
+	 * @param {string} pContainerSelector - CSS selector for the
+	 *   container to search for .pict-vocab-term elements.
+	 * @param {object} [pOptions] - { vocabularyRoute: '#/vocabulary' }
+	 */wirePopovers(pContainerSelector,pOptions){if(typeof document==='undefined')return;let tmpOpts=pOptions||{};let tmpRoute=tmpOpts.vocabularyRoute||'#/vocabulary';let tmpContainer=document.querySelector(pContainerSelector);if(!tmpContainer)return;let tmpTerms=tmpContainer.querySelectorAll('.pict-vocab-term');if(!tmpTerms||tmpTerms.length===0)return;for(let i=0;i<tmpTerms.length;i++){let tmpEl=tmpTerms[i];// Skip if already wired
+if(tmpEl._vocabWired)continue;tmpEl._vocabWired=true;tmpEl.addEventListener('mouseenter',function(pEvent){let tmpSlug=tmpEl.getAttribute('data-vocab-slug');let tmpTitle=tmpEl.getAttribute('data-vocab-title')||tmpSlug;let tmpShort=tmpEl.getAttribute('data-vocab-short')||'';// Remove any existing popover
+let tmpOld=document.querySelector('.vocab-popover');if(tmpOld)tmpOld.remove();let tmpPopover=document.createElement('div');tmpPopover.className='vocab-popover';tmpPopover.innerHTML='<div class="vocab-popover-title">'+tmpTitle+'</div>'+'<div class="vocab-popover-short">'+tmpShort+'</div>'+'<a class="vocab-popover-link" href="'+tmpRoute+'/'+tmpSlug+'">Read more &rarr;</a>';// Position near the term
+let tmpRect=tmpEl.getBoundingClientRect();tmpPopover.style.left=tmpRect.left+'px';tmpPopover.style.top=tmpRect.bottom+6+'px';document.body.appendChild(tmpPopover);// Dismiss on mouse leave (with delay so user can hover into popover)
+let tmpDismissTimer=null;let tmpDismiss=function(){tmpDismissTimer=setTimeout(function(){if(tmpPopover.parentNode)tmpPopover.remove();},300);};let tmpCancelDismiss=function(){if(tmpDismissTimer)clearTimeout(tmpDismissTimer);};tmpEl.addEventListener('mouseleave',tmpDismiss,{once:true});tmpPopover.addEventListener('mouseenter',tmpCancelDismiss);tmpPopover.addEventListener('mouseleave',function(){if(tmpPopover.parentNode)tmpPopover.remove();});});}}}module.exports=PictProviderVocabulary;module.exports.default_configuration={};// Export the vocabulary manager view so host apps can register it.
+// Usage:
+//   const libVocab = require('pict-provider-vocabulary');
+//   pict.addView('Vocabulary', libVocab.VocabularyManagerView.default_configuration, libVocab.VocabularyManagerView);
+module.exports.VocabularyManagerView=require('./views/PictView-VocabularyManager.js');},{"./Pict-Provider-Vocabulary-CSS.js":54,"./views/PictView-VocabularyManager.js":56,"pict-provider":58}],56:[function(require,module,exports){/**
+ * PictView-VocabularyManager
+ *
+ * A-Z glossary view for browsing, searching, creating, and editing
+ * vocabulary term definitions. Ships inside pict-provider-vocabulary
+ * so any app that registers the provider gets the management UI for
+ * free — just mount it at a DOM target.
+ *
+ * The view reads terms from the sibling Vocabulary provider (not
+ * from a hardcoded API URL), so it works with any term source the
+ * host app configured (filesystem, database, API).
+ *
+ * Editing: instead of rendering its own textarea, the view delegates
+ * to the host app via an `onEditTerm(slug, filePath)` callback in
+ * options. This lets retold-content-system open the term in its
+ * main markdown editor, and retold-labs use its own edit pattern.
+ *
+ * @author Steven Velozo <steven@velozo.com>
+ * @license MIT
+ */const libPictView=require('pict-view');const defaultOptions={ViewIdentifier:'Pict-VocabularyManager',DefaultRenderable:'VocabMgr-Display',DefaultDestinationAddress:'#PictVocabularyManager',AutoInitialize:false,AutoRender:false,// API endpoints
+VocabularyIndexURL:'/api/vocabulary/index',VocabularyTermURL:'/api/vocabulary/term',// Route prefix for "Read more" links
+VocabularyRoute:'#/vocabulary',// The hash of the Vocabulary provider
+VocabularyProviderHash:'Vocabulary',// The folder path prefix for vocabulary files in the content
+// tree. Used to build the file path passed to onEditTerm.
+VocabularyFolderPath:'vocabulary/',// Callback: host app provides this to open a term file in its
+// own editor. Signature: (slug, filePath) => void.
+// If null, falls back to rendering a read-only markdown preview.
+onEditTerm:null,Templates:[{Hash:'VocabMgr-Shell',Template:/*html*/`<div class="vocab-sidebar-header"><strong>Vocabulary</strong></div>
+<input type="text" class="vocab-filter" id="vocab-mgr-filter" placeholder="Filter terms..." oninput="{~P~}.views['{~D:Record.ViewHash~}'].setFilter(this.value)" value="" />
+<div class="vocab-list" id="vocab-mgr-list"></div>
+<div class="vocab-create-overlay" id="vocab-mgr-create-overlay" style="display:none" onclick="{~P~}.views['{~D:Record.ViewHash~}'].hideCreateModal()">
+  <div class="vocab-create-panel" onclick="event.stopPropagation()">
+    <div class="vocab-create-body">
+      <div class="vocab-create-title">New Vocabulary Term</div>
+      <input type="text" class="vocab-create-input" id="vocab-mgr-create-input" placeholder="Term slug (e.g. attention, bert)" onkeydown="if(event.key==='Enter'){event.preventDefault();{~P~}.views['{~D:Record.ViewHash~}']._submitCreateTerm()}" />
+    </div>
+    <div class="vocab-create-actions">
+      <button class="vocab-btn vocab-btn-primary" onclick="{~P~}.views['{~D:Record.ViewHash~}']._submitCreateTerm()">Create</button>
+      <button class="vocab-btn" onclick="{~P~}.views['{~D:Record.ViewHash~}'].hideCreateModal()">Cancel</button>
+    </div>
+    <div class="vocab-create-footer"><kbd>Enter</kbd> to create &middot; <kbd>Esc</kbd> to cancel</div>
+  </div>
+</div>`},{Hash:'VocabMgr-TermItem',Template:/*html*/`<div class="vocab-item" onclick="{~P~}.views['{~D:Record.ViewHash~}'].loadTerm('{~D:Record.slug~}')">
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="vocab-item-title" style="flex:1">{~D:Record.title~}</div>
+  </div>
+  <div class="vocab-item-short">{~D:Record.shortTruncated~}</div>
+</div>`},{Hash:'VocabMgr-TermActive',Template:/*html*/`<div class="vocab-item vocab-item-active" onclick="{~P~}.views['{~D:Record.ViewHash~}'].loadTerm('{~D:Record.slug~}')">
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="vocab-item-title" style="flex:1">{~D:Record.title~}</div>
+  </div>
+  <div class="vocab-item-preview-short">{~D:Record.shortEscaped~}</div>
+  <div class="vocab-item-preview-body">{~D:Record.bodyEscaped~}</div>
+  <div class="vocab-item-preview-actions">
+    <button class="vocab-btn vocab-btn-primary" style="font-size:0.75em" onclick="event.stopPropagation();{~P~}.views['{~D:Record.ViewHash~}'].editTerm('{~D:Record.slug~}')">Edit in Editor</button>
+    <button class="vocab-btn vocab-btn-danger" style="font-size:0.75em" onclick="event.stopPropagation();{~P~}.views['{~D:Record.ViewHash~}'].deleteTerm('{~D:Record.slug~}')"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg> Delete</button>
+  </div>
+</div>`},{Hash:'VocabMgr-TermActiveLoading',Template:/*html*/`<div class="vocab-item vocab-item-active" onclick="{~P~}.views['{~D:Record.ViewHash~}'].loadTerm('{~D:Record.slug~}')">
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="vocab-item-title" style="flex:1">{~D:Record.title~}</div>
+  </div>
+  <div class="vocab-item-short">{~D:Record.shortTruncated~}</div>
+  <div class="vocab-item-preview-actions">
+    <button class="vocab-btn" style="font-size:0.75em" onclick="event.stopPropagation();{~P~}.views['{~D:Record.ViewHash~}'].editTerm('{~D:Record.slug~}')">Edit</button>
+  </div>
+</div>`},{Hash:'VocabMgr-Empty',Template:/*html*/`<div class="vocab-empty">No vocabulary terms yet. Click <strong>+ New</strong> to create one.</div>`},{Hash:'VocabMgr-EmptyFilter',Template:/*html*/`<div class="vocab-empty">No terms match your filter.</div>`}],Renderables:[{RenderableHash:'VocabMgr-Display',TemplateHash:'VocabMgr-Shell',RenderMethod:'replace'}]};class PictViewVocabularyManager extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,Object.assign({},defaultOptions,pOptions),pServiceHash);this.serviceType='PictViewVocabularyManager';this._SelectedSlug='';this._Body='';this._FilterText='';}// ================================================================
+// Provider access
+// ================================================================
+_getProvider(){let tmpHash=this.options.VocabularyProviderHash||'Vocabulary';return this.pict&&this.pict.providers&&this.pict.providers[tmpHash]||null;}// ================================================================
+// Data loading
+// ================================================================
+refreshTermList(fCallback){let tmpProvider=this._getProvider();if(!tmpProvider){if(fCallback)fCallback('No vocabulary provider');return;}let tmpSelf=this;tmpProvider.loadFromURL(this.options.VocabularyIndexURL,function(pError){tmpSelf.render();if(fCallback)fCallback(pError);});}loadTerm(pSlug,fCallback){let tmpSelf=this;tmpSelf._SelectedSlug=pSlug;let tmpURL=this.options.VocabularyTermURL+'/'+encodeURIComponent(pSlug);fetch(tmpURL).then(function(r){return r.json();}).then(function(d){tmpSelf._Body=d&&d.Body||'';tmpSelf.render();if(fCallback)fCallback(null);}).catch(function(e){if(fCallback)fCallback(e);});}editTerm(pSlug){let tmpPath=(this.options.VocabularyFolderPath||'vocabulary/')+pSlug+'.md';// Delegate to host app's editor via callback
+let tmpCallback=this.options.onEditTerm;if(typeof tmpCallback==='function'){if(this.log)this.log.info('VocabularyManager: editing term ['+pSlug+'] path ['+tmpPath+'] via onEditTerm callback');tmpCallback(pSlug,tmpPath);return;}// Fallback: try navigateToFile on the PictApplication
+if(this.pict&&this.pict.PictApplication&&typeof this.pict.PictApplication.navigateToFile==='function'){if(this.log)this.log.info('VocabularyManager: editing term ['+pSlug+'] path ['+tmpPath+'] via navigateToFile fallback');this.pict.PictApplication.navigateToFile(tmpPath);return;}// Last resort: navigate to the vocabulary route
+if(this.log)this.log.info('VocabularyManager: editing term ['+pSlug+'] via hash navigation fallback');if(typeof window!=='undefined'){window.location.hash=(this.options.VocabularyRoute||'#/vocabulary')+'/'+pSlug;}}deleteTerm(pSlug){if(!pSlug)return;// Use the modal confirm if available, otherwise native confirm
+let tmpModal=this.pict.views['Pict-Section-Modal']||this.pict.views['PictSectionModal'];let tmpSelf=this;let tmpDoDelete=function(){let tmpURL=tmpSelf.options.VocabularyTermURL+'/'+encodeURIComponent(pSlug);fetch(tmpURL,{method:'DELETE'}).then(function(r){return r.json();}).then(function(){if(tmpSelf._SelectedSlug===pSlug){tmpSelf._SelectedSlug='';tmpSelf._Body='';}tmpSelf.refreshTermList();});};if(tmpModal&&typeof tmpModal.confirm==='function'){tmpModal.confirm('Delete the vocabulary term "'+pSlug+'"? This cannot be undone.',{title:'Delete Term',confirmLabel:'Delete',dangerous:true}).then(function(pConfirmed){if(pConfirmed)tmpDoDelete();});}else if(typeof confirm!=='undefined'&&confirm('Delete vocabulary term "'+pSlug+'"?')){tmpDoDelete();}}createTerm(){this.showCreateModal();}// ================================================================
+// Create-term modal
+// ================================================================
+showCreateModal(){let tmpOverlay=this.pict.ContentAssignment.getElement('#vocab-mgr-create-overlay')[0];if(!tmpOverlay)return;tmpOverlay.style.display='';tmpOverlay.classList.add('open');let tmpInput=this.pict.ContentAssignment.getElement('#vocab-mgr-create-input')[0];if(tmpInput){tmpInput.value='';tmpInput.focus();}// Attach Escape listener
+if(!this._createModalKeyHandler){let tmpSelf=this;this._createModalKeyHandler=function(pEvent){if(pEvent.key==='Escape'){pEvent.preventDefault();tmpSelf.hideCreateModal();}};}window.addEventListener('keydown',this._createModalKeyHandler);}hideCreateModal(){let tmpOverlay=this.pict.ContentAssignment.getElement('#vocab-mgr-create-overlay')[0];if(tmpOverlay){tmpOverlay.classList.remove('open');tmpOverlay.style.display='none';}let tmpInput=this.pict.ContentAssignment.getElement('#vocab-mgr-create-input')[0];if(tmpInput){tmpInput.value='';}if(this._createModalKeyHandler){window.removeEventListener('keydown',this._createModalKeyHandler);}}_submitCreateTerm(){let tmpInput=this.pict.ContentAssignment.getElement('#vocab-mgr-create-input')[0];if(!tmpInput)return;let tmpSlug=(tmpInput.value||'').trim();if(!tmpSlug)return;tmpSlug=tmpSlug.toLowerCase().replace(/[^a-z0-9-]/g,'-');let tmpSelf=this;let tmpTitle=tmpSlug.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});let tmpURL=this.options.VocabularyTermURL+'/'+encodeURIComponent(tmpSlug);this.hideCreateModal();fetch(tmpURL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({body:'# '+tmpTitle+'\n\nDefinition goes here.\n\n## In this library\n\n- ...\n\n## See also\n\n- ...\n'})}).then(function(r){return r.json();}).then(function(){// Refresh with a small delay to let the file flush to disk
+setTimeout(function(){tmpSelf.refreshTermList(function(){tmpSelf._SelectedSlug=tmpSlug;tmpSelf.render();// Open in the host editor
+tmpSelf.editTerm(tmpSlug);});},200);});}setFilter(pText){this._FilterText=(pText||'').toLowerCase();// Only re-render the term list, NOT the filter input
+this._renderTermList();}// ================================================================
+// Lifecycle
+// ================================================================
+onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this._renderTermList();if(this.pict&&this.pict.CSSMap&&typeof this.pict.CSSMap.injectCSS==='function'){this.pict.CSSMap.injectCSS();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}// ================================================================
+// Rendering
+// ================================================================
+/**
+	 * Re-render just the term list inside #vocab-mgr-list,
+	 * preserving the filter input's focus and cursor position.
+	 */_renderTermList(){let tmpListEl=this.pict.ContentAssignment.getElement('#vocab-mgr-list')[0];if(!tmpListEl)return;let tmpProvider=this._getProvider();let tmpTerms=tmpProvider?tmpProvider.getTerms():[];let tmpFiltered=tmpTerms;if(this._FilterText){let tmpFilter=this._FilterText;tmpFiltered=tmpTerms.filter(function(t){return t.slug.indexOf(tmpFilter)!==-1||t.title.toLowerCase().indexOf(tmpFilter)!==-1;});}let tmpHTML='';for(let i=0;i<tmpFiltered.length;i++){let tmpTerm=tmpFiltered[i];let tmpIsActive=tmpTerm.slug===this._SelectedSlug;let tmpShortText=(tmpTerm.short||'').substring(0,80);if(tmpTerm.short&&tmpTerm.short.length>80)tmpShortText+='...';let tmpRecord={ViewHash:this.Hash,slug:tmpTerm.slug,title:tmpTerm.title,shortTruncated:this._escapeHTML(tmpShortText),shortEscaped:this._escapeHTML(tmpTerm.short||''),bodyEscaped:this._escapeHTML(this._Body)};if(tmpIsActive&&this._Body){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermActive',tmpRecord);}else if(tmpIsActive){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermActiveLoading',tmpRecord);}else{tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermItem',tmpRecord);}}if(tmpFiltered.length===0&&this._FilterText){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-EmptyFilter',{});}else if(tmpFiltered.length===0){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-Empty',{});}this.pict.ContentAssignment.assignContent('#vocab-mgr-list',tmpHTML);}// ================================================================
+// Utilities
+// ================================================================
+_escapeHTML(pText){return(pText||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=PictViewVocabularyManager;module.exports.default_configuration=defaultOptions;},{"pict-view":102}],57:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],58:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,AutoLoadDataWithApp:true,AutoLoadDataOrdinal:0,AutoSolveWithApp:true,AutoSolveOrdinal:0,Manifests:{},Templates:[]};class PictProvider extends libFableServiceBase{/**
 	 * @param {import('fable')} pFable - The Fable instance.
@@ -2735,7 +3629,7 @@ return fCallback();}}onAfterInitialize(){if(this.pict.LogNoisiness>3){this.log.t
 	 * @param {(pError?: Error) => void} fCallback - The callback to call after the data post-load.
 	 *
 	 * @return {void}
-	 */onAfterSaveDataAsync(fCallback){return fCallback();}}module.exports=PictProvider;},{"../package.json":54,"fable-serviceproviderbase":20}],56:[function(require,module,exports){/**
+	 */onAfterSaveDataAsync(fCallback){return fCallback();}}module.exports=PictProvider;},{"../package.json":57,"fable-serviceproviderbase":20}],59:[function(require,module,exports){/**
  * Simple syntax highlighter for use with CodeJar.
  *
  * Provides basic keyword/string/number/comment highlighting for common languages.
@@ -2803,7 +3697,7 @@ if(tmpMatch[1]){// Comment
 tmpResult+=`<span class="comment">${escapeHTML(tmpFullMatch)}</span>`;}else if(tmpTagGroupIndex>0&&tmpMatch[tmpTagGroupIndex]){// HTML tag — highlight tag name, attributes, and values
 tmpResult+=highlightHTMLTag(tmpFullMatch);}else{// String, template literal, or regex
 tmpResult+=`<span class="string">${escapeHTML(tmpFullMatch)}</span>`;}tmpLastIndex=tmpLanguageDef.tokenizer.lastIndex;}// Add any remaining code after the last match
-if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}pElement.innerHTML=tmpResult;};}module.exports=createHighlighter;module.exports.LanguageDefinitions=_LanguageDefinitions;},{}],57:[function(require,module,exports){module.exports={"RenderOnLoad":true,"DefaultRenderable":"CodeEditor-Wrap","DefaultDestinationAddress":"#CodeEditor-Container-Div","Templates":[{"Hash":"CodeEditor-Container","Template":"<!-- CodeEditor-Container Rendering Soon -->"}],"Renderables":[{"RenderableHash":"CodeEditor-Wrap","TemplateHash":"CodeEditor-Container","DestinationAddress":"#CodeEditor-Container-Div"}],"TargetElementAddress":"#CodeEditor-Container-Div",// Address in AppData or other Pict address space to read/write code content
+if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);tmpResult+=highlightCodeSegment(escapeHTML(tmpSegment),tmpLanguageDef);}pElement.innerHTML=tmpResult;};}module.exports=createHighlighter;module.exports.LanguageDefinitions=_LanguageDefinitions;},{}],60:[function(require,module,exports){module.exports={"RenderOnLoad":true,"DefaultRenderable":"CodeEditor-Wrap","DefaultDestinationAddress":"#CodeEditor-Container-Div","Templates":[{"Hash":"CodeEditor-Container","Template":"<!-- CodeEditor-Container Rendering Soon -->"}],"Renderables":[{"RenderableHash":"CodeEditor-Wrap","TemplateHash":"CodeEditor-Container","DestinationAddress":"#CodeEditor-Container-Div"}],"TargetElementAddress":"#CodeEditor-Container-Div",// Address in AppData or other Pict address space to read/write code content
 "CodeDataAddress":false,// The language for syntax highlighting (e.g. "javascript", "html", "css", "json")
 "Language":"javascript",// Whether the editor is read-only
 "ReadOnly":false,// Tab character: use tab or spaces
@@ -2876,7 +3770,7 @@ if(tmpLastIndex<tmpCode.length){let tmpSegment=tmpCode.substring(tmpLastIndex);t
 .pict-code-editor-wrap .pict-code-editor .tag { color: #E45649; }
 .pict-code-editor-wrap .pict-code-editor .attr-name { color: #986801; }
 .pict-code-editor-wrap .pict-code-editor .attr-value { color: #50A14F; }
-`};},{}],58:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
+`};},{}],61:[function(require,module,exports){const libPictViewClass=require('pict-view');const libCreateHighlighter=require('./Pict-Code-Highlighter.js');const _DefaultConfiguration=require('./Pict-Section-Code-DefaultConfiguration.js');class PictSectionCode extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// The CodeJar instance
 this.codeJar=null;// The highlight function (can be overridden)
 this._highlightFunction=null;// The current language
 this._language=this.options.Language||'javascript';}onBeforeInitialize(){super.onBeforeInitialize();this._codeJarPrototype=null;this.targetElement=false;// Build the default highlight function for the configured language
@@ -2961,10 +3855,10 @@ let tmpCode=this.codeJar.toString();this.codeJar.destroy();this.codeJar=this._co
 	 * Marshal code content from the data address into the view.
 	 */marshalToView(){super.marshalToView();if(this.codeJar&&this.options.CodeDataAddress){let tmpCode=this._resolveCodeContent();if(typeof tmpCode==='string'){this.codeJar.updateCode(tmpCode);this._updateLineNumbers();}}}/**
 	 * Marshal the current code content back to the data address.
-	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":56,"./Pict-Section-Code-DefaultConfiguration.js":57,"pict-view":88}],59:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
+	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":59,"./Pict-Section-Code-DefaultConfiguration.js":60,"pict-view":102}],62:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
 // The main content view class
 module.exports=require('./views/Pict-View-Content.js');// The content provider (markdown parsing, HTML escaping)
-module.exports.PictContentProvider=require('./providers/Pict-Provider-Content.js');},{"./providers/Pict-Provider-Content.js":60,"./views/Pict-View-Content.js":61}],60:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
+module.exports.PictContentProvider=require('./providers/Pict-Provider-Content.js');},{"./providers/Pict-Provider-Content.js":63,"./views/Pict-View-Content.js":64}],63:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
  * Content Provider for Pict Section Content
  *
  * A general-purpose markdown-to-HTML parser with support for:
@@ -2996,46 +3890,48 @@ let tmpMockElement={textContent:pCode,innerHTML:''};tmpHighlighter(tmpMockElemen
 	 * @param {string} pMarkdown - The raw markdown text
 	 * @param {Function} [pLinkResolver] - Optional callback for link resolution: (pHref, pLinkText) => { href, target, rel } or null
 	 * @param {Function} [pImageResolver] - Optional callback for image URL resolution: (pSrc, pAlt) => resolvedSrc or null
+	 * @param {Function} [pVocabularyResolver] - Optional callback: (pWord) => { slug, title, short } or null. Passed through to parseInline() for vocabulary term auto-linking.
 	 * @returns {string} The parsed HTML
-	 */parseMarkdown(pMarkdown,pLinkResolver,pImageResolver){if(!pMarkdown){return'';}let tmpLines=pMarkdown.split('\n');let tmpHTML=[];let tmpInCodeBlock=false;let tmpCodeFenceLength=0;let tmpCodeLang='';let tmpCodeLines=[];let tmpInList=false;let tmpListType='';let tmpInBlockquote=false;let tmpBlockquoteLines=[];let tmpInMathBlock=false;let tmpMathLines=[];let tmpParagraphLines=[];// Helper to flush accumulated paragraph lines into a single <p> tag
-let fFlushParagraph=()=>{if(tmpParagraphLines.length>0){tmpHTML.push('<p>'+tmpParagraphLines.map(pLine=>{return this.parseInline(pLine,pLinkResolver,pImageResolver);}).join(' ')+'</p>');tmpParagraphLines=[];}};for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];// Display math blocks ($$...$$) — skip if inside a code block
+	 */parseMarkdown(pMarkdown,pLinkResolver,pImageResolver,pVocabularyResolver){if(!pMarkdown){return'';}let tmpLines=pMarkdown.split('\n');let tmpHTML=[];let tmpInCodeBlock=false;let tmpCodeFenceLength=0;let tmpCodeLang='';let tmpCodeLines=[];let tmpInList=false;let tmpListType='';let tmpInBlockquote=false;let tmpBlockquoteLines=[];let tmpInMathBlock=false;let tmpMathLines=[];let tmpParagraphLines=[];// Helper to flush accumulated paragraph lines into a single <p> tag
+let fFlushParagraph=()=>{if(tmpParagraphLines.length>0){tmpHTML.push('<p>'+tmpParagraphLines.map(pLine=>{return this.parseInline(pLine,pLinkResolver,pImageResolver,pVocabularyResolver);}).join(' ')+'</p>');tmpParagraphLines=[];}};for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];// Display math blocks ($$...$$) — skip if inside a code block
 if(!tmpInCodeBlock&&tmpLine.trim().match(/^\$\$/)){if(tmpInMathBlock){// End math block
 tmpHTML.push('<div class="pict-content-katex-display">'+tmpMathLines.join('\n')+'</div>');tmpInMathBlock=false;tmpMathLines=[];}else{// Flush any pending paragraph
 fFlushParagraph();// Close any open list or blockquote
-if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}tmpInMathBlock=true;}continue;}if(tmpInMathBlock){tmpMathLines.push(tmpLine);continue;}// Code blocks (fenced) — track fence length so ````x```` nests around ```y```
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver,pVocabularyResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}tmpInMathBlock=true;}continue;}if(tmpInMathBlock){tmpMathLines.push(tmpLine);continue;}// Code blocks (fenced) — track fence length so ````x```` nests around ```y```
 let tmpFenceMatch=tmpLine.match(/^(`{3,})/);if(tmpFenceMatch){let tmpFenceLen=tmpFenceMatch[1].length;if(tmpInCodeBlock){// Only close if the closing fence is at least as long as the opening
 if(tmpFenceLen>=tmpCodeFenceLength&&tmpLine.trim()===tmpFenceMatch[1]){// End code block
 if(tmpCodeLang==='mermaid'){// Mermaid diagrams: output raw content for client-side rendering
 tmpHTML.push('<pre class="mermaid">'+tmpCodeLines.join('\n')+'</pre>');}else{let tmpCodeText=tmpCodeLines.join('\n');let tmpHighlightedCode=this.highlightCode(tmpCodeText,tmpCodeLang);let tmpLineNumbersHTML=this.generateLineNumbers(tmpCodeText);tmpHTML.push('<div class="pict-content-code-wrap"><div class="pict-content-code-line-numbers">'+tmpLineNumbersHTML+'</div><pre><code class="language-'+this.escapeHTML(tmpCodeLang)+'">'+tmpHighlightedCode+'</code></pre></div>');}tmpInCodeBlock=false;tmpCodeFenceLength=0;tmpCodeLang='';tmpCodeLines=[];continue;}else{// Inner fence with fewer backticks — treat as content
 tmpCodeLines.push(tmpLine);continue;}}else{// Flush any pending paragraph
 fFlushParagraph();// Close any open list or blockquote
-if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Start code block — record fence length
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver,pVocabularyResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Start code block — record fence length
 tmpCodeFenceLength=tmpFenceLen;tmpCodeLang=tmpLine.replace(/^`{3,}/,'').trim();tmpInCodeBlock=true;continue;}}if(tmpInCodeBlock){tmpCodeLines.push(tmpLine);continue;}// Blockquotes
 if(tmpLine.match(/^>\s?/)){if(!tmpInBlockquote){// Flush any pending paragraph
 fFlushParagraph();// Close any open list
-if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}tmpInBlockquote=true;tmpBlockquoteLines=[];}tmpBlockquoteLines.push(tmpLine.replace(/^>\s?/,''));continue;}else if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Horizontal rule
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}tmpInBlockquote=true;tmpBlockquoteLines=[];}tmpBlockquoteLines.push(tmpLine.replace(/^>\s?/,''));continue;}else if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver,pVocabularyResolver)+'</blockquote>');tmpInBlockquote=false;tmpBlockquoteLines=[];}// Horizontal rule
 if(tmpLine.match(/^(-{3,}|\*{3,}|_{3,})\s*$/)){fFlushParagraph();if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}tmpHTML.push('<hr>');continue;}// Headings
-let tmpHeadingMatch=tmpLine.match(/^(#{1,6})\s+(.+)/);if(tmpHeadingMatch){fFlushParagraph();if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}let tmpLevel=tmpHeadingMatch[1].length;let tmpText=this.parseInline(tmpHeadingMatch[2],pLinkResolver,pImageResolver);let tmpID=tmpHeadingMatch[2].toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-');tmpHTML.push('<h'+tmpLevel+' id="'+tmpID+'">'+tmpText+'</h'+tmpLevel+'>');continue;}// Unordered list items
-let tmpULMatch=tmpLine.match(/^(\s*)[-*+]\s+(.*)/);if(tmpULMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ul'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ul>');tmpInList=true;tmpListType='ul';}tmpHTML.push('<li>'+this.parseInline(tmpULMatch[2],pLinkResolver,pImageResolver)+'</li>');continue;}// Ordered list items
-let tmpOLMatch=tmpLine.match(/^(\s*)\d+\.\s+(.*)/);if(tmpOLMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ol'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ol>');tmpInList=true;tmpListType='ol';}tmpHTML.push('<li>'+this.parseInline(tmpOLMatch[2],pLinkResolver,pImageResolver)+'</li>');continue;}// Close list if we've left list items
+let tmpHeadingMatch=tmpLine.match(/^(#{1,6})\s+(.+)/);if(tmpHeadingMatch){fFlushParagraph();if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}let tmpLevel=tmpHeadingMatch[1].length;let tmpText=this.parseInline(tmpHeadingMatch[2],pLinkResolver,pImageResolver,pVocabularyResolver);let tmpID=tmpHeadingMatch[2].toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-');tmpHTML.push('<h'+tmpLevel+' id="'+tmpID+'">'+tmpText+'</h'+tmpLevel+'>');continue;}// Unordered list items
+let tmpULMatch=tmpLine.match(/^(\s*)[-*+]\s+(.*)/);if(tmpULMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ul'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ul>');tmpInList=true;tmpListType='ul';}tmpHTML.push('<li>'+this.parseInline(tmpULMatch[2],pLinkResolver,pImageResolver,pVocabularyResolver)+'</li>');continue;}// Ordered list items
+let tmpOLMatch=tmpLine.match(/^(\s*)\d+\.\s+(.*)/);if(tmpOLMatch){fFlushParagraph();if(!tmpInList||tmpListType!=='ol'){if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}tmpHTML.push('<ol>');tmpInList=true;tmpListType='ol';}tmpHTML.push('<li>'+this.parseInline(tmpOLMatch[2],pLinkResolver,pImageResolver,pVocabularyResolver)+'</li>');continue;}// Close list if we've left list items
 if(tmpInList&&tmpLine.trim()!==''){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}// Empty line — flush any accumulated paragraph
 if(tmpLine.trim()===''){fFlushParagraph();continue;}// Table detection
 if(tmpLine.match(/^\|/)&&i+1<tmpLines.length&&tmpLines[i+1].match(/^\|[\s-:|]+\|/)){fFlushParagraph();// Close any open list
 if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');tmpInList=false;}let tmpTableHTML='<table>';// Header row
-let tmpHeaders=tmpLine.split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<thead><tr>';for(let h=0;h<tmpHeaders.length;h++){tmpTableHTML+='<th>'+this.parseInline(tmpHeaders[h].trim(),pLinkResolver,pImageResolver)+'</th>';}tmpTableHTML+='</tr></thead>';// Skip separator row
+let tmpHeaders=tmpLine.split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<thead><tr>';for(let h=0;h<tmpHeaders.length;h++){tmpTableHTML+='<th>'+this.parseInline(tmpHeaders[h].trim(),pLinkResolver,pImageResolver,pVocabularyResolver)+'</th>';}tmpTableHTML+='</tr></thead>';// Skip separator row
 i++;// Body rows
-tmpTableHTML+='<tbody>';while(i+1<tmpLines.length&&tmpLines[i+1].match(/^\|/)){i++;let tmpCells=tmpLines[i].split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<tr>';for(let c=0;c<tmpCells.length;c++){tmpTableHTML+='<td>'+this.parseInline(tmpCells[c].trim(),pLinkResolver,pImageResolver)+'</td>';}tmpTableHTML+='</tr>';}tmpTableHTML+='</tbody></table>';tmpHTML.push(tmpTableHTML);continue;}// Accumulate paragraph lines — consecutive non-blank text lines
+tmpTableHTML+='<tbody>';while(i+1<tmpLines.length&&tmpLines[i+1].match(/^\|/)){i++;let tmpCells=tmpLines[i].split('|').filter(pCell=>{return pCell.trim()!=='';});tmpTableHTML+='<tr>';for(let c=0;c<tmpCells.length;c++){tmpTableHTML+='<td>'+this.parseInline(tmpCells[c].trim(),pLinkResolver,pImageResolver,pVocabularyResolver)+'</td>';}tmpTableHTML+='</tr>';}tmpTableHTML+='</tbody></table>';tmpHTML.push(tmpTableHTML);continue;}// Accumulate paragraph lines — consecutive non-blank text lines
 // will be joined into a single <p> tag when flushed
 tmpParagraphLines.push(tmpLine);}// Flush any remaining accumulated paragraph
 fFlushParagraph();// Close any trailing open elements
-if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver)+'</blockquote>');}if(tmpInCodeBlock){let tmpCodeText=tmpCodeLines.join('\n');let tmpHighlightedCode=this.highlightCode(tmpCodeText,tmpCodeLang);let tmpLineNumbersHTML=this.generateLineNumbers(tmpCodeText);tmpHTML.push('<div class="pict-content-code-wrap"><div class="pict-content-code-line-numbers">'+tmpLineNumbersHTML+'</div><pre><code>'+tmpHighlightedCode+'</code></pre></div>');}return tmpHTML.join('\n');}/**
+if(tmpInList){tmpHTML.push(tmpListType==='ul'?'</ul>':'</ol>');}if(tmpInBlockquote){tmpHTML.push('<blockquote>'+this.parseMarkdown(tmpBlockquoteLines.join('\n'),pLinkResolver,pImageResolver,pVocabularyResolver)+'</blockquote>');}if(tmpInCodeBlock){let tmpCodeText=tmpCodeLines.join('\n');let tmpHighlightedCode=this.highlightCode(tmpCodeText,tmpCodeLang);let tmpLineNumbersHTML=this.generateLineNumbers(tmpCodeText);tmpHTML.push('<div class="pict-content-code-wrap"><div class="pict-content-code-line-numbers">'+tmpLineNumbersHTML+'</div><pre><code>'+tmpHighlightedCode+'</code></pre></div>');}return tmpHTML.join('\n');}/**
 	 * Parse inline markdown elements (bold, italic, code, links, images, KaTeX).
 	 *
 	 * @param {string} pText - The text to parse
 	 * @param {Function} [pLinkResolver] - Optional callback: (pHref, pLinkText) => { href, target, rel } or null
 	 * @param {Function} [pImageResolver] - Optional callback: (pSrc, pAlt) => resolvedSrc or null
+	 * @param {Function} [pVocabularyResolver] - Optional callback: (pWord) => { slug, title, short } or null. When provided, known vocabulary terms in the rendered text are wrapped in <span class="pict-vocab-term"> with data attributes carrying the popover content.
 	 * @returns {string} HTML with inline elements
-	 */parseInline(pText,pLinkResolver,pImageResolver){if(!pText){return'';}let tmpResult=pText;// Extract inline code spans into placeholders so bold/italic regexes don't mangle their contents
+	 */parseInline(pText,pLinkResolver,pImageResolver,pVocabularyResolver){if(!pText){return'';}let tmpResult=pText;// Extract inline code spans into placeholders so bold/italic regexes don't mangle their contents
 let tmpCodeSpans=[];tmpResult=tmpResult.replace(/`([^`]+)`/g,(pMatch,pCode)=>{let tmpIndex=tmpCodeSpans.length;tmpCodeSpans.push('<code>'+pCode+'</code>');return'\x00CODEINLINE'+tmpIndex+'\x00';});// Inline LaTeX equations ($...$) — must be processed before other inline patterns
 // Match single $ delimiters that aren't adjacent to spaces (to avoid false positives with currency)
 tmpResult=tmpResult.replace(/\$([^\$\s][^\$]*?[^\$\s])\$/g,'<span class="pict-content-katex-inline">$1</span>');// Also match single-character inline math like $x$
@@ -3045,12 +3941,44 @@ tmpResult=tmpResult.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(pMatch,pLinkText,pHref)=
 if(pHref.match(/^https?:\/\//)){return'<a href="'+pHref+'" target="_blank" rel="noopener">'+pLinkText+'</a>';}return'<a href="'+pHref+'">'+pLinkText+'</a>';});// Bold
 tmpResult=tmpResult.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');tmpResult=tmpResult.replace(/__([^_]+)__/g,'<strong>$1</strong>');// Italic
 tmpResult=tmpResult.replace(/\*([^*]+)\*/g,'<em>$1</em>');tmpResult=tmpResult.replace(/_([^_]+)_/g,'<em>$1</em>');// Restore inline code spans from placeholders
-tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return tmpCodeSpans[parseInt(pIndex)];});return tmpResult;}/**
+tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return tmpCodeSpans[parseInt(pIndex)];});// Vocabulary term auto-linking: scan the rendered text for
+// known vocabulary terms and wrap each first occurrence in a
+// span with data attributes for the popover system. Skips
+// content inside <code>, <a>, <pre>, and <strong> tags to
+// avoid mangling links, code, or already-emphasized text.
+if(typeof pVocabularyResolver==='function'){tmpResult=this._applyVocabularyLinks(tmpResult,pVocabularyResolver);}return tmpResult;}/**
+	 * Scan HTML for vocabulary terms and wrap the first occurrence
+	 * of each in a <span class="pict-vocab-term"> element. The
+	 * resolver callback is called for each candidate word/phrase
+	 * and returns { slug, title, short } if it's a known term.
+	 *
+	 * Skips content inside HTML tags to avoid breaking links,
+	 * code spans, and other markup.
+	 *
+	 * @param {string} pHTML
+	 * @param {Function} pResolver - (word) => {slug, title, short} | null
+	 * @returns {string}
+	 */_applyVocabularyLinks(pHTML,pResolver){if(!pHTML||typeof pResolver!=='function'){return pHTML;}// Track which terms we've already linked to avoid duplicate
+// links for the same term appearing multiple times.
+let tmpLinked={};// Split the HTML into segments: tags vs text nodes. We only
+// scan text nodes for vocabulary terms; tags pass through.
+// This regex captures HTML tags as separators.
+let tmpParts=pHTML.split(/(<[^>]+>)/g);// Track whether we're inside a tag that should be skipped
+let tmpSkipDepth=0;let tmpSkipTags=['code','a','pre','span'];for(let i=0;i<tmpParts.length;i++){let tmpPart=tmpParts[i];// Check if this is an HTML tag
+if(tmpPart.charAt(0)==='<'){// Opening tag?
+let tmpOpenMatch=tmpPart.match(/^<(\w+)/);if(tmpOpenMatch&&tmpSkipTags.indexOf(tmpOpenMatch[1].toLowerCase())!==-1){tmpSkipDepth++;}// Closing tag?
+let tmpCloseMatch=tmpPart.match(/^<\/(\w+)/);if(tmpCloseMatch&&tmpSkipTags.indexOf(tmpCloseMatch[1].toLowerCase())!==-1){tmpSkipDepth=Math.max(0,tmpSkipDepth-1);}continue;// Don't modify tags
+}// Skip text inside protected elements
+if(tmpSkipDepth>0)continue;// Scan this text node for vocabulary terms. Use word
+// boundary regex to match whole words only.
+tmpParts[i]=tmpPart.replace(/\b([A-Za-z][A-Za-z0-9_-]{1,30})\b/g,(pMatch,pWord)=>{// Skip very short words and common English words
+if(pWord.length<3)return pMatch;let tmpLower=pWord.toLowerCase();if(tmpLinked[tmpLower])return pMatch;// already linked
+let tmpResult=pResolver(tmpLower);if(!tmpResult)return pMatch;tmpLinked[tmpLower]=true;let tmpShortEsc=(tmpResult.short||'').replace(/"/g,'&quot;');return'<span class="pict-vocab-term" data-vocab-slug="'+tmpResult.slug+'" data-vocab-title="'+(tmpResult.title||'').replace(/"/g,'&quot;')+'" data-vocab-short="'+tmpShortEsc+'">'+pMatch+'</span>';});}return tmpParts.join('');}/**
 	 * Escape HTML special characters.
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55,"pict-section-code":58}],61:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=PictContentProvider;module.exports.default_configuration={ProviderIdentifier:"Pict-Content",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":58,"pict-section-code":61}],64:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
 		.pict-content {
 			padding: 2em 3em;
 			max-width: 900px;
@@ -3099,28 +4027,44 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 		.pict-content a:hover {
 			text-decoration: underline;
 		}
+		.pict-content pre {
+			background: #3D3229;
+			color: #E8E0D4;
+			padding: 1.25em;
+			border-radius: 6px;
+			overflow-x: auto;
+			line-height: 1.5;
+			font-size: 0.9em;
+		}
+		.pict-content code {
+			background: #F0ECE4;
+			padding: 0.15em 0.4em;
+			border-radius: 3px;
+			font-size: 0.9em;
+			color: #9E6B47;
+		}
 		.pict-content-code-wrap {
-			position: relative;
+			display: flex;
+			flex-direction: row;
 			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
 			font-size: 14px;
 			line-height: 1.5;
 			border-radius: 6px;
-			overflow: auto;
+			overflow: hidden;
 			margin: 1em 0;
 			background: #3D3229;
 		}
 		.pict-content-code-wrap .pict-content-code-line-numbers {
-			position: absolute;
-			top: 0;
-			left: 0;
 			width: 40px;
+			min-width: 40px;
 			padding: 1.25em 0;
 			text-align: right;
 			background: #342A22;
 			border-right: 1px solid #4A3F35;
 			color: #8A7F72;
-			font-size: 13px;
-			line-height: 1.5;
+			font-family: inherit;
+			font-size: inherit;
+			line-height: inherit;
 			user-select: none;
 			pointer-events: none;
 			box-sizing: border-box;
@@ -3133,11 +4077,13 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 			margin: 0;
 			background: #3D3229;
 			color: #E8E0D4;
-			padding: 1.25em 1.25em 1.25em 52px;
-			border-radius: 6px;
+			padding: 1.25em 1.25em 1.25em 8px;
+			border-radius: 0 6px 6px 0;
 			overflow-x: auto;
 			line-height: 1.5;
 			font-size: inherit;
+			flex: 1;
+			min-width: 0;
 		}
 		.pict-content-code-wrap pre code {
 			background: none;
@@ -3157,22 +4103,6 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 		.pict-content-code-wrap .tag { color: #E06C75; }
 		.pict-content-code-wrap .attr-name { color: #D19A66; }
 		.pict-content-code-wrap .attr-value { color: #98C379; }
-		.pict-content pre {
-			background: #3D3229;
-			color: #E8E0D4;
-			padding: 1.25em;
-			border-radius: 6px;
-			overflow-x: auto;
-			line-height: 1.5;
-			font-size: 0.9em;
-		}
-		.pict-content code {
-			background: #F0ECE4;
-			padding: 0.15em 0.4em;
-			border-radius: 3px;
-			font-size: 0.9em;
-			color: #9E6B47;
-		}
 		.pict-content pre code {
 			background: none;
 			padding: 0;
@@ -3229,9 +4159,27 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 		}
 		.pict-content pre.mermaid {
 			background: #fff;
-			color: #3D3229;
+			color: #2A241E;
 			text-align: center;
 			padding: 1em;
+		}
+		.pict-content pre.mermaid text,
+		.pict-content pre.mermaid .nodeLabel,
+		.pict-content pre.mermaid .edgeLabel,
+		.pict-content pre.mermaid .label,
+		.pict-content pre.mermaid .cluster-label,
+		.pict-content pre.mermaid span,
+		.pict-content pre.mermaid foreignObject p,
+		.pict-content pre.mermaid foreignObject div,
+		.pict-content pre.mermaid foreignObject span {
+			color: #2A241E !important;
+			fill: #2A241E !important;
+		}
+		.pict-content pre.mermaid .edgePath .path {
+			stroke: #5E5549 !important;
+		}
+		.pict-content pre.mermaid .arrowheadPath {
+			fill: #5E5549 !important;
 		}
 		.pict-content .pict-content-katex-display {
 			text-align: center;
@@ -3241,6 +4189,228 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 		}
 		.pict-content .pict-content-katex-inline {
 			display: inline;
+		}
+
+		/* Fullscreen viewer for images and mermaid diagrams (click-to-zoom) */
+		.pict-content [data-fullscreen-source] {
+			cursor: zoom-in;
+			outline: 1px solid transparent;
+			outline-offset: 3px;
+			border-radius: 4px;
+			transition: outline-color 0.15s ease;
+		}
+		.pict-content [data-fullscreen-source]:hover {
+			outline-color: var(--docuserve-accent, #2E7D74);
+		}
+		/* Code block container with hover-revealed action buttons */
+		.pict-content-code-container {
+			position: relative;
+			display: flex;
+			align-items: flex-start;
+			gap: 8px;
+			margin: 1em 0;
+		}
+		.pict-content-code-container > .pict-content-code-wrap {
+			margin: 0;
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+		.pict-content-code-actions {
+			position: sticky;
+			top: 64px;
+			align-self: flex-start;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 0 0 auto;
+			padding-top: 6px;
+			opacity: 0;
+			transform: translateX(-4px);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+		}
+		.pict-content-code-container:hover .pict-content-code-actions,
+		.pict-content-code-container:focus-within .pict-content-code-actions {
+			opacity: 1;
+			transform: translateX(0);
+			pointer-events: auto;
+		}
+		.pict-content-code-action-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			padding: 0;
+			background: var(--docuserve-bg-elevated, #FFFFFF);
+			color: var(--docuserve-text-muted, #5E5549);
+			border: 1px solid var(--docuserve-border, #DDD6CA);
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+		}
+		.pict-content-code-action-btn svg {
+			display: block;
+			width: 14px;
+			height: 14px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.6;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-content-code-action-btn:hover {
+			background: var(--docuserve-accent, #2E7D74);
+			color: #FFFFFF;
+			border-color: var(--docuserve-accent, #2E7D74);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+		}
+		.pict-content-code-action-btn:focus-visible {
+			outline: 2px solid var(--docuserve-accent, #2E7D74);
+			outline-offset: 2px;
+		}
+		.pict-content-code-action-btn.is-copied {
+			background: var(--docuserve-accent, #2E7D74);
+			color: #FFFFFF;
+			border-color: var(--docuserve-accent, #2E7D74);
+		}
+		.pict-content-code-action-btn.is-copy-failed {
+			background: #B23A3A;
+			color: #FFFFFF;
+			border-color: #B23A3A;
+		}
+		.pict-fullscreen-overlay {
+			position: fixed;
+			inset: 0;
+			z-index: 9999;
+			display: flex;
+			flex-direction: column;
+			background: rgba(0, 0, 0, 0.62);
+			backdrop-filter: blur(6px);
+			-webkit-backdrop-filter: blur(6px);
+			color: var(--docuserve-text, #2A241E);
+		}
+		.pict-fullscreen-overlay[hidden] {
+			display: none;
+		}
+		.pict-fullscreen-titlebar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1em;
+			height: 48px;
+			padding: 0 1em;
+			background: var(--docuserve-bg-elevated, #FFFFFF);
+			color: var(--docuserve-text-strong, #1A1612);
+			border-bottom: 1px solid var(--docuserve-border, #DDD6CA);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+			flex: 0 0 auto;
+		}
+		.pict-fullscreen-title {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			font-size: 0.95em;
+			font-weight: 600;
+			letter-spacing: 0.01em;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			color: var(--docuserve-text-strong, #1A1612);
+		}
+		.pict-fullscreen-controls {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.pict-fullscreen-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			background: transparent;
+			border: 1px solid transparent;
+			border-radius: 6px;
+			color: var(--docuserve-text-muted, #5E5549);
+			cursor: pointer;
+			transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+		}
+		.pict-fullscreen-btn svg {
+			display: block;
+			width: 16px;
+			height: 16px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-fullscreen-btn:hover {
+			background: var(--docuserve-border-soft, #EAE3D8);
+			color: var(--docuserve-text-strong, #1A1612);
+		}
+		.pict-fullscreen-btn:focus-visible {
+			outline: 2px solid var(--docuserve-accent, #2E7D74);
+			outline-offset: 2px;
+		}
+		.pict-fullscreen-close:hover {
+			background: var(--docuserve-accent, #2E7D74);
+			color: #FFFFFF;
+		}
+		.pict-fullscreen-stage {
+			flex: 1 1 auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			padding: 1.5em;
+			cursor: zoom-in;
+			touch-action: none;
+		}
+		.pict-fullscreen-stage.is-zoomed {
+			cursor: grab;
+		}
+		.pict-fullscreen-stage.is-panning {
+			cursor: grabbing;
+		}
+		.pict-fullscreen-content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			max-width: 100%;
+			max-height: 100%;
+			transform-origin: center center;
+			transition: transform 0.05s linear;
+			will-change: transform;
+		}
+		.pict-fullscreen-content > * {
+			box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+		}
+		.pict-fullscreen-content .pict-fullscreen-img {
+			max-width: 90vw;
+			max-height: calc(100vh - 96px);
+			width: auto;
+			height: auto;
+			object-fit: contain;
+			background: var(--docuserve-bg-elevated, #FFFFFF);
+			padding: 12px;
+			border-radius: 6px;
+		}
+		.pict-fullscreen-content .pict-fullscreen-mermaid-svg {
+			width: min(90vw, 1400px);
+			height: auto;
+			max-height: calc(100vh - 96px);
+			background: var(--docuserve-mermaid-bg, #FFFFFF);
+			padding: 16px;
+			border-radius: 6px;
+		}
+		.pict-fullscreen-content .pict-fullscreen-codewrap {
+			max-width: 90vw;
+			max-height: calc(100vh - 96px);
+			margin: 0;
+			overflow: auto;
+			box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
 		}
 	`,Templates:[{Hash:"Pict-Content-Template",Template:/*html*/`
 <div class="pict-content" id="Pict-Content-Body">
@@ -3252,15 +4422,21 @@ tmpResult=tmpResult.replace(/\x00CODEINLINE(\d+)\x00/g,(pMatch,pIndex)=>{return 
 	 * @param {string} pHTMLContent - The HTML to display
 	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
 	 */displayContent(pHTMLContent,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,pHTMLContent);// Scroll to top of content area
-let tmpContentContainer=document.getElementById(tmpContainerID);if(tmpContentContainer&&tmpContentContainer.parentElement){tmpContentContainer.parentElement.scrollTop=0;}// Post-render: initialize Mermaid diagrams if mermaid is available
+let tmpContentContainer=document.getElementById(tmpContainerID);if(tmpContentContainer&&tmpContentContainer.parentElement){tmpContentContainer.parentElement.scrollTop=0;}// Tag images and code blocks immediately so they're clickable.
+// Mermaid blocks are tagged after mermaid.run() resolves (see below).
+this.enableFullscreenViewers(tmpContainerID,{skipMermaid:true});// Post-render: initialize Mermaid diagrams if mermaid is available.
+// Once mermaid finishes, retag so the rendered SVGs are also clickable.
 this.renderMermaidDiagrams(tmpContainerID);// Post-render: render KaTeX equations if katex is available
 this.renderKaTeXEquations(tmpContainerID);}/**
 	 * Render any Mermaid diagram blocks in the content area.
 	 * Mermaid blocks are `<pre class="mermaid">` elements produced by parseMarkdown.
 	 *
 	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */renderMermaidDiagrams(pContainerID){if(typeof mermaid==='undefined'){return;}let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}let tmpMermaidElements=tmpContentBody.querySelectorAll('pre.mermaid');if(tmpMermaidElements.length<1){return;}// mermaid.run() will process all pre.mermaid elements in the container
-try{mermaid.run({nodes:tmpMermaidElements});}catch(pError){this.log.error('Mermaid rendering error: '+pError.message);}}/**
+	 */renderMermaidDiagrams(pContainerID){if(typeof mermaid==='undefined'){return;}let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}let tmpMermaidElements=tmpContentBody.querySelectorAll('pre.mermaid');if(tmpMermaidElements.length<1){return;}// mermaid.run() will process all pre.mermaid elements in the container.
+// It returns a promise; once it resolves the inner SVG exists and we
+// can tag the diagrams as fullscreen-clickable.
+try{let tmpResult=mermaid.run({nodes:tmpMermaidElements});if(tmpResult&&typeof tmpResult.then==='function'){tmpResult.then(()=>{this.enableFullscreenViewers(tmpContainerID,{onlyMermaid:true});}).catch(pError=>{this.log.error('Mermaid rendering error: '+(pError&&pError.message?pError.message:pError));});}else{// Synchronous fallback (older mermaid)
+this.enableFullscreenViewers(tmpContainerID,{onlyMermaid:true});}}catch(pError){this.log.error('Mermaid rendering error: '+pError.message);}}/**
 	 * Render KaTeX inline and display math elements in the content area.
 	 * Inline: `<span class="pict-content-katex-inline">`
 	 * Display: `<div class="pict-content-katex-display">`
@@ -3269,11 +4445,71 @@ try{mermaid.run({nodes:tmpMermaidElements});}catch(pError){this.log.error('Merma
 	 */renderKaTeXEquations(pContainerID){if(typeof katex==='undefined'){return;}let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}// Render inline math
 let tmpInlineElements=tmpContentBody.querySelectorAll('.pict-content-katex-inline');for(let i=0;i<tmpInlineElements.length;i++){try{katex.render(tmpInlineElements[i].textContent,tmpInlineElements[i],{throwOnError:false,displayMode:false});}catch(pError){this.log.warn('KaTeX inline error: '+pError.message);}}// Render display math
 let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-display');for(let i=0;i<tmpDisplayElements.length;i++){try{katex.render(tmpDisplayElements[i].textContent,tmpDisplayElements[i],{throwOnError:false,displayMode:true});}catch(pError){this.log.warn('KaTeX display error: '+pError.message);}}}/**
+	 * Walk the freshly-rendered content and tag images, mermaid diagrams,
+	 * and fenced code blocks so they're click-to-fullscreen.  Also installs
+	 * a single delegated click listener on the container the first time it
+	 * is called for that container.
+	 *
+	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
+	 * @param {Object} [pOptions] - { skipMermaid: bool, onlyMermaid: bool }
+	 */enableFullscreenViewers(pContainerID,pOptions){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}let tmpOptions=pOptions||{};if(!tmpOptions.onlyMermaid){// Images
+let tmpImages=tmpContentBody.querySelectorAll('img:not([data-fullscreen-source])');for(let i=0;i<tmpImages.length;i++){let tmpImg=tmpImages[i];tmpImg.setAttribute('data-fullscreen-source','image');let tmpAlt=tmpImg.getAttribute('alt');if(!tmpAlt){let tmpSrc=tmpImg.getAttribute('src')||'';tmpAlt=tmpSrc.split('/').pop().split('?')[0]||'Image';}tmpImg.setAttribute('data-fullscreen-title',tmpAlt);}// Code wraps (fenced blocks): do NOT tag for click-to-fullscreen —
+// that would conflict with text selection for copy/paste.
+// Instead wrap each in a container with hover-revealed action
+// buttons (fullscreen + copy) floating to the right.
+let tmpCodeWraps=tmpContentBody.querySelectorAll('.pict-content-code-wrap:not([data-code-actions-wired])');for(let i=0;i<tmpCodeWraps.length;i++){this._wireCodeActions(tmpCodeWraps[i]);}}if(!tmpOptions.skipMermaid){// Mermaid diagrams (after mermaid.run() has replaced the inner pre)
+let tmpMermaid=tmpContentBody.querySelectorAll('pre.mermaid:not([data-fullscreen-source])');for(let i=0;i<tmpMermaid.length;i++){let tmpPre=tmpMermaid[i];// Only tag once mermaid has actually rendered an svg into it
+if(tmpPre.querySelector('svg')){tmpPre.setAttribute('data-fullscreen-source','mermaid');tmpPre.setAttribute('data-fullscreen-title','Mermaid Diagram');}}}// Install delegated click listener once per container.
+if(!tmpContentBody.__pictFullscreenWired){tmpContentBody.__pictFullscreenWired=true;tmpContentBody.addEventListener('click',pEvent=>{let tmpTarget=pEvent.target;while(tmpTarget&&tmpTarget!==tmpContentBody&&!tmpTarget.hasAttribute('data-fullscreen-source')){tmpTarget=tmpTarget.parentElement;}if(tmpTarget&&tmpTarget!==tmpContentBody&&tmpTarget.hasAttribute('data-fullscreen-source')){pEvent.preventDefault();this._openFullscreen(tmpTarget);}});}}/**
+	 * Wrap a fenced code block in a container that holds the existing
+	 * .pict-content-code-wrap plus a hover-revealed action column with
+	 * fullscreen + copy buttons.  The action column is sticky-positioned
+	 * so it follows the page scroll while the user is alongside a long
+	 * code block.
+	 *
+	 * @param {HTMLElement} pCodeWrap - The .pict-content-code-wrap element
+	 */_wireCodeActions(pCodeWrap){if(!pCodeWrap||pCodeWrap.hasAttribute('data-code-actions-wired')){return;}pCodeWrap.setAttribute('data-code-actions-wired','true');// Determine the fullscreen title from the language tag, if any.
+let tmpCodeEl=pCodeWrap.querySelector('code[class*="language-"]');let tmpLang='Code';if(tmpCodeEl){let tmpMatch=(tmpCodeEl.getAttribute('class')||'').match(/language-(\S+)/);if(tmpMatch){tmpLang=tmpMatch[1]+' code';}}pCodeWrap.setAttribute('data-code-language',tmpLang);// Build the wrapping container.
+let tmpContainer=document.createElement('div');tmpContainer.className='pict-content-code-container';let tmpActions=document.createElement('div');tmpActions.className='pict-content-code-actions';tmpActions.setAttribute('aria-hidden','false');let tmpFullscreenBtn=document.createElement('button');tmpFullscreenBtn.type='button';tmpFullscreenBtn.className='pict-content-code-action-btn';tmpFullscreenBtn.setAttribute('aria-label','Open code in fullscreen');tmpFullscreenBtn.setAttribute('title','Open in fullscreen');tmpFullscreenBtn.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><polyline points="3 6 3 3 6 3"></polyline><polyline points="13 6 13 3 10 3"></polyline><polyline points="3 10 3 13 6 13"></polyline><polyline points="13 10 13 13 10 13"></polyline></svg>';let tmpCopyBtn=document.createElement('button');tmpCopyBtn.type='button';tmpCopyBtn.className='pict-content-code-action-btn';tmpCopyBtn.setAttribute('aria-label','Copy code to clipboard');tmpCopyBtn.setAttribute('title','Copy code');tmpCopyBtn.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.25"></rect><path d="M11 5V3.25A1.25 1.25 0 0 0 9.75 2H3.25A1.25 1.25 0 0 0 2 3.25v6.5A1.25 1.25 0 0 0 3.25 11H5"></path></svg>';tmpActions.appendChild(tmpFullscreenBtn);tmpActions.appendChild(tmpCopyBtn);// Insert the container in the place of the code wrap, then move the
+// code wrap inside it followed by the actions column.
+let tmpParent=pCodeWrap.parentNode;tmpParent.insertBefore(tmpContainer,pCodeWrap);tmpContainer.appendChild(pCodeWrap);tmpContainer.appendChild(tmpActions);// Click handlers
+tmpFullscreenBtn.addEventListener('click',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();this._openCodeFullscreen(pCodeWrap);});tmpCopyBtn.addEventListener('click',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();this._copyCodeToClipboard(pCodeWrap,tmpCopyBtn);});}/**
+	 * Open the fullscreen overlay for a fenced code block.  Reuses the
+	 * same overlay singleton as image / mermaid.
+	 */_openCodeFullscreen(pCodeWrap){let tmpOverlay=this._buildFullscreenOverlay();// Stamp the source attributes the overlay's open() expects.
+pCodeWrap.setAttribute('data-fullscreen-source','code');pCodeWrap.setAttribute('data-fullscreen-title',pCodeWrap.getAttribute('data-code-language')||'Code');tmpOverlay.open(pCodeWrap);}/**
+	 * Copy the raw text of a code block to the clipboard and briefly flash
+	 * a "Copied!" state on the trigger button.
+	 */_copyCodeToClipboard(pCodeWrap,pButton){let tmpCodeEl=pCodeWrap.querySelector('code');let tmpText=tmpCodeEl?tmpCodeEl.textContent:pCodeWrap.textContent;let fFlashOk=()=>{pButton.classList.add('is-copied');pButton.setAttribute('title','Copied!');setTimeout(()=>{pButton.classList.remove('is-copied');pButton.setAttribute('title','Copy code');},1400);};let fFlashFail=()=>{pButton.classList.add('is-copy-failed');pButton.setAttribute('title','Copy failed');setTimeout(()=>{pButton.classList.remove('is-copy-failed');pButton.setAttribute('title','Copy code');},1400);};try{if(navigator&&navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){navigator.clipboard.writeText(tmpText).then(fFlashOk).catch(fFlashFail);return;}}catch(e){// fall through to legacy fallback
+}// Legacy fallback for non-secure contexts.
+try{let tmpTextarea=document.createElement('textarea');tmpTextarea.value=tmpText;tmpTextarea.style.position='fixed';tmpTextarea.style.opacity='0';document.body.appendChild(tmpTextarea);tmpTextarea.select();let tmpOk=document.execCommand('copy');document.body.removeChild(tmpTextarea);if(tmpOk){fFlashOk();}else{fFlashFail();}}catch(e){fFlashFail();}}/**
+	 * Lazily build the singleton fullscreen overlay element and attach it
+	 * to <body>.  Returns the existing instance if already built.
+	 */_buildFullscreenOverlay(){if(PictContentView._FullscreenOverlay){return PictContentView._FullscreenOverlay;}let tmpOverlay=document.createElement('div');tmpOverlay.className='pict-fullscreen-overlay';tmpOverlay.setAttribute('role','dialog');tmpOverlay.setAttribute('aria-modal','true');tmpOverlay.setAttribute('aria-labelledby','pict-fullscreen-title');tmpOverlay.setAttribute('hidden','');tmpOverlay.innerHTML=''+'<div class="pict-fullscreen-titlebar">'+'<span class="pict-fullscreen-title" id="pict-fullscreen-title"></span>'+'<div class="pict-fullscreen-controls">'+'<button type="button" class="pict-fullscreen-btn" data-action="zoom-out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"></line></svg></button>'+'<button type="button" class="pict-fullscreen-btn" data-action="zoom-reset" aria-label="Reset zoom" title="Reset zoom"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5"></circle><line x1="8" y1="5" x2="8" y2="11"></line><line x1="5" y1="8" x2="11" y2="8"></line></svg></button>'+'<button type="button" class="pict-fullscreen-btn" data-action="zoom-in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 16 16" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"></line><line x1="8" y1="3" x2="8" y2="13"></line></svg></button>'+'<button type="button" class="pict-fullscreen-btn pict-fullscreen-close" data-action="close" aria-label="Close" title="Close (Esc)"><svg viewBox="0 0 16 16" aria-hidden="true"><line x1="4" y1="4" x2="12" y2="12"></line><line x1="12" y1="4" x2="4" y2="12"></line></svg></button>'+'</div>'+'</div>'+'<div class="pict-fullscreen-stage">'+'<div class="pict-fullscreen-content"></div>'+'</div>';document.body.appendChild(tmpOverlay);let tmpState={scale:1,translateX:0,translateY:0,isPanning:false,didPan:false,currentKind:'',panStartX:0,panStartY:0,panOrigX:0,panOrigY:0,pinchInitialDistance:0,pinchInitialScale:1};let tmpStage=tmpOverlay.querySelector('.pict-fullscreen-stage');let tmpContent=tmpOverlay.querySelector('.pict-fullscreen-content');let tmpTitleEl=tmpOverlay.querySelector('.pict-fullscreen-title');let fApplyTransform=()=>{tmpContent.style.transform='translate('+tmpState.translateX+'px, '+tmpState.translateY+'px) scale('+tmpState.scale+')';tmpStage.classList.toggle('is-zoomed',tmpState.scale>1.001);};let fClampScale=pValue=>{if(pValue<0.5)return 0.5;if(pValue>8)return 8;return pValue;};let fZoomAt=(pNewScale,pAnchorClientX,pAnchorClientY)=>{let tmpClamped=fClampScale(pNewScale);let tmpStageRect=tmpStage.getBoundingClientRect();let tmpAnchorX=pAnchorClientX!==undefined?pAnchorClientX:tmpStageRect.left+tmpStageRect.width/2;let tmpAnchorY=pAnchorClientY!==undefined?pAnchorClientY:tmpStageRect.top+tmpStageRect.height/2;// Convert anchor into the local coordinate of the content (which is centered)
+let tmpCenterX=tmpStageRect.left+tmpStageRect.width/2;let tmpCenterY=tmpStageRect.top+tmpStageRect.height/2;let tmpDX=tmpAnchorX-tmpCenterX;let tmpDY=tmpAnchorY-tmpCenterY;let tmpRatio=tmpClamped/tmpState.scale;tmpState.translateX=tmpDX-tmpRatio*(tmpDX-tmpState.translateX);tmpState.translateY=tmpDY-tmpRatio*(tmpDY-tmpState.translateY);tmpState.scale=tmpClamped;fApplyTransform();};let fResetTransform=()=>{tmpState.scale=1;tmpState.translateX=0;tmpState.translateY=0;fApplyTransform();};let fClose=()=>{tmpOverlay.setAttribute('hidden','');tmpContent.innerHTML='';fResetTransform();document.documentElement.style.removeProperty('overflow');document.removeEventListener('keydown',fKeydown);};let fKeydown=pEvent=>{if(pEvent.key==='Escape'){pEvent.preventDefault();fClose();}else if(pEvent.key==='+'||pEvent.key==='='){pEvent.preventDefault();fZoomAt(tmpState.scale+0.25);}else if(pEvent.key==='-'||pEvent.key==='_'){pEvent.preventDefault();fZoomAt(tmpState.scale-0.25);}else if(pEvent.key==='0'){pEvent.preventDefault();fResetTransform();}};// Backdrop click closes (only when clicking the backdrop itself or
+// the stage area, not the inner content).  Suppress if a
+// drag-to-pan just finished — the pointerup that ended the pan
+// also fires a click event which we must ignore.
+tmpOverlay.addEventListener('click',pEvent=>{if(tmpState.didPan){tmpState.didPan=false;return;}if(pEvent.target===tmpOverlay||pEvent.target===tmpStage){fClose();}});// Toolbar buttons
+tmpOverlay.querySelectorAll('[data-action]').forEach(pBtn=>{pBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpAction=pBtn.getAttribute('data-action');if(tmpAction==='close'){fClose();}else if(tmpAction==='zoom-in'){fZoomAt(tmpState.scale+0.25);}else if(tmpAction==='zoom-out'){fZoomAt(tmpState.scale-0.25);}else if(tmpAction==='zoom-reset'){fResetTransform();}});});// Wheel zoom — for images and mermaid diagrams.
+// For code blocks, let the browser handle native scrolling
+// so the user can scroll through long code.
+tmpStage.addEventListener('wheel',pEvent=>{if(tmpState.currentKind==='code'){return;}pEvent.preventDefault();let tmpDelta=-pEvent.deltaY;let tmpStep=(tmpDelta>0?1:-1)*0.15;fZoomAt(tmpState.scale+tmpStep,pEvent.clientX,pEvent.clientY);},{passive:false});// Drag-to-pan when zoomed (not for code blocks — they scroll natively)
+tmpStage.addEventListener('pointerdown',pEvent=>{if(tmpState.currentKind==='code'){return;}if(tmpState.scale<=1.001){return;}if(pEvent.target.closest('.pict-fullscreen-controls')){return;}tmpState.isPanning=true;tmpState.panStartX=pEvent.clientX;tmpState.panStartY=pEvent.clientY;tmpState.panOrigX=tmpState.translateX;tmpState.panOrigY=tmpState.translateY;tmpStage.setPointerCapture(pEvent.pointerId);tmpStage.classList.add('is-panning');});tmpStage.addEventListener('pointermove',pEvent=>{if(!tmpState.isPanning){return;}tmpState.translateX=tmpState.panOrigX+(pEvent.clientX-tmpState.panStartX);tmpState.translateY=tmpState.panOrigY+(pEvent.clientY-tmpState.panStartY);fApplyTransform();});let fEndPan=pEvent=>{if(!tmpState.isPanning){return;}tmpState.isPanning=false;// Flag that a pan just ended so the subsequent click event
+// (which the browser fires after pointerup) does not close
+// the overlay via the backdrop-close handler.
+tmpState.didPan=true;tmpStage.classList.remove('is-panning');try{tmpStage.releasePointerCapture(pEvent.pointerId);}catch(e){}};tmpStage.addEventListener('pointerup',fEndPan);tmpStage.addEventListener('pointercancel',fEndPan);// Touch pinch zoom
+let tmpActiveTouches={};tmpStage.addEventListener('touchstart',pEvent=>{for(let i=0;i<pEvent.touches.length;i++){let tmpT=pEvent.touches[i];tmpActiveTouches[tmpT.identifier]={x:tmpT.clientX,y:tmpT.clientY};}if(pEvent.touches.length===2){let tmpA=pEvent.touches[0];let tmpB=pEvent.touches[1];let tmpDX=tmpB.clientX-tmpA.clientX;let tmpDY=tmpB.clientY-tmpA.clientY;tmpState.pinchInitialDistance=Math.sqrt(tmpDX*tmpDX+tmpDY*tmpDY);tmpState.pinchInitialScale=tmpState.scale;}},{passive:true});tmpStage.addEventListener('touchmove',pEvent=>{if(pEvent.touches.length===2&&tmpState.pinchInitialDistance>0){pEvent.preventDefault();let tmpA=pEvent.touches[0];let tmpB=pEvent.touches[1];let tmpDX=tmpB.clientX-tmpA.clientX;let tmpDY=tmpB.clientY-tmpA.clientY;let tmpDist=Math.sqrt(tmpDX*tmpDX+tmpDY*tmpDY);let tmpRatio=tmpDist/tmpState.pinchInitialDistance;let tmpMidX=(tmpA.clientX+tmpB.clientX)/2;let tmpMidY=(tmpA.clientY+tmpB.clientY)/2;fZoomAt(tmpState.pinchInitialScale*tmpRatio,tmpMidX,tmpMidY);}},{passive:false});tmpStage.addEventListener('touchend',()=>{tmpActiveTouches={};tmpState.pinchInitialDistance=0;});PictContentView._FullscreenOverlay={element:tmpOverlay,content:tmpContent,titleEl:tmpTitleEl,state:tmpState,open:pSourceEl=>{let tmpTitle=pSourceEl.getAttribute('data-fullscreen-title')||'';tmpTitleEl.textContent=tmpTitle;tmpContent.innerHTML='';let tmpKind=pSourceEl.getAttribute('data-fullscreen-source');tmpState.currentKind=tmpKind||'';let tmpClone;if(tmpKind==='mermaid'){let tmpSvg=pSourceEl.querySelector('svg');if(tmpSvg){tmpClone=tmpSvg.cloneNode(true);tmpClone.classList.add('pict-fullscreen-mermaid-svg');// Drop mermaid's inline max-width / width / height style so the
+// fullscreen CSS rule actually controls the size.
+tmpClone.removeAttribute('style');tmpClone.removeAttribute('width');tmpClone.removeAttribute('height');}else{tmpClone=pSourceEl.cloneNode(true);}}else if(tmpKind==='image'){tmpClone=pSourceEl.cloneNode(true);tmpClone.classList.add('pict-fullscreen-img');}else{tmpClone=pSourceEl.cloneNode(true);tmpClone.classList.add('pict-fullscreen-codewrap');}tmpContent.appendChild(tmpClone);// Hide zoom controls for code blocks (they scroll natively)
+let tmpZoomBtns=tmpOverlay.querySelectorAll('[data-action="zoom-in"], [data-action="zoom-out"], [data-action="zoom-reset"]');for(let i=0;i<tmpZoomBtns.length;i++){tmpZoomBtns[i].style.display=tmpKind==='code'?'none':'';}fResetTransform();tmpOverlay.removeAttribute('hidden');document.documentElement.style.overflow='hidden';document.addEventListener('keydown',fKeydown);},close:fClose};return PictContentView._FullscreenOverlay;}/**
+	 * Open the fullscreen overlay for a tagged source element.
+	 */_openFullscreen(pSourceEl){let tmpOverlay=this._buildFullscreenOverlay();tmpOverlay.open(pSourceEl);}/**
 	 * Show a loading indicator.
 	 *
 	 * @param {string} [pMessage] - Loading message (defaults to 'Loading content...')
 	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],62:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
+	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],65:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
 // These are the four core state values for the file browser.
 // They live in AppData at the addresses below.
 "StateAddresses":{"Layout":"AppData.PictFileBrowser.Layout","RootLocation":"AppData.PictFileBrowser.RootLocation","CurrentLocation":"AppData.PictFileBrowser.CurrentLocation","CurrentFile":"AppData.PictFileBrowser.CurrentFile"},// Default state values
@@ -3625,7 +4861,7 @@ let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-disp
 			color: #8A7F72;
 			font-style: italic;
 		}
-	`};},{}],63:[function(require,module,exports){// Pict Section FileBrowser
+	`};},{}],66:[function(require,module,exports){// Pict Section FileBrowser
 // A composable file browser section with browsing, listing, and viewing views.
 // The main container view
 module.exports=require('./views/Pict-View-FileBrowser.js');// --- Providers (base classes for each view type) ---
@@ -3633,7 +4869,7 @@ module.exports.PictFileBrowserBrowseProvider=require('./providers/Pict-Provider-
 module.exports.PictViewBrowseTree=require('./views/Pict-View-FileBrowser-BrowseTree.js');module.exports.PictViewBrowseSearch=require('./views/Pict-View-FileBrowser-BrowseSearch.js');// --- Listing Views ---
 module.exports.PictViewListDetail=require('./views/Pict-View-FileBrowser-ListDetail.js');module.exports.PictViewListIcons=require('./views/Pict-View-FileBrowser-ListIcons.js');// --- Viewing Views ---
 module.exports.PictViewFileInfo=require('./views/Pict-View-FileBrowser-ViewFileInfo.js');module.exports.PictViewImageViewer=require('./views/Pict-View-FileBrowser-ViewImage.js');// --- Service (Fable service with REST endpoints + static web app) ---
-module.exports.FileBrowserService=require('./services/Pict-Service-FileBrowser.js');},{"./providers/Pict-Provider-FileBrowserBrowse.js":64,"./providers/Pict-Provider-FileBrowserIcons.js":65,"./providers/Pict-Provider-FileBrowserLayout.js":66,"./providers/Pict-Provider-FileBrowserList.js":67,"./providers/Pict-Provider-FileBrowserView.js":68,"./services/Pict-Service-FileBrowser.js":69,"./views/Pict-View-FileBrowser-BrowseSearch.js":70,"./views/Pict-View-FileBrowser-BrowseTree.js":71,"./views/Pict-View-FileBrowser-ListDetail.js":72,"./views/Pict-View-FileBrowser-ListIcons.js":73,"./views/Pict-View-FileBrowser-ViewFileInfo.js":74,"./views/Pict-View-FileBrowser-ViewImage.js":75,"./views/Pict-View-FileBrowser.js":76}],64:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Browse","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+module.exports.FileBrowserService=require('./services/Pict-Service-FileBrowser.js');},{"./providers/Pict-Provider-FileBrowserBrowse.js":67,"./providers/Pict-Provider-FileBrowserIcons.js":68,"./providers/Pict-Provider-FileBrowserLayout.js":69,"./providers/Pict-Provider-FileBrowserList.js":70,"./providers/Pict-Provider-FileBrowserView.js":71,"./services/Pict-Service-FileBrowser.js":72,"./views/Pict-View-FileBrowser-BrowseSearch.js":73,"./views/Pict-View-FileBrowser-BrowseTree.js":74,"./views/Pict-View-FileBrowser-ListDetail.js":75,"./views/Pict-View-FileBrowser-ListIcons.js":76,"./views/Pict-View-FileBrowser-ViewFileInfo.js":77,"./views/Pict-View-FileBrowser-ViewImage.js":78,"./views/Pict-View-FileBrowser.js":79}],67:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Browse","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for browsing-type views (tree navigation, search).
  *
  * Subclass or override to customize how folder structures are resolved,
@@ -3688,7 +4924,7 @@ this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmp
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserBrowseProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],65:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ---- Color palette (matches filebrowser CSS) ----
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserBrowseProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":58}],68:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ---- Color palette (matches filebrowser CSS) ----
 const _Colors={Primary:'#3D3229',Accent:'#2E7D74',Muted:'#8A7F72',Light:'#F5F0E8',WarmBeige:'#EAE3D8',TealTint:'#E0EDE9',Lavender:'#E8E0F0',AmberTint:'#F0E8D0'};// ====================================================================
 // RETRO / HAND-DRAWN SVG ICON SET
 //
@@ -3781,7 +5017,7 @@ return this.getIcon('file',tmpSize);}/**
 	 */getExtensionMap(){return Object.assign({},this._extensionMap);}/**
 	 * Inject CSS classes for icon sizing into the pict CSSMap.
 	 * Called automatically by views that use icons.
-	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('PictFileBrowserIcons','.pict-fb-svg-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.pict-fb-svg-icon svg { display: block; }\n'+'.pict-fb-tree-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-detail-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-icon-graphic svg { width: 36px; height: 36px; }\n'+'.pict-fb-tree-toggle svg { width: 10px; height: 10px; }\n');this._cssInjected=true;}}}module.exports=PictFileBrowserIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInIcons=_BuiltInIcons;module.exports.ExtensionMap=_ExtensionMap;module.exports.Colors=_Colors;},{"pict-provider":55}],66:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Layout","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */injectCSS(){if(this._cssInjected){return;}if(this.pict&&this.pict.CSSMap){this.pict.CSSMap.addCSS('PictFileBrowserIcons','.pict-fb-svg-icon { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }\n'+'.pict-fb-svg-icon svg { display: block; }\n'+'.pict-fb-tree-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-detail-icon svg { width: 16px; height: 16px; }\n'+'.pict-fb-icon-graphic svg { width: 36px; height: 36px; }\n'+'.pict-fb-tree-toggle svg { width: 10px; height: 10px; }\n');this._cssInjected=true;}}}module.exports=PictFileBrowserIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInIcons=_BuiltInIcons;module.exports.ExtensionMap=_ExtensionMap;module.exports.Colors=_Colors;},{"pict-provider":58}],69:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-Layout","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Layout definitions.
  *
  * Each layout specifies:
@@ -3843,7 +5079,7 @@ this.layouts=JSON.parse(JSON.stringify(_BuiltInLayouts));}/**
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserLayoutProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInLayouts=_BuiltInLayouts;},{"pict-provider":55}],67:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-List","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserLayoutProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.BuiltInLayouts=_BuiltInLayouts;},{"pict-provider":58}],70:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-List","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for listing-type views (detail list, icon grid).
  *
  * Handles file list retrieval, sorting, filtering, and selection.
@@ -3902,7 +5138,7 @@ if(pEntry.Type==='folder'){return'\uD83D\uDCC1';}let tmpExt=(pEntry.Extension||'
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserListProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],68:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-View","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserListProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":58}],71:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"Pict-FileBrowser-View","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};/**
  * Base provider for viewing-type views (file info, image preview).
  *
  * Handles retrieval of the currently selected file's metadata and
@@ -3938,7 +5174,7 @@ let tmpExt=(tmpEntry.Extension||'').toLowerCase();let tmpImageExtensions=['.jpg'
 	 * @param {string} pKey - The option key
 	 * @param {*} pDefault - Default value
 	 * @returns {*} The option value
-	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserViewProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":55}],69:[function(require,module,exports){(function(__dirname){(function(){/**
+	 */getFileBrowserOption(pKey,pDefault){if(this.pict.views&&this.pict.views['Pict-FileBrowser']){let tmpOptions=this.pict.views['Pict-FileBrowser'].options;if(tmpOptions&&pKey in tmpOptions){return tmpOptions[pKey];}}return pDefault;}}module.exports=PictFileBrowserViewProvider;module.exports.default_configuration=_DefaultProviderConfiguration;},{"pict-provider":58}],72:[function(require,module,exports){(function(__dirname){(function(){/**
 * Pict FileBrowser Service
 *
 * A Fable service that provides:
@@ -4049,7 +5285,7 @@ tmpNodes.sort((pA,pB)=>{return pA.Name.localeCompare(pB.Name);});return fCallbac
 	 *
 	 * @param {string} pRelativePath - Path relative to basePath
 	 * @param {Function} fCallback - Callback(pError, pInfo)
-	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":113}],70:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
+	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":127}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
 <div class="pict-fb-search">
 	<input type="text" class="pict-fb-search-input"
 		id="Pict-FileBrowser-SearchInput"
@@ -4084,7 +5320,7 @@ this._lastResults=tmpResults;}/**
 	 * Handle clicking a search result.
 	 *
 	 * @param {number} pIndex - The result index
-	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],71:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
+	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
 <div class="pict-fb-tree-node{~D:Record.SelectedClass~}" style="padding-left: {~D:Record.Indent~}px;" data-path="{~D:Record.Path~}" onclick="{~D:Record.ClickHandler~}">
 	<span class="{~D:Record.ToggleClass~}" onclick="{~D:Record.ToggleHandler~}">{~D:Record.ToggleIcon~}</span>
 	<span class="pict-fb-tree-icon">{~D:Record.Icon~}</span>
@@ -4141,7 +5377,7 @@ let tmpCached=tmpBrowseProvider.getChildFolders(pPath);if(!tmpCached){if(typeof 
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],72:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
 <div class="pict-fb-detail" id="Pict-FileBrowser-DetailList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-Breadcrumb"></div>
 	<div class="pict-fb-detail-header">
@@ -4193,7 +5429,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Current-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],76:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
 <div id="Pict-FileBrowser-IconList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-IconBreadcrumb"></div>
 	<div class="pict-fb-icons" id="Pict-FileBrowser-IconGrid"></div>
@@ -4231,7 +5467,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],77:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
 <div class="pict-fb-fileinfo-title">{~D:Record.Name~}</div>
 <table class="pict-fb-fileinfo-table">
 	<tr>
@@ -4264,7 +5500,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with file info.
 	 */onAfterRender(pRenderable){this.rebuildFileInfo();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the file info display.
-	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
+	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],78:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
  * Viewing view that displays an image preview for the currently selected file.
  *
  * If the selected file is an image and has a URL or ThumbnailURL, it renders
@@ -4273,7 +5509,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with the image or message.
 	 */onAfterRender(pRenderable){this.rebuildImageView();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the image viewer display.
-	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],76:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
+	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],79:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
  * Main FileBrowser view.
  *
  * Renders the outer container layout (browse pane, list pane, view pane)
@@ -4303,234 +5539,1788 @@ if(!this.pict.AppData.PictFileBrowser.FileList){this.pict.AppData.PictFileBrowse
 	 *
 	 * @param {string} pKey - One of: Layout, RootLocation, CurrentLocation, CurrentFile
 	 * @param {*} pValue - The value to set
-	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":62,"../providers/Pict-Provider-FileBrowserBrowse.js":64,"../providers/Pict-Provider-FileBrowserIcons.js":65,"../providers/Pict-Provider-FileBrowserLayout.js":66,"../providers/Pict-Provider-FileBrowserList.js":67,"../providers/Pict-Provider-FileBrowserView.js":68,"pict-view":88}],77:[function(require,module,exports){arguments[4][59][0].apply(exports,arguments);},{"./providers/Pict-Provider-Content.js":78,"./views/Pict-View-Content.js":79,"dup":59}],78:[function(require,module,exports){arguments[4][60][0].apply(exports,arguments);},{"dup":60,"pict-provider":55,"pict-section-code":58}],79:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Pict-Content",DefaultRenderable:"Pict-Content-Display",DefaultDestinationAddress:"#Pict-Content-Container",AutoRender:false,CSS:/*css*/`
-		.pict-content {
-			padding: 2em 3em;
-			max-width: 900px;
-			margin: 0 auto;
+	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":65,"../providers/Pict-Provider-FileBrowserBrowse.js":67,"../providers/Pict-Provider-FileBrowserIcons.js":68,"../providers/Pict-Provider-FileBrowserLayout.js":69,"../providers/Pict-Provider-FileBrowserList.js":70,"../providers/Pict-Provider-FileBrowserView.js":71,"pict-view":102}],80:[function(require,module,exports){// The container for all the Pict-Section-InlineDocumentation related code.
+// The main inline documentation provider (primary API surface)
+module.exports=require('./providers/Pict-Provider-InlineDocumentation.js');// Exported views for advanced usage
+module.exports.InlineDocumentationLayoutView=require('./views/Pict-View-InlineDocumentation-Layout.js');module.exports.InlineDocumentationContentView=require('./views/Pict-View-InlineDocumentation-Content.js');module.exports.InlineDocumentationNavView=require('./views/Pict-View-InlineDocumentation-Nav.js');module.exports.InlineDocumentationTopicManagerView=require('./views/Pict-View-InlineDocumentation-TopicManager.js');},{"./providers/Pict-Provider-InlineDocumentation.js":81,"./views/Pict-View-InlineDocumentation-Content.js":82,"./views/Pict-View-InlineDocumentation-Layout.js":83,"./views/Pict-View-InlineDocumentation-Nav.js":84,"./views/Pict-View-InlineDocumentation-TopicManager.js":85}],81:[function(require,module,exports){const libPictProvider=require('pict-provider');const libPictSectionContent=require('pict-section-content');const libPictContentProvider=libPictSectionContent.PictContentProvider;const libPictSectionModal=require('pict-section-modal');const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const libLunr=require('lunr');const libViewLayout=require('../views/Pict-View-InlineDocumentation-Layout.js');const libViewContent=require('../views/Pict-View-InlineDocumentation-Content.js');const libViewNav=require('../views/Pict-View-InlineDocumentation-Nav.js');const libViewTopicManager=require('../views/Pict-View-InlineDocumentation-TopicManager.js');/**
+ * Inline Documentation Provider
+ *
+ * The primary API for embedding a documentation browser in a Pict application.
+ * Instantiates all necessary views and sub-providers, manages documentation
+ * state, and exposes methods for loading documents and navigating topics.
+ */class InlineDocumentationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},JSON.parse(JSON.stringify(_DefaultConfiguration)),pOptions);super(pFable,tmpOptions,pServiceHash);this._ContentCache={};this._ActiveTooltipBindings=[];this._tooltipHelpLinkHandler=null;// Instantiate the content provider for markdown parsing
+this._ContentProvider=this.pict.addProviderSingleton('Pict-Content',libPictContentProvider.default_configuration,libPictContentProvider);// Register views
+this.pict.addViewSingleton('InlineDoc-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addViewSingleton('InlineDoc-Content',libViewContent.default_configuration,libViewContent);this.pict.addViewSingleton('InlineDoc-Nav',libViewNav.default_configuration,libViewNav);this.pict.addViewSingleton('InlineDoc-TopicManager',libViewTopicManager.default_configuration,libViewTopicManager);// Register pict-section-modal if not already present (needed by topic manager)
+if(!this.pict.views['Pict-Section-Modal']){this.pict.addViewSingleton('Pict-Section-Modal',libPictSectionModal.default_configuration,libPictSectionModal);}// Register the markdown editor for edit mode
+let tmpEditorConfig=JSON.parse(JSON.stringify(libPictSectionMarkdownEditor.default_configuration));tmpEditorConfig.DefaultDestinationAddress='#InlineDoc-Editor-Container';tmpEditorConfig.TargetElementAddress='#InlineDoc-Editor-Container';tmpEditorConfig.ContentDataAddress='AppData.InlineDocumentation.EditorSegments';tmpEditorConfig.DefaultPreviewMode='off';tmpEditorConfig.Renderables=[{RenderableHash:'MarkdownEditor-Wrap',TemplateHash:'MarkdownEditor-Container',ContentDestinationAddress:'#InlineDoc-Editor-Container'}];this.pict.addViewSingleton('InlineDoc-MarkdownEditor',tmpEditorConfig,libPictSectionMarkdownEditor);}/**
+	 * Initialize the inline documentation system.
+	 *
+	 * Sets up application state, loads sidebar navigation and optionally
+	 * topic definitions, then renders the layout.
+	 *
+	 * @param {Object} [pOptions] - Options: { DocsBaseURL, TopicsURL, ContainerAddress }
+	 * @param {Function} [fCallback] - Callback when initialization is complete
+	 */initializeDocumentation(pOptions,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpOptions=pOptions||{};// Initialize application state
+if(!this.pict.AppData.InlineDocumentation){this.pict.AppData.InlineDocumentation={};}let tmpState=this.pict.AppData.InlineDocumentation;tmpState.DocsBaseURL=tmpOptions.DocsBaseURL||tmpState.DocsBaseURL||'';tmpState.CurrentPath='';tmpState.CurrentRoute='';tmpState.SidebarGroups=tmpState.SidebarGroups||[];tmpState.Topic=null;tmpState.Topics=tmpState.Topics||{};tmpState.NavigationHistory=[];// Navigation outline state
+tmpState.NavCollapsed=true;tmpState.CollapsedGroups={};tmpState.ActiveDocumentHeadings=[];tmpState.NavFilterText='';// Full-text search state
+tmpState.SearchIndexLoaded=false;tmpState.SearchQuery='';tmpState.SearchResults=[];// External link resolution — paths starting with / in the
+// sidebar are cross-module references. ExternalDocBaseURL
+// is prepended to make them full URLs opened in a new tab.
+tmpState.ExternalDocBaseURL=tmpOptions.ExternalDocBaseURL||'';// Edit mode state — read from pOptions if provided
+if(tmpOptions.EditEnabled!==undefined){tmpState.EditEnabled=!!tmpOptions.EditEnabled;}else{tmpState.EditEnabled=tmpState.EditEnabled||false;}tmpState.Editing=false;tmpState.EditingPath='';tmpState.EditingContent='';tmpState.TooltipEditMode=false;// Store the onSave callback if provided
+if(typeof tmpOptions.onSave==='function'){this._onSave=tmpOptions.onSave;}// Store the onTopicsSave callback if provided
+if(typeof tmpOptions.onTopicsSave==='function'){this._onTopicsSave=tmpOptions.onTopicsSave;}// Store the onImageUpload callback if provided
+if(typeof tmpOptions.onImageUpload==='function'){this._onImageUpload=tmpOptions.onImageUpload;this._wireEditorImageUpload();}// Topic manager enabled state
+// If explicitly set, use that; otherwise track EditEnabled
+if(tmpOptions.TopicManagerEnabled!==undefined){tmpState.TopicManagerEnabled=!!tmpOptions.TopicManagerEnabled;this._topicManagerExplicitlySet=true;}else{tmpState.TopicManagerEnabled=tmpState.EditEnabled||false;this._topicManagerExplicitlySet=false;}// Optionally override the layout container address
+if(tmpOptions.ContainerAddress){let tmpLayoutView=this.pict.views['InlineDoc-Layout'];if(tmpLayoutView&&tmpLayoutView.options&&tmpLayoutView.options.Renderables){for(let i=0;i<tmpLayoutView.options.Renderables.length;i++){tmpLayoutView.options.Renderables[i].ContentDestinationAddress=tmpOptions.ContainerAddress;}}}// Load sidebar, topics, and search index in parallel
+let tmpPending=2;if(tmpOptions.SearchIndexURL)tmpPending++;let tmpSelf=this;let tmpFinish=()=>{tmpPending--;if(tmpPending<=0){// Mark sidebar items as external based on ExternalDocBaseURL
+tmpSelf._markExternalSidebarItems();// Render the layout (which contains nav and content containers)
+tmpSelf.pict.views['InlineDoc-Layout'].render();// Render the navigation
+tmpSelf.pict.views['InlineDoc-Nav'].render();return tmpCallback();}};this._loadSidebar(tmpFinish);this._loadTopics(tmpOptions.TopicsURL,tmpFinish);if(tmpOptions.SearchIndexURL){this._loadSearchIndex(tmpOptions.SearchIndexURL,tmpFinish);}}/**
+	 * Load and display a markdown document.
+	 *
+	 * Fetches the document relative to DocsBaseURL, parses it to HTML via
+	 * pict-section-content, and displays it in the content view.
+	 *
+	 * @param {string} pPath - Relative document path (e.g. 'getting-started.md')
+	 * @param {Function} [fCallback] - Callback receiving (error, htmlContent)
+	 */loadDocument(pPath,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pPath){return tmpCallback('No document path provided');}let tmpState=this.pict.AppData.InlineDocumentation;let tmpContentView=this.pict.views['InlineDoc-Content'];// Parse anchor from path (e.g. 'page.md#section-heading')
+let tmpAnchor='';let tmpPath=pPath;let tmpHashIndex=tmpPath.indexOf('#');if(tmpHashIndex>=0){tmpAnchor=tmpPath.substring(tmpHashIndex+1);tmpPath=tmpPath.substring(0,tmpHashIndex);}// Ensure .md extension
+if(!tmpPath.match(/\.md$/)){tmpPath=tmpPath+'.md';}// Update state
+tmpState.CurrentPath=tmpPath;tmpState.NavigationHistory.push(tmpPath);// Render the content view template (creates the container element)
+tmpContentView.render();// Show loading indicator
+tmpContentView.showLoading();// Fetch the document
+let tmpURL=(tmpState.DocsBaseURL||'')+tmpPath;this._fetchDocument(tmpURL,(pError,pHTML)=>{if(pError){tmpContentView.displayContent(this._getErrorPageHTML(tmpPath));return tmpCallback(pError);}tmpContentView.displayContent(pHTML);// Scroll to anchor if specified
+if(tmpAnchor){this._scrollToAnchor(tmpAnchor);}// Collapse the nav outline and clear search/filter
+tmpState.NavCollapsed=true;tmpState.NavFilterText='';tmpState.SearchQuery='';tmpState.SearchResults=[];this.pict.views['InlineDoc-Nav'].render();return tmpCallback(null,pHTML);});}/**
+	 * Set the active topic, filtering navigation to that topic's documents.
+	 *
+	 * @param {string} pTopicKey - The topic key (TopicCode from pict_documentation_topics.json)
+	 */setTopic(pTopicKey){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicKey||!tmpState.Topics||!tmpState.Topics[pTopicKey]){this.log.warn(`InlineDocumentation: Topic [${pTopicKey}] not found.`);return;}tmpState.Topic=pTopicKey;// Re-render navigation with topic filter
+this.pict.views['InlineDoc-Nav'].render();}/**
+	 * Load and display a topic's help document by TopicCode.
+	 *
+	 * Looks up the topic in the pict_documentation_topics.json format,
+	 * sets it as active, and loads its TopicHelpFilePath.
+	 *
+	 * @param {string} pTopicCode - The TopicCode (e.g. 'BOOKSHOP-BOOKLIST')
+	 * @param {Function} [fCallback] - Callback receiving (error, htmlContent)
+	 */loadTopicDocument(pTopicCode,fCallback){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode||!tmpState.Topics||!tmpState.Topics[pTopicCode]){this.log.warn(`InlineDocumentation: Topic [${pTopicCode}] not found.`);if(typeof fCallback==='function'){return fCallback('Topic not found');}return;}let tmpTopic=tmpState.Topics[pTopicCode];tmpState.Topic=pTopicCode;// Re-render navigation
+this.pict.views['InlineDoc-Nav'].render();// Load the topic's help file
+let tmpPath=tmpTopic.TopicHelpFilePath||'';if(tmpPath){this.loadDocument(tmpPath,fCallback);}}/**
+	 * Clear the active topic, showing full navigation.
+	 */clearTopic(){let tmpState=this.pict.AppData.InlineDocumentation;tmpState.Topic=null;// Re-render navigation without filter
+this.pict.views['InlineDoc-Nav'].render();}/**
+	 * Add a new topic definition at runtime.
+	 *
+	 * @param {string} pTopicCode - Unique topic code
+	 * @param {Object} pTopicDefinition - Topic object: { TopicCode, TopicHelpFilePath, TopicTitle, Routes }
+	 */addTopic(pTopicCode,pTopicDefinition){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode){this.log.warn('InlineDocumentation: addTopic requires a TopicCode.');return;}if(!tmpState.Topics){tmpState.Topics={};}let tmpDefinition=Object.assign({TopicCode:pTopicCode},pTopicDefinition||{});tmpState.Topics[pTopicCode]=tmpDefinition;}/**
+	 * Add a route pattern to an existing topic.
+	 *
+	 * @param {string} pTopicCode - The topic to add the route to
+	 * @param {string} pRoutePattern - Route pattern (e.g. '/settings', '/admin/*')
+	 */addRouteToTopic(pTopicCode,pRoutePattern){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode||!tmpState.Topics||!tmpState.Topics[pTopicCode]){this.log.warn(`InlineDocumentation: Topic [${pTopicCode}] not found for addRouteToTopic.`);return;}let tmpTopic=tmpState.Topics[pTopicCode];if(!tmpTopic.Routes){tmpTopic.Routes=[];}if(tmpTopic.Routes.indexOf(pRoutePattern)<0){tmpTopic.Routes.push(pRoutePattern);}}/**
+	 * Get a list of all topics in a UI-friendly array format.
+	 *
+	 * @returns {Array} Array of { TopicCode, TopicTitle, TopicHelpFilePath, RouteCount }
+	 */getTopicList(){let tmpState=this.pict.AppData.InlineDocumentation;let tmpResult=[];if(!tmpState||!tmpState.Topics){return tmpResult;}let tmpTopicCodes=Object.keys(tmpState.Topics);for(let i=0;i<tmpTopicCodes.length;i++){let tmpTopic=tmpState.Topics[tmpTopicCodes[i]];tmpResult.push({TopicCode:tmpTopicCodes[i],TopicTitle:tmpTopic.TopicTitle||tmpTopic.Name||tmpTopicCodes[i],TopicHelpFilePath:tmpTopic.TopicHelpFilePath||'',RouteCount:tmpTopic.Routes&&Array.isArray(tmpTopic.Routes)?tmpTopic.Routes.length:0});}return tmpResult;}/**
+	 * Update an existing topic definition.
+	 *
+	 * Merges only the properties present in pUpdates into the topic.
+	 *
+	 * @param {string} pTopicCode - The topic to update
+	 * @param {Object} pUpdates - Properties to merge: { TopicTitle, TopicHelpFilePath, Routes }
+	 * @returns {boolean} True if updated, false if topic not found
+	 */updateTopic(pTopicCode,pUpdates){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode||!tmpState.Topics||!tmpState.Topics[pTopicCode]){return false;}let tmpTopic=tmpState.Topics[pTopicCode];let tmpUpdates=pUpdates||{};if(tmpUpdates.hasOwnProperty('TopicTitle')){tmpTopic.TopicTitle=tmpUpdates.TopicTitle;}if(tmpUpdates.hasOwnProperty('TopicHelpFilePath')){tmpTopic.TopicHelpFilePath=tmpUpdates.TopicHelpFilePath;}if(tmpUpdates.hasOwnProperty('Routes')){tmpTopic.Routes=tmpUpdates.Routes;}return true;}/**
+	 * Remove a topic definition.
+	 *
+	 * If the removed topic is the currently active topic, clears it.
+	 *
+	 * @param {string} pTopicCode - The topic to remove
+	 * @returns {boolean} True if removed, false if topic not found
+	 */removeTopic(pTopicCode){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode||!tmpState.Topics||!tmpState.Topics[pTopicCode]){return false;}delete tmpState.Topics[pTopicCode];// Clear active topic if it was the one removed
+if(tmpState.Topic===pTopicCode){tmpState.Topic=null;}return true;}/**
+	 * Remove a specific route pattern from a topic.
+	 *
+	 * @param {string} pTopicCode - The topic to modify
+	 * @param {string} pRoutePattern - The route pattern to remove
+	 * @returns {boolean} True if removed, false if not found
+	 */removeRouteFromTopic(pTopicCode,pRoutePattern){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTopicCode||!tmpState.Topics||!tmpState.Topics[pTopicCode]){return false;}let tmpTopic=tmpState.Topics[pTopicCode];if(!tmpTopic.Routes||!Array.isArray(tmpTopic.Routes)){return false;}let tmpIndex=tmpTopic.Routes.indexOf(pRoutePattern);if(tmpIndex<0){return false;}tmpTopic.Routes.splice(tmpIndex,1);return true;}/**
+	 * Persist the current topics via the onTopicsSave callback.
+	 *
+	 * If no onTopicsSave handler was provided, succeeds locally.
+	 *
+	 * @param {Function} [fCallback] - Callback receiving (error)
+	 */saveTopics(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpState=this.pict.AppData.InlineDocumentation;if(typeof this._onTopicsSave==='function'){this._onTopicsSave(tmpState.Topics,pError=>{if(pError){this.log.warn(`InlineDocumentation: Topics save failed: ${pError}`);return tmpCallback(pError);}return tmpCallback(null);});}else{// No save handler — succeed locally
+return tmpCallback(null);}}/**
+	 * Enable or disable the topic manager UI.
+	 *
+	 * When enabled, management buttons appear in the navigation toolbar.
+	 *
+	 * @param {boolean} pEnabled - Whether topic management is available
+	 */setTopicManagerEnabled(pEnabled){let tmpState=this.pict.AppData.InlineDocumentation;tmpState.TopicManagerEnabled=!!pEnabled;// Re-render navigation to show/hide management buttons
+let tmpNavView=this.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}}// -- Wildcard builder helpers --
+/**
+	 * Split a route into segments with wildcard pattern options.
+	 *
+	 * For a route like '/books/detail/5', returns:
+	 * [
+	 *   { Segment: 'books',  Path: '/books',         WildcardPattern: '/books/*',         Index: 0 },
+	 *   { Segment: 'detail', Path: '/books/detail',   WildcardPattern: '/books/detail/*',   Index: 1 },
+	 *   { Segment: '5',      Path: '/books/detail/5', WildcardPattern: '/books/detail/5/*', Index: 2 }
+	 * ]
+	 *
+	 * @param {string} pRoute - The route to split
+	 * @returns {Array} Array of segment objects
+	 */getRouteSegments(pRoute){if(!pRoute||typeof pRoute!=='string'){return[];}// Strip leading slash and split
+let tmpClean=pRoute.replace(/^\//,'');if(!tmpClean){return[];}let tmpParts=tmpClean.split('/');let tmpSegments=[];for(let i=0;i<tmpParts.length;i++){let tmpPath='/'+tmpParts.slice(0,i+1).join('/');tmpSegments.push({Segment:tmpParts[i],Path:tmpPath,WildcardPattern:tmpPath+'/*',Index:i});}return tmpSegments;}/**
+	 * Build a wildcard pattern from a route at a given segment index.
+	 *
+	 * The wildcard replaces everything after the segment at pSegmentIndex.
+	 * For '/books/detail/5' with index 1, returns '/books/detail/*'.
+	 *
+	 * @param {string} pRoute - The route
+	 * @param {number} pSegmentIndex - The segment index (0-based) where the wildcard starts after
+	 * @returns {string} The wildcard pattern, or empty string if invalid
+	 */buildWildcardPattern(pRoute,pSegmentIndex){let tmpSegments=this.getRouteSegments(pRoute);if(tmpSegments.length<1||pSegmentIndex<0||pSegmentIndex>=tmpSegments.length){return'';}return tmpSegments[pSegmentIndex].WildcardPattern;}/**
+	 * Get all topics whose Routes match a given route.
+	 *
+	 * Unlike resolveHelpForRoute (which returns only the best match),
+	 * this returns all matching topic codes — useful when multiple
+	 * documents are relevant to the same route.
+	 *
+	 * @param {string} pRoute - The application route
+	 * @returns {Array} Array of { TopicCode, Pattern, MatchLength } objects, sorted by match length descending
+	 */getTopicsForRoute(pRoute){let tmpState=this.pict.AppData.InlineDocumentation;let tmpMatches=[];if(!pRoute||!tmpState.Topics){return tmpMatches;}let tmpTopicCodes=Object.keys(tmpState.Topics);for(let i=0;i<tmpTopicCodes.length;i++){let tmpTopic=tmpState.Topics[tmpTopicCodes[i]];if(!tmpTopic.Routes||!Array.isArray(tmpTopic.Routes)){continue;}for(let j=0;j<tmpTopic.Routes.length;j++){let tmpPattern=tmpTopic.Routes[j];if(!tmpPattern){continue;}let tmpMatchLength=0;let tmpIsMatch=false;if(tmpPattern.endsWith('/*')){let tmpPrefix=tmpPattern.slice(0,-2);if(pRoute===tmpPrefix||pRoute.indexOf(tmpPrefix+'/')===0){tmpIsMatch=true;tmpMatchLength=tmpPrefix.length;}}else{if(pRoute===tmpPattern){tmpIsMatch=true;tmpMatchLength=tmpPattern.length;}}if(tmpIsMatch){tmpMatches.push({TopicCode:tmpTopicCodes[i],Pattern:tmpPattern,MatchLength:tmpMatchLength});}}}// Sort by match length descending (best match first)
+tmpMatches.sort((a,b)=>b.MatchLength-a.MatchLength);return tmpMatches;}/**
+	 * Change the documentation base URL.
+	 *
+	 * @param {string} pURL - The new base URL
+	 */setDocsBaseURL(pURL){if(!this.pict.AppData.InlineDocumentation){this.pict.AppData.InlineDocumentation={};}this.pict.AppData.InlineDocumentation.DocsBaseURL=pURL||'';// Clear cache when base URL changes
+this._ContentCache={};}/**
+	 * Get the navigation history.
+	 *
+	 * @returns {Array} Array of visited document paths
+	 */getNavigationHistory(){let tmpState=this.pict.AppData.InlineDocumentation;return tmpState&&tmpState.NavigationHistory?tmpState.NavigationHistory:[];}/**
+	 * Navigate back to the previous document.
+	 *
+	 * @param {Function} [fCallback] - Callback when navigation is complete
+	 */navigateBack(fCallback){let tmpHistory=this.getNavigationHistory();if(tmpHistory.length<2){return;}// Remove current page
+tmpHistory.pop();// Get previous page
+let tmpPreviousPath=tmpHistory.pop();this.loadDocument(tmpPreviousPath,fCallback);}// -- Edit mode --
+/**
+	 * Enable or disable edit permissions.
+	 *
+	 * When enabled, a pencil icon appears in the content area allowing
+	 * the user to toggle into edit mode.
+	 *
+	 * @param {boolean} pEnabled - Whether edit mode is available
+	 */setEditEnabled(pEnabled){let tmpState=this.pict.AppData.InlineDocumentation;tmpState.EditEnabled=!!pEnabled;// If TopicManagerEnabled was not explicitly configured, mirror EditEnabled
+if(!this._topicManagerExplicitlySet){tmpState.TopicManagerEnabled=!!pEnabled;// Re-render navigation to show/hide management buttons
+let tmpNavView=this.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}}// Re-render content view to show/hide edit toolbar
+let tmpContentView=this.pict.views['InlineDoc-Content'];if(tmpContentView){tmpContentView.renderEditToolbar();}}/**
+	 * Toggle between view and edit mode.
+	 */toggleEdit(){let tmpState=this.pict.AppData.InlineDocumentation;if(tmpState.Editing){this.cancelEdit();}else{this.beginEdit();}}/**
+	 * Enter edit mode for the current document.
+	 *
+	 * Retrieves the raw markdown from cache and displays it in the markdown editor.
+	 */beginEdit(){let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState.EditEnabled||!tmpState.CurrentPath){return;}// Get the raw markdown from cache
+let tmpURL=(tmpState.DocsBaseURL||'')+tmpState.CurrentPath;let tmpCacheEntry=this._ContentCache[tmpURL];let tmpMarkdown=tmpCacheEntry&&tmpCacheEntry.markdown?tmpCacheEntry.markdown:'';tmpState.Editing=true;tmpState.EditingPath=tmpState.CurrentPath;tmpState.EditingContent=tmpMarkdown;// Show the editor
+let tmpContentView=this.pict.views['InlineDoc-Content'];if(tmpContentView){tmpContentView.showEditor(tmpMarkdown);}}/**
+	 * Cancel editing and restore the rendered view.
+	 */cancelEdit(){let tmpState=this.pict.AppData.InlineDocumentation;tmpState.Editing=false;tmpState.EditingPath='';tmpState.EditingContent='';tmpState.EditorSegments=[];// Restore the rendered content
+let tmpContentView=this.pict.views['InlineDoc-Content'];if(tmpContentView){tmpContentView.hideEditor();// Re-display the cached HTML
+let tmpURL=(tmpState.DocsBaseURL||'')+tmpState.CurrentPath;let tmpCacheEntry=this._ContentCache[tmpURL];if(tmpCacheEntry&&tmpCacheEntry.html){tmpContentView.displayContent(tmpCacheEntry.html);}}}/**
+	 * Save the current edits.
+	 *
+	 * Reads the markdown editor content, calls the onSave callback provided by the
+	 * host app, re-parses the markdown, and returns to view mode.
+	 *
+	 * @param {Function} [fCallback] - Callback receiving (error)
+	 */saveEdit(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpState=this.pict.AppData.InlineDocumentation;let tmpContentView=this.pict.views['InlineDoc-Content'];if(!tmpState.Editing){return tmpCallback('Not in edit mode');}// Read content from the markdown editor
+// First marshal editor state to data, then read from the data address
+let tmpMarkdown='';let tmpEditorView=this.pict.views['InlineDoc-MarkdownEditor'];if(tmpEditorView&&typeof tmpEditorView.marshalFromView==='function'){tmpEditorView.marshalFromView();}if(tmpState.EditorSegments&&tmpState.EditorSegments.length>0){tmpMarkdown=tmpState.EditorSegments[0].Content||'';}let tmpPath=tmpState.EditingPath;let tmpURL=(tmpState.DocsBaseURL||'')+tmpPath;let tmpSaveData={Path:tmpPath,Content:tmpMarkdown};let tmpFinishSave=()=>{// Re-parse the markdown and update cache
+let tmpHTML=this._ContentProvider.parseMarkdown(tmpMarkdown,this._createLinkResolver(),this._createImageResolver(tmpURL));this._ContentCache[tmpURL]={html:tmpHTML,markdown:tmpMarkdown};// Exit edit mode
+tmpState.Editing=false;tmpState.EditingPath='';tmpState.EditingContent='';tmpState.EditorSegments=[];// Display the updated content
+if(tmpContentView){tmpContentView.hideEditor();tmpContentView.displayContent(tmpHTML);}return tmpCallback(null);};// Call the onSave callback if provided
+if(typeof this._onSave==='function'){this._onSave(tmpSaveData,pError=>{if(pError){this.log.warn(`InlineDocumentation: Save failed: ${pError}`);return tmpCallback(pError);}tmpFinishSave();});}else{// No save handler — just update locally
+tmpFinishSave();}}// -- Route-based help --
+/**
+	 * Find the best-matching topic for a given route.
+	 *
+	 * Iterates all topics looking for ones with a Routes array. Supports
+	 * exact match and wildcard suffix (e.g. "/books/store/*" matches
+	 * "/books/store/123"). Returns the TopicCode with the longest matching
+	 * route pattern, or null if no match.
+	 *
+	 * @param {string} pRoute - The application route (e.g. '/books/store/5')
+	 * @returns {string|null} The TopicCode of the best match, or null
+	 */resolveHelpForRoute(pRoute){let tmpState=this.pict.AppData.InlineDocumentation;if(!pRoute||!tmpState.Topics){return null;}let tmpBestMatch=null;let tmpBestLength=-1;let tmpTopicCodes=Object.keys(tmpState.Topics);for(let i=0;i<tmpTopicCodes.length;i++){let tmpTopic=tmpState.Topics[tmpTopicCodes[i]];if(!tmpTopic.Routes||!Array.isArray(tmpTopic.Routes)){continue;}for(let j=0;j<tmpTopic.Routes.length;j++){let tmpPattern=tmpTopic.Routes[j];if(!tmpPattern){continue;}let tmpMatches=false;let tmpMatchLength=0;if(tmpPattern.endsWith('/*')){// Wildcard suffix — match if route starts with prefix
+let tmpPrefix=tmpPattern.slice(0,-2);if(pRoute===tmpPrefix||pRoute.indexOf(tmpPrefix+'/')===0){tmpMatches=true;tmpMatchLength=tmpPrefix.length;}}else{// Exact match
+if(pRoute===tmpPattern){tmpMatches=true;tmpMatchLength=tmpPattern.length;}}if(tmpMatches&&tmpMatchLength>tmpBestLength){tmpBestMatch=tmpTopicCodes[i];tmpBestLength=tmpMatchLength;}}}return tmpBestMatch;}/**
+	 * Navigate help to the topic matching a given route.
+	 *
+	 * Convenience method: resolves the route to a topic, then loads it.
+	 * If no topic matches, does nothing.
+	 *
+	 * @param {string} pRoute - The application route
+	 * @param {Function} [fCallback] - Callback receiving (error, htmlContent)
+	 * @returns {boolean} True if a matching topic was found
+	 */navigateToRoute(pRoute,fCallback){let tmpState=this.pict.AppData.InlineDocumentation;tmpState.CurrentRoute=pRoute||'';let tmpTopicCode=this.resolveHelpForRoute(pRoute);if(tmpTopicCode){this.loadTopicDocument(tmpTopicCode,fCallback);return true;}return false;}// -- Tooltip placeholders --
+/**
+	 * Enable or disable tooltip edit mode.
+	 *
+	 * When enabled, all tooltip placeholders are visible and clickable
+	 * for content editors to author tooltip content. When disabled,
+	 * only placeholders with content show tooltips on hover.
+	 *
+	 * Automatically re-scans tooltips after toggling.
+	 *
+	 * @param {boolean} pEnabled - Whether tooltip edit mode is active
+	 */setTooltipEditMode(pEnabled){let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState){return;}tmpState.TooltipEditMode=!!pEnabled;this.scanTooltips();}/**
+	 * Get the tooltip content for a key from the active topic.
+	 *
+	 * Looks up the currently active topic's Tooltips hash for the
+	 * given key and returns the Content string, or null if not found.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key (from data-d-tooltip attribute)
+	 * @returns {string|null} The tooltip content, or null
+	 */getTooltipContent(pTooltipKey){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTooltipKey||!tmpState||!tmpState.Topic||!tmpState.Topics){return null;}let tmpTopic=tmpState.Topics[tmpState.Topic];if(!tmpTopic||!tmpTopic.Tooltips||!tmpTopic.Tooltips[pTooltipKey]){return null;}return tmpTopic.Tooltips[pTooltipKey].Content||null;}/**
+	 * Set tooltip content for a key on the active topic.
+	 *
+	 * Lazily creates the Tooltips hash on the topic if needed.
+	 * Passing null or empty string removes the tooltip entry.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key
+	 * @param {string|null} pContent - The markdown content, or null to remove
+	 * @returns {boolean} True if set, false if no active topic
+	 */setTooltipContent(pTooltipKey,pContent){let tmpState=this.pict.AppData.InlineDocumentation;if(!pTooltipKey||!tmpState||!tmpState.Topic||!tmpState.Topics){return false;}let tmpTopic=tmpState.Topics[tmpState.Topic];if(!tmpTopic){return false;}if(!pContent){// Remove the entry
+if(tmpTopic.Tooltips&&tmpTopic.Tooltips[pTooltipKey]){delete tmpTopic.Tooltips[pTooltipKey];}return true;}// Lazily create Tooltips hash
+if(!tmpTopic.Tooltips){tmpTopic.Tooltips={};}tmpTopic.Tooltips[pTooltipKey]={Content:pContent};return true;}/**
+	 * Remove all active tooltip bindings from the DOM.
+	 *
+	 * Destroys tooltip handles, removes click listeners, removes
+	 * injected icons, and restores original element state.
+	 */clearTooltipBindings(){for(let i=0;i<this._ActiveTooltipBindings.length;i++){let tmpBinding=this._ActiveTooltipBindings[i];// Destroy the modal tooltip handle
+if(tmpBinding.TooltipHandle&&typeof tmpBinding.TooltipHandle.destroy==='function'){tmpBinding.TooltipHandle.destroy();}// Remove click handler
+if(tmpBinding.ClickHandler&&tmpBinding.Element){tmpBinding.Element.removeEventListener('click',tmpBinding.ClickHandler);}// Remove injected icon
+if(tmpBinding.InjectedIcon&&tmpBinding.InjectedIcon.parentNode){tmpBinding.InjectedIcon.parentNode.removeChild(tmpBinding.InjectedIcon);}// Remove edit-mode CSS classes
+if(tmpBinding.Element){tmpBinding.Element.classList.remove('pict-inline-doc-tooltip-edit-target','pict-inline-doc-tooltip-empty');}// Restore original display for hidden icon spans
+if(tmpBinding.OriginalDisplay!==undefined&&tmpBinding.Element){tmpBinding.Element.style.display=tmpBinding.OriginalDisplay;}}this._ActiveTooltipBindings=[];// Remove document-level help link handler
+if(this._tooltipHelpLinkHandler&&typeof document!=='undefined'){document.removeEventListener('click',this._tooltipHelpLinkHandler);this._tooltipHelpLinkHandler=null;}}/**
+	 * Scan the document for tooltip placeholder elements and wire them up.
+	 *
+	 * Finds all elements with data-d-tooltip attributes and:
+	 * - In normal mode: attaches hover tooltips for those with content
+	 * - In edit mode: adds visual indicators and click-to-edit handlers
+	 *
+	 * Call this after your application views render.
+	 */scanTooltips(){this.clearTooltipBindings();if(typeof document==='undefined'){return;}let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState){return;}let tmpModal=this.pict.views['Pict-Section-Modal'];let tmpElements=document.querySelectorAll('[data-d-tooltip]');let tmpEditMode=tmpState.TooltipEditMode||false;for(let i=0;i<tmpElements.length;i++){let tmpElement=tmpElements[i];let tmpKey=tmpElement.getAttribute('data-d-tooltip');if(!tmpKey){continue;}let tmpContent=this.getTooltipContent(tmpKey);let tmpIsIcon=tmpElement.hasAttribute('data-d-tooltip-icon');let tmpBinding={Element:tmpElement,Key:tmpKey,Type:tmpIsIcon?'icon':'attribute',TooltipHandle:null,ClickHandler:null,InjectedIcon:null,OriginalDisplay:undefined};if(tmpEditMode){this._wireTooltipEditMode(tmpElement,tmpKey,tmpContent,tmpIsIcon,tmpBinding,tmpModal);}else{this._wireTooltipNormalMode(tmpElement,tmpKey,tmpContent,tmpIsIcon,tmpBinding,tmpModal);}this._ActiveTooltipBindings.push(tmpBinding);}// Install document-level click delegation for help: links in tooltips
+this._installTooltipHelpLinkHandler();}/**
+	 * Install a document-level click handler for help links inside tooltips.
+	 *
+	 * Tooltip elements are created/destroyed dynamically by the modal system,
+	 * so we use event delegation on the document to catch clicks on
+	 * [rel^="pict-inline-doc-help:"] links wherever they appear.
+	 */_installTooltipHelpLinkHandler(){if(typeof document==='undefined'){return;}// Remove existing handler if any
+if(this._tooltipHelpLinkHandler){document.removeEventListener('click',this._tooltipHelpLinkHandler);}let tmpSelf=this;this._tooltipHelpLinkHandler=pEvent=>{let tmpTarget=pEvent.target;// Walk up to find the link element
+while(tmpTarget&&tmpTarget!==document){if(tmpTarget.tagName==='A'&&tmpTarget.getAttribute('rel')&&tmpTarget.getAttribute('rel').indexOf('pict-inline-doc-help:')===0){pEvent.preventDefault();pEvent.stopPropagation();let tmpPath=tmpTarget.getAttribute('rel').replace('pict-inline-doc-help:','');tmpSelf.loadDocument(tmpPath);return;}tmpTarget=tmpTarget.parentNode;}};document.addEventListener('click',this._tooltipHelpLinkHandler);}/**
+	 * Wire a tooltip element for normal (non-edit) mode.
+	 *
+	 * @param {HTMLElement} pElement - The placeholder element
+	 * @param {string} pKey - The tooltip key
+	 * @param {string|null} pContent - The tooltip content (or null)
+	 * @param {boolean} pIsIcon - Whether this is an icon-type placeholder
+	 * @param {Object} pBinding - The binding tracking object
+	 * @param {Object} pModal - The modal view instance
+	 */_wireTooltipNormalMode(pElement,pKey,pContent,pIsIcon,pBinding,pModal){if(pIsIcon){if(pContent){// Inject an icon and attach tooltip
+let tmpIcon=this._createTooltipIcon(pElement);pBinding.InjectedIcon=tmpIcon;if(pModal&&pModal.richTooltip){let tmpHTML=this._ContentProvider.parseMarkdown(pContent,this._createTooltipLinkResolver());pBinding.TooltipHandle=pModal.richTooltip(pElement,tmpHTML,{interactive:true,maxWidth:'350px'});}}else{// No content — hide the span
+pBinding.OriginalDisplay=pElement.style.display;pElement.style.display='none';}}else{// Attribute tooltip
+if(pContent&&pModal&&pModal.richTooltip){let tmpHTML=this._ContentProvider.parseMarkdown(pContent,this._createTooltipLinkResolver());pBinding.TooltipHandle=pModal.richTooltip(pElement,tmpHTML,{interactive:true,maxWidth:'350px'});}// No content = do nothing, element stays as-is
+}}/**
+	 * Wire a tooltip element for edit mode.
+	 *
+	 * @param {HTMLElement} pElement - The placeholder element
+	 * @param {string} pKey - The tooltip key
+	 * @param {string|null} pContent - The tooltip content (or null)
+	 * @param {boolean} pIsIcon - Whether this is an icon-type placeholder
+	 * @param {Object} pBinding - The binding tracking object
+	 * @param {Object} pModal - The modal view instance
+	 */_wireTooltipEditMode(pElement,pKey,pContent,pIsIcon,pBinding,pModal){// Add edit-mode indicator class
+pElement.classList.add('pict-inline-doc-tooltip-edit-target');if(pIsIcon){// Always show icon in edit mode
+let tmpIcon=this._createTooltipIcon(pElement);pBinding.InjectedIcon=tmpIcon;if(!pContent){pElement.classList.add('pict-inline-doc-tooltip-empty');}}// Click handler to open editor
+let tmpSelf=this;let tmpClickHandler=pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpSelf._showTooltipEditor(pKey);};pElement.addEventListener('click',tmpClickHandler);pBinding.ClickHandler=tmpClickHandler;}/**
+	 * Create and inject a tooltip icon element into a span.
+	 *
+	 * @param {HTMLElement} pElement - The span element to inject into
+	 * @returns {HTMLElement} The created icon element
+	 */_createTooltipIcon(pElement){let tmpIcon=document.createElement('span');tmpIcon.className='pict-inline-doc-tooltip-icon';// Check for custom icon class
+let tmpCustomClass=pElement.getAttribute('data-d-tooltip-icon');if(tmpCustomClass&&tmpCustomClass!==''){tmpIcon.className+=' '+tmpCustomClass;}else{tmpIcon.innerHTML='&#x2753;';}pElement.appendChild(tmpIcon);return tmpIcon;}/**
+	 * Show the tooltip content editor modal.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key to edit
+	 */_showTooltipEditor(pTooltipKey){let tmpModal=this.pict.views['Pict-Section-Modal'];if(!tmpModal){return;}let tmpCurrentContent=this.getTooltipContent(pTooltipKey)||'';let tmpSelf=this;let tmpEditorHTML='<div class="pict-inline-doc-tm-form-group">';tmpEditorHTML+='<label class="pict-inline-doc-tm-form-label">Tooltip Key</label>';tmpEditorHTML+='<div style="font-family:monospace;font-size:0.85em;color:#8A7F72;padding:0.3em 0;">'+this._escapeTooltipHTML(pTooltipKey)+'</div>';tmpEditorHTML+='</div>';tmpEditorHTML+='<div class="pict-inline-doc-tm-form-group">';tmpEditorHTML+='<label class="pict-inline-doc-tm-form-label">Content (Markdown)</label>';tmpEditorHTML+='<textarea class="pict-inline-doc-tooltip-editor-textarea" id="InlineDoc-Tooltip-Editor-Textarea">'+this._escapeTooltipHTML(tmpCurrentContent)+'</textarea>';tmpEditorHTML+='</div>';tmpEditorHTML+='<div class="pict-inline-doc-tooltip-preview-label">Preview</div>';tmpEditorHTML+='<div class="pict-inline-doc-tooltip-preview" id="InlineDoc-Tooltip-Editor-Preview"></div>';tmpModal.show({title:'Edit Tooltip',content:tmpEditorHTML,closeable:true,width:'480px',buttons:[{Hash:'cancel',Label:'Cancel'},{Hash:'save',Label:'Save',Style:'primary'}],onOpen:pDialog=>{let tmpTextarea=document.getElementById('InlineDoc-Tooltip-Editor-Textarea');let tmpPreview=document.getElementById('InlineDoc-Tooltip-Editor-Preview');if(tmpTextarea&&tmpPreview){// Initial preview
+let tmpLinkResolver=tmpSelf._createTooltipLinkResolver();let tmpInitialHTML=tmpCurrentContent?tmpSelf._ContentProvider.parseMarkdown(tmpCurrentContent,tmpLinkResolver):'<span style="color:#8A7F72;">No content yet.</span>';tmpPreview.innerHTML=tmpInitialHTML;// Live preview on input
+tmpTextarea.addEventListener('input',()=>{let tmpValue=tmpTextarea.value.trim();if(tmpValue){tmpPreview.innerHTML=tmpSelf._ContentProvider.parseMarkdown(tmpValue,tmpLinkResolver);}else{tmpPreview.innerHTML='<span style="color:#8A7F72;">No content yet.</span>';}});tmpTextarea.focus();}}}).then(pResult=>{if(pResult==='save'){let tmpTextarea=document.getElementById('InlineDoc-Tooltip-Editor-Textarea');let tmpNewContent=tmpTextarea?tmpTextarea.value.trim():'';tmpSelf.setTooltipContent(pTooltipKey,tmpNewContent||null);tmpSelf.saveTopics();tmpSelf.scanTooltips();if(tmpModal.toast){tmpModal.toast('Tooltip saved.',{type:'success'});}}});}/**
+	 * Escape HTML for safe insertion into tooltip editor.
+	 *
+	 * @param {string} pText - Text to escape
+	 * @returns {string} Escaped text
+	 */_escapeTooltipHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}// -- Image upload --
+/**
+	 * Wire the onImageUpload handler onto the markdown editor view.
+	 *
+	 * Overrides the editor's onImageUpload method so that when a user
+	 * drops or pastes an image, it is routed through the host app's
+	 * onImageUpload callback with the current document path for context.
+	 *
+	 * The host callback signature is:
+	 *   onImageUpload(pFile, pDocumentPath, fCallback)
+	 * where fCallback is fCallback(pError, pRelativeURL).
+	 */_wireEditorImageUpload(){let tmpSelf=this;let tmpEditorView=this.pict.views['InlineDoc-MarkdownEditor'];if(!tmpEditorView){return;}tmpEditorView.onImageUpload=(pFile,pSegmentIndex,fCallback)=>{if(typeof tmpSelf._onImageUpload!=='function'){return false;}let tmpState=tmpSelf.pict.AppData.InlineDocumentation;let tmpDocumentPath=tmpState&&tmpState.EditingPath?tmpState.EditingPath:'';tmpSelf._onImageUpload(pFile,tmpDocumentPath,(pError,pURL)=>{if(pError){tmpSelf.log.warn(`InlineDocumentation: Image upload failed: ${pError}`);}fCallback(pError,pURL);});return true;};}/**
+	 * Scroll the content area to a heading that matches an anchor string.
+	 *
+	 * Looks for headings (h1-h6) in the content body whose text, when
+	 * slugified, matches the anchor. Uses the standard GitHub-style
+	 * slugification: lowercase, spaces to hyphens, strip non-alphanumeric.
+	 *
+	 * @param {string} pAnchor - The anchor string (without #)
+	 */_scrollToAnchor(pAnchor){if(typeof document==='undefined'||!pAnchor){return;}// Delay slightly to ensure content is rendered
+setTimeout(()=>{let tmpContentBody=document.getElementById('InlineDoc-Content-Body');if(!tmpContentBody){return;}let tmpSlug=pAnchor.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');// Check for an element with a matching id first
+let tmpTarget=tmpContentBody.querySelector('#'+CSS.escape(tmpSlug));// If no id match, search heading text
+if(!tmpTarget){let tmpHeadings=tmpContentBody.querySelectorAll('h1, h2, h3, h4, h5, h6');for(let i=0;i<tmpHeadings.length;i++){let tmpHeadingText=tmpHeadings[i].textContent||'';let tmpHeadingSlug=tmpHeadingText.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');if(tmpHeadingSlug===tmpSlug){tmpTarget=tmpHeadings[i];break;}}}if(tmpTarget){tmpTarget.scrollIntoView({behavior:'smooth',block:'start'});}},50);}// ================================================================
+// Full-text search
+// ================================================================
+/**
+	 * Load a lunr.js keyword index from a URL.
+	 *
+	 * The index file is the same format generated by Indoctrinate's
+	 * generate_keyword_index command: { LunrIndex, Documents, DocumentCount }.
+	 *
+	 * @param {string} pURL - URL to the retold-keyword-index.json file
+	 * @param {Function} [fCallback] - Callback when done
+	 */_loadSearchIndex(pURL,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpSelf=this;if(typeof fetch==='undefined'){return tmpCallback();}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pIndexData=>{if(!pIndexData||!pIndexData.LunrIndex||!pIndexData.Documents){if(tmpSelf.log)tmpSelf.log.info('InlineDocumentation: No keyword index found; search unavailable.');return tmpCallback();}try{tmpSelf._LunrIndex=libLunr.Index.load(pIndexData.LunrIndex);tmpSelf._SearchDocuments=pIndexData.Documents;let tmpState=tmpSelf.pict.AppData.InlineDocumentation;if(tmpState){tmpState.SearchIndexLoaded=true;}if(tmpSelf.log)tmpSelf.log.info('InlineDocumentation: Search index loaded ('+(pIndexData.DocumentCount||0)+' documents).');}catch(pError){if(tmpSelf.log)tmpSelf.log.warn('InlineDocumentation: Error hydrating lunr index: '+pError);}return tmpCallback();}).catch(pError=>{if(tmpSelf.log)tmpSelf.log.warn('InlineDocumentation: Error loading search index: '+pError);return tmpCallback();});}/**
+	 * Search the loaded lunr index.
+	 *
+	 * @param {string} pQuery - The search query
+	 * @returns {Array} Array of { Key, Title, Group, DocPath, Score }
+	 */search(pQuery){if(!this._LunrIndex||!this._SearchDocuments||!pQuery||!pQuery.trim()){return[];}let tmpResults=[];try{let tmpLunrResults=this._LunrIndex.search(pQuery);for(let i=0;i<tmpLunrResults.length;i++){let tmpRef=tmpLunrResults[i].ref;let tmpScore=tmpLunrResults[i].score;let tmpDoc=this._SearchDocuments[tmpRef];if(!tmpDoc){continue;}tmpResults.push({Key:tmpRef,Title:tmpDoc.Title||tmpRef,Group:tmpDoc.Group||'',Module:tmpDoc.Module||'',DocPath:tmpDoc.DocPath||tmpRef,Score:tmpScore});}}catch(pError){if(this.log)this.log.warn('InlineDocumentation: Search error: '+pError);}return tmpResults;}// ================================================================
+// External link resolution (catalog-based)
+// ================================================================
+/**
+	 * Check if a path is an external reference.
+	 *
+	 * Paths that started with / in the sidebar are cross-module
+	 * references. They get normalized during parsing (leading /
+	 * stripped), but they contain 2+ path segments (group/module/).
+	 * Simple filenames like README.md are local.
+	 *
+	 * An ExternalDocBaseURL must be configured for this to return true.
+	 *
+	 * @param {string} pPath - The normalized document path
+	 * @returns {boolean}
+	 */isExternalPath(pPath){if(!pPath)return false;let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState||!tmpState.ExternalDocBaseURL)return false;// Paths with 2+ segments (e.g., pict/pict/, fable/fable/)
+// are cross-module references. Simple filenames are local.
+let tmpPath=pPath.replace(/^\.\//,'').replace(/^\//,'');let tmpParts=tmpPath.split('/').filter(p=>p.length>0);return tmpParts.length>=2;}/**
+	 * Resolve an external path to a full URL.
+	 *
+	 * @param {string} pPath - The document path
+	 * @returns {string|null} The external URL, or null if not external
+	 */resolveExternalURL(pPath){if(!this.isExternalPath(pPath))return null;let tmpState=this.pict.AppData.InlineDocumentation;let tmpBaseURL=tmpState&&tmpState.ExternalDocBaseURL||'';if(!tmpBaseURL)return null;let tmpPath=pPath.replace(/^\.\//,'').replace(/^\//,'');return tmpBaseURL+tmpPath;}/**
+	 * After sidebar is loaded, mark items that are external
+	 * references with External: true and ExternalURL.
+	 */_markExternalSidebarItems(){let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState||!tmpState.ExternalDocBaseURL)return;let tmpGroups=tmpState.SidebarGroups||[];for(let i=0;i<tmpGroups.length;i++){let tmpItems=tmpGroups[i].Items||[];for(let j=0;j<tmpItems.length;j++){let tmpItem=tmpItems[j];if(this.isExternalPath(tmpItem.Path)){tmpItem.External=true;tmpItem.ExternalURL=this.resolveExternalURL(tmpItem.Path);}}}}/**
+	 * Extract h2 and h3 headings from the rendered content body.
+	 *
+	 * Queries #InlineDoc-Content-Body for heading elements, extracts
+	 * their text, generates slugified IDs for anchor scrolling, and
+	 * stores the results in AppData for the nav outline.
+	 *
+	 * @returns {Array} Array of { Text, Slug, Level }
+	 */_extractHeadings(){let tmpHeadings=[];if(typeof document==='undefined'){return tmpHeadings;}let tmpContentBody=document.getElementById('InlineDoc-Content-Body');if(!tmpContentBody){return tmpHeadings;}let tmpElements=tmpContentBody.querySelectorAll('h2, h3');for(let i=0;i<tmpElements.length;i++){let tmpElement=tmpElements[i];let tmpText=(tmpElement.textContent||'').trim();let tmpLevel=parseInt(tmpElement.tagName.substring(1),10);let tmpSlug=tmpText.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');// Assign the ID to the heading element if not already set
+// so scrollIntoView can find it
+if(!tmpElement.id){tmpElement.id=tmpSlug;}tmpHeadings.push({Text:tmpText,Slug:tmpSlug,Level:tmpLevel});}let tmpState=this.pict.AppData.InlineDocumentation;if(tmpState){tmpState.ActiveDocumentHeadings=tmpHeadings;}return tmpHeadings;}// -- Internal methods --
+/**
+	 * Fetch a markdown document and convert it to HTML.
+	 *
+	 * @param {string} pURL - The URL to fetch
+	 * @param {Function} fCallback - Callback receiving (error, htmlContent)
+	 */_fetchDocument(pURL,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pURL){return tmpCallback('No URL provided','');}// Check cache
+if(this._ContentCache[pURL]){return tmpCallback(null,this._ContentCache[pURL].html);}fetch(pURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){return tmpCallback('Document not found','');}let tmpHTML=this._ContentProvider.parseMarkdown(pMarkdown,this._createLinkResolver(),this._createImageResolver(pURL));this._ContentCache[pURL]={html:tmpHTML,markdown:pMarkdown};return tmpCallback(null,tmpHTML);}).catch(pError=>{this.log.warn(`InlineDocumentation: Error fetching [${pURL}]: ${pError}`);return tmpCallback(pError,'');});}/**
+	 * Create a link resolver that converts internal doc links to provider API calls.
+	 *
+	 * Internal links (relative .md paths) get converted to javascript:void(0) with
+	 * a data attribute so the content view's click handler can intercept them and
+	 * call loadDocument().
+	 *
+	 * @returns {Function} A link resolver callback
+	 */_createLinkResolver(){return(pHref,pLinkText)=>{// Only intercept internal markdown links
+if(pHref.match(/^https?:\/\//)){// External link — open in new tab
+return{href:pHref,target:'_blank',rel:'noopener'};}// help: prefix — internal documentation link (e.g. help:book-list.md#section)
+if(pHref.match(/^help:/)){let tmpHelpPath=pHref.replace(/^help:/,'');return{href:'javascript:void(0)',target:'',rel:'pict-inline-doc-link:'+tmpHelpPath};}// Internal doc link — mark for interception
+let tmpPath=pHref.replace(/^\.\//,'').replace(/^\//,'');return{href:'javascript:void(0)',// Use a data attribute for the click handler
+// The content view will wire up click interception
+target:'',rel:'pict-inline-doc-link:'+tmpPath};};}/**
+	 * Create a link resolver for tooltip content.
+	 *
+	 * Handles help:path.md#anchor links that open documents in the help
+	 * panel. These links get a special rel attribute so click handlers
+	 * can intercept them.
+	 *
+	 * External links open in a new tab. All other links are treated as
+	 * help: links within the tooltip context.
+	 *
+	 * @returns {Function} A link resolver callback
+	 */_createTooltipLinkResolver(){return(pHref,pLinkText)=>{// External links — open in new tab
+if(pHref.match(/^https?:\/\//)){return{href:pHref,target:'_blank',rel:'noopener'};}// Strip help: prefix if present
+let tmpPath=pHref.replace(/^help:/,'');// Clean relative prefixes
+tmpPath=tmpPath.replace(/^\.\//,'').replace(/^\//,'');return{href:'javascript:void(0)',target:'',rel:'pict-inline-doc-help:'+tmpPath};};}/**
+	 * Create an image resolver closure.
+	 *
+	 * @param {string} pDocURL - The URL the document was fetched from
+	 * @returns {Function} An image resolver callback
+	 */_createImageResolver(pDocURL){let tmpBaseDir='';if(pDocURL){let tmpLastSlash=pDocURL.lastIndexOf('/');if(tmpLastSlash>=0){tmpBaseDir=pDocURL.substring(0,tmpLastSlash+1);}}return(pSrc,pAlt)=>{if(pSrc.match(/^https?:\/\//)||pSrc.match(/^data:/)||pSrc.match(/^\//)){return pSrc;}return tmpBaseDir+pSrc;};}/**
+	 * Load and parse _sidebar.md from the docs base URL.
+	 *
+	 * @param {Function} fCallback - Callback when done
+	 */_loadSidebar(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpState=this.pict.AppData.InlineDocumentation;let tmpDocsBase=tmpState.DocsBaseURL||'';fetch(tmpDocsBase+'_sidebar.md').then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.text();}).then(pMarkdown=>{if(!pMarkdown){this.log.info('InlineDocumentation: No _sidebar.md found.');return tmpCallback();}tmpState.SidebarGroups=this._parseSidebarMarkdown(pMarkdown);return tmpCallback();}).catch(pError=>{this.log.warn(`InlineDocumentation: Error loading _sidebar.md: ${pError}`);return tmpCallback();});}/**
+	 * Load topic definitions from a JSON file.
+	 *
+	 * Expected format:
+	 *   {
+	 *     "getting-started": {
+	 *       "Name": "Getting Started",
+	 *       "Documents": ["README.md", "getting-started.md"]
+	 *     }
+	 *   }
+	 *
+	 * @param {string} [pTopicsURL] - URL to fetch topics from (defaults to DocsBaseURL + '_topics.json')
+	 * @param {Function} fCallback - Callback when done
+	 */_loadTopics(pTopicsURL,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpState=this.pict.AppData.InlineDocumentation;let tmpDocsBase=tmpState.DocsBaseURL||'';let tmpURL=pTopicsURL||tmpDocsBase+'_topics.json';fetch(tmpURL).then(pResponse=>{if(!pResponse.ok){return null;}return pResponse.json();}).then(pTopics=>{if(pTopics){tmpState.Topics=pTopics;this.log.info(`InlineDocumentation: Topics loaded (${Object.keys(pTopics).length} topics).`);}else{this.log.info('InlineDocumentation: No _topics.json found.');}return tmpCallback();}).catch(pError=>{this.log.info(`InlineDocumentation: No topics loaded (${pError}).`);return tmpCallback();});}/**
+	 * Parse _sidebar.md into a navigation structure.
+	 *
+	 * Returns an array of group objects:
+	 *   [{ Name, Key, Path, Items: [{ Name, Path }] }]
+	 *
+	 * @param {string} pMarkdown - Raw _sidebar.md content
+	 * @returns {Array} Parsed sidebar groups
+	 */_parseSidebarMarkdown(pMarkdown){let tmpGroups=[];let tmpCurrentGroup=null;let tmpLines=pMarkdown.split('\n');for(let i=0;i<tmpLines.length;i++){let tmpLine=tmpLines[i];if(!tmpLine.trim()){continue;}let tmpIndentMatch=tmpLine.match(/^(\s*)/);let tmpIndent=tmpIndentMatch?tmpIndentMatch[1].length:0;let tmpContent=tmpLine.trim();let tmpListMatch=tmpContent.match(/^[-*+]\s+(.*)/);if(!tmpListMatch){continue;}let tmpItemContent=tmpListMatch[1].trim();let tmpLinkMatch=tmpItemContent.match(/^\[([^\]]+)\]\(([^)]+)\)/);if(tmpIndent<2){// Top-level item — group header
+if(tmpLinkMatch){let tmpName=tmpLinkMatch[1].trim();let tmpPath=tmpLinkMatch[2].trim();tmpCurrentGroup={Name:tmpName,Key:tmpName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),Path:this._normalizePath(tmpPath),Items:[]};tmpGroups.push(tmpCurrentGroup);}else{tmpCurrentGroup={Name:tmpItemContent,Key:tmpItemContent.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),Path:'',Items:[]};tmpGroups.push(tmpCurrentGroup);}}else if(tmpCurrentGroup){// Indented item — document within the current group
+if(tmpLinkMatch){tmpCurrentGroup.Items.push({Name:tmpLinkMatch[1].trim(),Path:this._normalizePath(tmpLinkMatch[2].trim())});}else{tmpCurrentGroup.Items.push({Name:tmpItemContent,Path:''});}}}return tmpGroups;}/**
+	 * Normalize a document path from sidebar links.
+	 * Strips leading slashes and ./ prefixes.
+	 *
+	 * @param {string} pPath - The raw path
+	 * @returns {string} The normalized path
+	 */_normalizePath(pPath){if(!pPath){return'';}return pPath.replace(/^\.\//,'').replace(/^\//,'');}/**
+	 * Get an error page HTML block for a missing document.
+	 *
+	 * @param {string} pPath - The path that was not found
+	 * @returns {string} HTML to display
+	 */_getErrorPageHTML(pPath){let tmpPath=this._ContentProvider.escapeHTML(pPath||'unknown');return'<div class="pict-inline-doc-not-found">'+'<h2>Page Not Found</h2>'+'<p>The document <code>'+tmpPath+'</code> could not be loaded.</p>'+'</div>';}}const _DefaultConfiguration={ProviderIdentifier:"Pict-InlineDocumentation",AutoInitialize:true,AutoInitializeOrdinal:0};module.exports=InlineDocumentationProvider;module.exports.default_configuration=_DefaultConfiguration;},{"../views/Pict-View-InlineDocumentation-Content.js":82,"../views/Pict-View-InlineDocumentation-Layout.js":83,"../views/Pict-View-InlineDocumentation-Nav.js":84,"../views/Pict-View-InlineDocumentation-TopicManager.js":85,"lunr":32,"pict-provider":58,"pict-section-content":62,"pict-section-markdowneditor":92,"pict-section-modal":100}],82:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Content",DefaultRenderable:"InlineDoc-Content-Display",DefaultContentDestinationAddress:"#InlineDoc-Content-Container",AutoRender:false,CSS:/*css*/`
+		.pict-inline-doc-content {
+			padding: 1em 1.25em;
+			max-width: 100%;
+			word-wrap: break-word;
+			overflow-wrap: break-word;
 		}
-		.pict-content-loading {
+		.pict-inline-doc-content-loading {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			min-height: 200px;
+			min-height: 150px;
 			color: #8A7F72;
-			font-size: 1em;
+			font-size: 0.95em;
 		}
-		.pict-content h1 {
-			font-size: 2em;
+		.pict-inline-doc-content h1 {
+			font-size: 1.75em;
 			color: #3D3229;
 			border-bottom: 1px solid #DDD6CA;
 			padding-bottom: 0.3em;
 			margin-top: 0;
 		}
-		.pict-content h2 {
-			font-size: 1.5em;
+		.pict-inline-doc-content h2 {
+			font-size: 1.35em;
 			color: #3D3229;
 			border-bottom: 1px solid #EAE3D8;
-			padding-bottom: 0.25em;
-			margin-top: 1.5em;
-		}
-		.pict-content h3 {
-			font-size: 1.25em;
-			color: #3D3229;
+			padding-bottom: 0.2em;
 			margin-top: 1.25em;
 		}
-		.pict-content h4, .pict-content h5, .pict-content h6 {
-			color: #5E5549;
+		.pict-inline-doc-content h3 {
+			font-size: 1.15em;
+			color: #3D3229;
 			margin-top: 1em;
 		}
-		.pict-content p {
-			line-height: 1.7;
-			color: #423D37;
-			margin: 0.75em 0;
+		.pict-inline-doc-content h4, .pict-inline-doc-content h5, .pict-inline-doc-content h6 {
+			color: #5E5549;
+			margin-top: 0.8em;
 		}
-		.pict-content a {
+		.pict-inline-doc-content p {
+			line-height: 1.65;
+			color: #423D37;
+			margin: 0.6em 0;
+		}
+		.pict-inline-doc-content a {
 			color: #2E7D74;
 			text-decoration: none;
+			cursor: pointer;
 		}
-		.pict-content a:hover {
+		.pict-inline-doc-content a:hover {
 			text-decoration: underline;
 		}
-		.pict-content pre {
+		.pict-inline-doc-content pre {
 			background: #3D3229;
 			color: #E8E0D4;
-			padding: 1.25em;
-			border-radius: 6px;
+			padding: 1em;
+			border-radius: 5px;
 			overflow-x: auto;
 			line-height: 1.5;
-			font-size: 0.9em;
+			font-size: 0.85em;
+			max-width: 100%;
 		}
-		.pict-content code {
+		.pict-inline-doc-content code {
 			background: #F0ECE4;
-			padding: 0.15em 0.4em;
+			padding: 0.15em 0.35em;
 			border-radius: 3px;
-			font-size: 0.9em;
+			font-size: 0.85em;
 			color: #9E6B47;
 		}
-		.pict-content-code-wrap {
-			display: flex;
-			flex-direction: row;
-			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
-			font-size: 14px;
-			line-height: 1.5;
-			border-radius: 6px;
-			overflow: auto;
-			margin: 1em 0;
-			background: #3D3229;
-		}
-		.pict-content-code-wrap .pict-content-code-line-numbers {
-			position: sticky;
-			left: 0;
-			width: 40px;
-			min-width: 40px;
-			padding: 1.25em 0;
-			text-align: right;
-			background: #342A22;
-			border-right: 1px solid #4A3F35;
-			color: #8A7F72;
-			font-size: 13px;
-			line-height: 1.5;
-			user-select: none;
-			pointer-events: none;
-			box-sizing: border-box;
-			z-index: 1;
-		}
-		.pict-content-code-wrap .pict-content-code-line-numbers span {
-			display: block;
-			padding: 0 8px 0 0;
-		}
-		.pict-content-code-wrap pre {
-			margin: 0;
-			background: #3D3229;
-			color: #E8E0D4;
-			padding: 1.25em 1.25em 1.25em 8px;
-			border-radius: 0 6px 6px 0;
-			overflow-x: auto;
-			line-height: 1.5;
-			font-size: inherit;
-			flex: 1;
-			min-width: 0;
-		}
-		.pict-content-code-wrap pre code {
-			background: none;
-			padding: 0;
-			color: inherit;
-			font-size: inherit;
-			font-family: inherit;
-		}
-		.pict-content-code-wrap .keyword { color: #C678DD; }
-		.pict-content-code-wrap .string { color: #98C379; }
-		.pict-content-code-wrap .number { color: #D19A66; }
-		.pict-content-code-wrap .comment { color: #7F848E; font-style: italic; }
-		.pict-content-code-wrap .operator { color: #56B6C2; }
-		.pict-content-code-wrap .punctuation { color: #E8E0D4; }
-		.pict-content-code-wrap .function-name { color: #61AFEF; }
-		.pict-content-code-wrap .property { color: #E06C75; }
-		.pict-content-code-wrap .tag { color: #E06C75; }
-		.pict-content-code-wrap .attr-name { color: #D19A66; }
-		.pict-content-code-wrap .attr-value { color: #98C379; }
-		.pict-content pre code {
+		.pict-inline-doc-content pre code {
 			background: none;
 			padding: 0;
 			color: inherit;
 			font-size: inherit;
 		}
-		.pict-content blockquote {
-			border-left: 4px solid #2E7D74;
-			margin: 1em 0;
-			padding: 0.5em 1em;
+		.pict-inline-doc-content blockquote {
+			border-left: 3px solid #2E7D74;
+			margin: 0.8em 0;
+			padding: 0.4em 0.8em;
 			background: #F7F5F0;
 			color: #5E5549;
 		}
-		.pict-content blockquote p {
-			margin: 0.25em 0;
+		.pict-inline-doc-content blockquote p {
+			margin: 0.2em 0;
 		}
-		.pict-content ul, .pict-content ol {
-			padding-left: 2em;
-			line-height: 1.8;
+		.pict-inline-doc-content ul, .pict-inline-doc-content ol {
+			padding-left: 1.8em;
+			line-height: 1.7;
 		}
-		.pict-content li {
-			margin: 0.25em 0;
+		.pict-inline-doc-content li {
+			margin: 0.2em 0;
 			color: #423D37;
 		}
-		.pict-content hr {
+		.pict-inline-doc-content hr {
 			border: none;
 			border-top: 1px solid #DDD6CA;
-			margin: 2em 0;
+			margin: 1.5em 0;
 		}
-		.pict-content table {
+		.pict-inline-doc-content table {
 			width: 100%;
 			border-collapse: collapse;
-			margin: 1em 0;
+			margin: 0.8em 0;
+			display: block;
+			overflow-x: auto;
 		}
-		.pict-content table th {
+		.pict-inline-doc-content table th {
 			background: #F5F0E8;
 			border: 1px solid #DDD6CA;
-			padding: 0.6em 0.8em;
+			padding: 0.5em 0.7em;
 			text-align: left;
 			font-weight: 600;
 			color: #3D3229;
 		}
-		.pict-content table td {
+		.pict-inline-doc-content table td {
 			border: 1px solid #DDD6CA;
-			padding: 0.5em 0.8em;
+			padding: 0.4em 0.7em;
 			color: #423D37;
 		}
-		.pict-content table tr:nth-child(even) {
+		.pict-inline-doc-content table tr:nth-child(even) {
 			background: #F7F5F0;
 		}
-		.pict-content img {
+		.pict-inline-doc-content img {
 			max-width: 100%;
 			height: auto;
 		}
-		.pict-content pre.mermaid {
+		.pict-inline-doc-not-found {
+			text-align: center;
+			padding: 2em 1em;
+			color: #5E5549;
+		}
+		.pict-inline-doc-not-found h2 {
+			color: #8A7F72;
+			font-size: 1.3em;
+			border-bottom: none;
+		}
+		.pict-inline-doc-not-found code {
+			background: #F0ECE4;
+			padding: 0.15em 0.35em;
+			border-radius: 3px;
+			font-size: 0.85em;
+			color: #9E6B47;
+		}
+		/* Code block action buttons (copy, fullscreen) from pict-section-content */
+		.pict-content-code-actions {
+			position: sticky;
+			top: 64px;
+			align-self: flex-start;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 0 0 auto;
+			padding-top: 6px;
+			opacity: 0;
+			transform: translateX(-4px);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+		}
+		.pict-content-code-container:hover .pict-content-code-actions,
+		.pict-content-code-container:focus-within .pict-content-code-actions {
+			opacity: 1;
+			transform: translateX(0);
+			pointer-events: auto;
+		}
+		.pict-content-code-action-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			padding: 0;
+			background: #FFFFFF;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			transition: background-color 0.15s ease, color 0.15s ease;
+		}
+		.pict-content-code-action-btn svg {
+			display: block;
+			width: 14px;
+			height: 14px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.6;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-content-code-action-btn:hover {
+			background: #2E7D74;
+			color: #FFFFFF;
+			border-color: #2E7D74;
+		}
+		.pict-content-code-action-btn.is-copied {
+			background: #2E7D74;
+			color: #FFFFFF;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-edit-toolbar {
+			display: none;
+			align-items: center;
+			gap: 0.4em;
+			padding: 0.4em 0.6em;
+			margin-bottom: 0.5em;
+			background: #F5F0E8;
+			border: 1px solid #E5DED4;
+			border-radius: 4px;
+			font-size: 0.8em;
+		}
+		.pict-inline-doc-edit-toolbar.visible {
+			display: flex;
+		}
+		.pict-inline-doc-edit-toolbar .edit-label {
+			color: #8A7F72;
+			margin-right: auto;
+		}
+		.pict-inline-doc-edit-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.25em 0.6em;
+			border: 1px solid #D4A373;
+			border-radius: 3px;
 			background: #fff;
+			color: #5E5549;
+			font-size: 0.9em;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.pict-inline-doc-edit-btn:hover {
+			background: #F0ECE4;
+		}
+		.pict-inline-doc-edit-btn.primary {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-edit-btn.primary:hover {
+			background: #266D65;
+		}
+		.pict-inline-doc-edit-btn .btn-icon {
+			margin-right: 0.3em;
+		}
+		#InlineDoc-Editor-Container {
+			min-height: 300px;
+		}
+		/* Tooltip placeholder: edit mode indicators */
+		[data-d-tooltip].pict-inline-doc-tooltip-edit-target {
+			outline: 1px dashed #2E7D74;
+			outline-offset: 2px;
+			cursor: pointer;
+			position: relative;
+		}
+		[data-d-tooltip].pict-inline-doc-tooltip-edit-target:not([data-d-tooltip-icon])::after {
+			content: '?';
+			position: absolute;
+			top: -6px;
+			right: -6px;
+			width: 14px;
+			height: 14px;
+			background: #2E7D74;
+			color: #fff;
+			border-radius: 50%;
+			font-size: 9px;
+			line-height: 14px;
+			text-align: center;
+			font-weight: 700;
+			pointer-events: none;
+		}
+		/* Tooltip placeholder: default icon */
+		.pict-inline-doc-tooltip-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 16px;
+			height: 16px;
+			font-size: 12px;
+			color: #2E7D74;
+			cursor: pointer;
+			vertical-align: middle;
+		}
+		/* Empty icon tooltip in edit mode */
+		.pict-inline-doc-tooltip-empty .pict-inline-doc-tooltip-icon {
+			opacity: 0.4;
+			outline: 1px dashed #8A7F72;
+			outline-offset: 1px;
+			border-radius: 50%;
+		}
+		/* Tooltip editor textarea in modal */
+		.pict-inline-doc-tooltip-editor-textarea {
+			width: 100%;
+			min-height: 120px;
+			padding: 0.6em;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 0.85em;
+			line-height: 1.5;
 			color: #3D3229;
-			text-align: center;
-			padding: 1em;
+			background: #FDFCFA;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			resize: vertical;
+			box-sizing: border-box;
 		}
-		.pict-content .pict-content-katex-display {
-			text-align: center;
-			margin: 1em 0;
-			padding: 0.5em;
-			overflow-x: auto;
+		.pict-inline-doc-tooltip-editor-textarea:focus {
+			outline: none;
+			border-color: #2E7D74;
+			box-shadow: 0 0 0 2px rgba(46, 125, 116, 0.15);
 		}
-		.pict-content .pict-content-katex-inline {
-			display: inline;
+		.pict-inline-doc-tooltip-preview {
+			margin-top: 0.5em;
+			padding: 0.5em 0.7em;
+			background: #F5F0E8;
+			border: 1px solid #E5DED4;
+			border-radius: 4px;
+			font-size: 0.9em;
+			min-height: 2em;
+			color: #3D3229;
 		}
-	`,Templates:[{Hash:"Pict-Content-Template",Template:/*html*/`
-<div class="pict-content" id="Pict-Content-Body">
-	<div class="pict-content-loading">Loading content...</div>
+		.pict-inline-doc-tooltip-preview-label {
+			font-size: 0.75em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.3em;
+		}
+	`,Templates:[{Hash:"InlineDoc-Content-Template",Template:/*html*/`
+<div class="pict-inline-doc-edit-toolbar" id="InlineDoc-Edit-Toolbar">
+	<span class="edit-label" id="InlineDoc-Edit-Label">View mode</span>
+	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Toggle" title="Edit this document"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/><line x1="9" y1="4" x2="12" y2="7"/></svg></span> Edit</button>
+	<button class="pict-inline-doc-edit-btn primary" id="InlineDoc-Edit-Save" style="display:none"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,8 6.5,11.5 13,4.5"/></svg></span> Save</button>
+	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Cancel" style="display:none"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></span> Cancel</button>
 </div>
-`}],Renderables:[{RenderableHash:"Pict-Content-Display",TemplateHash:"Pict-Content-Template",DestinationAddress:"#Pict-Content-Container",RenderMethod:"replace"}]};class PictContentView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+<div class="pict-inline-doc-content pict-content" id="InlineDoc-Content-Body">
+	<div class="pict-inline-doc-content-loading">Loading...</div>
+</div>
+`}],Renderables:[{RenderableHash:"InlineDoc-Content-Display",TemplateHash:"InlineDoc-Content-Template",ContentDestinationAddress:"#InlineDoc-Content-Container",RenderMethod:"replace"}]};class InlineDocumentationContentView extends libPictContentView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){this.renderEditToolbar();return super.onAfterRender();}/**
 	 * Display parsed HTML content in the content area.
 	 *
 	 * @param {string} pHTMLContent - The HTML to display
-	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */displayContent(pHTMLContent,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,pHTMLContent);// Scroll to top of content area
-let tmpContentContainer=document.getElementById(tmpContainerID);if(tmpContentContainer&&tmpContentContainer.parentElement){tmpContentContainer.parentElement.scrollTop=0;}// Post-render: initialize Mermaid diagrams if mermaid is available
-this.renderMermaidDiagrams(tmpContainerID);// Post-render: render KaTeX equations if katex is available
-this.renderKaTeXEquations(tmpContainerID);}/**
-	 * Render any Mermaid diagram blocks in the content area.
-	 * Mermaid blocks are `<pre class="mermaid">` elements produced by parseMarkdown.
-	 *
-	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */renderMermaidDiagrams(pContainerID){if(typeof mermaid==='undefined'){return;}let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}let tmpMermaidElements=tmpContentBody.querySelectorAll('pre.mermaid');if(tmpMermaidElements.length<1){return;}// mermaid.run() will process all pre.mermaid elements in the container
-try{mermaid.run({nodes:tmpMermaidElements});}catch(pError){this.log.error('Mermaid rendering error: '+pError.message);}}/**
-	 * Render KaTeX inline and display math elements in the content area.
-	 * Inline: `<span class="pict-content-katex-inline">`
-	 * Display: `<div class="pict-content-katex-display">`
-	 *
-	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */renderKaTeXEquations(pContainerID){if(typeof katex==='undefined'){return;}let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpContentBody=document.getElementById(tmpContainerID);if(!tmpContentBody){return;}// Render inline math
-let tmpInlineElements=tmpContentBody.querySelectorAll('.pict-content-katex-inline');for(let i=0;i<tmpInlineElements.length;i++){try{katex.render(tmpInlineElements[i].textContent,tmpInlineElements[i],{throwOnError:false,displayMode:false});}catch(pError){this.log.warn('KaTeX inline error: '+pError.message);}}// Render display math
-let tmpDisplayElements=tmpContentBody.querySelectorAll('.pict-content-katex-display');for(let i=0;i<tmpDisplayElements.length;i++){try{katex.render(tmpDisplayElements[i].textContent,tmpDisplayElements[i],{throwOnError:false,displayMode:true});}catch(pError){this.log.warn('KaTeX display error: '+pError.message);}}}/**
+	 */displayContent(pHTMLContent){super.displayContent(pHTMLContent,'InlineDoc-Content-Body');// Wire up click interception for internal doc links
+this._wireInternalLinks();// Update the edit toolbar state
+this.renderEditToolbar();}/**
 	 * Show a loading indicator.
+	 */showLoading(){super.showLoading('Loading...','InlineDoc-Content-Body');}/**
+	 * Show or hide the edit toolbar based on EditEnabled state.
+	 */renderEditToolbar(){if(typeof document==='undefined'){return;}let tmpToolbar=document.getElementById('InlineDoc-Edit-Toolbar');if(!tmpToolbar){return;}let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState){return;}if(tmpState.EditEnabled&&tmpState.CurrentPath){tmpToolbar.classList.add('visible');}else{tmpToolbar.classList.remove('visible');}// Update button visibility based on editing state
+let tmpToggleBtn=document.getElementById('InlineDoc-Edit-Toggle');let tmpSaveBtn=document.getElementById('InlineDoc-Edit-Save');let tmpCancelBtn=document.getElementById('InlineDoc-Edit-Cancel');let tmpLabel=document.getElementById('InlineDoc-Edit-Label');if(tmpState.Editing){if(tmpToggleBtn){tmpToggleBtn.style.display='none';}if(tmpSaveBtn){tmpSaveBtn.style.display='';}if(tmpCancelBtn){tmpCancelBtn.style.display='';}if(tmpLabel){tmpLabel.textContent='Editing: '+(tmpState.EditingPath||'');}}else{if(tmpToggleBtn){tmpToggleBtn.style.display='';}if(tmpSaveBtn){tmpSaveBtn.style.display='none';}if(tmpCancelBtn){tmpCancelBtn.style.display='none';}if(tmpLabel){tmpLabel.textContent=tmpState.CurrentPath||'View mode';}}// Re-wire click handlers (DOM may have been recreated by render)
+this._wireEditToolbar();}/**
+	 * Show the markdown editor with the raw markdown content.
 	 *
-	 * @param {string} [pMessage] - Loading message (defaults to 'Loading content...')
-	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],80:[function(require,module,exports){/**
+	 * @param {string} pMarkdown - The raw markdown to edit
+	 */showEditor(pMarkdown){if(typeof document==='undefined'){return;}let tmpContainer=document.getElementById('InlineDoc-Content-Body');if(!tmpContainer){return;}// Create a container for the markdown editor view to render into
+tmpContainer.innerHTML='<div id="InlineDoc-Editor-Container"></div>';// Set up the editor segments data for the markdown editor
+if(!this.pict.AppData.InlineDocumentation){this.pict.AppData.InlineDocumentation={};}this.pict.AppData.InlineDocumentation.EditorSegments=[{Content:pMarkdown||''}];// Render the markdown editor view into the container
+let tmpEditorView=this.pict.views['InlineDoc-MarkdownEditor'];if(tmpEditorView){tmpEditorView.render();}this.renderEditToolbar();}/**
+	 * Hide the textarea editor.
+	 */hideEditor(){// The editor will be replaced by displayContent, but update toolbar state
+this.renderEditToolbar();}/**
+	 * Wire click handlers for the edit toolbar buttons.
+	 */_wireEditToolbar(){if(typeof document==='undefined'){return;}let tmpProvider=this.pict.providers['Pict-InlineDocumentation'];let tmpToggleBtn=document.getElementById('InlineDoc-Edit-Toggle');if(tmpToggleBtn){tmpToggleBtn.addEventListener('click',()=>{if(tmpProvider){tmpProvider.beginEdit();}});}let tmpSaveBtn=document.getElementById('InlineDoc-Edit-Save');if(tmpSaveBtn){tmpSaveBtn.addEventListener('click',()=>{if(tmpProvider){tmpProvider.saveEdit();}});}let tmpCancelBtn=document.getElementById('InlineDoc-Edit-Cancel');if(tmpCancelBtn){tmpCancelBtn.addEventListener('click',()=>{if(tmpProvider){tmpProvider.cancelEdit();}});}}/**
+	 * Wire click handlers on internal documentation links.
+	 *
+	 * Links with rel="pict-inline-doc-link:path" are intercepted and
+	 * routed through the provider's loadDocument() method.
+	 */_wireInternalLinks(){if(typeof document==='undefined'){return;}let tmpContainer=document.getElementById('InlineDoc-Content-Body');if(!tmpContainer){return;}let tmpLinks=tmpContainer.querySelectorAll('a[rel^="pict-inline-doc-link:"]');let tmpProvider=this.pict.providers['Pict-InlineDocumentation'];for(let i=0;i<tmpLinks.length;i++){let tmpLink=tmpLinks[i];let tmpRel=tmpLink.getAttribute('rel');let tmpPath=tmpRel.replace('pict-inline-doc-link:','');// Check if this is a cross-module link that should open externally
+if(tmpProvider&&typeof tmpProvider.isExternalPath==='function'&&tmpProvider.isExternalPath(tmpPath)){let tmpExternalURL=tmpProvider.resolveExternalURL(tmpPath);if(tmpExternalURL){tmpLink.setAttribute('href',tmpExternalURL);tmpLink.setAttribute('target','_blank');tmpLink.setAttribute('rel','noopener');continue;}}tmpLink.addEventListener('click',pEvent=>{pEvent.preventDefault();if(tmpProvider){tmpProvider.loadDocument(tmpPath);}});}}}module.exports=InlineDocumentationContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":62}],83:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Layout",DefaultRenderable:"InlineDoc-Layout-Container",DefaultContentDestinationAddress:"#InlineDoc-Container",AutoRender:false,CSS:/*css*/`
+		.pict-inline-doc {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 100%;
+			min-height: 300px;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			font-size: 15px;
+			color: #423D37;
+			background: #FDFCFA;
+			border: 1px solid #E5DED4;
+			border-radius: 6px;
+			overflow: hidden;
+		}
+		.pict-inline-doc-nav-container {
+			width: 240px;
+			min-width: 200px;
+			max-width: 300px;
+			border-right: 1px solid #E5DED4;
+			background: #F7F5F0;
+			overflow-y: auto;
+			flex-shrink: 0;
+		}
+		.pict-inline-doc-content-container {
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+			min-width: 0;
+		}
+		.pict-inline-doc-nav-container.pict-inline-doc-nav-hidden {
+			display: none;
+		}
+		/* Compact mode: stack nav above content when container is narrow */
+		.pict-inline-doc.pict-inline-doc-compact {
+			flex-direction: column;
+		}
+		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-container {
+			width: 100%;
+			min-width: 0;
+			max-width: none;
+			border-right: none;
+			border-bottom: 1px solid #E5DED4;
+			overflow-y: visible;
+			flex-shrink: 0;
+		}
+	`,Templates:[{Hash:"InlineDoc-Layout-Template",Template:/*html*/`
+<div class="pict-inline-doc">
+	<div class="pict-inline-doc-nav-container" id="InlineDoc-Nav-Container"></div>
+	<div class="pict-inline-doc-content-container" id="InlineDoc-Content-Container"></div>
+</div>
+`}],Renderables:[{RenderableHash:"InlineDoc-Layout-Container",TemplateHash:"InlineDoc-Layout-Template",ContentDestinationAddress:"#InlineDoc-Container",RenderMethod:"replace"}]};class InlineDocumentationLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){// Inject all view CSS into the PICT-CSS style element
+this.pict.CSSMap.injectCSS();// Watch for size changes and toggle compact mode
+this._setupCompactModeObserver();return super.onAfterRender();}/**
+	 * Set up a ResizeObserver to toggle compact mode when the container
+	 * is too narrow for a side-by-side nav + content layout.
+	 *
+	 * Below the threshold, the nav switches to a horizontal top bar.
+	 */_setupCompactModeObserver(){if(typeof document==='undefined'||typeof ResizeObserver==='undefined'){return;}let tmpContainer=document.querySelector('.pict-inline-doc');if(!tmpContainer){return;}// Clean up any previous observer
+if(this._resizeObserver){this._resizeObserver.disconnect();}let tmpCompactThreshold=550;this._resizeObserver=new ResizeObserver(pEntries=>{for(let i=0;i<pEntries.length;i++){let tmpWidth=pEntries[i].contentRect.width;if(tmpWidth<tmpCompactThreshold){tmpContainer.classList.add('pict-inline-doc-compact');}else{tmpContainer.classList.remove('pict-inline-doc-compact');}}});this._resizeObserver.observe(tmpContainer);// Also do an immediate check
+let tmpWidth=tmpContainer.offsetWidth;if(tmpWidth>0&&tmpWidth<tmpCompactThreshold){tmpContainer.classList.add('pict-inline-doc-compact');}}}module.exports=InlineDocumentationLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],84:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Nav",DefaultRenderable:"InlineDoc-Nav-Display",DefaultContentDestinationAddress:"#InlineDoc-Nav-Container",AutoRender:false,CSS:/*css*/`
+		.pict-inline-doc-nav {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.pict-inline-doc-nav-collapsed-header {
+			display: flex;
+			align-items: center;
+			padding: 0.5em 0.8em;
+			cursor: pointer;
+			border-bottom: 1px solid #EAE3D8;
+			background: #F7F5F0;
+			user-select: none;
+		}
+		.pict-inline-doc-nav-collapsed-header:hover {
+			background: #EDE8DF;
+		}
+		.pict-inline-doc-nav-chevron {
+			font-size: 0.6em;
+			transition: transform 0.2s ease;
+			color: #8A7F72;
+			display: inline-flex;
+			align-items: center;
+			margin-right: 0.5em;
+		}
+		.pict-inline-doc-nav-chevron.expanded {
+			transform: rotate(90deg);
+		}
+		.pict-inline-doc-nav-current-title {
+			font-size: 0.9em;
+			font-weight: 500;
+			color: #3D3229;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			flex: 1;
+		}
+		.pict-inline-doc-nav-outline {
+			display: none;
+			overflow-y: auto;
+		}
+		.pict-inline-doc-nav-outline.expanded {
+			display: block;
+		}
+		.pict-inline-doc-nav-filter {
+			padding: 0.3em 0.6em;
+			border-bottom: 1px solid #EAE3D8;
+		}
+		.pict-inline-doc-nav-filter input {
+			width: 100%;
+			box-sizing: border-box;
+			padding: 0.3em 0.5em;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			font-size: 0.85em;
+			outline: none;
+		}
+		.pict-inline-doc-nav-filter input:focus {
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-nav-group {
+			margin-bottom: 0;
+		}
+		.pict-inline-doc-nav-group-header {
+			display: flex;
+			align-items: center;
+			padding: 0.4em 0.8em;
+			font-weight: 600;
+			font-size: 0.7em;
+			color: #5E5549;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			cursor: pointer;
+			user-select: none;
+		}
+		.pict-inline-doc-nav-group-header:hover {
+			color: #3D3229;
+			background: #F0ECE4;
+		}
+		.pict-inline-doc-nav-group-toggle {
+			margin-right: 0.35em;
+			font-size: 0.65em;
+			transition: transform 0.15s ease;
+			display: inline-flex;
+			align-items: center;
+		}
+		.pict-inline-doc-nav-group-toggle.collapsed {
+			transform: rotate(-90deg);
+		}
+		.pict-inline-doc-nav-group.collapsed .pict-inline-doc-nav-group-items {
+			display: none;
+		}
+		.pict-inline-doc-nav-item {
+			display: block;
+			padding: 0.25em 0.8em 0.25em 1.6em;
+			color: #5E5549;
+			text-decoration: none;
+			font-size: 0.85em;
+			cursor: pointer;
+			border-left: 3px solid transparent;
+			transition: background 0.1s ease, border-color 0.1s ease;
+		}
+		.pict-inline-doc-nav-item:hover {
+			background: #EDE8DF;
+		}
+		.pict-inline-doc-nav-item.active {
+			background: #E8E3D8;
+			color: #2E7D74;
+			border-left-color: #2E7D74;
+			font-weight: 500;
+		}
+		.pict-inline-doc-nav-heading {
+			display: block;
+			padding: 0.15em 0.8em 0.15em 2.4em;
+			color: #8A7F72;
+			font-size: 0.78em;
+			cursor: pointer;
+			border-left: 3px solid transparent;
+			transition: background 0.1s ease, color 0.1s ease;
+		}
+		.pict-inline-doc-nav-heading:hover {
+			background: #EDE8DF;
+			color: #5E5549;
+		}
+		.pict-inline-doc-nav-heading.h3 {
+			padding-left: 3.2em;
+			font-size: 0.72em;
+		}
+		/* Search icon in collapsed header */
+		.pict-inline-doc-nav-search-icon {
+			display: inline-flex;
+			align-items: center;
+			color: #8A7F72;
+			opacity: 0.5;
+			transition: opacity 0.2s;
+			flex-shrink: 0;
+			margin-left: 0.3em;
+		}
+		.pict-inline-doc-nav-search-icon:hover {
+			opacity: 1;
+			color: #2E7D74;
+		}
+		/* Search results section */
+		.pict-inline-doc-nav-search-results {
+			border-bottom: 1px solid #EAE3D8;
+			padding: 0.3em 0;
+		}
+		.pict-inline-doc-nav-search-status {
+			padding: 0.2em 0.8em;
+			font-size: 0.7em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+		}
+		.pict-inline-doc-nav-search-result {
+			display: flex;
+			align-items: baseline;
+			padding: 0.25em 0.8em 0.25em 1.2em;
+			cursor: pointer;
+			font-size: 0.82em;
+			color: #3D3229;
+			text-decoration: none;
+			transition: background 0.1s ease;
+			gap: 0.5em;
+		}
+		.pict-inline-doc-nav-search-result:hover {
+			background: #EDE8DF;
+		}
+		.pict-inline-doc-nav-search-result-title {
+			flex: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.pict-inline-doc-nav-search-result-group {
+			font-size: 0.75em;
+			color: #8A7F72;
+			white-space: nowrap;
+		}
+		/* External link indicator */
+		.pict-inline-doc-nav-item-external {
+			color: #8A7F72;
+		}
+		.pict-inline-doc-nav-item-external:hover {
+			color: #2E7D74;
+		}
+		.pict-inline-doc-nav-external-icon {
+			display: inline;
+			margin-left: 0.3em;
+			opacity: 0.5;
+			vertical-align: -0.05em;
+		}
+		.pict-inline-doc-nav-topic-badge {
+			display: inline-block;
+			margin: 0.5em 1em;
+			padding: 0.3em 0.7em;
+			background: #2E7D74;
+			color: #fff;
+			border-radius: 4px;
+			font-size: 0.8em;
+			font-weight: 500;
+		}
+		.pict-inline-doc-nav-topic-clear {
+			margin-left: 0.5em;
+			cursor: pointer;
+			opacity: 0.8;
+		}
+		.pict-inline-doc-nav-topic-clear:hover {
+			opacity: 1;
+		}
+		.pict-inline-doc-nav-toolbar {
+			display: flex;
+			align-items: center;
+			gap: 0.3em;
+			padding: 0.3em 1em;
+			border-bottom: 1px solid #EAE3D8;
+		}
+		.pict-inline-doc-nav-toolbar-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			background: #fff;
+			color: #5E5549;
+			font-size: 0.9em;
+			cursor: pointer;
+			transition: background 0.1s, border-color 0.1s;
+		}
+		.pict-inline-doc-nav-toolbar-btn:hover {
+			background: #F0ECE4;
+			border-color: #C4BDB3;
+		}
+		.pict-inline-doc-nav-toolbar-btn.accent {
+			border-color: #2E7D74;
+			color: #2E7D74;
+		}
+		.pict-inline-doc-nav-toolbar-btn.accent:hover {
+			background: #F0F9F7;
+		}
+		.pict-inline-doc-nav-toolbar-btn.active {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-nav-toolbar-btn.active:hover {
+			background: #266D65;
+		}
+		.pict-inline-doc-nav-toolbar-spacer {
+			flex: 1;
+		}
+	`,Templates:[{Hash:"InlineDoc-Nav-Template",Template:/*html*/`<div class="pict-inline-doc-nav" id="InlineDoc-Nav-Body"></div>`}],Renderables:[{RenderableHash:"InlineDoc-Nav-Display",TemplateHash:"InlineDoc-Nav-Template",ContentDestinationAddress:"#InlineDoc-Nav-Container",RenderMethod:"replace"}]};class InlineDocumentationNavView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){this._renderNavigation();return super.onAfterRender();}/**
+	 * Build and inject the navigation HTML into the nav body.
+	 */_renderNavigation(){if(typeof document==='undefined'){return;}let tmpContainer=document.getElementById('InlineDoc-Nav-Body');if(!tmpContainer){return;}let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState){return;}let tmpProvider=this.pict.providers['Pict-InlineDocumentation'];let tmpHeadings=[];if(tmpProvider&&typeof tmpProvider._extractHeadings==='function'){tmpHeadings=tmpProvider._extractHeadings();}let tmpCurrentPath=tmpState.CurrentPath||'';let tmpIsCollapsed=tmpState.NavCollapsed!==false;let tmpFilterText=tmpState.NavFilterText||'';let tmpCurrentDocName=this._resolveCurrentDocName(tmpState,tmpCurrentPath);let tmpHTML='';let tmpSearchQuery=tmpState.SearchQuery||'';let tmpSearchResults=tmpState.SearchResults||[];// 1. Collapsed header with search icon
+let tmpChevronClass='pict-inline-doc-nav-chevron'+(tmpIsCollapsed?'':' expanded');tmpHTML+='<div class="pict-inline-doc-nav-collapsed-header">';tmpHTML+='<span class="'+tmpChevronClass+'" id="InlineDoc-Nav-CollapseToggle">';tmpHTML+='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,3 11,8 6,13"/></svg>';tmpHTML+='</span>';tmpHTML+='<span class="pict-inline-doc-nav-current-title" id="InlineDoc-Nav-TitleToggle">'+this._escapeHTML(tmpCurrentDocName)+'</span>';tmpHTML+='<span class="pict-inline-doc-nav-search-icon" id="InlineDoc-Nav-SearchBtn" title="Search documentation">';tmpHTML+='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/></svg>';tmpHTML+='</span>';tmpHTML+='</div>';// 2. Outline body
+let tmpOutlineClass='pict-inline-doc-nav-outline'+(tmpIsCollapsed?'':' expanded');tmpHTML+='<div class="'+tmpOutlineClass+'" id="InlineDoc-Nav-Outline">';// Search / filter input
+let tmpPlaceholder=tmpState.SearchIndexLoaded?'Search documentation...':'Filter...';tmpHTML+='<div class="pict-inline-doc-nav-filter">';tmpHTML+='<input type="text" id="InlineDoc-Nav-FilterInput" placeholder="'+tmpPlaceholder+'" value="'+this._escapeHTML(tmpSearchQuery||tmpFilterText)+'" />';tmpHTML+='</div>';// Search results (when full-text search is active)
+if(tmpSearchResults.length>0&&tmpSearchQuery){tmpHTML+='<div class="pict-inline-doc-nav-search-results">';tmpHTML+='<div class="pict-inline-doc-nav-search-status">'+tmpSearchResults.length+' result'+(tmpSearchResults.length!==1?'s':'')+'</div>';for(let i=0;i<tmpSearchResults.length&&i<15;i++){let tmpResult=tmpSearchResults[i];tmpHTML+='<a class="pict-inline-doc-nav-search-result" data-search-path="'+this._escapeHTML(tmpResult.DocPath)+'">';tmpHTML+='<span class="pict-inline-doc-nav-search-result-title">'+this._escapeHTML(tmpResult.Title)+'</span>';if(tmpResult.Group){tmpHTML+='<span class="pict-inline-doc-nav-search-result-group">'+this._escapeHTML(tmpResult.Group)+'</span>';}tmpHTML+='</a>';}tmpHTML+='</div>';}// Topic badge
+tmpHTML+=this._renderTopicBadge(tmpState);// Toolbar
+tmpHTML+=this._renderToolbar(tmpState);// Group tree
+tmpHTML+=this._renderGroupTree(tmpState,tmpCurrentPath,tmpHeadings,tmpFilterText);tmpHTML+='</div>';tmpContainer.innerHTML=tmpHTML;// Wire up click handlers
+this._wireClickHandlers(tmpContainer);}/**
+	 * Resolve the display name for the currently loaded document.
+	 *
+	 * Searches SidebarGroups for a matching item name; falls back to the path.
+	 *
+	 * @param {object} pState - The InlineDocumentation state
+	 * @param {string} pCurrentPath - The current document path
+	 * @returns {string} The resolved document name
+	 */_resolveCurrentDocName(pState,pCurrentPath){if(!pCurrentPath){return'Documentation';}let tmpGroups=pState.SidebarGroups||[];for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];// Check if the group itself matches
+if(tmpGroup.Path&&tmpGroup.Path===pCurrentPath){return tmpGroup.Name||pCurrentPath;}let tmpItems=tmpGroup.Items||[];for(let j=0;j<tmpItems.length;j++){if(tmpItems[j].Path===pCurrentPath){return tmpItems[j].Name||pCurrentPath;}}}return pCurrentPath;}/**
+	 * Render the topic badge HTML if a topic is active.
+	 *
+	 * @param {object} pState - The InlineDocumentation state
+	 * @returns {string} HTML string for the topic badge, or empty string
+	 */_renderTopicBadge(pState){let tmpActiveTopic=pState.Topic;if(!tmpActiveTopic||!pState.Topics||!pState.Topics[tmpActiveTopic]){return'';}let tmpTopicDef=pState.Topics[tmpActiveTopic];let tmpTopicName=tmpTopicDef.TopicTitle||tmpTopicDef.Name||tmpActiveTopic;let tmpHTML='<div class="pict-inline-doc-nav-topic-badge">'+this._escapeHTML(tmpTopicName)+'<span class="pict-inline-doc-nav-topic-clear" id="InlineDoc-Nav-ClearTopic">'+'<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">'+'<line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/>'+'</svg></span>'+'</div>';return tmpHTML;}/**
+	 * Render the topic management toolbar HTML.
+	 *
+	 * @param {object} pState - The InlineDocumentation state
+	 * @returns {string} HTML string for the toolbar, or empty string
+	 */_renderToolbar(pState){if(!pState.TopicManagerEnabled){return'';}let tmpHTML='<div class="pict-inline-doc-nav-toolbar">';tmpHTML+='<button class="pict-inline-doc-nav-toolbar-btn" id="InlineDoc-Nav-ManageTopics" title="Manage Topics">'+'<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+'<circle cx="8" cy="8" r="2.5"/>'+'<path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>'+'</svg></button>';if(pState.CurrentRoute){tmpHTML+='<button class="pict-inline-doc-nav-toolbar-btn accent" id="InlineDoc-Nav-BindTopic" title="Bind topic to current route">'+'<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+'<path d="M6.5 9.5a3.5 3.5 0 005 0l2-2a3.5 3.5 0 00-5-5l-1 1"/>'+'<path d="M9.5 6.5a3.5 3.5 0 00-5 0l-2 2a3.5 3.5 0 005 5l1-1"/>'+'</svg></button>';}let tmpTooltipEditActive=pState.TooltipEditMode?' active':'';tmpHTML+='<button class="pict-inline-doc-nav-toolbar-btn'+tmpTooltipEditActive+'" id="InlineDoc-Nav-TooltipEditMode" title="Toggle tooltip edit mode">'+'<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+'<path d="M14 10a1.5 1.5 0 01-1.5 1.5H4l-3 3V3A1.5 1.5 0 012.5 1.5h10A1.5 1.5 0 0114 3z"/>'+'</svg></button>';tmpHTML+='<span class="pict-inline-doc-nav-toolbar-spacer"></span>';tmpHTML+='</div>';return tmpHTML;}/**
+	 * Build the group/item/heading tree HTML.
+	 *
+	 * @param {object} pState - The InlineDocumentation state
+	 * @param {string} pCurrentPath - The current document path
+	 * @param {Array} pHeadings - Array of { Text, Slug, Level } from _extractHeadings
+	 * @param {string} pFilterText - The current filter text
+	 * @returns {string} HTML string for the group tree
+	 */_renderGroupTree(pState,pCurrentPath,pHeadings,pFilterText){let tmpHTML='';let tmpGroups=pState.SidebarGroups||[];let tmpActiveTopic=pState.Topic;let tmpTopicDocuments=null;let tmpFilterLower=(pFilterText||'').toLowerCase();// Resolve topic document filter
+if(tmpActiveTopic&&pState.Topics&&pState.Topics[tmpActiveTopic]){let tmpTopicDef=pState.Topics[tmpActiveTopic];if(tmpTopicDef.TopicHelpFilePath){tmpTopicDocuments=[tmpTopicDef.TopicHelpFilePath];}else if(tmpTopicDef.Documents){tmpTopicDocuments=tmpTopicDef.Documents;}else{tmpTopicDocuments=[];}}for(let i=0;i<tmpGroups.length;i++){let tmpGroup=tmpGroups[i];let tmpGroupItems=tmpGroup.Items||[];// Apply topic filter
+if(tmpTopicDocuments){tmpGroupItems=tmpGroupItems.filter(pItem=>{return tmpTopicDocuments.indexOf(pItem.Path)>=0;});let tmpGroupMatches=tmpTopicDocuments.indexOf(tmpGroup.Path)>=0;if(tmpGroupItems.length<1&&!tmpGroupMatches){continue;}}// Apply text filter — match item names AND headings of the active document
+if(tmpFilterLower){tmpGroupItems=tmpGroupItems.filter(pItem=>{if((pItem.Name||'').toLowerCase().indexOf(tmpFilterLower)>=0){return true;}// For the active document, also check heading text
+if(pItem.Path===pCurrentPath&&pHeadings.length>0){for(let h=0;h<pHeadings.length;h++){if((pHeadings[h].Text||'').toLowerCase().indexOf(tmpFilterLower)>=0){return true;}}}return false;});let tmpGroupNameMatches=(tmpGroup.Name||'').toLowerCase().indexOf(tmpFilterLower)>=0;if(tmpGroupItems.length<1&&!tmpGroupNameMatches){continue;}}let tmpGroupKey=tmpGroup.Key||tmpGroup.Name||'group-'+i;let tmpIsGroupCollapsed=pState.CollapsedGroups&&pState.CollapsedGroups[tmpGroupKey];let tmpGroupClass='pict-inline-doc-nav-group'+(tmpIsGroupCollapsed?' collapsed':'');let tmpToggleClass='pict-inline-doc-nav-group-toggle'+(tmpIsGroupCollapsed?' collapsed':'');tmpHTML+='<div class="'+tmpGroupClass+'" data-group="'+this._escapeHTML(tmpGroupKey)+'">';tmpHTML+='<div class="pict-inline-doc-nav-group-header">';tmpHTML+='<span class="'+tmpToggleClass+'">&#x25BC;</span>';tmpHTML+=this._escapeHTML(tmpGroup.Name);tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-nav-group-items">';// If the group itself has a path, show it as the first item
+if(tmpGroup.Path){let tmpActive=pCurrentPath===tmpGroup.Path?' active':'';tmpHTML+='<a class="pict-inline-doc-nav-item'+tmpActive+'" data-doc-path="'+this._escapeHTML(tmpGroup.Path)+'">'+this._escapeHTML(tmpGroup.Name)+'</a>';// If this is the active item, render heading sub-items
+if(pCurrentPath===tmpGroup.Path){tmpHTML+=this._renderHeadingSubItems(pHeadings,tmpFilterLower);}}for(let j=0;j<tmpGroupItems.length;j++){let tmpItem=tmpGroupItems[j];if(!tmpItem.Path){tmpHTML+='<span class="pict-inline-doc-nav-item">'+this._escapeHTML(tmpItem.Name)+'</span>';continue;}if(tmpItem.External&&tmpItem.ExternalURL){// External link — opens in a new tab
+tmpHTML+='<a class="pict-inline-doc-nav-item pict-inline-doc-nav-item-external'+'" data-external-url="'+this._escapeHTML(tmpItem.ExternalURL)+'">'+this._escapeHTML(tmpItem.Name)+'<svg class="pict-inline-doc-nav-external-icon" width="0.75em" height="0.75em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1h4"/><polyline points="8,2 14,2 14,8"/><line x1="14" y1="2" x2="7" y2="9"/></svg>'+'</a>';}else{let tmpActive=pCurrentPath===tmpItem.Path?' active':'';tmpHTML+='<a class="pict-inline-doc-nav-item'+tmpActive+'" data-doc-path="'+this._escapeHTML(tmpItem.Path)+'">'+this._escapeHTML(tmpItem.Name)+'</a>';// If this is the active item, render heading sub-items
+if(pCurrentPath===tmpItem.Path){tmpHTML+=this._renderHeadingSubItems(pHeadings,tmpFilterLower);}}}tmpHTML+='</div>';tmpHTML+='</div>';}return tmpHTML;}/**
+	 * Render heading sub-items (h2 and h3) beneath the active nav item.
+	 *
+	 * @param {Array} pHeadings - Array of { Text, Slug, Level }
+	 * @param {string} pFilterText - Lowercase filter text
+	 * @returns {string} HTML string for heading sub-items
+	 */_renderHeadingSubItems(pHeadings,pFilterText){if(!pHeadings||pHeadings.length<1){return'';}let tmpHTML='';for(let i=0;i<pHeadings.length;i++){let tmpHeading=pHeadings[i];let tmpText=tmpHeading.Text||'';// Apply filter
+if(pFilterText&&tmpText.toLowerCase().indexOf(pFilterText)<0){continue;}let tmpLevelClass=tmpHeading.Level===3?' h3':'';tmpHTML+='<a class="pict-inline-doc-nav-heading'+tmpLevelClass+'" data-heading-slug="'+this._escapeHTML(tmpHeading.Slug)+'">'+this._escapeHTML(tmpText)+'</a>';}return tmpHTML;}/**
+	 * Wire click handlers on navigation items, group headers, and controls.
+	 *
+	 * @param {HTMLElement} pContainer - The nav container element
+	 */_wireClickHandlers(pContainer){let tmpProvider=this.pict.providers['Pict-InlineDocumentation'];let tmpState=this.pict.AppData.InlineDocumentation;let tmpSelf=this;// Collapse toggle (chevron)
+let tmpCollapseToggle=pContainer.querySelector('#InlineDoc-Nav-CollapseToggle');if(tmpCollapseToggle){tmpCollapseToggle.addEventListener('click',()=>{if(tmpState){tmpState.NavCollapsed=!tmpState.NavCollapsed;}tmpSelf._renderNavigation();});}// Title click also toggles
+let tmpTitleToggle=pContainer.querySelector('#InlineDoc-Nav-TitleToggle');if(tmpTitleToggle){tmpTitleToggle.addEventListener('click',()=>{if(tmpState){tmpState.NavCollapsed=!tmpState.NavCollapsed;}tmpSelf._renderNavigation();});}// Search icon — expands outline and focuses search input
+let tmpSearchBtn=pContainer.querySelector('#InlineDoc-Nav-SearchBtn');if(tmpSearchBtn){tmpSearchBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();if(tmpState){tmpState.NavCollapsed=false;}tmpSelf._renderNavigation();let tmpInput=document.getElementById('InlineDoc-Nav-FilterInput');if(tmpInput){tmpInput.focus();}});}// Search / filter input
+let tmpFilterInput=pContainer.querySelector('#InlineDoc-Nav-FilterInput');if(tmpFilterInput){let tmpDebounceTimer=null;tmpFilterInput.addEventListener('input',pEvent=>{let tmpValue=pEvent.target.value||'';if(tmpState){tmpState.NavFilterText=tmpValue;}// If search index is loaded, debounce full-text search
+if(tmpState&&tmpState.SearchIndexLoaded&&tmpProvider&&typeof tmpProvider.search==='function'){if(tmpDebounceTimer)clearTimeout(tmpDebounceTimer);tmpDebounceTimer=setTimeout(()=>{tmpState.SearchQuery=tmpValue;tmpState.SearchResults=tmpValue.trim()?tmpProvider.search(tmpValue):[];tmpSelf._renderNavigation();let tmpNewInput=document.getElementById('InlineDoc-Nav-FilterInput');if(tmpNewInput){tmpNewInput.focus();let tmpLen=tmpNewInput.value.length;tmpNewInput.setSelectionRange(tmpLen,tmpLen);}},250);}else{// No search index — immediate client-side filter only
+tmpSelf._renderNavigation();let tmpNewInput=document.getElementById('InlineDoc-Nav-FilterInput');if(tmpNewInput){tmpNewInput.focus();let tmpLen=tmpNewInput.value.length;tmpNewInput.setSelectionRange(tmpLen,tmpLen);}}});}// Search result clicks
+let tmpSearchResults=pContainer.querySelectorAll('.pict-inline-doc-nav-search-result[data-search-path]');for(let i=0;i<tmpSearchResults.length;i++){let tmpResult=tmpSearchResults[i];tmpResult.addEventListener('click',pEvent=>{pEvent.preventDefault();let tmpPath=tmpResult.getAttribute('data-search-path');if(tmpProvider&&tmpPath){if(tmpState){tmpState.SearchQuery='';tmpState.SearchResults=[];tmpState.NavFilterText='';}tmpProvider.loadDocument(tmpPath);}});}// External links — open in new tab
+let tmpExternalLinks=pContainer.querySelectorAll('[data-external-url]');for(let i=0;i<tmpExternalLinks.length;i++){let tmpExtLink=tmpExternalLinks[i];tmpExtLink.addEventListener('click',pEvent=>{pEvent.preventDefault();let tmpURL=tmpExtLink.getAttribute('data-external-url');if(tmpURL){window.open(tmpURL,'_blank');}});}// Document links
+let tmpLinks=pContainer.querySelectorAll('.pict-inline-doc-nav-item[data-doc-path]');for(let i=0;i<tmpLinks.length;i++){let tmpLink=tmpLinks[i];tmpLink.addEventListener('click',pEvent=>{pEvent.preventDefault();let tmpPath=tmpLink.getAttribute('data-doc-path');if(tmpProvider&&tmpPath){// Clear filter when navigating
+if(tmpState){tmpState.NavFilterText='';}tmpProvider.loadDocument(tmpPath);}});}// Heading links
+let tmpHeadingLinks=pContainer.querySelectorAll('.pict-inline-doc-nav-heading[data-heading-slug]');for(let i=0;i<tmpHeadingLinks.length;i++){let tmpHeadingLink=tmpHeadingLinks[i];tmpHeadingLink.addEventListener('click',pEvent=>{pEvent.preventDefault();let tmpSlug=tmpHeadingLink.getAttribute('data-heading-slug');if(tmpProvider&&tmpSlug){tmpProvider._scrollToAnchor(tmpSlug);}});}// Group collapse toggle
+let tmpHeaders=pContainer.querySelectorAll('.pict-inline-doc-nav-group-header');for(let i=0;i<tmpHeaders.length;i++){let tmpHeader=tmpHeaders[i];tmpHeader.addEventListener('click',()=>{let tmpGroup=tmpHeader.parentElement;if(tmpGroup){tmpGroup.classList.toggle('collapsed');// Persist collapse state
+let tmpGroupKey=tmpGroup.getAttribute('data-group');if(tmpState&&tmpGroupKey){if(!tmpState.CollapsedGroups){tmpState.CollapsedGroups={};}let tmpToggle=tmpGroup.querySelector('.pict-inline-doc-nav-group-toggle');if(tmpGroup.classList.contains('collapsed')){tmpState.CollapsedGroups[tmpGroupKey]=true;if(tmpToggle){tmpToggle.classList.add('collapsed');}}else{delete tmpState.CollapsedGroups[tmpGroupKey];if(tmpToggle){tmpToggle.classList.remove('collapsed');}}}}});}// Topic clear button
+let tmpClearBtn=pContainer.querySelector('#InlineDoc-Nav-ClearTopic');if(tmpClearBtn&&tmpProvider){tmpClearBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();tmpProvider.clearTopic();});}// Topic manager button
+let tmpManageBtn=pContainer.querySelector('#InlineDoc-Nav-ManageTopics');if(tmpManageBtn){tmpManageBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpTopicManagerView=this.pict.views['InlineDoc-TopicManager'];if(tmpTopicManagerView){tmpTopicManagerView.showTopicManager();}});}// Tooltip edit mode toggle
+let tmpTooltipEditBtn=pContainer.querySelector('#InlineDoc-Nav-TooltipEditMode');if(tmpTooltipEditBtn){tmpTooltipEditBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpDocProvider=this.pict.providers['Pict-InlineDocumentation'];if(tmpDocProvider){let tmpCurrentState=this.pict.AppData.InlineDocumentation;tmpDocProvider.setTooltipEditMode(!tmpCurrentState.TooltipEditMode);}});}// Bind topic to route button
+let tmpBindBtn=pContainer.querySelector('#InlineDoc-Nav-BindTopic');if(tmpBindBtn){tmpBindBtn.addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpTopicManagerView=this.pict.views['InlineDoc-TopicManager'];if(tmpTopicManagerView){tmpTopicManagerView.showBindTopicToRoute();}});}}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - Text to escape
+	 * @returns {string} Escaped text
+	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationNavView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],85:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-TopicManager",AutoRender:false,CSS:/*css*/`
+		.pict-inline-doc-tm-topic-list {
+			max-height: 400px;
+			overflow-y: auto;
+			margin: 0 -0.5em;
+		}
+		.pict-inline-doc-tm-topic-item {
+			display: flex;
+			align-items: center;
+			padding: 0.6em 0.8em;
+			border-bottom: 1px solid #EAE3D8;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.pict-inline-doc-tm-topic-item:hover {
+			background: #F5F0E8;
+		}
+		.pict-inline-doc-tm-topic-item:last-child {
+			border-bottom: none;
+		}
+		.pict-inline-doc-tm-topic-info {
+			flex: 1;
+			min-width: 0;
+		}
+		.pict-inline-doc-tm-topic-title {
+			font-weight: 600;
+			color: #3D3229;
+			font-size: 0.95em;
+		}
+		.pict-inline-doc-tm-topic-meta {
+			font-size: 0.8em;
+			color: #8A7F72;
+			margin-top: 0.15em;
+		}
+		.pict-inline-doc-tm-topic-actions {
+			display: flex;
+			gap: 0.3em;
+			flex-shrink: 0;
+		}
+		.pict-inline-doc-tm-action-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			background: #fff;
+			color: #5E5549;
+			font-size: 0.85em;
+			cursor: pointer;
+			transition: background 0.1s, border-color 0.1s;
+		}
+		.pict-inline-doc-tm-action-btn:hover {
+			background: #F0ECE4;
+			border-color: #C4BDB3;
+		}
+		.pict-inline-doc-tm-action-btn.danger:hover {
+			background: #FDE8E8;
+			border-color: #E57373;
+			color: #C62828;
+		}
+		.pict-inline-doc-tm-new-topic {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.7em;
+			margin-top: 0.5em;
+			border: 1px dashed #DDD6CA;
+			border-radius: 4px;
+			color: #2E7D74;
+			font-size: 0.9em;
+			font-weight: 500;
+			cursor: pointer;
+			transition: background 0.1s, border-color 0.1s;
+		}
+		.pict-inline-doc-tm-new-topic:hover {
+			background: #F0F9F7;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-tm-empty {
+			text-align: center;
+			padding: 2em 1em;
+			color: #8A7F72;
+			font-size: 0.9em;
+		}
+		.pict-inline-doc-tm-form-group {
+			margin-bottom: 0.8em;
+		}
+		.pict-inline-doc-tm-form-label {
+			display: block;
+			font-size: 0.8em;
+			font-weight: 600;
+			color: #5E5549;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.3em;
+		}
+		.pict-inline-doc-tm-form-input {
+			width: 100%;
+			padding: 0.45em 0.6em;
+			font-size: 0.9em;
+			color: #3D3229;
+			background: #FDFCFA;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+		.pict-inline-doc-tm-form-input:focus {
+			outline: none;
+			border-color: #2E7D74;
+			box-shadow: 0 0 0 2px rgba(46, 125, 116, 0.15);
+		}
+		.pict-inline-doc-tm-form-input[readonly] {
+			background: #F5F0E8;
+			color: #8A7F72;
+		}
+		.pict-inline-doc-tm-form-hint {
+			font-size: 0.75em;
+			color: #8A7F72;
+			margin-top: 0.2em;
+		}
+		.pict-inline-doc-tm-routes-section {
+			margin-top: 0.5em;
+		}
+		.pict-inline-doc-tm-route-chips {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.3em;
+			margin-bottom: 0.5em;
+		}
+		.pict-inline-doc-tm-route-chip {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.2em 0.5em;
+			background: #E8E3D8;
+			border-radius: 12px;
+			font-size: 0.82em;
+			color: #3D3229;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+		}
+		.pict-inline-doc-tm-route-chip-remove {
+			margin-left: 0.4em;
+			cursor: pointer;
+			color: #8A7F72;
+			font-size: 0.9em;
+			line-height: 1;
+		}
+		.pict-inline-doc-tm-route-chip-remove:hover {
+			color: #C62828;
+		}
+		.pict-inline-doc-tm-route-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.3em;
+		}
+		.pict-inline-doc-tm-route-action-btn {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.25em 0.5em;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			background: #fff;
+			color: #5E5549;
+			font-size: 0.8em;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.pict-inline-doc-tm-route-action-btn:hover {
+			background: #F0ECE4;
+		}
+		.pict-inline-doc-tm-route-action-btn.accent {
+			border-color: #2E7D74;
+			color: #2E7D74;
+		}
+		.pict-inline-doc-tm-route-action-btn.accent:hover {
+			background: #F0F9F7;
+		}
+		.pict-inline-doc-tm-route-input-row {
+			display: none;
+			align-items: center;
+			gap: 0.3em;
+			margin-top: 0.4em;
+		}
+		.pict-inline-doc-tm-route-input-row.visible {
+			display: flex;
+		}
+		.pict-inline-doc-tm-route-input {
+			flex: 1;
+			padding: 0.35em 0.5em;
+			font-size: 0.85em;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			color: #3D3229;
+			background: #FDFCFA;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+		}
+		.pict-inline-doc-tm-route-input:focus {
+			outline: none;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-tm-wc-container {
+			padding: 0.5em 0;
+		}
+		.pict-inline-doc-tm-wc-label {
+			font-size: 0.85em;
+			color: #5E5549;
+			margin-bottom: 0.6em;
+		}
+		.pict-inline-doc-tm-wc-segments {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 0.15em;
+			margin-bottom: 0.8em;
+		}
+		.pict-inline-doc-tm-wc-slash {
+			color: #8A7F72;
+			font-size: 1.1em;
+			font-weight: 300;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+		}
+		.pict-inline-doc-tm-wc-segment {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.4em 0.7em;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			background: #fff;
+			color: #3D3229;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 0.9em;
+			cursor: pointer;
+			transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+			user-select: none;
+		}
+		.pict-inline-doc-tm-wc-segment:hover {
+			border-color: #2E7D74;
+			background: #F0F9F7;
+		}
+		.pict-inline-doc-tm-wc-segment.selected {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-tm-wc-segment.after-wildcard {
+			opacity: 0.35;
+			border-style: dashed;
+			cursor: default;
+		}
+		.pict-inline-doc-tm-wc-segment.after-wildcard:hover {
+			border-color: #DDD6CA;
+			background: #fff;
+		}
+		.pict-inline-doc-tm-wc-wildcard-star {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.4em 0.6em;
+			color: #2E7D74;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 1.1em;
+			font-weight: 700;
+		}
+		.pict-inline-doc-tm-wc-preview {
+			padding: 0.5em 0.7em;
+			background: #F5F0E8;
+			border: 1px solid #E5DED4;
+			border-radius: 4px;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 0.9em;
+			color: #3D3229;
+		}
+		.pict-inline-doc-tm-wc-preview-label {
+			font-size: 0.75em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.3em;
+		}
+		.pict-inline-doc-tm-bind-route-display {
+			padding: 0.5em 0.7em;
+			background: #F5F0E8;
+			border: 1px solid #E5DED4;
+			border-radius: 4px;
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 0.9em;
+			color: #3D3229;
+			margin-bottom: 0.8em;
+		}
+		.pict-inline-doc-tm-bind-topic-list {
+			max-height: 250px;
+			overflow-y: auto;
+			margin-bottom: 0.6em;
+		}
+		.pict-inline-doc-tm-bind-topic-option {
+			display: flex;
+			align-items: center;
+			padding: 0.5em 0.6em;
+			border-bottom: 1px solid #EAE3D8;
+			cursor: pointer;
+			transition: background 0.1s;
+		}
+		.pict-inline-doc-tm-bind-topic-option:hover {
+			background: #F5F0E8;
+		}
+		.pict-inline-doc-tm-bind-topic-option.selected {
+			background: #F0F9F7;
+		}
+		.pict-inline-doc-tm-bind-radio {
+			width: 16px;
+			height: 16px;
+			border: 2px solid #DDD6CA;
+			border-radius: 50%;
+			margin-right: 0.6em;
+			flex-shrink: 0;
+			position: relative;
+		}
+		.pict-inline-doc-tm-bind-topic-option.selected .pict-inline-doc-tm-bind-radio {
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-tm-bind-topic-option.selected .pict-inline-doc-tm-bind-radio::after {
+			content: '';
+			position: absolute;
+			top: 3px;
+			left: 3px;
+			width: 6px;
+			height: 6px;
+			background: #2E7D74;
+			border-radius: 50%;
+		}
+		.pict-inline-doc-tm-bind-route-type {
+			display: flex;
+			gap: 0.5em;
+			margin-bottom: 0.5em;
+		}
+		.pict-inline-doc-tm-bind-route-type-btn {
+			flex: 1;
+			padding: 0.5em;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			background: #fff;
+			color: #5E5549;
+			font-size: 0.85em;
+			text-align: center;
+			cursor: pointer;
+			transition: background 0.1s, border-color 0.1s;
+		}
+		.pict-inline-doc-tm-bind-route-type-btn:hover {
+			background: #F0ECE4;
+		}
+		.pict-inline-doc-tm-bind-route-type-btn.selected {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-tm-sidebar-list {
+			max-height: 300px;
+			overflow-y: auto;
+		}
+		.pict-inline-doc-tm-sidebar-item {
+			padding: 0.4em 0.6em;
+			cursor: pointer;
+			font-size: 0.9em;
+			color: #3D3229;
+			border-bottom: 1px solid #EAE3D8;
+			transition: background 0.1s;
+		}
+		.pict-inline-doc-tm-sidebar-item:hover {
+			background: #F5F0E8;
+		}
+		.pict-inline-doc-tm-sidebar-item .path {
+			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
+			font-size: 0.85em;
+			color: #8A7F72;
+			margin-left: 0.5em;
+		}
+		.pict-inline-doc-tm-validation-error {
+			color: #C62828;
+			font-size: 0.8em;
+			margin-top: 0.3em;
+		}
+	`,Templates:[],Renderables:[]};class InlineDocumentationTopicManagerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}/**
+	 * Get the modal view instance if available.
+	 *
+	 * @returns {Object|null} The PictSectionModal view, or null
+	 */_getModal(){return this.pict.views['PictSectionModal']||this.pict.views['Pict-Section-Modal']||null;}/**
+	 * Get the inline documentation provider.
+	 *
+	 * @returns {Object|null} The provider instance
+	 */_getProvider(){return this.pict.providers['Pict-InlineDocumentation']||null;}// -- Topic List --
+/**
+	 * Show the topic manager modal with the full topic list.
+	 */showTopicManager(){let tmpModal=this._getModal();let tmpProvider=this._getProvider();if(!tmpModal){this.log.warn('InlineDocumentation TopicManager: Pict-Section-Modal view is not registered.');return;}if(!tmpProvider){return;}let tmpTopics=tmpProvider.getTopicList();let tmpContent=this._buildTopicListHTML(tmpTopics);tmpModal.show({title:'Manage Topics',content:tmpContent,closeable:true,width:'520px',buttons:[{Hash:'close',Label:'Close',Style:'primary'}],onOpen:pDialog=>{this._wireTopicListHandlers(pDialog);}});}/**
+	 * Build the HTML for the topic list modal.
+	 *
+	 * @param {Array} pTopics - Array from getTopicList()
+	 * @returns {string} HTML content
+	 */_buildTopicListHTML(pTopics){if(!pTopics||pTopics.length<1){return'<div class="pict-inline-doc-tm-empty">No topics defined yet.</div>'+'<div class="pict-inline-doc-tm-new-topic" data-action="new-topic">+ New Topic</div>';}let tmpHTML='<div class="pict-inline-doc-tm-topic-list">';for(let i=0;i<pTopics.length;i++){let tmpTopic=pTopics[i];tmpHTML+='<div class="pict-inline-doc-tm-topic-item" data-topic-code="'+this._escapeHTML(tmpTopic.TopicCode)+'">';tmpHTML+='<div class="pict-inline-doc-tm-topic-info">';tmpHTML+='<div class="pict-inline-doc-tm-topic-title">'+this._escapeHTML(tmpTopic.TopicTitle)+'</div>';tmpHTML+='<div class="pict-inline-doc-tm-topic-meta">';tmpHTML+=this._escapeHTML(tmpTopic.TopicCode);if(tmpTopic.TopicHelpFilePath){tmpHTML+=' &middot; '+this._escapeHTML(tmpTopic.TopicHelpFilePath);}tmpHTML+=' &middot; '+tmpTopic.RouteCount+' route'+(tmpTopic.RouteCount!==1?'s':'');tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-tm-topic-actions">';tmpHTML+='<button class="pict-inline-doc-tm-action-btn" data-action="edit" data-topic-code="'+this._escapeHTML(tmpTopic.TopicCode)+'" title="Edit"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/><line x1="9" y1="4" x2="12" y2="7"/></svg></button>';tmpHTML+='<button class="pict-inline-doc-tm-action-btn danger" data-action="delete" data-topic-code="'+this._escapeHTML(tmpTopic.TopicCode)+'" title="Delete"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></button>';tmpHTML+='</div>';tmpHTML+='</div>';}tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-tm-new-topic" data-action="new-topic">+ New Topic</div>';return tmpHTML;}/**
+	 * Wire click handlers for the topic list modal.
+	 *
+	 * @param {HTMLElement} pDialog - The modal dialog element
+	 */_wireTopicListHandlers(pDialog){let tmpSelf=this;let tmpModal=this._getModal();let tmpProvider=this._getProvider();// Edit buttons
+let tmpEditBtns=pDialog.querySelectorAll('[data-action="edit"]');for(let i=0;i<tmpEditBtns.length;i++){tmpEditBtns[i].addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpCode=tmpEditBtns[i].getAttribute('data-topic-code');// Dismiss the list modal, then open editor
+if(tmpModal&&tmpModal.dismissModals){tmpModal.dismissModals();}setTimeout(()=>{tmpSelf.showTopicEditor(tmpCode);},250);});}// Delete buttons
+let tmpDeleteBtns=pDialog.querySelectorAll('[data-action="delete"]');for(let i=0;i<tmpDeleteBtns.length;i++){tmpDeleteBtns[i].addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpCode=tmpDeleteBtns[i].getAttribute('data-topic-code');if(tmpModal&&tmpModal.confirm){tmpModal.confirm('Are you sure you want to delete the topic "'+tmpCode+'"?',{title:'Delete Topic',dangerous:true}).then(pConfirmed=>{if(pConfirmed&&tmpProvider){tmpProvider.removeTopic(tmpCode);tmpProvider.saveTopics();// Re-render nav
+let tmpNavView=tmpSelf.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}if(tmpModal.toast){tmpModal.toast('Topic deleted.',{type:'success'});}// Re-open the list
+setTimeout(()=>{tmpSelf.showTopicManager();},250);}});}});}// New topic button
+let tmpNewBtn=pDialog.querySelector('[data-action="new-topic"]');if(tmpNewBtn){tmpNewBtn.addEventListener('click',()=>{if(tmpModal&&tmpModal.dismissModals){tmpModal.dismissModals();}setTimeout(()=>{tmpSelf.showTopicEditor(null);},250);});}}// -- Topic Editor --
+/**
+	 * Show the topic editor modal for creating or editing a topic.
+	 *
+	 * @param {string|null} pTopicCode - Topic code to edit, or null for new
+	 */showTopicEditor(pTopicCode){let tmpModal=this._getModal();let tmpProvider=this._getProvider();if(!tmpModal||!tmpProvider){return;}let tmpState=this.pict.AppData.InlineDocumentation;let tmpIsNew=!pTopicCode;let tmpTopic=null;if(pTopicCode&&tmpState.Topics&&tmpState.Topics[pTopicCode]){// Clone for editing
+tmpTopic=JSON.parse(JSON.stringify(tmpState.Topics[pTopicCode]));}else{tmpTopic={TopicCode:'',TopicTitle:'',TopicHelpFilePath:'',Routes:[]};}let tmpContent=this._buildTopicEditorHTML(tmpTopic,tmpIsNew);// Track editor routes state in closure
+let tmpEditorRoutes=tmpTopic.Routes?tmpTopic.Routes.slice():[];tmpModal.show({title:tmpIsNew?'New Topic':'Edit Topic',content:tmpContent,closeable:true,width:'500px',buttons:[{Hash:'cancel',Label:'Cancel'},{Hash:'save',Label:'Save',Style:'primary'}],onOpen:pDialog=>{this._wireTopicEditorHandlers(pDialog,tmpTopic,tmpIsNew,tmpEditorRoutes);}}).then(pResult=>{if(pResult==='save'){this._handleTopicEditorSave(tmpTopic,tmpIsNew,tmpEditorRoutes);}else{// Return to list on cancel
+setTimeout(()=>{this.showTopicManager();},250);}});}/**
+	 * Build the HTML for the topic editor form.
+	 *
+	 * @param {Object} pTopic - The topic data
+	 * @param {boolean} pIsNew - Whether this is a new topic
+	 * @returns {string} HTML content
+	 */_buildTopicEditorHTML(pTopic,pIsNew){let tmpHTML='';// Topic Code
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Topic Code</label>';if(pIsNew){tmpHTML+='<input type="text" class="pict-inline-doc-tm-form-input" id="tm-editor-code" value="" placeholder="MY-TOPIC-CODE" />';tmpHTML+='<div class="pict-inline-doc-tm-form-hint">Uppercase letters, numbers, and hyphens only.</div>';}else{tmpHTML+='<input type="text" class="pict-inline-doc-tm-form-input" id="tm-editor-code" value="'+this._escapeHTML(pTopic.TopicCode)+'" readonly />';}tmpHTML+='<div class="pict-inline-doc-tm-validation-error" id="tm-editor-code-error"></div>';tmpHTML+='</div>';// Topic Title
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Title</label>';tmpHTML+='<input type="text" class="pict-inline-doc-tm-form-input" id="tm-editor-title" value="'+this._escapeHTML(pTopic.TopicTitle||pTopic.Name||'')+'" placeholder="My Topic Title" />';tmpHTML+='<div class="pict-inline-doc-tm-validation-error" id="tm-editor-title-error"></div>';tmpHTML+='</div>';// Help File Path
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Help Document</label>';tmpHTML+='<div style="display:flex;gap:0.3em;align-items:center;">';tmpHTML+='<input type="text" class="pict-inline-doc-tm-form-input" id="tm-editor-helpfile" value="'+this._escapeHTML(pTopic.TopicHelpFilePath||'')+'" placeholder="help-topic.md" style="flex:1;" />';tmpHTML+='<button class="pict-inline-doc-tm-route-action-btn" id="tm-editor-browse-sidebar" title="Browse sidebar documents">Browse</button>';tmpHTML+='</div>';tmpHTML+='</div>';// Routes
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Routes</label>';tmpHTML+='<div class="pict-inline-doc-tm-routes-section">';tmpHTML+='<div class="pict-inline-doc-tm-route-chips" id="tm-editor-route-chips">';tmpHTML+=this._buildRouteChipsHTML(pTopic.Routes||[]);tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-tm-route-actions">';tmpHTML+='<button class="pict-inline-doc-tm-route-action-btn" id="tm-editor-add-route">+ Add Route</button>';let tmpState=this.pict.AppData.InlineDocumentation;if(tmpState&&tmpState.CurrentRoute){tmpHTML+='<button class="pict-inline-doc-tm-route-action-btn accent" id="tm-editor-add-current-route">+ Current Route</button>';tmpHTML+='<button class="pict-inline-doc-tm-route-action-btn accent" id="tm-editor-build-wildcard">Build Wildcard</button>';}tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-tm-route-input-row" id="tm-editor-route-input-row">';tmpHTML+='<input type="text" class="pict-inline-doc-tm-route-input" id="tm-editor-route-input" placeholder="/my/route" />';tmpHTML+='<button class="pict-inline-doc-tm-route-action-btn accent" id="tm-editor-route-input-add">Add</button>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}/**
+	 * Build HTML for route chips.
+	 *
+	 * @param {Array} pRoutes - Array of route pattern strings
+	 * @returns {string} HTML for the chips
+	 */_buildRouteChipsHTML(pRoutes){if(!pRoutes||pRoutes.length<1){return'<span style="font-size:0.8em;color:#8A7F72;">No routes bound.</span>';}let tmpHTML='';for(let i=0;i<pRoutes.length;i++){tmpHTML+='<span class="pict-inline-doc-tm-route-chip">';tmpHTML+=this._escapeHTML(pRoutes[i]);tmpHTML+='<span class="pict-inline-doc-tm-route-chip-remove" data-route="'+this._escapeHTML(pRoutes[i])+'">&times;</span>';tmpHTML+='</span>';}return tmpHTML;}/**
+	 * Refresh the route chips in an open editor dialog.
+	 *
+	 * @param {Array} pRoutes - Current routes array
+	 */_refreshRouteChips(pRoutes){if(typeof document==='undefined'){return;}let tmpContainer=document.getElementById('tm-editor-route-chips');if(tmpContainer){tmpContainer.innerHTML=this._buildRouteChipsHTML(pRoutes);this._wireRouteChipRemoveHandlers(pRoutes);}}/**
+	 * Wire remove handlers on route chips.
+	 *
+	 * @param {Array} pRoutes - The mutable routes array
+	 */_wireRouteChipRemoveHandlers(pRoutes){if(typeof document==='undefined'){return;}let tmpSelf=this;let tmpRemoveBtns=document.querySelectorAll('.pict-inline-doc-tm-route-chip-remove');for(let i=0;i<tmpRemoveBtns.length;i++){tmpRemoveBtns[i].addEventListener('click',pEvent=>{pEvent.stopPropagation();let tmpRoute=tmpRemoveBtns[i].getAttribute('data-route');let tmpIdx=pRoutes.indexOf(tmpRoute);if(tmpIdx>=0){pRoutes.splice(tmpIdx,1);}tmpSelf._refreshRouteChips(pRoutes);});}}/**
+	 * Wire all handlers for the topic editor form.
+	 *
+	 * @param {HTMLElement} pDialog - The modal dialog element
+	 * @param {Object} pTopic - The topic data
+	 * @param {boolean} pIsNew - Whether this is a new topic
+	 * @param {Array} pEditorRoutes - Mutable routes array for this editor session
+	 */_wireTopicEditorHandlers(pDialog,pTopic,pIsNew,pEditorRoutes){let tmpSelf=this;let tmpProvider=this._getProvider();let tmpState=this.pict.AppData.InlineDocumentation;// Route chip remove handlers
+this._wireRouteChipRemoveHandlers(pEditorRoutes);// Add Route button — show input row
+let tmpAddRouteBtn=document.getElementById('tm-editor-add-route');if(tmpAddRouteBtn){tmpAddRouteBtn.addEventListener('click',()=>{let tmpRow=document.getElementById('tm-editor-route-input-row');if(tmpRow){tmpRow.classList.toggle('visible');let tmpInput=document.getElementById('tm-editor-route-input');if(tmpInput){tmpInput.focus();}}});}// Add route from text input
+let tmpRouteInputAddBtn=document.getElementById('tm-editor-route-input-add');if(tmpRouteInputAddBtn){tmpRouteInputAddBtn.addEventListener('click',()=>{let tmpInput=document.getElementById('tm-editor-route-input');if(tmpInput&&tmpInput.value.trim()){let tmpRoute=tmpInput.value.trim();if(tmpRoute.charAt(0)!=='/'){tmpRoute='/'+tmpRoute;}if(pEditorRoutes.indexOf(tmpRoute)<0){pEditorRoutes.push(tmpRoute);tmpSelf._refreshRouteChips(pEditorRoutes);}tmpInput.value='';}});}// Enter key on route input
+let tmpRouteInput=document.getElementById('tm-editor-route-input');if(tmpRouteInput){tmpRouteInput.addEventListener('keydown',pEvent=>{if(pEvent.key==='Enter'){pEvent.preventDefault();if(tmpRouteInputAddBtn){tmpRouteInputAddBtn.click();}}});}// Add Current Route button
+let tmpAddCurrentBtn=document.getElementById('tm-editor-add-current-route');if(tmpAddCurrentBtn&&tmpState&&tmpState.CurrentRoute){tmpAddCurrentBtn.addEventListener('click',()=>{let tmpRoute=tmpState.CurrentRoute;if(pEditorRoutes.indexOf(tmpRoute)<0){pEditorRoutes.push(tmpRoute);tmpSelf._refreshRouteChips(pEditorRoutes);}});}// Build Wildcard button
+let tmpWildcardBtn=document.getElementById('tm-editor-build-wildcard');if(tmpWildcardBtn&&tmpProvider&&tmpState&&tmpState.CurrentRoute){tmpWildcardBtn.addEventListener('click',()=>{let tmpModal=tmpSelf._getModal();if(tmpModal&&tmpModal.dismissModals){tmpModal.dismissModals();}setTimeout(()=>{tmpSelf.showWildcardBuilder(tmpState.CurrentRoute,pPattern=>{if(pPattern&&pEditorRoutes.indexOf(pPattern)<0){pEditorRoutes.push(pPattern);}// Re-open the editor
+tmpSelf._reopenEditorAfterSubflow(pTopic,pIsNew,pEditorRoutes);});},250);});}// Browse Sidebar button
+let tmpBrowseBtn=document.getElementById('tm-editor-browse-sidebar');if(tmpBrowseBtn){tmpBrowseBtn.addEventListener('click',()=>{let tmpModal=tmpSelf._getModal();if(tmpModal&&tmpModal.dismissModals){tmpModal.dismissModals();}setTimeout(()=>{tmpSelf._showSidebarPicker(pPath=>{if(pPath){pTopic.TopicHelpFilePath=pPath;}tmpSelf._reopenEditorAfterSubflow(pTopic,pIsNew,pEditorRoutes);});},250);});}}/**
+	 * Re-open the topic editor after returning from a sub-flow (wildcard builder, sidebar picker).
+	 *
+	 * Captures current form values from the DOM before the modal was dismissed,
+	 * then reconstructs the editor with updated state.
+	 *
+	 * @param {Object} pTopic - The topic data (may have been updated by sub-flow)
+	 * @param {boolean} pIsNew - Whether this is a new topic
+	 * @param {Array} pEditorRoutes - Current routes for this editor session
+	 */_reopenEditorAfterSubflow(pTopic,pIsNew,pEditorRoutes){let tmpModal=this._getModal();let tmpProvider=this._getProvider();if(!tmpModal||!tmpProvider){return;}// Rebuild the topic from whatever was captured
+let tmpContent=this._buildTopicEditorHTML({TopicCode:pTopic.TopicCode,TopicTitle:pTopic.TopicTitle,TopicHelpFilePath:pTopic.TopicHelpFilePath,Routes:pEditorRoutes},pIsNew);tmpModal.show({title:pIsNew?'New Topic':'Edit Topic',content:tmpContent,closeable:true,width:'500px',buttons:[{Hash:'cancel',Label:'Cancel'},{Hash:'save',Label:'Save',Style:'primary'}],onOpen:pDialog=>{this._wireTopicEditorHandlers(pDialog,pTopic,pIsNew,pEditorRoutes);}}).then(pResult=>{if(pResult==='save'){this._handleTopicEditorSave(pTopic,pIsNew,pEditorRoutes);}else{setTimeout(()=>{this.showTopicManager();},250);}});}/**
+	 * Handle saving from the topic editor.
+	 *
+	 * Reads form values, validates, and persists.
+	 *
+	 * @param {Object} pTopic - The original topic data
+	 * @param {boolean} pIsNew - Whether this is a new topic
+	 * @param {Array} pEditorRoutes - Current routes from the editor
+	 */_handleTopicEditorSave(pTopic,pIsNew,pEditorRoutes){let tmpProvider=this._getProvider();let tmpModal=this._getModal();let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpProvider){return;}// Read form values from DOM (they're still present briefly during dismiss)
+let tmpCode='';let tmpTitle='';let tmpHelpFile='';if(typeof document!=='undefined'){let tmpCodeInput=document.getElementById('tm-editor-code');let tmpTitleInput=document.getElementById('tm-editor-title');let tmpHelpInput=document.getElementById('tm-editor-helpfile');if(tmpCodeInput){tmpCode=tmpCodeInput.value.trim();}if(tmpTitleInput){tmpTitle=tmpTitleInput.value.trim();}if(tmpHelpInput){tmpHelpFile=tmpHelpInput.value.trim();}}// Validation
+let tmpErrors=[];if(pIsNew){if(!tmpCode){tmpErrors.push('Topic Code is required.');}else if(!/^[A-Z0-9][A-Z0-9-]*$/.test(tmpCode)){tmpErrors.push('Topic Code must use uppercase letters, numbers, and hyphens only.');}else if(tmpState.Topics&&tmpState.Topics[tmpCode]){tmpErrors.push('A topic with code "'+tmpCode+'" already exists.');}}else{tmpCode=pTopic.TopicCode;}if(!tmpTitle){tmpErrors.push('Title is required.');}if(tmpErrors.length>0){if(tmpModal&&tmpModal.toast){tmpModal.toast(tmpErrors.join(' '),{type:'error'});}// Re-open editor with current values
+pTopic.TopicTitle=tmpTitle;pTopic.TopicHelpFilePath=tmpHelpFile;if(pIsNew){pTopic.TopicCode=tmpCode;}setTimeout(()=>{this._reopenEditorAfterSubflow(pTopic,pIsNew,pEditorRoutes);},300);return;}// Apply changes
+if(pIsNew){tmpProvider.addTopic(tmpCode,{TopicCode:tmpCode,TopicTitle:tmpTitle,TopicHelpFilePath:tmpHelpFile,Routes:pEditorRoutes});}else{tmpProvider.updateTopic(tmpCode,{TopicTitle:tmpTitle,TopicHelpFilePath:tmpHelpFile,Routes:pEditorRoutes});}tmpProvider.saveTopics();// Re-render nav
+let tmpNavView=this.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}if(tmpModal&&tmpModal.toast){tmpModal.toast('Topic saved.',{type:'success'});}// Return to topic list
+setTimeout(()=>{this.showTopicManager();},300);}// -- Wildcard Builder --
+/**
+	 * Show the wildcard builder modal.
+	 *
+	 * Displays route segments as clickable blocks and lets the user
+	 * visually choose where the wildcard starts.
+	 *
+	 * @param {string} pCurrentRoute - The route to build a pattern for
+	 * @param {Function} fOnSelect - Callback receiving the selected pattern (or null on cancel)
+	 */showWildcardBuilder(pCurrentRoute,fOnSelect){let tmpModal=this._getModal();let tmpProvider=this._getProvider();if(!tmpModal||!tmpProvider){if(typeof fOnSelect==='function'){fOnSelect(null);}return;}let tmpSegments=tmpProvider.getRouteSegments(pCurrentRoute);if(tmpSegments.length<1){if(tmpModal.toast){tmpModal.toast('No route segments to build a wildcard from.',{type:'error'});}if(typeof fOnSelect==='function'){fOnSelect(null);}return;}// Default selection: last segment before end (or first if only one)
+let tmpSelectedIndex=Math.max(0,tmpSegments.length-2);let tmpContent=this._buildWildcardBuilderHTML(tmpSegments,pCurrentRoute,tmpSelectedIndex);tmpModal.show({title:'Build Wildcard Pattern',content:tmpContent,closeable:true,width:'520px',buttons:[{Hash:'cancel',Label:'Cancel'},{Hash:'exact',Label:'Use Exact Route'},{Hash:'pattern',Label:'Use Pattern',Style:'primary'}],onOpen:pDialog=>{this._wireWildcardBuilderHandlers(pDialog,tmpSegments,tmpSelectedIndex);}}).then(pResult=>{if(pResult==='pattern'){// Get the current selection
+let tmpPreview=typeof document!=='undefined'?document.getElementById('tm-wc-preview-value'):null;let tmpPattern=tmpPreview?tmpPreview.textContent:tmpSegments[tmpSelectedIndex].WildcardPattern;if(typeof fOnSelect==='function'){fOnSelect(tmpPattern);}}else if(pResult==='exact'){if(typeof fOnSelect==='function'){fOnSelect(pCurrentRoute);}}else{if(typeof fOnSelect==='function'){fOnSelect(null);}}});}/**
+	 * Build the HTML for the wildcard builder.
+	 *
+	 * @param {Array} pSegments - Segment objects from getRouteSegments()
+	 * @param {string} pCurrentRoute - The original route
+	 * @param {number} pSelectedIndex - The initially selected segment index
+	 * @returns {string} HTML content
+	 */_buildWildcardBuilderHTML(pSegments,pCurrentRoute,pSelectedIndex){let tmpHTML='<div class="pict-inline-doc-tm-wc-container">';tmpHTML+='<div class="pict-inline-doc-tm-wc-label">Click a segment to set the wildcard boundary. Everything after the selected segment will match any path.</div>';tmpHTML+='<div class="pict-inline-doc-tm-wc-segments" id="tm-wc-segments">';for(let i=0;i<pSegments.length;i++){let tmpClass='pict-inline-doc-tm-wc-segment';if(i===pSelectedIndex){tmpClass+=' selected';}else if(i>pSelectedIndex){tmpClass+=' after-wildcard';}tmpHTML+='<span class="pict-inline-doc-tm-wc-slash">/</span>';tmpHTML+='<span class="'+tmpClass+'" data-segment-index="'+i+'">';tmpHTML+=this._escapeHTML(pSegments[i].Segment);tmpHTML+='</span>';}tmpHTML+='<span class="pict-inline-doc-tm-wc-slash">/</span>';tmpHTML+='<span class="pict-inline-doc-tm-wc-wildcard-star" id="tm-wc-star">*</span>';tmpHTML+='</div>';tmpHTML+='<div class="pict-inline-doc-tm-wc-preview-label">Pattern</div>';tmpHTML+='<div class="pict-inline-doc-tm-wc-preview" id="tm-wc-preview-value">';tmpHTML+=this._escapeHTML(pSegments[pSelectedIndex].WildcardPattern);tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}/**
+	 * Wire click handlers for the wildcard builder segments.
+	 *
+	 * @param {HTMLElement} pDialog - The modal dialog element
+	 * @param {Array} pSegments - Segment objects
+	 * @param {number} pInitialIndex - Initially selected index
+	 */_wireWildcardBuilderHandlers(pDialog,pSegments,pInitialIndex){let tmpSelectedIndex=pInitialIndex;let tmpUpdateSelection=pNewIndex=>{tmpSelectedIndex=pNewIndex;let tmpSegmentEls=pDialog.querySelectorAll('.pict-inline-doc-tm-wc-segment');for(let i=0;i<tmpSegmentEls.length;i++){let tmpIdx=parseInt(tmpSegmentEls[i].getAttribute('data-segment-index'),10);tmpSegmentEls[i].classList.remove('selected','after-wildcard');if(tmpIdx===pNewIndex){tmpSegmentEls[i].classList.add('selected');}else if(tmpIdx>pNewIndex){tmpSegmentEls[i].classList.add('after-wildcard');}}let tmpPreview=pDialog.querySelector('#tm-wc-preview-value');if(tmpPreview){tmpPreview.textContent=pSegments[pNewIndex].WildcardPattern;}};let tmpSegmentEls=pDialog.querySelectorAll('.pict-inline-doc-tm-wc-segment');for(let i=0;i<tmpSegmentEls.length;i++){tmpSegmentEls[i].addEventListener('click',()=>{let tmpIdx=parseInt(tmpSegmentEls[i].getAttribute('data-segment-index'),10);tmpUpdateSelection(tmpIdx);});}}// -- Bind Topic to Route --
+/**
+	 * Show the quick-bind flow for connecting a topic to the current route.
+	 */showBindTopicToRoute(){let tmpModal=this._getModal();let tmpProvider=this._getProvider();if(!tmpModal||!tmpProvider){return;}let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpState||!tmpState.CurrentRoute){if(tmpModal.toast){tmpModal.toast('No current route to bind to.',{type:'error'});}return;}let tmpCurrentRoute=tmpState.CurrentRoute;let tmpTopics=tmpProvider.getTopicList();let tmpContent=this._buildBindHTML(tmpCurrentRoute,tmpTopics);// Track selection state
+let tmpSelectedTopicCode=null;let tmpRouteType='exact';// 'exact' or 'wildcard'
+tmpModal.show({title:'Bind Topic to Route',content:tmpContent,closeable:true,width:'480px',buttons:[{Hash:'cancel',Label:'Cancel'},{Hash:'bind',Label:'Bind Route',Style:'primary'}],onOpen:pDialog=>{this._wireBindHandlers(pDialog,tmpTopics,tmpCurrentRoute,pCode=>{tmpSelectedTopicCode=pCode;},pType=>{tmpRouteType=pType;});}}).then(pResult=>{if(pResult!=='bind'||!tmpSelectedTopicCode){return;}if(tmpSelectedTopicCode==='__NEW__'){// Open new topic editor with current route pre-filled
+this.showTopicEditor(null);return;}if(tmpRouteType==='wildcard'){// Open wildcard builder, then bind
+this.showWildcardBuilder(tmpCurrentRoute,pPattern=>{if(pPattern){tmpProvider.addRouteToTopic(tmpSelectedTopicCode,pPattern);tmpProvider.saveTopics();let tmpNavView=this.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}if(tmpModal.toast){tmpModal.toast('Route bound to topic.',{type:'success'});}}});}else{// Exact match bind
+tmpProvider.addRouteToTopic(tmpSelectedTopicCode,tmpCurrentRoute);tmpProvider.saveTopics();let tmpNavView=this.pict.views['InlineDoc-Nav'];if(tmpNavView){tmpNavView.render();}if(tmpModal.toast){tmpModal.toast('Route bound to topic.',{type:'success'});}}});}/**
+	 * Build the HTML for the bind-topic-to-route modal.
+	 *
+	 * @param {string} pCurrentRoute - The current route
+	 * @param {Array} pTopics - Topic list
+	 * @returns {string} HTML content
+	 */_buildBindHTML(pCurrentRoute,pTopics){let tmpHTML='';tmpHTML+='<div class="pict-inline-doc-tm-bind-route-display">'+this._escapeHTML(pCurrentRoute)+'</div>';// Route type selection
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Route Match Type</label>';tmpHTML+='<div class="pict-inline-doc-tm-bind-route-type">';tmpHTML+='<div class="pict-inline-doc-tm-bind-route-type-btn selected" data-route-type="exact">Exact Match</div>';tmpHTML+='<div class="pict-inline-doc-tm-bind-route-type-btn" data-route-type="wildcard">Wildcard Pattern</div>';tmpHTML+='</div>';tmpHTML+='</div>';// Topic selection
+tmpHTML+='<div class="pict-inline-doc-tm-form-group">';tmpHTML+='<label class="pict-inline-doc-tm-form-label">Select Topic</label>';tmpHTML+='<div class="pict-inline-doc-tm-bind-topic-list">';for(let i=0;i<pTopics.length;i++){let tmpTopic=pTopics[i];tmpHTML+='<div class="pict-inline-doc-tm-bind-topic-option" data-topic-code="'+this._escapeHTML(tmpTopic.TopicCode)+'">';tmpHTML+='<div class="pict-inline-doc-tm-bind-radio"></div>';tmpHTML+='<div class="pict-inline-doc-tm-topic-info">';tmpHTML+='<div class="pict-inline-doc-tm-topic-title">'+this._escapeHTML(tmpTopic.TopicTitle)+'</div>';tmpHTML+='<div class="pict-inline-doc-tm-topic-meta">'+this._escapeHTML(tmpTopic.TopicCode)+'</div>';tmpHTML+='</div>';tmpHTML+='</div>';}// Create new option
+tmpHTML+='<div class="pict-inline-doc-tm-bind-topic-option" data-topic-code="__NEW__">';tmpHTML+='<div class="pict-inline-doc-tm-bind-radio"></div>';tmpHTML+='<div class="pict-inline-doc-tm-topic-info">';tmpHTML+='<div class="pict-inline-doc-tm-topic-title" style="color:#2E7D74;">+ Create New Topic</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}/**
+	 * Wire handlers for the bind-topic-to-route modal.
+	 *
+	 * @param {HTMLElement} pDialog - The modal dialog element
+	 * @param {Array} pTopics - Topic list
+	 * @param {string} pCurrentRoute - The current route
+	 * @param {Function} fOnTopicSelect - Called with selected topic code
+	 * @param {Function} fOnRouteTypeSelect - Called with 'exact' or 'wildcard'
+	 */_wireBindHandlers(pDialog,pTopics,pCurrentRoute,fOnTopicSelect,fOnRouteTypeSelect){// Topic selection
+let tmpTopicOptions=pDialog.querySelectorAll('.pict-inline-doc-tm-bind-topic-option');for(let i=0;i<tmpTopicOptions.length;i++){tmpTopicOptions[i].addEventListener('click',()=>{// Deselect all
+for(let j=0;j<tmpTopicOptions.length;j++){tmpTopicOptions[j].classList.remove('selected');}tmpTopicOptions[i].classList.add('selected');fOnTopicSelect(tmpTopicOptions[i].getAttribute('data-topic-code'));});}// Route type selection
+let tmpRouteTypeBtns=pDialog.querySelectorAll('.pict-inline-doc-tm-bind-route-type-btn');for(let i=0;i<tmpRouteTypeBtns.length;i++){tmpRouteTypeBtns[i].addEventListener('click',()=>{for(let j=0;j<tmpRouteTypeBtns.length;j++){tmpRouteTypeBtns[j].classList.remove('selected');}tmpRouteTypeBtns[i].classList.add('selected');fOnRouteTypeSelect(tmpRouteTypeBtns[i].getAttribute('data-route-type'));});}}// -- Sidebar Picker --
+/**
+	 * Show a sidebar document picker modal.
+	 *
+	 * @param {Function} fOnSelect - Callback receiving the selected path (or null)
+	 */_showSidebarPicker(fOnSelect){let tmpModal=this._getModal();let tmpState=this.pict.AppData.InlineDocumentation;if(!tmpModal){if(typeof fOnSelect==='function'){fOnSelect(null);}return;}let tmpGroups=tmpState&&tmpState.SidebarGroups?tmpState.SidebarGroups:[];let tmpContent=this._buildSidebarPickerHTML(tmpGroups);tmpModal.show({title:'Select Document',content:tmpContent,closeable:true,width:'400px',buttons:[{Hash:'cancel',Label:'Cancel'}],onOpen:pDialog=>{let tmpItems=pDialog.querySelectorAll('.pict-inline-doc-tm-sidebar-item');for(let i=0;i<tmpItems.length;i++){tmpItems[i].addEventListener('click',()=>{let tmpPath=tmpItems[i].getAttribute('data-path');if(tmpModal.dismissModals){tmpModal.dismissModals();}if(typeof fOnSelect==='function'){fOnSelect(tmpPath);}});}}}).then(pResult=>{if(pResult==='cancel'||pResult===null){if(typeof fOnSelect==='function'){fOnSelect(null);}}});}/**
+	 * Build the HTML for the sidebar document picker.
+	 *
+	 * @param {Array} pGroups - SidebarGroups array
+	 * @returns {string} HTML content
+	 */_buildSidebarPickerHTML(pGroups){let tmpHTML='<div class="pict-inline-doc-tm-sidebar-list">';let tmpHasItems=false;for(let i=0;i<pGroups.length;i++){let tmpGroup=pGroups[i];if(tmpGroup.Path){tmpHasItems=true;tmpHTML+='<div class="pict-inline-doc-tm-sidebar-item" data-path="'+this._escapeHTML(tmpGroup.Path)+'">';tmpHTML+=this._escapeHTML(tmpGroup.Name);tmpHTML+='<span class="path">'+this._escapeHTML(tmpGroup.Path)+'</span>';tmpHTML+='</div>';}let tmpItems=tmpGroup.Items||[];for(let j=0;j<tmpItems.length;j++){if(tmpItems[j].Path){tmpHasItems=true;tmpHTML+='<div class="pict-inline-doc-tm-sidebar-item" data-path="'+this._escapeHTML(tmpItems[j].Path)+'">';tmpHTML+=this._escapeHTML(tmpItems[j].Name);tmpHTML+='<span class="path">'+this._escapeHTML(tmpItems[j].Path)+'</span>';tmpHTML+='</div>';}}}if(!tmpHasItems){tmpHTML+='<div class="pict-inline-doc-tm-empty">No sidebar documents found.</div>';}tmpHTML+='</div>';return tmpHTML;}// -- Utilities --
+/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText - Text to escape
+	 * @returns {string} Escaped text
+	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationTopicManagerView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],86:[function(require,module,exports){/**
  * Pict-MDE-CodeMirror: Helper module for PictSectionMarkdownEditor
  *
  * Handles CodeMirror editor instance creation, extension configuration,
@@ -4631,7 +7421,7 @@ continue;}// Build a human-readable size label
 let tmpSizeBytes=Math.round(tmpPayloadLength*0.75);// base64 to bytes approx
 let tmpSizeLabel;if(tmpSizeBytes>=1024*1024){tmpSizeLabel=(tmpSizeBytes/(1024*1024)).toFixed(1)+'MB';}else if(tmpSizeBytes>=1024){tmpSizeLabel=Math.round(tmpSizeBytes/1024)+'KB';}else{tmpSizeLabel=tmpSizeBytes+'B';}let tmpMimeType=tmpMatch[1]||'image';let tmpWidgetLabel=`\u2026${tmpSizeLabel})`;// Replace from the start of the base64 payload to after the closing paren
 let tmpWidget=tmpDecoration.replace({widget:new DataURIWidget(tmpWidgetLabel)});tmpDecorations.push(tmpWidget.range(tmpPayloadStart,tmpPayloadEnd+1));}}return tmpDecoration.set(tmpDecorations,true);}// Create the ViewPlugin
-let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],81:[function(require,module,exports){/**
+let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],87:[function(require,module,exports){/**
  * Pict-MDE-DragAndReorder: Helper module for PictSectionMarkdownEditor
  *
  * Handles segment drag-and-drop reordering, active segment management,
@@ -4726,7 +7516,7 @@ tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.se
 	 * Reset the sidebar back to default sticky positioning (no cursor tracking).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],82:[function(require,module,exports){/**
+	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],88:[function(require,module,exports){/**
  * Pict-MDE-Formatting: Helper module for PictSectionMarkdownEditor
  *
  * Handles markdown formatting operations (bold, italic, code, heading, link)
@@ -4755,7 +7545,7 @@ let tmpLine=tmpState.doc.lineAt(tmpFrom);let tmpLineText=tmpLine.text;// Toggle:
 if(tmpLineText.startsWith(tmpFormat.prefix)){tmpChanges={from:tmpLine.from,to:tmpLine.from+tmpFormat.prefix.length,insert:''};}else{tmpChanges={from:tmpLine.from,insert:tmpFormat.prefix};}tmpEditor.dispatch({changes:tmpChanges});}else if(tmpFormat.before&&tmpFormat.after){// Surround style (links)
 if(tmpHasSelection){let tmpInsert=tmpFormat.before+tmpSelectedText+tmpFormat.after;tmpChanges={from:tmpFrom,to:tmpTo,insert:tmpInsert};// Place cursor on the "url" part
 tmpCursorPos=tmpFrom+tmpFormat.before.length+tmpSelectedText.length+2;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos,head:tmpCursorPos+3}});}else{let tmpInsert=tmpFormat.before+tmpFormat.after;tmpChanges={from:tmpFrom,insert:tmpInsert};tmpCursorPos=tmpFrom+tmpFormat.before.length;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos}});}}// Re-focus the editor after clicking a sidebar button
-tmpEditor.focus();};};},{}],83:[function(require,module,exports){/**
+tmpEditor.focus();};};},{}],89:[function(require,module,exports){/**
  * Pict-MDE-ImageHandling: Helper module for PictSectionMarkdownEditor
  *
  * Handles image operations: file picker, file processing (hook or base64
@@ -4813,7 +7603,7 @@ let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt
 	 */pView._wireImageDragEvents=function _wireImageDragEvents(pEditorContainer,pSegmentIndex){pEditorContainer.addEventListener('dragover',pEvent=>{// Only handle file drags, not segment-reorder drags
 if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.types||pEvent.dataTransfer.types.indexOf('Files')<0){return;}pEvent.preventDefault();pEvent.dataTransfer.dropEffect='copy';pEditorContainer.classList.add('pict-mde-image-dragover');});pEditorContainer.addEventListener('dragleave',pEvent=>{// Only clear if actually leaving the element
 if(!pEditorContainer.contains(pEvent.relatedTarget)){pEditorContainer.classList.remove('pict-mde-image-dragover');}});pEditorContainer.addEventListener('drop',pEvent=>{pEditorContainer.classList.remove('pict-mde-image-dragover');// Only handle file drops, not segment-reorder drops
-if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],84:[function(require,module,exports){/**
+if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],90:[function(require,module,exports){/**
  * Pict-MDE-RichPreview: Helper module for PictSectionMarkdownEditor
  *
  * Handles rich content preview rendering via pict-section-content:
@@ -4840,10 +7630,13 @@ if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTrans
 	 * are available on window -- loaded by the consumer via CDN).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._updateRichPreviews=function _updateRichPreviews(pSegmentIndex){if(!pView.options.EnableRichPreview){return;}let tmpPreviewEl=document.getElementById(`PictMDE-RichPreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}let tmpContent=tmpEditor.state.doc.toString();if(!tmpContent||tmpContent.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Use pict-section-content's provider to parse the raw markdown into HTML
-let tmpProvider=pView._getContentProvider();let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpContent);if(!tmpRenderedHTML||tmpRenderedHTML.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Wrap the rendered HTML in a pict-content container so that
+	 */pView._updateRichPreviews=function _updateRichPreviews(pSegmentIndex){if(!pView.options.EnableRichPreview){return;}let tmpPreviewEl=document.getElementById(`PictMDE-RichPreview-${pSegmentIndex}`);if(!tmpPreviewEl){return;}let tmpEditor=pView._segmentEditors[pSegmentIndex];if(!tmpEditor){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}let tmpContent=tmpEditor.state.doc.toString();if(!tmpContent||tmpContent.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Use pict-section-content's provider to parse the raw markdown into HTML.
+// If a Vocabulary provider is registered on the pict instance,
+// pass its resolver so vocabulary terms auto-link in the preview.
+let tmpProvider=pView._getContentProvider();let tmpVocabResolver=null;if(pView.pict&&pView.pict.providers&&pView.pict.providers.Vocabulary&&typeof pView.pict.providers.Vocabulary.getResolver==='function'){tmpVocabResolver=pView.pict.providers.Vocabulary.getResolver();}let tmpRenderedHTML=tmpProvider.parseMarkdown(tmpContent,null,null,tmpVocabResolver);if(!tmpRenderedHTML||tmpRenderedHTML.trim().length===0){tmpPreviewEl.innerHTML='';tmpPreviewEl.classList.remove('pict-mde-has-rich-preview');return;}// Wrap the rendered HTML in a pict-content container so that
 // pict-section-content's CSS classes take effect
-let tmpPreviewID=`PictMDE-RichPreviewBody-${pSegmentIndex}`;tmpPreviewEl.innerHTML=`<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Resolve relative image URLs in the rendered HTML using ImageBaseURL
+let tmpPreviewID=`PictMDE-RichPreviewBody-${pSegmentIndex}`;tmpPreviewEl.innerHTML=`<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;tmpPreviewEl.classList.add('pict-mde-has-rich-preview');// Wire vocabulary popover hover handlers if the provider is available
+if(pView.pict&&pView.pict.providers&&pView.pict.providers.Vocabulary&&typeof pView.pict.providers.Vocabulary.wirePopovers==='function'){pView.pict.providers.Vocabulary.wirePopovers('#'+tmpPreviewID);}// Resolve relative image URLs in the rendered HTML using ImageBaseURL
 if(pView.options.ImageBaseURL){let tmpImages=tmpPreviewEl.querySelectorAll('img');for(let i=0;i<tmpImages.length;i++){let tmpSrc=tmpImages[i].getAttribute('src');if(tmpSrc){let tmpResolved=pView._resolveImageURL(tmpSrc);if(tmpResolved!==tmpSrc){tmpImages[i].setAttribute('src',tmpResolved);}}}}// Bump generation counter for stale-render protection (mermaid is async)
 let tmpGeneration=(pView._richPreviewGenerations[pSegmentIndex]||0)+1;pView._richPreviewGenerations[pSegmentIndex]=tmpGeneration;// Post-render: call mermaid.run() for mermaid diagram elements
 pView._postRenderMermaid(tmpPreviewID,pSegmentIndex,tmpGeneration);// Post-render: call katex.render() for KaTeX math elements
@@ -4890,7 +7683,7 @@ pView._renderedViewGeneration++;let tmpGeneration=pView._renderedViewGeneration;
 let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-content`);if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
 	 * Switch back from rendered view to the editing view: rebuild the
 	 * full editor UI from the data.
-	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":77}],85:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
+	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":62}],91:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
 	<div class="pict-mde-left-controls">
 		<div class="pict-mde-quadrant-tl"></div>
 		<div class="pict-mde-quadrant-bl"></div>
@@ -5717,7 +8510,7 @@ let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-
 		padding: 4px 4px;
 	}
 }
-`};},{}],86:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
+`};},{}],92:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
 const libFormatting=require('./Pict-MDE-Formatting.js');const libImageHandling=require('./Pict-MDE-ImageHandling.js');const libDragAndReorder=require('./Pict-MDE-DragAndReorder.js');const libRichPreview=require('./Pict-MDE-RichPreview.js');const libCodeMirror=require('./Pict-MDE-CodeMirror.js');class PictSectionMarkdownEditor extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// CodeMirror prototype references (injected by consumer or found on window)
 this._codeMirrorModules=null;// Map of segment index to CodeMirror EditorView instance
 this._segmentEditors={};// Internal segment counter (monotonically increasing for unique IDs)
@@ -5984,7 +8777,904 @@ this._swapHiddenPreviewState(tmpLogicalIndex,tmpLogicalIndex+1);this._swapSegmen
 	 */marshalFromView(){super.marshalFromView();this._marshalAllEditorsToData();}/**
 	 * Destroy all editors and clean up.
 	 */destroy(){for(let tmpIndex in this._segmentEditors){if(this._segmentEditors[tmpIndex]){this._segmentEditors[tmpIndex].destroy();}}this._segmentEditors={};// Clear rich preview debounce timers
-for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};this._segmentTabStates={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":80,"./Pict-MDE-DragAndReorder.js":81,"./Pict-MDE-Formatting.js":82,"./Pict-MDE-ImageHandling.js":83,"./Pict-MDE-RichPreview.js":84,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":85,"pict-section-content":77,"pict-view":88}],87:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.67","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.348","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.63","fable-serviceproviderbase":"^3.0.19"}};},{}],88:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
+for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};this._segmentTabStates={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":86,"./Pict-MDE-DragAndReorder.js":87,"./Pict-MDE-Formatting.js":88,"./Pict-MDE-ImageHandling.js":89,"./Pict-MDE-RichPreview.js":90,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":91,"pict-section-content":62,"pict-view":102}],93:[function(require,module,exports){/**
+ * Pict-Modal-Confirm
+ *
+ * Builds confirm and double-confirm dialog DOM, returns Promises.
+ */class PictModalConfirm{constructor(pModal){this._modal=pModal;}/**
+	 * Show a single-step confirmation dialog.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options (title, confirmLabel, cancelLabel, dangerous)
+	 * @returns {Promise<boolean>}
+	 */confirm(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultConfirmOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDialog(tmpOptions.title,pMessage,fResolve,tmpOptions);this._showDialog(tmpDialog,fResolve);});}/**
+	 * Show a two-step confirmation dialog.
+	 *
+	 * If confirmPhrase is provided, user must type it to enable the confirm button.
+	 * Otherwise, first click changes button text, second click confirms.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options (title, confirmPhrase, phrasePrompt, confirmLabel, cancelLabel)
+	 * @returns {Promise<boolean>}
+	 */doubleConfirm(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultDoubleConfirmOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDoubleConfirmDialog(tmpOptions.title,pMessage,fResolve,tmpOptions);this._showDialog(tmpDialog,fResolve);});}/**
+	 * Build a standard confirm dialog element.
+	 *
+	 * @param {string} pTitle
+	 * @param {string} pMessage
+	 * @param {function} fResolve - Promise resolver
+	 * @param {object} pOptions
+	 * @returns {HTMLElement}
+	 */_buildDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpBtnStyle=pOptions.dangerous?'danger':'primary';let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+'<p>'+this._escapeHTML(pMessage)+'</p>'+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--'+tmpBtnStyle+'" data-action="confirm">'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpConfirmBtn.addEventListener('click',()=>{tmpDismiss(true);});tmpDialog._dismiss=tmpDismiss;tmpDialog._focusTarget=tmpCancelBtn;return tmpDialog;}/**
+	 * Build a double-confirm dialog element.
+	 *
+	 * @param {string} pTitle
+	 * @param {string} pMessage
+	 * @param {function} fResolve - Promise resolver
+	 * @param {object} pOptions
+	 * @returns {HTMLElement}
+	 */_buildDoubleConfirmDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpHasPhrase=typeof pOptions.confirmPhrase==='string'&&pOptions.confirmPhrase.length>0;let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';let tmpBodyContent='<p>'+this._escapeHTML(pMessage)+'</p>';if(tmpHasPhrase){let tmpPromptText=pOptions.phrasePrompt.replace('{phrase}',pOptions.confirmPhrase);tmpBodyContent+='<div class="pict-modal-confirm-prompt">'+this._escapeHTML(tmpPromptText)+'</div>'+'<input type="text" class="pict-modal-confirm-input" autocomplete="off" spellcheck="false" />';}tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+tmpBodyContent+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--danger" data-action="confirm" disabled>'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});if(tmpHasPhrase){// Phrase-based: enable confirm button when input matches
+let tmpInput=tmpDialog.querySelector('.pict-modal-confirm-input');tmpInput.addEventListener('input',()=>{tmpConfirmBtn.disabled=tmpInput.value!==pOptions.confirmPhrase;});tmpConfirmBtn.addEventListener('click',()=>{if(!tmpConfirmBtn.disabled){tmpDismiss(true);}});tmpDialog._focusTarget=tmpInput;}else{// Two-click: first click changes label, second click confirms
+let tmpClickCount=0;let tmpOriginalLabel=pOptions.confirmLabel;tmpConfirmBtn.disabled=false;tmpConfirmBtn.addEventListener('click',()=>{tmpClickCount++;if(tmpClickCount===1){tmpConfirmBtn.textContent='Click again to confirm';}else{tmpDismiss(true);}});tmpDialog._focusTarget=tmpCancelBtn;}tmpDialog._dismiss=tmpDismiss;return tmpDialog;}/**
+	 * Show a dialog element: append to body, show overlay, animate in.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {function} fResolve - Promise resolver (for overlay click dismiss)
+	 */_showDialog(pDialog,fResolve){let tmpModalEntry={element:pDialog,dismiss:pDialog._dismiss,type:'confirm'};// Show overlay
+let tmpOverlayClickHandler=null;if(this._modal.options.OverlayClickDismisses){tmpOverlayClickHandler=()=>{pDialog._dismiss(false);};}this._modal._overlay.show(tmpOverlayClickHandler);// Append to body
+document.body.appendChild(pDialog);// Track active modal
+this._modal._activeModals.push(tmpModalEntry);// Animate in
+void pDialog.offsetHeight;pDialog.classList.add('pict-modal-visible');// Focus
+if(pDialog._focusTarget){pDialog._focusTarget.focus();}// Keyboard handler
+pDialog._keyHandler=pEvent=>{if(pEvent.key==='Escape'){pDialog._dismiss(false);}};document.addEventListener('keydown',pDialog._keyHandler);}/**
+	 * Dismiss a dialog: animate out, remove from DOM, hide overlay.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {*} pResult - Value to resolve the promise with
+	 * @param {function} fResolve - Promise resolver
+	 */_dismissDialog(pDialog,pResult,fResolve){// Prevent double-dismiss
+if(pDialog._dismissed){return;}pDialog._dismissed=true;// Remove keyboard handler
+if(pDialog._keyHandler){document.removeEventListener('keydown',pDialog._keyHandler);}// Animate out
+pDialog.classList.remove('pict-modal-visible');// Remove from active modals
+this._modal._activeModals=this._modal._activeModals.filter(pEntry=>{return pEntry.element!==pDialog;});// Update overlay click handler to point to new topmost modal
+if(this._modal._activeModals.length>0){let tmpTopModal=this._modal._activeModals[this._modal._activeModals.length-1];this._modal._overlay.updateClickHandler(this._modal.options.OverlayClickDismisses?tmpTopModal.dismiss:null);}// Hide overlay
+this._modal._overlay.hide();// Remove from DOM after transition
+setTimeout(()=>{if(pDialog.parentNode){pDialog.parentNode.removeChild(pDialog);}},220);// Resolve promise
+fResolve(pResult);}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalConfirm;},{}],94:[function(require,module,exports){/**
+ * Pict-Modal-Overlay
+ *
+ * Manages a shared backdrop overlay element appended to document.body.
+ * Reference-counted — created on first modal open, removed when last closes.
+ */class PictModalOverlay{constructor(pModal){this._modal=pModal;this._element=null;this._refCount=0;}/**
+	 * Show the overlay (incrementing reference count).
+	 * Creates the DOM element on first call.
+	 *
+	 * @param {function} [fOnClick] - Optional click handler (e.g. dismiss topmost modal)
+	 */show(fOnClick){this._refCount++;if(!this._element){this._element=document.createElement('div');this._element.className='pict-modal-overlay';document.body.appendChild(this._element);// Force reflow so the transition animates
+void this._element.offsetHeight;this._element.classList.add('pict-modal-visible');}if(fOnClick){// Store the latest click handler (for the topmost modal)
+this._currentClickHandler=fOnClick;this._element.onclick=pEvent=>{if(pEvent.target===this._element&&this._currentClickHandler){this._currentClickHandler();}};}}/**
+	 * Update the overlay click handler (e.g. when topmost modal changes).
+	 *
+	 * @param {function} [fOnClick] - New click handler
+	 */updateClickHandler(fOnClick){this._currentClickHandler=fOnClick||null;}/**
+	 * Hide the overlay (decrementing reference count).
+	 * Removes the DOM element when reference count reaches zero.
+	 */hide(){this._refCount--;if(this._refCount<=0){this._refCount=0;if(this._element){this._element.classList.remove('pict-modal-visible');let tmpElement=this._element;// Remove after transition
+setTimeout(()=>{if(tmpElement.parentNode){tmpElement.parentNode.removeChild(tmpElement);}},220);this._element=null;this._currentClickHandler=null;}}}/**
+	 * Force-remove the overlay regardless of reference count.
+	 */destroy(){this._refCount=0;if(this._element&&this._element.parentNode){this._element.parentNode.removeChild(this._element);}this._element=null;this._currentClickHandler=null;}}module.exports=PictModalOverlay;},{}],95:[function(require,module,exports){/**
+ * Pict-Modal-Panel
+ *
+ * Adds resizable and collapsible panel behavior to any DOM element.
+ * Follows the handler composition pattern used by the other modal
+ * handlers (confirm, window, toast, tooltip).
+ *
+ * Usage:
+ *   let handle = modal.panel('#my-panel', { position: 'right', width: 340 });
+ *   handle.toggle();
+ *   handle.destroy();
+ */class PictModalPanel{constructor(pModal){this._modal=pModal;this._panels=[];}/**
+	 * Attach resizable/collapsible panel behavior to an element.
+	 *
+	 * @param {string} pTargetSelector - CSS selector for the panel element
+	 * @param {object} [pOptions] - Panel options
+	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
+	 */create(pTargetSelector,pOptions){let tmpDefaults=this._modal&&this._modal.options&&this._modal.options.DefaultPanelOptions||{};let tmpOptions=Object.assign({},{position:'right',width:340,minWidth:200,maxWidth:600,collapsible:true,collapsed:false,persist:false,persistKey:'',onResize:null,onToggle:null},tmpDefaults,pOptions);if(typeof document==='undefined')return this._nullHandle();let tmpTarget=document.querySelector(pTargetSelector);if(!tmpTarget)return this._nullHandle();let tmpId=this._modal._nextId();let tmpIsRight=tmpOptions.position==='right';let tmpIsCollapsed=false;let tmpCurrentWidth=tmpOptions.width;let tmpDestroyed=false;// Restore persisted state
+if(tmpOptions.persist&&tmpOptions.persistKey){try{let tmpStored=localStorage.getItem('pict-panel-'+tmpOptions.persistKey);if(tmpStored){let tmpParsed=JSON.parse(tmpStored);if(typeof tmpParsed.width==='number')tmpCurrentWidth=tmpParsed.width;if(typeof tmpParsed.collapsed==='boolean')tmpOptions.collapsed=tmpParsed.collapsed;}}catch(e){/* ignore */}}// Apply classes and initial width
+tmpTarget.classList.add('pict-panel');tmpTarget.classList.add(tmpIsRight?'pict-panel-right':'pict-panel-left');tmpTarget.style.width=tmpCurrentWidth+'px';// Remove display:none if present — panel uses width collapse instead
+if(tmpTarget.style.display==='none'){tmpTarget.style.display='';}// ── Create the edge container ───────────────────────
+let tmpEdge=document.createElement('div');tmpEdge.className='pict-panel-edge '+(tmpIsRight?'pict-panel-edge-right':'pict-panel-edge-left');// Resize handle
+let tmpResize=document.createElement('div');tmpResize.className='pict-panel-resize';tmpEdge.appendChild(tmpResize);// Collapse tab (chevron SVG)
+let tmpTab=null;if(tmpOptions.collapsible){tmpTab=document.createElement('div');tmpTab.className='pict-panel-tab';tmpTab.title='Toggle panel';tmpEdge.appendChild(tmpTab);}// Insert edge as a sibling so it is not clipped by the
+// panel's own overflow (e.g. overflow-y: auto for scrolling).
+// Right panels: edge goes BEFORE the panel (left side).
+// Left panels: edge goes AFTER the panel (right side).
+if(tmpTarget.parentNode){if(tmpIsRight){tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget);}else{tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget.nextSibling);}}else{tmpTarget.insertBefore(tmpEdge,tmpTarget.firstChild);}// ── Chevron SVG helper ──────────────────────────────
+let tmpChevronRight='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,3 11,8 6,13"/></svg>';let tmpChevronLeft='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg>';let tmpUpdateChevron=()=>{if(!tmpTab)return;if(tmpIsRight){tmpTab.innerHTML=tmpIsCollapsed?tmpChevronLeft:tmpChevronRight;}else{tmpTab.innerHTML=tmpIsCollapsed?tmpChevronRight:tmpChevronLeft;}};// ── Persist helper ──────────────────────────────────
+let tmpPersist=()=>{if(!tmpOptions.persist||!tmpOptions.persistKey)return;try{localStorage.setItem('pict-panel-'+tmpOptions.persistKey,JSON.stringify({width:tmpCurrentWidth,collapsed:tmpIsCollapsed}));}catch(e){/* ignore */}};// ── Collapse / expand ───────────────────────────────
+let tmpCollapse=()=>{if(tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(true);};let tmpExpand=()=>{if(!tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=false;tmpEdge.classList.remove('pict-panel-edge-collapsed');tmpTarget.classList.remove('pict-panel-collapsed');tmpTarget.style.width=tmpCurrentWidth+'px';tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(false);};let tmpToggle=()=>{if(tmpIsCollapsed)tmpExpand();else tmpCollapse();};let tmpSetWidth=pWidth=>{if(tmpDestroyed)return;let tmpWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,pWidth));tmpCurrentWidth=tmpWidth;if(!tmpIsCollapsed){tmpTarget.style.width=tmpWidth+'px';}tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpWidth);};// ── Tab click ───────────────────────────────────────
+if(tmpTab){tmpTab.addEventListener('click',pEvent=>{pEvent.stopPropagation();tmpToggle();});}// ── Resize drag ─────────────────────────────────────
+let tmpOnMouseDown=pEvent=>{if(tmpIsCollapsed)return;pEvent.preventDefault();let tmpStartX=pEvent.clientX;let tmpStartWidth=tmpTarget.offsetWidth;tmpResize.classList.add('dragging');tmpTarget.style.transition='none';document.body.style.userSelect='none';document.body.style.cursor='col-resize';let tmpOnMouseMove=pMoveEvent=>{let tmpDelta=tmpIsRight?tmpStartX-pMoveEvent.clientX:pMoveEvent.clientX-tmpStartX;let tmpNewWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,tmpStartWidth+tmpDelta));tmpTarget.style.width=tmpNewWidth+'px';};let tmpOnMouseUp=pUpEvent=>{document.removeEventListener('mousemove',tmpOnMouseMove);document.removeEventListener('mouseup',tmpOnMouseUp);tmpResize.classList.remove('dragging');tmpTarget.style.transition='';document.body.style.userSelect='';document.body.style.cursor='';// Capture the final width
+tmpCurrentWidth=tmpTarget.offsetWidth;tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpCurrentWidth);};document.addEventListener('mousemove',tmpOnMouseMove);document.addEventListener('mouseup',tmpOnMouseUp);};tmpResize.addEventListener('mousedown',tmpOnMouseDown);// ── Initial state ───────────────────────────────────
+tmpUpdateChevron();if(tmpOptions.collapsed){tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();}// ── Destroy ─────────────────────────────────────────
+let tmpDestroy=()=>{if(tmpDestroyed)return;tmpDestroyed=true;tmpResize.removeEventListener('mousedown',tmpOnMouseDown);if(tmpEdge.parentNode)tmpEdge.remove();tmpTarget.classList.remove('pict-panel','pict-panel-right','pict-panel-left','pict-panel-collapsed');tmpTarget.style.width='';tmpTarget.style.transition='';let tmpIdx=this._panels.indexOf(tmpHandle);if(tmpIdx>=0)this._panels.splice(tmpIdx,1);};// ── Return handle ───────────────────────────────────
+let tmpHandle={id:tmpId,collapse:tmpCollapse,expand:tmpExpand,toggle:tmpToggle,setWidth:tmpSetWidth,destroy:tmpDestroy};this._panels.push(tmpHandle);return tmpHandle;}/**
+	 * Return a no-op handle for server-side or missing-element cases.
+	 */_nullHandle(){return{id:0,collapse:()=>{},expand:()=>{},toggle:()=>{},setWidth:()=>{},destroy:()=>{}};}/**
+	 * Destroy all active panels.
+	 */destroyAll(){let tmpPanels=this._panels.slice();for(let i=0;i<tmpPanels.length;i++){tmpPanels[i].destroy();}}}module.exports=PictModalPanel;},{}],96:[function(require,module,exports){/**
+ * Pict-Modal-Toast
+ *
+ * Manages toast notification elements with auto-dismiss and stacking.
+ */class PictModalToast{constructor(pModal){this._modal=pModal;this._containers={};}/**
+	 * Show a toast notification.
+	 *
+	 * @param {string} pMessage - Toast message text
+	 * @param {object} [pOptions] - Options (type, duration, position, dismissible)
+	 * @returns {{ dismiss: function }} Handle with dismiss method
+	 */toast(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultToastOptions,pOptions);let tmpContainer=this._getContainer(tmpOptions.position);let tmpId=this._modal._nextId();let tmpToast=document.createElement('div');tmpToast.className='pict-modal-toast pict-modal-toast--'+tmpOptions.type;tmpToast.id='pict-modal-toast-'+tmpId;let tmpContent='<span class="pict-modal-toast-message">'+this._escapeHTML(pMessage)+'</span>';if(tmpOptions.dismissible){tmpContent+='<button class="pict-modal-toast-dismiss" aria-label="Dismiss">&times;</button>';}tmpToast.innerHTML=tmpContent;// Create handle
+let tmpDismissed=false;let tmpTimeoutHandle=null;let tmpDismiss=()=>{if(tmpDismissed){return;}tmpDismissed=true;if(tmpTimeoutHandle){clearTimeout(tmpTimeoutHandle);}// Exit animation
+tmpToast.classList.remove('pict-modal-visible');tmpToast.classList.add('pict-modal-toast-exit');// Remove from active list
+this._modal._activeToasts=this._modal._activeToasts.filter(pEntry=>{return pEntry.element!==tmpToast;});// Remove from DOM after transition
+setTimeout(()=>{if(tmpToast.parentNode){tmpToast.parentNode.removeChild(tmpToast);}this._cleanupContainer(tmpOptions.position);},220);};let tmpHandle={dismiss:tmpDismiss};// Wire dismiss button
+if(tmpOptions.dismissible){let tmpDismissBtn=tmpToast.querySelector('.pict-modal-toast-dismiss');if(tmpDismissBtn){tmpDismissBtn.addEventListener('click',tmpDismiss);}}// Append to container
+tmpContainer.appendChild(tmpToast);// Track
+let tmpEntry={element:tmpToast,dismiss:tmpDismiss,handle:tmpHandle};this._modal._activeToasts.push(tmpEntry);// Animate in
+void tmpToast.offsetHeight;tmpToast.classList.add('pict-modal-visible');// Auto-dismiss
+if(tmpOptions.duration>0){tmpTimeoutHandle=setTimeout(tmpDismiss,tmpOptions.duration);}return tmpHandle;}/**
+	 * Get or create a toast container for the given position.
+	 *
+	 * @param {string} pPosition - Position key (e.g. 'top-right')
+	 * @returns {HTMLElement}
+	 */_getContainer(pPosition){if(this._containers[pPosition]){return this._containers[pPosition];}let tmpContainer=document.createElement('div');tmpContainer.className='pict-modal-toast-container pict-modal-toast-container--'+pPosition;document.body.appendChild(tmpContainer);this._containers[pPosition]=tmpContainer;return tmpContainer;}/**
+	 * Remove a container if it has no more toasts.
+	 *
+	 * @param {string} pPosition
+	 */_cleanupContainer(pPosition){let tmpContainer=this._containers[pPosition];if(tmpContainer&&tmpContainer.children.length===0){if(tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}delete this._containers[pPosition];}}/**
+	 * Dismiss all active toasts.
+	 */dismissAll(){let tmpToasts=this._modal._activeToasts.slice();for(let i=0;i<tmpToasts.length;i++){tmpToasts[i].dismiss();}}/**
+	 * Destroy all containers.
+	 */destroy(){this.dismissAll();let tmpPositions=Object.keys(this._containers);for(let i=0;i<tmpPositions.length;i++){let tmpContainer=this._containers[tmpPositions[i]];if(tmpContainer&&tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}}this._containers={};}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalToast;},{}],97:[function(require,module,exports){/**
+ * Pict-Modal-Tooltip
+ *
+ * Manages simple text and rich HTML tooltips with positioning and auto-flip.
+ */class PictModalTooltip{constructor(pModal){this._modal=pModal;}/**
+	 * Attach a simple text tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pText - Tooltip text
+	 * @param {object} [pOptions] - Options (position, delay, maxWidth)
+	 * @returns {{ destroy: function }} Handle to remove the tooltip
+	 */tooltip(pElement,pText,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pText,false,tmpOptions);}/**
+	 * Attach a rich HTML tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pHTMLContent - HTML content for the tooltip
+	 * @param {object} [pOptions] - Options (position, delay, maxWidth, interactive)
+	 * @returns {{ destroy: function }} Handle to remove the tooltip
+	 */richTooltip(pElement,pHTMLContent,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pHTMLContent,true,tmpOptions);}/**
+	 * Internal: attach tooltip event listeners to an element.
+	 *
+	 * @param {HTMLElement} pElement
+	 * @param {string} pContent
+	 * @param {boolean} pIsHTML
+	 * @param {object} pOptions
+	 * @returns {{ destroy: function }}
+	 */_attachTooltip(pElement,pContent,pIsHTML,pOptions){let tmpTooltipElement=null;let tmpShowTimeout=null;let tmpHideTimeout=null;let tmpDestroyed=false;let tmpId=this._modal._nextId();let tmpShow=()=>{if(tmpDestroyed||tmpTooltipElement){return;}tmpTooltipElement=document.createElement('div');tmpTooltipElement.className='pict-modal-tooltip pict-modal-tooltip--'+pOptions.position;tmpTooltipElement.id='pict-modal-tooltip-'+tmpId;tmpTooltipElement.setAttribute('role','tooltip');tmpTooltipElement.style.maxWidth=pOptions.maxWidth;if(pOptions.interactive){tmpTooltipElement.classList.add('pict-modal-tooltip-interactive');}// Arrow
+let tmpArrow=document.createElement('div');tmpArrow.className='pict-modal-tooltip-arrow';// Content
+let tmpContentDiv=document.createElement('div');if(pIsHTML){tmpContentDiv.innerHTML=pContent;}else{tmpContentDiv.textContent=pContent;}tmpTooltipElement.appendChild(tmpArrow);tmpTooltipElement.appendChild(tmpContentDiv);document.body.appendChild(tmpTooltipElement);// Set aria-describedby on target
+pElement.setAttribute('aria-describedby',tmpTooltipElement.id);// Position
+this._positionTooltip(tmpTooltipElement,pElement,pOptions.position);// Animate in
+void tmpTooltipElement.offsetHeight;tmpTooltipElement.classList.add('pict-modal-visible');// Track
+this._modal._activeTooltips.push({element:tmpTooltipElement,targetElement:pElement,destroy:tmpDestroy});// For interactive tooltips, allow hovering over the tooltip itself
+if(pOptions.interactive&&tmpTooltipElement){tmpTooltipElement.addEventListener('mouseenter',()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}});tmpTooltipElement.addEventListener('mouseleave',()=>{tmpHide();});}};let tmpHide=()=>{if(!tmpTooltipElement){return;}tmpTooltipElement.classList.remove('pict-modal-visible');let tmpEl=tmpTooltipElement;tmpTooltipElement=null;// Remove aria
+pElement.removeAttribute('aria-describedby');// Remove from tracking
+this._modal._activeTooltips=this._modal._activeTooltips.filter(pEntry=>{return pEntry.element!==tmpEl;});setTimeout(()=>{if(tmpEl.parentNode){tmpEl.parentNode.removeChild(tmpEl);}},220);};let tmpOnMouseEnter=()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnMouseLeave=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}// Small delay before hiding to allow moving to interactive tooltip
+if(pOptions.interactive){tmpHideTimeout=setTimeout(tmpHide,100);}else{tmpHide();}};let tmpOnFocusIn=()=>{tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnFocusOut=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}tmpHide();};// Attach listeners
+pElement.addEventListener('mouseenter',tmpOnMouseEnter);pElement.addEventListener('mouseleave',tmpOnMouseLeave);pElement.addEventListener('focusin',tmpOnFocusIn);pElement.addEventListener('focusout',tmpOnFocusOut);let tmpDestroy=()=>{if(tmpDestroyed){return;}tmpDestroyed=true;if(tmpShowTimeout){clearTimeout(tmpShowTimeout);}if(tmpHideTimeout){clearTimeout(tmpHideTimeout);}tmpHide();pElement.removeEventListener('mouseenter',tmpOnMouseEnter);pElement.removeEventListener('mouseleave',tmpOnMouseLeave);pElement.removeEventListener('focusin',tmpOnFocusIn);pElement.removeEventListener('focusout',tmpOnFocusOut);};return{destroy:tmpDestroy};}/**
+	 * Position a tooltip element relative to the target element.
+	 * Flips direction if the tooltip would overflow the viewport.
+	 *
+	 * @param {HTMLElement} pTooltip
+	 * @param {HTMLElement} pTarget
+	 * @param {string} pPosition - 'top', 'bottom', 'left', 'right'
+	 */_positionTooltip(pTooltip,pTarget,pPosition){let tmpTargetRect=pTarget.getBoundingClientRect();let tmpTooltipRect=pTooltip.getBoundingClientRect();let tmpGap=8;let tmpPosition=pPosition;// Flip if needed
+if(tmpPosition==='top'&&tmpTargetRect.top<tmpTooltipRect.height+tmpGap){tmpPosition='bottom';}else if(tmpPosition==='bottom'&&window.innerHeight-tmpTargetRect.bottom<tmpTooltipRect.height+tmpGap){tmpPosition='top';}else if(tmpPosition==='left'&&tmpTargetRect.left<tmpTooltipRect.width+tmpGap){tmpPosition='right';}else if(tmpPosition==='right'&&window.innerWidth-tmpTargetRect.right<tmpTooltipRect.width+tmpGap){tmpPosition='left';}// Update class for arrow direction
+pTooltip.className=pTooltip.className.replace(/pict-modal-tooltip--\w+/,'pict-modal-tooltip--'+tmpPosition);let tmpTop=0;let tmpLeft=0;switch(tmpPosition){case'top':tmpTop=tmpTargetRect.top-tmpTooltipRect.height-tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'bottom':tmpTop=tmpTargetRect.bottom+tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'left':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.left-tmpTooltipRect.width-tmpGap;break;case'right':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.right+tmpGap;break;}// Clamp to viewport
+tmpLeft=Math.max(4,Math.min(tmpLeft,window.innerWidth-tmpTooltipRect.width-4));tmpTop=Math.max(4,Math.min(tmpTop,window.innerHeight-tmpTooltipRect.height-4));pTooltip.style.top=tmpTop+'px';pTooltip.style.left=tmpLeft+'px';}/**
+	 * Dismiss all active tooltips.
+	 */dismissAll(){let tmpTooltips=this._modal._activeTooltips.slice();for(let i=0;i<tmpTooltips.length;i++){tmpTooltips[i].destroy();}}}module.exports=PictModalTooltip;},{}],98:[function(require,module,exports){/**
+ * Pict-Modal-Window
+ *
+ * Builds custom floating modal windows with arbitrary content and buttons.
+ */class PictModalWindow{constructor(pModal){this._modal=pModal;}/**
+	 * Show a custom modal window.
+	 *
+	 * @param {object} [pOptions] - Options
+	 * @param {string} [pOptions.title] - Dialog title
+	 * @param {string} [pOptions.content] - HTML content for the body
+	 * @param {Array} [pOptions.buttons] - Array of { Hash, Label, Style }
+	 * @param {boolean} [pOptions.closeable] - Whether the close button and overlay dismiss are enabled
+	 * @param {string} [pOptions.width] - CSS width value
+	 * @param {function} [pOptions.onOpen] - Called after dialog is shown, receives dialog element
+	 * @param {function} [pOptions.onClose] - Called after dialog is dismissed
+	 * @returns {Promise<string|null>} Resolves with clicked button Hash, or null on close
+	 */show(pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultModalOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDialog(tmpOptions,fResolve);this._showDialog(tmpDialog,tmpOptions,fResolve);});}/**
+	 * Build the modal dialog element.
+	 *
+	 * @param {object} pOptions
+	 * @param {function} fResolve
+	 * @returns {HTMLElement}
+	 */_buildDialog(pOptions,fResolve){let tmpId=this._modal._nextId();let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width=pOptions.width;// Header
+let tmpHeaderHTML='';if(pOptions.title||pOptions.closeable){tmpHeaderHTML='<div class="pict-modal-dialog-header">';tmpHeaderHTML+='<span class="pict-modal-dialog-title">'+this._escapeHTML(pOptions.title)+'</span>';if(pOptions.closeable){tmpHeaderHTML+='<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>';}tmpHeaderHTML+='</div>';}// Body
+let tmpBodyHTML='<div class="pict-modal-dialog-body">'+(pOptions.content||'')+'</div>';// Footer with buttons
+let tmpFooterHTML='';if(pOptions.buttons&&pOptions.buttons.length>0){tmpFooterHTML='<div class="pict-modal-dialog-footer">';for(let i=0;i<pOptions.buttons.length;i++){let tmpButton=pOptions.buttons[i];let tmpBtnClass='pict-modal-btn';if(tmpButton.Style){tmpBtnClass+=' pict-modal-btn--'+tmpButton.Style;}tmpFooterHTML+='<button class="'+tmpBtnClass+'" data-hash="'+this._escapeHTML(tmpButton.Hash)+'">'+this._escapeHTML(tmpButton.Label)+'</button>';}tmpFooterHTML+='</div>';}tmpDialog.innerHTML=tmpHeaderHTML+tmpBodyHTML+tmpFooterHTML;let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve,pOptions);};// Wire close button
+if(pOptions.closeable){let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');if(tmpCloseBtn){tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(null);});}}// Wire action buttons
+let tmpActionButtons=tmpDialog.querySelectorAll('[data-hash]');for(let i=0;i<tmpActionButtons.length;i++){let tmpBtn=tmpActionButtons[i];tmpBtn.addEventListener('click',()=>{tmpDismiss(tmpBtn.getAttribute('data-hash'));});}tmpDialog._dismiss=tmpDismiss;return tmpDialog;}/**
+	 * Show the dialog: append to body, show overlay, animate in.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {object} pOptions
+	 * @param {function} fResolve
+	 */_showDialog(pDialog,pOptions,fResolve){let tmpModalEntry={element:pDialog,dismiss:pDialog._dismiss,type:'window'};// Show overlay
+let tmpOverlayClickHandler=null;if(this._modal.options.OverlayClickDismisses&&pOptions.closeable){tmpOverlayClickHandler=()=>{pDialog._dismiss(null);};}this._modal._overlay.show(tmpOverlayClickHandler);// Append to body
+document.body.appendChild(pDialog);// Track
+this._modal._activeModals.push(tmpModalEntry);// Animate in
+void pDialog.offsetHeight;pDialog.classList.add('pict-modal-visible');// Focus first button or close button
+let tmpFocusTarget=pDialog.querySelector('.pict-modal-btn')||pDialog.querySelector('.pict-modal-dialog-close');if(tmpFocusTarget){tmpFocusTarget.focus();}// Keyboard handler
+pDialog._keyHandler=pEvent=>{if(pEvent.key==='Escape'&&pOptions.closeable){pDialog._dismiss(null);}};document.addEventListener('keydown',pDialog._keyHandler);// onOpen callback
+if(typeof pOptions.onOpen==='function'){pOptions.onOpen(pDialog);}}/**
+	 * Dismiss the dialog: animate out, remove from DOM, hide overlay.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {*} pResult
+	 * @param {function} fResolve
+	 * @param {object} pOptions
+	 */_dismissDialog(pDialog,pResult,fResolve,pOptions){if(pDialog._dismissed){return;}pDialog._dismissed=true;if(pDialog._keyHandler){document.removeEventListener('keydown',pDialog._keyHandler);}pDialog.classList.remove('pict-modal-visible');this._modal._activeModals=this._modal._activeModals.filter(pEntry=>{return pEntry.element!==pDialog;});if(this._modal._activeModals.length>0){let tmpTopModal=this._modal._activeModals[this._modal._activeModals.length-1];this._modal._overlay.updateClickHandler(this._modal.options.OverlayClickDismisses?tmpTopModal.dismiss:null);}this._modal._overlay.hide();setTimeout(()=>{if(pDialog.parentNode){pDialog.parentNode.removeChild(pDialog);}},220);if(typeof pOptions.onClose==='function'){pOptions.onClose(pResult);}fResolve(pResult);}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalWindow;},{}],99:[function(require,module,exports){module.exports={"AutoInitialize":true,"AutoRender":false,"AutoSolveWithApp":false,"ViewIdentifier":"Pict-Section-Modal","OverlayClickDismisses":true,"DefaultConfirmOptions":{"title":"Confirm","confirmLabel":"OK","cancelLabel":"Cancel","dangerous":false},"DefaultDoubleConfirmOptions":{"title":"Are you sure?","confirmLabel":"Confirm","cancelLabel":"Cancel","phrasePrompt":"Type \"{phrase}\" to confirm:","confirmPhrase":""},"DefaultModalOptions":{"title":"","content":"","buttons":[],"closeable":true,"width":"480px"},"DefaultTooltipOptions":{"position":"top","delay":200,"maxWidth":"300px","interactive":false},"DefaultToastOptions":{"type":"info","duration":3000,"position":"top-right","dismissible":true},"DefaultPanelOptions":{"position":"right","width":340,"minWidth":200,"maxWidth":600,"collapsible":true,"collapsed":false,"persist":false,"persistKey":""},"Templates":[],"Renderables":[],"CSS":/*css*/`
+/* pict-section-modal */
+.pict-modal-root
+{
+	/* Overlay */
+	--pict-modal-overlay-bg: rgba(0, 0, 0, 0.5);
+
+	/* Dialog */
+	--pict-modal-bg: #ffffff;
+	--pict-modal-fg: #1a1a1a;
+	--pict-modal-border: #e0e0e0;
+	--pict-modal-border-radius: 8px;
+	--pict-modal-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+	--pict-modal-header-bg: #f5f5f5;
+	--pict-modal-header-fg: #1a1a1a;
+	--pict-modal-header-border: #e0e0e0;
+
+	/* Buttons */
+	--pict-modal-btn-bg: #e0e0e0;
+	--pict-modal-btn-fg: #1a1a1a;
+	--pict-modal-btn-hover-bg: #d0d0d0;
+	--pict-modal-btn-primary-bg: #2563eb;
+	--pict-modal-btn-primary-fg: #ffffff;
+	--pict-modal-btn-primary-hover-bg: #1d4ed8;
+	--pict-modal-btn-danger-bg: #dc2626;
+	--pict-modal-btn-danger-fg: #ffffff;
+	--pict-modal-btn-danger-hover-bg: #b91c1c;
+	--pict-modal-btn-border-radius: 4px;
+
+	/* Toast */
+	--pict-modal-toast-bg: #333333;
+	--pict-modal-toast-fg: #ffffff;
+	--pict-modal-toast-success-bg: #16a34a;
+	--pict-modal-toast-warning-bg: #d97706;
+	--pict-modal-toast-error-bg: #dc2626;
+	--pict-modal-toast-info-bg: #2563eb;
+	--pict-modal-toast-border-radius: 6px;
+	--pict-modal-toast-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+	/* Tooltip */
+	--pict-modal-tooltip-bg: #1a1a1a;
+	--pict-modal-tooltip-fg: #ffffff;
+	--pict-modal-tooltip-border-radius: 4px;
+	--pict-modal-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+	/* Typography */
+	--pict-modal-font-family: system-ui, -apple-system, sans-serif;
+	--pict-modal-font-size: 14px;
+	--pict-modal-title-font-size: 16px;
+
+	/* Animation */
+	--pict-modal-transition-duration: 200ms;
+}
+
+/* Overlay */
+.pict-modal-overlay
+{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background: var(--pict-modal-overlay-bg);
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-overlay.pict-modal-visible
+{
+	opacity: 1;
+}
+
+/* Dialog */
+.pict-modal-dialog
+{
+	position: fixed;
+	z-index: 1010;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) translateY(-20px);
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease,
+	            transform var(--pict-modal-transition-duration) ease;
+
+	max-width: 90vw;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+
+	background: var(--pict-modal-bg);
+	color: var(--pict-modal-fg);
+	border: 1px solid var(--pict-modal-border);
+	border-radius: var(--pict-modal-border-radius);
+	box-shadow: var(--pict-modal-shadow);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+}
+
+.pict-modal-dialog.pict-modal-visible
+{
+	opacity: 1;
+	transform: translate(-50%, -50%) translateY(0);
+}
+
+.pict-modal-dialog-header
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	background: var(--pict-modal-header-bg);
+	color: var(--pict-modal-header-fg);
+	border-bottom: 1px solid var(--pict-modal-header-border);
+	border-radius: var(--pict-modal-border-radius) var(--pict-modal-border-radius) 0 0;
+}
+
+.pict-modal-dialog-title
+{
+	font-size: var(--pict-modal-title-font-size);
+	font-weight: 600;
+}
+
+.pict-modal-dialog-close
+{
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	color: var(--pict-modal-fg);
+	padding: 0 4px;
+	line-height: 1;
+	opacity: 0.6;
+}
+
+.pict-modal-dialog-close:hover
+{
+	opacity: 1;
+}
+
+.pict-modal-dialog-body
+{
+	padding: 16px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.pict-modal-dialog-footer
+{
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 12px 16px;
+	border-top: 1px solid var(--pict-modal-border);
+}
+
+/* Buttons */
+.pict-modal-btn
+{
+	padding: 8px 16px;
+	border: none;
+	border-radius: var(--pict-modal-btn-border-radius);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	cursor: pointer;
+	background: var(--pict-modal-btn-bg);
+	color: var(--pict-modal-btn-fg);
+	transition: background var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-btn:hover
+{
+	background: var(--pict-modal-btn-hover-bg);
+}
+
+.pict-modal-btn:disabled
+{
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.pict-modal-btn--primary
+{
+	background: var(--pict-modal-btn-primary-bg);
+	color: var(--pict-modal-btn-primary-fg);
+}
+
+.pict-modal-btn--primary:hover
+{
+	background: var(--pict-modal-btn-primary-hover-bg);
+}
+
+.pict-modal-btn--danger
+{
+	background: var(--pict-modal-btn-danger-bg);
+	color: var(--pict-modal-btn-danger-fg);
+}
+
+.pict-modal-btn--danger:hover
+{
+	background: var(--pict-modal-btn-danger-hover-bg);
+}
+
+/* Double confirm input */
+.pict-modal-confirm-input
+{
+	width: 100%;
+	padding: 8px 12px;
+	margin-top: 12px;
+	border: 1px solid var(--pict-modal-border);
+	border-radius: var(--pict-modal-btn-border-radius);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	box-sizing: border-box;
+}
+
+.pict-modal-confirm-input:focus
+{
+	outline: 2px solid var(--pict-modal-btn-primary-bg);
+	outline-offset: -1px;
+}
+
+.pict-modal-confirm-prompt
+{
+	margin-top: 12px;
+	font-size: 13px;
+	color: var(--pict-modal-fg);
+	opacity: 0.7;
+}
+
+/* Toast container */
+.pict-modal-toast-container
+{
+	position: fixed;
+	z-index: 1030;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	pointer-events: none;
+	max-width: 400px;
+}
+
+.pict-modal-toast-container--top-right
+{
+	top: 16px;
+	right: 16px;
+}
+
+.pict-modal-toast-container--top-left
+{
+	top: 16px;
+	left: 16px;
+}
+
+.pict-modal-toast-container--bottom-right
+{
+	bottom: 16px;
+	right: 16px;
+}
+
+.pict-modal-toast-container--bottom-left
+{
+	bottom: 16px;
+	left: 16px;
+}
+
+.pict-modal-toast-container--top-center
+{
+	top: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.pict-modal-toast-container--bottom-center
+{
+	bottom: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+/* Toast */
+.pict-modal-toast
+{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	border-radius: var(--pict-modal-toast-border-radius);
+	box-shadow: var(--pict-modal-toast-shadow);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	background: var(--pict-modal-toast-bg);
+	color: var(--pict-modal-toast-fg);
+	pointer-events: auto;
+	opacity: 0;
+	transform: translateX(100%);
+	transition: opacity var(--pict-modal-transition-duration) ease,
+	            transform var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-toast.pict-modal-visible
+{
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.pict-modal-toast.pict-modal-toast-exit
+{
+	opacity: 0;
+	transform: translateX(100%);
+}
+
+.pict-modal-toast--info
+{
+	background: var(--pict-modal-toast-info-bg);
+}
+
+.pict-modal-toast--success
+{
+	background: var(--pict-modal-toast-success-bg);
+}
+
+.pict-modal-toast--warning
+{
+	background: var(--pict-modal-toast-warning-bg);
+}
+
+.pict-modal-toast--error
+{
+	background: var(--pict-modal-toast-error-bg);
+}
+
+.pict-modal-toast-message
+{
+	flex: 1;
+}
+
+.pict-modal-toast-dismiss
+{
+	background: none;
+	border: none;
+	color: inherit;
+	font-size: 18px;
+	cursor: pointer;
+	padding: 0 2px;
+	line-height: 1;
+	opacity: 0.7;
+}
+
+.pict-modal-toast-dismiss:hover
+{
+	opacity: 1;
+}
+
+/* Tooltip */
+.pict-modal-tooltip
+{
+	position: fixed;
+	z-index: 1020;
+	padding: 6px 10px;
+	border-radius: var(--pict-modal-tooltip-border-radius);
+	box-shadow: var(--pict-modal-tooltip-shadow);
+	background: var(--pict-modal-tooltip-bg);
+	color: var(--pict-modal-tooltip-fg);
+	font-family: var(--pict-modal-font-family);
+	font-size: 13px;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease;
+	white-space: normal;
+	word-wrap: break-word;
+}
+
+.pict-modal-tooltip.pict-modal-tooltip-interactive
+{
+	pointer-events: auto;
+}
+
+.pict-modal-tooltip.pict-modal-visible
+{
+	opacity: 1;
+}
+
+.pict-modal-tooltip-arrow
+{
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: var(--pict-modal-tooltip-bg);
+	transform: rotate(45deg);
+}
+
+.pict-modal-tooltip--top .pict-modal-tooltip-arrow
+{
+	bottom: -4px;
+	left: 50%;
+	margin-left: -4px;
+}
+
+.pict-modal-tooltip--bottom .pict-modal-tooltip-arrow
+{
+	top: -4px;
+	left: 50%;
+	margin-left: -4px;
+}
+
+.pict-modal-tooltip--left .pict-modal-tooltip-arrow
+{
+	right: -4px;
+	top: 50%;
+	margin-top: -4px;
+}
+
+.pict-modal-tooltip--right .pict-modal-tooltip-arrow
+{
+	left: -4px;
+	top: 50%;
+	margin-top: -4px;
+}
+
+/* ── Resizable / Collapsible Panels ──────────────── */
+.pict-panel
+{
+	position: relative;
+	transition: width 0.2s ease;
+	flex-shrink: 0;
+	overflow: visible;
+}
+.pict-panel-collapsed
+{
+	width: 0 !important;
+	min-width: 0 !important;
+	overflow: visible;
+}
+.pict-panel-collapsed > *:not(.pict-panel-edge)
+{
+	display: none;
+}
+
+/* Edge container — zero-width flex sibling of the panel.
+   Sits next to the panel in the flex layout; children
+   use absolute positioning to overlap the panel boundary. */
+.pict-panel-edge
+{
+	position: relative;
+	width: 0;
+	flex-shrink: 0;
+	z-index: 50;
+	overflow: visible;
+}
+
+/* Resize handle — thin strip on the panel boundary */
+.pict-panel-resize
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	cursor: col-resize;
+	background: transparent;
+	transition: background 0.15s, width 0.15s;
+}
+.pict-panel-edge-right .pict-panel-resize
+{
+	right: 0;
+	border-right: 1px solid var(--pict-panel-border, #DDD6CA);
+}
+.pict-panel-edge-left .pict-panel-resize
+{
+	left: 0;
+	border-left: 1px solid var(--pict-panel-border, #DDD6CA);
+}
+.pict-panel-resize:hover,
+.pict-panel-edge:hover .pict-panel-resize
+{
+	width: 5px;
+	background: var(--pict-panel-accent, #2E7D74);
+	opacity: 0.5;
+}
+.pict-panel-resize.dragging
+{
+	width: 5px;
+	background: var(--pict-panel-accent, #2E7D74);
+	opacity: 1;
+	transition: none;
+}
+.pict-panel-edge-collapsed .pict-panel-resize
+{
+	display: none;
+}
+
+/* Collapse tab — tucked sliver at rest, slides out on hover */
+.pict-panel-tab
+{
+	position: absolute;
+	top: 8px;
+	width: 8px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: var(--pict-panel-border, #DDD6CA);
+	border: 1px solid var(--pict-panel-border, #DDD6CA);
+	cursor: pointer;
+	color: var(--pict-panel-fg, #8A7F72);
+	font-size: 10px;
+	line-height: 1;
+	opacity: 0.5;
+	transition: opacity 0.25s, width 0.2s ease, height 0.2s ease, left 0.2s ease, right 0.2s ease, background 0.2s;
+	z-index: 51;
+}
+.pict-panel-edge:hover .pict-panel-tab,
+.pict-panel-tab:hover
+{
+	width: 20px;
+	height: 32px;
+	opacity: 1;
+	overflow: visible;
+	background: var(--pict-panel-bg, #FAF8F4);
+}
+/* Right panel: tab to the left of the edge */
+.pict-panel-edge-right .pict-panel-tab
+{
+	right: 0;
+	border-right: none;
+	border-radius: 4px 0 0 4px;
+}
+.pict-panel-edge-right:hover .pict-panel-tab,
+.pict-panel-edge-right .pict-panel-tab:hover
+{
+	right: 0;
+}
+/* Left panel: tab to the right of the edge */
+.pict-panel-edge-left .pict-panel-tab
+{
+	left: 0;
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+}
+.pict-panel-edge-left:hover .pict-panel-tab,
+.pict-panel-edge-left .pict-panel-tab:hover
+{
+	left: 0;
+}
+/* When collapsed — more visible */
+.pict-panel-edge-collapsed .pict-panel-tab
+{
+	width: 10px;
+	height: 28px;
+	opacity: 0.6;
+}
+.pict-panel-edge-collapsed .pict-panel-tab:hover,
+.pict-panel-edge-collapsed:hover .pict-panel-tab
+{
+	width: 20px;
+	height: 32px;
+	opacity: 1;
+	overflow: visible;
+	background: var(--pict-panel-bg, #FAF8F4);
+}
+`};},{}],100:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictModalOverlay=require('./Pict-Modal-Overlay.js');const libPictModalConfirm=require('./Pict-Modal-Confirm.js');const libPictModalWindow=require('./Pict-Modal-Window.js');const libPictModalToast=require('./Pict-Modal-Toast.js');const libPictModalTooltip=require('./Pict-Modal-Tooltip.js');const libPictModalPanel=require('./Pict-Modal-Panel.js');const _DefaultConfiguration=require('./Pict-Section-Modal-DefaultConfiguration.js');class PictSectionModal extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this._activeModals=[];this._activeTooltips=[];this._activeToasts=[];this._idCounter=0;this._overlay=new libPictModalOverlay(this);this._confirm=new libPictModalConfirm(this);this._window=new libPictModalWindow(this);this._toast=new libPictModalToast(this);this._tooltip=new libPictModalTooltip(this);this._panel=new libPictModalPanel(this);}onBeforeInitialize(){super.onBeforeInitialize();// Ensure the root class is on the body for CSS variable scoping
+if(typeof document!=='undefined'&&document.body){if(!document.body.classList.contains('pict-modal-root')){document.body.classList.add('pict-modal-root');}}return super.onBeforeInitialize();}/**
+	 * Generate a unique ID for DOM elements.
+	 *
+	 * @returns {number}
+	 */_nextId(){this._idCounter++;return this._idCounter;}// -- Confirm API --
+/**
+	 * Show a confirmation dialog.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options { title, confirmLabel, cancelLabel, dangerous }
+	 * @returns {Promise<boolean>}
+	 */confirm(pMessage,pOptions){return this._confirm.confirm(pMessage,pOptions);}/**
+	 * Show a two-step confirmation dialog.
+	 *
+	 * If confirmPhrase is set, the user must type it to enable the confirm button.
+	 * If no confirmPhrase, the first click changes the button text and the second click confirms.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options { title, confirmPhrase, phrasePrompt, confirmLabel, cancelLabel }
+	 * @returns {Promise<boolean>}
+	 */doubleConfirm(pMessage,pOptions){return this._confirm.doubleConfirm(pMessage,pOptions);}// -- Modal Window API --
+/**
+	 * Show a custom modal window.
+	 *
+	 * @param {object} [pOptions] - Options { title, content, buttons, closeable, width, onOpen, onClose }
+	 * @returns {Promise<string|null>} Resolves with the clicked button Hash, or null on close
+	 */show(pOptions){return this._window.show(pOptions);}// -- Tooltip API --
+/**
+	 * Attach a simple text tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pText - Tooltip text
+	 * @param {object} [pOptions] - Options { position, delay, maxWidth }
+	 * @returns {{ destroy: function }}
+	 */tooltip(pElement,pText,pOptions){return this._tooltip.tooltip(pElement,pText,pOptions);}/**
+	 * Attach a rich HTML tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pHTMLContent - HTML content
+	 * @param {object} [pOptions] - Options { position, delay, maxWidth, interactive }
+	 * @returns {{ destroy: function }}
+	 */richTooltip(pElement,pHTMLContent,pOptions){return this._tooltip.richTooltip(pElement,pHTMLContent,pOptions);}// -- Toast API --
+/**
+	 * Show a toast notification.
+	 *
+	 * @param {string} pMessage - Toast message
+	 * @param {object} [pOptions] - Options { type, duration, position, dismissible }
+	 * @returns {{ dismiss: function }}
+	 */toast(pMessage,pOptions){return this._toast.toast(pMessage,pOptions);}// -- Panel API --
+/**
+	 * Attach resizable/collapsible panel behavior to a DOM element.
+	 *
+	 * @param {string} pTargetSelector - CSS selector for the panel element
+	 * @param {object} [pOptions] - Options { position, width, minWidth, maxWidth, collapsible, collapsed, persist, persistKey, onResize, onToggle }
+	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
+	 */panel(pTargetSelector,pOptions){return this._panel.create(pTargetSelector,pOptions);}// -- Cleanup API --
+/**
+	 * Dismiss all open modals.
+	 */dismissModals(){let tmpModals=this._activeModals.slice();for(let i=tmpModals.length-1;i>=0;i--){tmpModals[i].dismiss(null);}}/**
+	 * Dismiss all active tooltips.
+	 */dismissTooltips(){this._tooltip.dismissAll();}/**
+	 * Dismiss all active toasts.
+	 */dismissToasts(){this._toast.dismissAll();}/**
+	 * Dismiss everything: modals, tooltips, and toasts.
+	 */dismissAll(){this.dismissModals();this.dismissTooltips();this.dismissToasts();}/**
+	 * Clean up all DOM elements when the view is destroyed.
+	 *//**
+	 * Destroy all active panels.
+	 */destroyPanels(){this._panel.destroyAll();}destroy(){this.dismissAll();this.destroyPanels();this._overlay.destroy();this._toast.destroy();if(typeof super.destroy==='function'){return super.destroy();}}}module.exports=PictSectionModal;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-Modal-Confirm.js":93,"./Pict-Modal-Overlay.js":94,"./Pict-Modal-Panel.js":95,"./Pict-Modal-Toast.js":96,"./Pict-Modal-Tooltip.js":97,"./Pict-Modal-Window.js":98,"./Pict-Section-Modal-DefaultConfiguration.js":99,"pict-view":102}],101:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.68","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.363","quackage":"^1.0.65","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.67","fable-serviceproviderbase":"^3.0.19"}};},{}],102:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,// If this is set to true, when the App autorenders (on load) this will.
 // After the App initializes, render will be called as soon as it's added.
@@ -6180,13 +9870,29 @@ this.pict.ContentAssignment.projectContent(pRenderable.RenderMethod,pRenderable.
 	 *
 	 * @param {Renderable} pRenderable - The renderable that was rendered.
 	 */onAfterRender(pRenderable){if(this.pict.LogNoisiness>3){this.log.trace(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRender:`);}if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const tmpTransactionQueue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const tmpEvent of tmpTransactionQueue){const tmpView=this.pict.views[tmpEvent.Data.ViewHash];if(!tmpView){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRender: Could not find view for transaction hash ${pRenderable.TransactionHash} and ViewHash ${tmpEvent.Data.ViewHash}.`);continue;}tmpView.onAfterProject();// Execute the developer-overridable post-render behavior
-tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
+tmpView.onAfterRender(tmpEvent.Data.Renderable);}// Queue is drained and nested child renders have each cleaned up
+// their own transactions; remove this root render's entry from
+// the tracking map so it does not leak.
+this.pict.TransactionTracking.unregisterTransaction(pRenderable.TransactionHash);}return true;}/**
 	 * Lifecycle hook that triggers after the view is rendered (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
 	 * @param {Renderable} pRenderable - The renderable that was rendered.
-	 */onAfterRenderAsync(fCallback,pRenderable){this.onAfterRender(pRenderable);const tmpAnticipate=this.fable.newAnticipate();if(pRenderable&&pRenderable.RootRenderableViewHash===this.Hash){const queue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const event of queue){/** @type {PictView} */const tmpView=this.pict.views[event.Data.ViewHash];if(!tmpView){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRenderAsync: Could not find view for transaction hash ${pRenderable.TransactionHash} and ViewHash ${event.Data.ViewHash}.`);continue;}tmpAnticipate.anticipate(tmpView.onAfterProjectAsync.bind(tmpView));tmpAnticipate.anticipate(fNext=>{tmpView.onAfterRenderAsync(fNext,event.Data.Renderable);});// Execute the developer-overridable post-render behavior
-}}return tmpAnticipate.wait(fCallback);}/**
+	 */onAfterRenderAsync(fCallback,pRenderable){// NOTE: this.onAfterRender(pRenderable) will itself clear the
+// transaction queue and unregister the transaction if this view is
+// the root renderable - see onAfterRender above. So by the time the
+// loop below runs, the queue is already empty and there is nothing
+// to drain. Keeping the async queue walk here defensively in case
+// future subclasses override onAfterRender in ways that skip the
+// drain, but the common path is now "sync drain, async no-op".
+this.onAfterRender(pRenderable);const tmpAnticipate=this.fable.newAnticipate();const tmpIsRootRenderable=pRenderable&&pRenderable.RootRenderableViewHash===this.Hash;if(tmpIsRootRenderable){const queue=this.pict.TransactionTracking.clearTransactionQueue(pRenderable.TransactionHash)||[];for(const event of queue){/** @type {PictView} */const tmpView=this.pict.views[event.Data.ViewHash];if(!tmpView){this.log.error(`PictView [${this.UUID}]::[${this.Hash}] ${this.options.ViewIdentifier} onAfterRenderAsync: Could not find view for transaction hash ${pRenderable.TransactionHash} and ViewHash ${event.Data.ViewHash}.`);continue;}tmpAnticipate.anticipate(tmpView.onAfterProjectAsync.bind(tmpView));tmpAnticipate.anticipate(fNext=>{tmpView.onAfterRenderAsync(fNext,event.Data.Renderable);});// Execute the developer-overridable post-render behavior
+}}return tmpAnticipate.wait(pError=>{// Nested virtual-assignment children have now settled their own
+// onAfterRenderAsync chains (and unregistered their own
+// transactions along the way). Ensure this root render's entry
+// is also gone - unregisterTransaction is a no-op if the sync
+// onAfterRender above already removed it, so this is safe to
+// call unconditionally on the root path.
+if(tmpIsRootRenderable&&pRenderable&&pRenderable.TransactionHash){this.pict.TransactionTracking.unregisterTransaction(pRenderable.TransactionHash);}return fCallback(pError);});}/**
 	 * Lifecycle hook that triggers after the view is projected into the DOM.
 	 *
 	 * @param {Renderable} pRenderable - The renderable that was projected.
@@ -6275,7 +9981,7 @@ tmpView.onAfterRender(tmpEvent.Data.Renderable);}}return true;}/**
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":87,"fable-serviceproviderbase":20}],89:[function(require,module,exports){// shim for using process in browser
+	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":101,"fable-serviceproviderbase":20}],103:[function(require,module,exports){// shim for using process in browser
 var process=module.exports={};// cached from whatever global is present so that test runners that stub it
 // don't break things.  But we need to wrap it in a try catch in case it is
 // wrapped in strict mode code which doesn't define any globals.  It's inside a
@@ -6293,7 +9999,7 @@ return cachedClearTimeout.call(null,marker);}catch(e){// same as above but when 
 // Some versions of I.E. have different rules for clearTimeout vs setTimeout
 return cachedClearTimeout.call(this,marker);}}}var queue=[];var draining=false;var currentQueue;var queueIndex=-1;function cleanUpNextTick(){if(!draining||!currentQueue){return;}draining=false;if(currentQueue.length){queue=currentQueue.concat(queue);}else{queueIndex=-1;}if(queue.length){drainQueue();}}function drainQueue(){if(draining){return;}var timeout=runTimeout(cleanUpNextTick);draining=true;var len=queue.length;while(len){currentQueue=queue;queue=[];while(++queueIndex<len){if(currentQueue){currentQueue[queueIndex].run();}}queueIndex=-1;len=queue.length;}currentQueue=null;draining=false;runClearTimeout(timeout);}process.nextTick=function(fun){var args=new Array(arguments.length-1);if(arguments.length>1){for(var i=1;i<arguments.length;i++){args[i-1]=arguments[i];}}queue.push(new Item(fun,args));if(queue.length===1&&!draining){runTimeout(drainQueue);}};// v8 likes predictible objects
 function Item(fun,array){this.fun=fun;this.array=array;}Item.prototype.run=function(){this.fun.apply(null,this.array);};process.title='browser';process.browser=true;process.env={};process.argv=[];process.version='';// empty string to avoid regexp issues
-process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],90:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
+process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],104:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
 	 * The `punycode` object.
 	 * @name punycode
 	 * @type Object
@@ -6448,7 +10154,7 @@ for/* no condition */(q=delta,k=base;;k+=base){t=k<=bias?tMin:k>=bias+tMax?tMax:
 if(typeof define=='function'&&typeof define.amd=='object'&&define.amd){define('punycode',function(){return punycode;});}else if(freeExports&&freeModule){if(module.exports==freeExports){// in Node.js, io.js, or RingoJS v0.8.0+
 freeModule.exports=punycode;}else{// in Narwhal or RingoJS v0.7.0-
 for(key in punycode){punycode.hasOwnProperty(key)&&(freeExports[key]=punycode[key]);}}}else{// in Rhino or a web browser
-root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],91:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],92:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":91,"./parse":93,"./stringify":94}],93:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
+root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],105:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],106:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":105,"./parse":107,"./stringify":108}],107:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
 // application/x-www-form-urlencoded body and the encoding of the page containing
 // the form is iso-8859-1, or when the submitted form has an accept-charset
 // attribute of iso-8859-1. Presumably also with other charsets that do not contain
@@ -6461,13 +10167,13 @@ var i;var charset=options.charset;if(options.charsetSentinel){for(i=0;i<parts.le
 }}}for(i=0;i<parts.length;++i){if(i===skipIndex){continue;}var part=parts[i];var bracketEqualsPos=part.indexOf(']=');var pos=bracketEqualsPos===-1?part.indexOf('='):bracketEqualsPos+1;var key;var val;if(pos===-1){key=options.decoder(part,defaults.decoder,charset,'key');val=options.strictNullHandling?null:'';}else{key=options.decoder(part.slice(0,pos),defaults.decoder,charset,'key');if(key!==null){val=utils.maybeMap(parseArrayValue(part.slice(pos+1),options,isArray(obj[key])?obj[key].length:0),function(encodedVal){return options.decoder(encodedVal,defaults.decoder,charset,'value');});}}if(val&&options.interpretNumericEntities&&charset==='iso-8859-1'){val=interpretNumericEntities(String(val));}if(part.indexOf('[]=')>-1){val=isArray(val)?[val]:val;}if(options.comma&&isArray(val)&&val.length>options.arrayLimit){if(options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}val=utils.combine([],val,options.arrayLimit,options.plainObjects);}if(key!==null){var existing=has.call(obj,key);if(existing&&(options.duplicates==='combine'||part.indexOf('[]=')>-1)){obj[key]=utils.combine(obj[key],val,options.arrayLimit,options.plainObjects);}else if(!existing||options.duplicates==='last'){obj[key]=val;}}}return obj;};var parseObject=function(chain,val,options,valuesParsed){var currentArrayLength=0;if(chain.length>0&&chain[chain.length-1]==='[]'){var parentKey=chain.slice(0,-1).join('');currentArrayLength=Array.isArray(val)&&val[parentKey]?val[parentKey].length:0;}var leaf=valuesParsed?val:parseArrayValue(val,options,currentArrayLength);for(var i=chain.length-1;i>=0;--i){var obj;var root=chain[i];if(root==='[]'&&options.parseArrays){if(utils.isOverflow(leaf)){// leaf is already an overflow object, preserve it
 obj=leaf;}else{obj=options.allowEmptyArrays&&(leaf===''||options.strictNullHandling&&leaf===null)?[]:utils.combine([],leaf,options.arrayLimit,options.plainObjects);}}else{obj=options.plainObjects?{__proto__:null}:{};var cleanRoot=root.charAt(0)==='['&&root.charAt(root.length-1)===']'?root.slice(1,-1):root;var decodedRoot=options.decodeDotInKeys?cleanRoot.replace(/%2E/g,'.'):cleanRoot;var index=parseInt(decodedRoot,10);var isValidArrayIndex=!isNaN(index)&&root!==decodedRoot&&String(index)===decodedRoot&&index>=0&&options.parseArrays;if(!options.parseArrays&&decodedRoot===''){obj={0:leaf};}else if(isValidArrayIndex&&index<options.arrayLimit){obj=[];obj[index]=leaf;}else if(isValidArrayIndex&&options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}else if(isValidArrayIndex){obj[index]=leaf;utils.markOverflow(obj,index);}else if(decodedRoot!=='__proto__'){obj[decodedRoot]=leaf;}}leaf=obj;}return leaf;};var splitKeyIntoSegments=function splitKeyIntoSegments(givenKey,options){var key=options.allowDots?givenKey.replace(/\.([^.[]+)/g,'[$1]'):givenKey;if(options.depth<=0){if(!options.plainObjects&&has.call(Object.prototype,key)){if(!options.allowPrototypes){return;}}return[key];}var brackets=/(\[[^[\]]*])/;var child=/(\[[^[\]]*])/g;var segment=brackets.exec(key);var parent=segment?key.slice(0,segment.index):key;var keys=[];if(parent){if(!options.plainObjects&&has.call(Object.prototype,parent)){if(!options.allowPrototypes){return;}}keys[keys.length]=parent;}var i=0;while((segment=child.exec(key))!==null&&i<options.depth){i+=1;var segmentContent=segment[1].slice(1,-1);if(!options.plainObjects&&has.call(Object.prototype,segmentContent)){if(!options.allowPrototypes){return;}}keys[keys.length]=segment[1];}if(segment){if(options.strictDepth===true){throw new RangeError('Input depth exceeded depth option of '+options.depth+' and strictDepth is true');}keys[keys.length]='['+key.slice(segment.index)+']';}return keys;};var parseKeys=function parseQueryStringKeys(givenKey,val,options,valuesParsed){if(!givenKey){return;}var keys=splitKeyIntoSegments(givenKey,options);if(!keys){return;}return parseObject(keys,val,options,valuesParsed);};var normalizeParseOptions=function normalizeParseOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.decodeDotInKeys!=='undefined'&&typeof opts.decodeDotInKeys!=='boolean'){throw new TypeError('`decodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.decoder!==null&&typeof opts.decoder!=='undefined'&&typeof opts.decoder!=='function'){throw new TypeError('Decoder has to be a function.');}if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}if(typeof opts.throwOnLimitExceeded!=='undefined'&&typeof opts.throwOnLimitExceeded!=='boolean'){throw new TypeError('`throwOnLimitExceeded` option must be a boolean');}var charset=typeof opts.charset==='undefined'?defaults.charset:opts.charset;var duplicates=typeof opts.duplicates==='undefined'?defaults.duplicates:opts.duplicates;if(duplicates!=='combine'&&duplicates!=='first'&&duplicates!=='last'){throw new TypeError('The duplicates option must be either combine, first, or last');}var allowDots=typeof opts.allowDots==='undefined'?opts.decodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,allowPrototypes:typeof opts.allowPrototypes==='boolean'?opts.allowPrototypes:defaults.allowPrototypes,allowSparse:typeof opts.allowSparse==='boolean'?opts.allowSparse:defaults.allowSparse,arrayLimit:typeof opts.arrayLimit==='number'?opts.arrayLimit:defaults.arrayLimit,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,comma:typeof opts.comma==='boolean'?opts.comma:defaults.comma,decodeDotInKeys:typeof opts.decodeDotInKeys==='boolean'?opts.decodeDotInKeys:defaults.decodeDotInKeys,decoder:typeof opts.decoder==='function'?opts.decoder:defaults.decoder,delimiter:typeof opts.delimiter==='string'||utils.isRegExp(opts.delimiter)?opts.delimiter:defaults.delimiter,// eslint-disable-next-line no-implicit-coercion, no-extra-parens
 depth:typeof opts.depth==='number'||opts.depth===false?+opts.depth:defaults.depth,duplicates:duplicates,ignoreQueryPrefix:opts.ignoreQueryPrefix===true,interpretNumericEntities:typeof opts.interpretNumericEntities==='boolean'?opts.interpretNumericEntities:defaults.interpretNumericEntities,parameterLimit:typeof opts.parameterLimit==='number'?opts.parameterLimit:defaults.parameterLimit,parseArrays:opts.parseArrays!==false,plainObjects:typeof opts.plainObjects==='boolean'?opts.plainObjects:defaults.plainObjects,strictDepth:typeof opts.strictDepth==='boolean'?!!opts.strictDepth:defaults.strictDepth,strictMerge:typeof opts.strictMerge==='boolean'?!!opts.strictMerge:defaults.strictMerge,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling,throwOnLimitExceeded:typeof opts.throwOnLimitExceeded==='boolean'?opts.throwOnLimitExceeded:false};};module.exports=function(str,opts){var options=normalizeParseOptions(opts);if(str===''||str===null||typeof str==='undefined'){return options.plainObjects?{__proto__:null}:{};}var tempObj=typeof str==='string'?parseValues(str,options):str;var obj=options.plainObjects?{__proto__:null}:{};// Iterate over the keys and setup the new object
-var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":95}],94:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
+var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":109}],108:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
 indices:false,serializeDate:function serializeDate(date){return toISO.call(date);},skipNulls:false,strictNullHandling:false};var isNonNullishPrimitive=function isNonNullishPrimitive(v){return typeof v==='string'||typeof v==='number'||typeof v==='boolean'||typeof v==='symbol'||typeof v==='bigint';};var sentinel={};var stringify=function stringify(object,prefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,sideChannel){var obj=object;var tmpSc=sideChannel;var step=0;var findFlag=false;while((tmpSc=tmpSc.get(sentinel))!==void undefined&&!findFlag){// Where object last appeared in the ref tree
 var pos=tmpSc.get(object);step+=1;if(typeof pos!=='undefined'){if(pos===step){throw new RangeError('Cyclic object value');}else{findFlag=true;// Break while
 }}if(typeof tmpSc.get(sentinel)==='undefined'){step=0;}}if(typeof filter==='function'){obj=filter(prefix,obj);}else if(obj instanceof Date){obj=serializeDate(obj);}else if(generateArrayPrefix==='comma'&&isArray(obj)){obj=utils.maybeMap(obj,function(value){if(value instanceof Date){return serializeDate(value);}return value;});}if(obj===null){if(strictNullHandling){return encoder&&!encodeValuesOnly?encoder(prefix,defaults.encoder,charset,'key',format):prefix;}obj='';}if(isNonNullishPrimitive(obj)||utils.isBuffer(obj)){if(encoder){var keyValue=encodeValuesOnly?prefix:encoder(prefix,defaults.encoder,charset,'key',format);return[formatter(keyValue)+'='+formatter(encoder(obj,defaults.encoder,charset,'value',format))];}return[formatter(prefix)+'='+formatter(String(obj))];}var values=[];if(typeof obj==='undefined'){return values;}var objKeys;if(generateArrayPrefix==='comma'&&isArray(obj)){// we need to join elements in
 if(encodeValuesOnly&&encoder){obj=utils.maybeMap(obj,encoder);}objKeys=[{value:obj.length>0?obj.join(',')||null:void undefined}];}else if(isArray(filter)){objKeys=filter;}else{var keys=Object.keys(obj);objKeys=sort?keys.sort(sort):keys;}var encodedPrefix=encodeDotInKeys?String(prefix).replace(/\./g,'%2E'):String(prefix);var adjustedPrefix=commaRoundTrip&&isArray(obj)&&obj.length===1?encodedPrefix+'[]':encodedPrefix;if(allowEmptyArrays&&isArray(obj)&&obj.length===0){return adjustedPrefix+'[]';}for(var j=0;j<objKeys.length;++j){var key=objKeys[j];var value=typeof key==='object'&&key&&typeof key.value!=='undefined'?key.value:obj[key];if(skipNulls&&value===null){continue;}var encodedKey=allowDots&&encodeDotInKeys?String(key).replace(/\./g,'%2E'):String(key);var keyPrefix=isArray(obj)?typeof generateArrayPrefix==='function'?generateArrayPrefix(adjustedPrefix,encodedKey):adjustedPrefix:adjustedPrefix+(allowDots?'.'+encodedKey:'['+encodedKey+']');sideChannel.set(object,step);var valueSideChannel=getSideChannel();valueSideChannel.set(sentinel,sideChannel);pushToArray(values,stringify(value,keyPrefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,generateArrayPrefix==='comma'&&encodeValuesOnly&&isArray(obj)?null:encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,valueSideChannel));}return values;};var normalizeStringifyOptions=function normalizeStringifyOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.encodeDotInKeys!=='undefined'&&typeof opts.encodeDotInKeys!=='boolean'){throw new TypeError('`encodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.encoder!==null&&typeof opts.encoder!=='undefined'&&typeof opts.encoder!=='function'){throw new TypeError('Encoder has to be a function.');}var charset=opts.charset||defaults.charset;if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}var format=formats['default'];if(typeof opts.format!=='undefined'){if(!has.call(formats.formatters,opts.format)){throw new TypeError('Unknown format option provided.');}format=opts.format;}var formatter=formats.formatters[format];var filter=defaults.filter;if(typeof opts.filter==='function'||isArray(opts.filter)){filter=opts.filter;}var arrayFormat;if(opts.arrayFormat in arrayPrefixGenerators){arrayFormat=opts.arrayFormat;}else if('indices'in opts){arrayFormat=opts.indices?'indices':'repeat';}else{arrayFormat=defaults.arrayFormat;}if('commaRoundTrip'in opts&&typeof opts.commaRoundTrip!=='boolean'){throw new TypeError('`commaRoundTrip` must be a boolean, or absent');}var allowDots=typeof opts.allowDots==='undefined'?opts.encodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{addQueryPrefix:typeof opts.addQueryPrefix==='boolean'?opts.addQueryPrefix:defaults.addQueryPrefix,allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,arrayFormat:arrayFormat,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,commaRoundTrip:!!opts.commaRoundTrip,delimiter:typeof opts.delimiter==='undefined'?defaults.delimiter:opts.delimiter,encode:typeof opts.encode==='boolean'?opts.encode:defaults.encode,encodeDotInKeys:typeof opts.encodeDotInKeys==='boolean'?opts.encodeDotInKeys:defaults.encodeDotInKeys,encoder:typeof opts.encoder==='function'?opts.encoder:defaults.encoder,encodeValuesOnly:typeof opts.encodeValuesOnly==='boolean'?opts.encodeValuesOnly:defaults.encodeValuesOnly,filter:filter,format:format,formatter:formatter,serializeDate:typeof opts.serializeDate==='function'?opts.serializeDate:defaults.serializeDate,skipNulls:typeof opts.skipNulls==='boolean'?opts.skipNulls:defaults.skipNulls,sort:typeof opts.sort==='function'?opts.sort:null,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling};};module.exports=function(object,opts){var obj=object;var options=normalizeStringifyOptions(opts);var objKeys;var filter;if(typeof options.filter==='function'){filter=options.filter;obj=filter('',obj);}else if(isArray(options.filter)){filter=options.filter;objKeys=filter;}var keys=[];if(typeof obj!=='object'||obj===null){return'';}var generateArrayPrefix=arrayPrefixGenerators[options.arrayFormat];var commaRoundTrip=generateArrayPrefix==='comma'&&options.commaRoundTrip;if(!objKeys){objKeys=Object.keys(obj);}if(options.sort){objKeys.sort(options.sort);}var sideChannel=getSideChannel();for(var i=0;i<objKeys.length;++i){var key=objKeys[i];var value=obj[key];if(options.skipNulls&&value===null){continue;}pushToArray(keys,stringify(value,key,generateArrayPrefix,commaRoundTrip,options.allowEmptyArrays,options.strictNullHandling,options.skipNulls,options.encodeDotInKeys,options.encode?options.encoder:null,options.filter,options.sort,options.allowDots,options.serializeDate,options.format,options.formatter,options.encodeValuesOnly,options.charset,sideChannel));}var joined=keys.join(options.delimiter);var prefix=options.addQueryPrefix===true?'?':'';if(options.charsetSentinel){if(options.charset==='iso-8859-1'){// encodeURIComponent('&#10003;'), the "numeric entity" representation of a checkmark
 prefix+='utf8=%26%2310003%3B&';}else{// encodeURIComponent('✓')
-prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":91,"./utils":95,"side-channel":112}],95:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
+prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":105,"./utils":109,"side-channel":126}],109:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
 // Stores the current max numeric index for O(1) lookup
 var overflowChannel=getSideChannel();var markOverflow=function markOverflow(obj,maxIndex){overflowChannel.set(obj,maxIndex);return obj;};var isOverflow=function isOverflow(obj){return overflowChannel.has(obj);};var getMaxIndex=function getMaxIndex(obj){return overflowChannel.get(obj);};var setMaxIndex=function setMaxIndex(obj,maxIndex){overflowChannel.set(obj,maxIndex);};var hexTable=function(){var array=[];for(var i=0;i<256;++i){array[array.length]='%'+((i<16?'0':'')+i.toString(16)).toUpperCase();}return array;}();var compactQueue=function compactQueue(queue){while(queue.length>1){var item=queue.pop();var obj=item.obj[item.prop];if(isArray(obj)){var compacted=[];for(var j=0;j<obj.length;++j){if(typeof obj[j]!=='undefined'){compacted[compacted.length]=obj[j];}}item.obj[item.prop]=compacted;}}};var arrayToObject=function arrayToObject(source,options){var obj=options&&options.plainObjects?{__proto__:null}:{};for(var i=0;i<source.length;++i){if(typeof source[i]!=='undefined'){obj[i]=source[i];}}return obj;};var merge=function merge(target,source,options){/* eslint no-param-reassign: 0 */if(!source){return target;}if(typeof source!=='object'&&typeof source!=='function'){if(isArray(target)){var nextIndex=target.length;if(options&&typeof options.arrayLimit==='number'&&nextIndex>options.arrayLimit){return markOverflow(arrayToObject(target.concat(source),options),nextIndex);}target[nextIndex]=source;}else if(target&&typeof target==='object'){if(isOverflow(target)){// Add at next numeric index for overflow objects
 var newIndex=getMaxIndex(target)+1;target[newIndex]=source;setMaxIndex(target,newIndex);}else if(options&&options.strictMerge){return[target,source];}else if(options&&(options.plainObjects||options.allowPrototypes)||!has.call(Object.prototype,source)){target[source]=true;}}else{return[target,source];}return target;}if(!target||typeof target!=='object'){if(isOverflow(source)){// Create new object with target at 0, source values shifted by 1
@@ -6484,8 +10190,12 @@ if(str.length===0){return str;}var string=str;if(typeof str==='symbol'){string=S
 ||c>=0x61&&c<=0x7A// A-Z
 ||format===formats.RFC1738&&(c===0x28||c===0x29)// ( )
 ){arr[arr.length]=segment.charAt(i);continue;}if(c<0x80){arr[arr.length]=hexTable[c];continue;}if(c<0x800){arr[arr.length]=hexTable[0xC0|c>>6]+hexTable[0x80|c&0x3F];continue;}if(c<0xD800||c>=0xE000){arr[arr.length]=hexTable[0xE0|c>>12]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];continue;}i+=1;c=0x10000+((c&0x3FF)<<10|segment.charCodeAt(i)&0x3FF);arr[arr.length]=hexTable[0xF0|c>>18]+hexTable[0x80|c>>12&0x3F]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];}out+=arr.join('');}return out;};var compact=function compact(value){var queue=[{obj:{o:value},prop:'o'}];var refs=[];for(var i=0;i<queue.length;++i){var item=queue[i];var obj=item.obj[item.prop];var keys=Object.keys(obj);for(var j=0;j<keys.length;++j){var key=keys[j];var val=obj[key];if(typeof val==='object'&&val!==null&&refs.indexOf(val)===-1){queue[queue.length]={obj:obj,prop:key};refs[refs.length]=val;}}}compactQueue(queue);return value;};var isRegExp=function isRegExp(obj){return Object.prototype.toString.call(obj)==='[object RegExp]';};var isBuffer=function isBuffer(obj){if(!obj||typeof obj!=='object'){return false;}return!!(obj.constructor&&obj.constructor.isBuffer&&obj.constructor.isBuffer(obj));};var combine=function combine(a,b,arrayLimit,plainObjects){// If 'a' is already an overflow object, add to it
-if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":91,"side-channel":112}],96:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],97:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
-const libPictSectionFileBrowser=require('pict-section-filebrowser');// Provider
+if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":105,"side-channel":126}],110:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],111:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
+const libPictSectionFileBrowser=require('pict-section-filebrowser');// Vocabulary auto-linking + popover system (shared with retold-labs)
+const libPictProviderVocabulary=require('pict-provider-vocabulary');// Inline documentation (right-side panel)
+const libPictSectionInlineDocumentation=require('pict-section-inlinedocumentation');// Modal system (panels, dialogs, tooltips, toasts)
+const libPictSectionModal=require('pict-section-modal');// Content rendering
+const libPictSectionContent=require('pict-section-content');// Provider
 const libContentEditorProvider=require('./providers/Pict-Provider-ContentEditor.js');// Views
 const libViewLayout=require('./views/PictView-Editor-Layout.js');const libViewTopBar=require('./views/PictView-Editor-TopBar.js');const libViewMarkdownEditor=require('./views/PictView-Editor-MarkdownEditor.js');const libViewCodeEditor=require('./views/PictView-Editor-CodeEditor.js');const libViewSettingsPanel=require('./views/PictView-Editor-SettingsPanel.js');const libViewMarkdownReference=require('./views/PictView-Editor-MarkdownReference.js');const libViewTopics=require('./views/PictView-Editor-Topics.js');/**
  * Content Editor Application
@@ -6494,7 +10204,24 @@ const libViewLayout=require('./views/PictView-Editor-Layout.js');const libViewTo
  * retold-content-system Orator server. Uses pict-section-markdowneditor
  * for the editing experience and pict-section-filebrowser for file browsing.
  */class ContentEditorApplication extends libPictApplication{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Register the content editor provider
-this.pict.addProvider('ContentEditor-Provider',libContentEditorProvider.default_configuration,libContentEditorProvider);// Register views
+this.pict.addProvider('ContentEditor-Provider',libContentEditorProvider.default_configuration,libContentEditorProvider);// Register the vocabulary provider. The content system can
+// load terms from a vocabulary/ folder in the content tree
+// via the same API shape retold-labs uses, or from any URL.
+// Terms auto-link in rendered markdown previews via
+// pict-section-content's parseMarkdown vocabulary resolver.
+this.pict.addProvider('Vocabulary',libPictProviderVocabulary.default_configuration,libPictProviderVocabulary);// Register the vocabulary management view from the provider.
+// Mount it at the vocabulary panel container in the sidebar.
+// The onEditTerm callback opens the term file in the main
+// markdown editor instead of rendering an inline textarea.
+let tmpPictRef=this.pict;this.pict.addView('ContentEditor-Vocabulary',Object.assign({},libPictProviderVocabulary.VocabularyManagerView.default_configuration,{DefaultDestinationAddress:'#ContentEditor-Vocabulary-Container',VocabularyRoute:'#/vocabulary',VocabularyFolderPath:'vocabulary/',onEditTerm:function(pSlug,pFilePath){// Open the vocabulary term file in the main editor
+if(tmpPictRef&&tmpPictRef.PictApplication&&typeof tmpPictRef.PictApplication.navigateToFile==='function'){tmpPictRef.PictApplication.navigateToFile(pFilePath);}}}),libPictProviderVocabulary.VocabularyManagerView);// Inline documentation provider — powers the right-side
+// documentation panel. Renders markdown docs from the content
+// tree's docs/ folder with topic navigation, editing, and
+// vocabulary auto-linking.
+this.pict.addProvider('Pict-InlineDocumentation',libPictSectionInlineDocumentation.default_configuration,libPictSectionInlineDocumentation);// Content rendering provider (for markdown parsing with
+// vocabulary resolver in the documentation panel).
+this.pict.addProvider('Pict-Content',libPictSectionContent.PictContentProvider.default_configuration,libPictSectionContent.PictContentProvider);// Register the modal system (panels, dialogs, tooltips, toasts)
+this.pict.addView('Pict-Section-Modal',libPictSectionModal.default_configuration,libPictSectionModal);// Register views
 this.pict.addView('ContentEditor-Layout',libViewLayout.default_configuration,libViewLayout);this.pict.addView('ContentEditor-TopBar',libViewTopBar.default_configuration,libViewTopBar);this.pict.addView('ContentEditor-MarkdownEditor',libViewMarkdownEditor.default_configuration,libViewMarkdownEditor);this.pict.addView('ContentEditor-CodeEditor',libViewCodeEditor.default_configuration,libViewCodeEditor);this.pict.addView('ContentEditor-SettingsPanel',libViewSettingsPanel.default_configuration,libViewSettingsPanel);this.pict.addView('ContentEditor-MarkdownReference',libViewMarkdownReference.default_configuration,libViewMarkdownReference);this.pict.addView('ContentEditor-Topics',libViewTopics.default_configuration,libViewTopics);// Register the file browser -- override destination and layout for sidebar use
 let tmpFileBrowserConfig=JSON.parse(JSON.stringify(libPictSectionFileBrowser.default_configuration));tmpFileBrowserConfig.DefaultDestinationAddress='#ContentEditor-Sidebar-Container';tmpFileBrowserConfig.DefaultState.Layout='list-only';this.pict.addView('Pict-FileBrowser',tmpFileBrowserConfig,libPictSectionFileBrowser);// Register the list detail sub-view for the file list pane.
 // Override templates to:
@@ -6523,7 +10250,8 @@ let tmpListDetailConfig=JSON.parse(JSON.stringify(libPictSectionFileBrowser.Pict
 </div>
 `;}}this.pict.addView('Pict-FileBrowser-ListDetail',tmpListDetailConfig,libPictSectionFileBrowser.PictViewListDetail);}onAfterInitializeAsync(fCallback){// Expose the pict instance as window.pict for inline onclick handlers
 // (pict-section-filebrowser templates reference pict.views[...])
-if(typeof window!=='undefined'){window.pict=this.pict;}// Initialize application state
+if(typeof window!=='undefined'){window.pict=this.pict;// Warn the user before closing the tab/window with unsaved changes
+let tmpPictRef=this.pict;window.addEventListener('beforeunload',function(pEvent){if(tmpPictRef.AppData.ContentEditor&&tmpPictRef.AppData.ContentEditor.IsDirty){pEvent.preventDefault();pEvent.returnValue='';}});}// Initialize application state
 this.pict.AppData.ContentEditor={CurrentFile:'',ActiveEditor:'markdown',// 'markdown' or 'code'
 IsDirty:false,IsSaving:false,IsLoading:false,Files:[],Document:{Segments:[{Content:''}]},CodeContent:'',SaveStatus:'',SaveStatusClass:'',// Settings
 AutoSegmentMarkdown:false,AutoSegmentDepth:1,ContentPreviewMode:'off',MarkdownEditingControls:true,MarkdownWordWrap:true,CodeWordWrap:false,SidebarCollapsed:false,SidebarWidth:250,AutoPreviewImages:true,AutoPreviewVideo:false,AutoPreviewAudio:false,ShowHiddenFiles:false,TopicsFilePath:'.pict_documentation_topics.json'};// Restore persisted settings from localStorage
@@ -6537,7 +10265,28 @@ this.syncHiddenFilesSetting(()=>{// Load the file list into the file browser
 tmpSelf.loadFileList(null,()=>{// Check if there is a hash route to load
 tmpSelf.resolveHash();});});// Silently attempt to load the topics file
 let tmpTopicsPath=this.pict.AppData.ContentEditor.TopicsFilePath;if(tmpTopicsPath){let tmpTopicsView=this.pict.views['ContentEditor-Topics'];if(tmpTopicsView){tmpTopicsView.loadTopicsFile(tmpTopicsPath,()=>{// Silently ignore errors — the file may not exist yet
-});}}return super.onAfterInitializeAsync(fCallback);}/**
+});}}// Load vocabulary index for auto-linking. If the content tree
+// has a vocabulary/ folder, terms auto-link in markdown
+// previews with hover popovers. No-op if the folder doesn't
+// exist or the endpoint isn't available — the provider
+// handles both gracefully.
+let tmpVocabProvider=this.pict.providers&&this.pict.providers.Vocabulary;if(tmpVocabProvider){tmpVocabProvider.loadFromURL('/api/vocabulary/index');}// Initialize the inline documentation panel. It reads from
+// the content tree's /content/ path via the same server.
+// The panel starts collapsed — the user expands it via the
+// edge tab or the Docs button in the top bar.
+// Initialize the inline documentation panel, then attach the
+// resizable/collapsible panel behavior once the layout has
+// rendered into the container. The panel() call must happen
+// AFTER the async render so the edge element isn't wiped out.
+let tmpDocProvider=this.pict.providers&&this.pict.providers['Pict-InlineDocumentation'];if(tmpDocProvider&&typeof tmpDocProvider.initializeDocumentation==='function'){let tmpSelfApp=this;tmpDocProvider.initializeDocumentation({DocsBaseURL:'/content/',ContainerAddress:'#ContentEditor-Documentation-Panel',SearchIndexURL:'/content/retold-keyword-index.json',ExternalDocBaseURL:'https://stevenvelozo.github.io/retold/#/doc/',EditEnabled:false,TopicManagerEnabled:false},function(){// Layout has rendered — attach resize + collapse.
+// Full persistence: width and collapsed state both
+// survive across page loads via localStorage.
+let tmpModal=tmpSelfApp.pict.views['Pict-Section-Modal'];if(tmpModal&&typeof tmpModal.panel==='function'){tmpSelfApp._docPanel=tmpModal.panel('#ContentEditor-Documentation-Panel',{position:'right',width:340,minWidth:260,maxWidth:600,collapsible:true,collapsed:true,persist:true,persistKey:'ContentEditor-DocPanel'});}// Restore the last-viewed document from localStorage,
+// or default to README.md. This ensures the panel
+// shows the right content whether it starts collapsed
+// or expanded from persisted state.
+let tmpInlineDoc=tmpSelfApp.pict.providers['Pict-InlineDocumentation'];if(tmpInlineDoc&&typeof tmpInlineDoc.loadDocument==='function'){let tmpLastDoc='README.md';try{let tmpStored=localStorage.getItem('ContentEditor-DocPanel-LastDoc');if(tmpStored)tmpLastDoc=tmpStored;}catch(e){/* ignore */}tmpInlineDoc.loadDocument(tmpLastDoc);// Persist the current document path on each navigation
+let tmpOrigLoad=tmpInlineDoc.loadDocument.bind(tmpInlineDoc);tmpInlineDoc.loadDocument=function(pPath,fCb){try{localStorage.setItem('ContentEditor-DocPanel-LastDoc',pPath);}catch(e){/* ignore */}return tmpOrigLoad(pPath,fCb);};}});}return super.onAfterInitializeAsync(fCallback);}/**
 	 * Push the ShowHiddenFiles setting to the server so the file
 	 * browser API includes or excludes dotfiles accordingly.
 	 *
@@ -6605,7 +10354,7 @@ let tmpEditorContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Ed
 	 * @param {string} pMediaType - 'image', 'video', or 'audio'
 	 * @param {string} pContentURL - The URL to the media file
 	 * @param {string} pFileName - The display file name
-	 */loadMediaPreview(pMediaType,pContentURL,pFileName){let tmpContainer=document.getElementById('ContentEditor-MediaPreviewPlaceholder');if(!tmpContainer){return;}tmpContainer.innerHTML=this._buildMediaPreviewHTML(pMediaType,pContentURL,pFileName);}_showBinaryPreview(pFilePath){let tmpSelf=this;let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();let tmpContentURL='/content/'+encodeURIComponent(pFilePath);let tmpMediaType=this._getMediaType(tmpExtension);let tmpSettings=this.pict.AppData.ContentEditor;// Determine whether to auto-preview based on settings
+	 */loadMediaPreview(pMediaType,pContentURL,pFileName){let tmpContainer=this.pict.ContentAssignment.getElement('#ContentEditor-MediaPreviewPlaceholder')[0];if(!tmpContainer){return;}tmpContainer.innerHTML=this._buildMediaPreviewHTML(pMediaType,pContentURL,pFileName);}_showBinaryPreview(pFilePath){let tmpSelf=this;let tmpFileName=pFilePath.replace(/^.*\//,'');let tmpExtension=pFilePath.replace(/^.*\./,'').toLowerCase();let tmpContentURL='/content/'+encodeURIComponent(pFilePath);let tmpMediaType=this._getMediaType(tmpExtension);let tmpSettings=this.pict.AppData.ContentEditor;// Determine whether to auto-preview based on settings
 let tmpAutoPreview=false;if(tmpMediaType==='image')tmpAutoPreview=tmpSettings.AutoPreviewImages;if(tmpMediaType==='video')tmpAutoPreview=tmpSettings.AutoPreviewVideo;if(tmpMediaType==='audio')tmpAutoPreview=tmpSettings.AutoPreviewAudio;// Fetch file info from the file browser API
 fetch('/api/filebrowser/info?path='+encodeURIComponent(pFilePath)).then(pResponse=>pResponse.json()).then(pInfo=>{let tmpSize=pInfo&&typeof pInfo.Size==='number'?tmpSelf._formatFileSize(pInfo.Size):'Unknown';let tmpModified=pInfo&&pInfo.Modified?new Date(pInfo.Modified).toLocaleString():'Unknown';let tmpEditorContainer=tmpSelf.pict.ContentAssignment.getElement('#ContentEditor-Editor-Container');if(!tmpEditorContainer||!tmpEditorContainer[0]){return;}let tmpPreviewHTML='';if(tmpMediaType!=='other'){if(tmpAutoPreview){tmpPreviewHTML+=tmpSelf._buildMediaPreviewHTML(tmpMediaType,tmpContentURL,tmpFileName);}else{// Placeholder with a Preview button
 tmpPreviewHTML+='<div id="ContentEditor-MediaPreviewPlaceholder">';tmpPreviewHTML+='<button class="binary-preview-btn binary-preview-btn-preview"';tmpPreviewHTML+=' onclick="pict.PictApplication.loadMediaPreview(';tmpPreviewHTML+="'"+tmpMediaType+"','"+tmpContentURL+"','"+tmpFileName.replace(/'/g,"\\'")+"'";tmpPreviewHTML+=')">Preview '+tmpMediaType.charAt(0).toUpperCase()+tmpMediaType.slice(1)+'</button>';tmpPreviewHTML+='</div>';}}tmpPreviewHTML+='<div class="binary-preview-card">';tmpPreviewHTML+='<div class="binary-preview-icon">'+tmpExtension.toUpperCase()+'</div>';tmpPreviewHTML+='<div class="binary-preview-info">';tmpPreviewHTML+='<div class="binary-preview-name">'+tmpFileName+'</div>';tmpPreviewHTML+='<div class="binary-preview-meta">Size: '+tmpSize+'</div>';tmpPreviewHTML+='<div class="binary-preview-meta">Modified: '+tmpModified+'</div>';tmpPreviewHTML+='<div class="binary-preview-meta">Type: .'+tmpExtension+'</div>';tmpPreviewHTML+='</div>';tmpPreviewHTML+='<div class="binary-preview-actions">';tmpPreviewHTML+='<a class="binary-preview-btn" href="'+tmpContentURL+'" download="'+tmpFileName+'">Download</a>';tmpPreviewHTML+='<a class="binary-preview-btn binary-preview-btn-secondary" href="'+tmpContentURL+'" target="_blank">Open in New Tab</a>';tmpPreviewHTML+='</div>';tmpPreviewHTML+='</div>';tmpEditorContainer[0].innerHTML=tmpPreviewHTML;}).catch(()=>{// Fallback if info fetch fails
@@ -6639,7 +10388,12 @@ let tmpHeadingPattern=new RegExp('^(#{1,'+tmpDepth+'})\\s');let tmpLines=pConten
 	 * card for images, archives, and other non-editable files.
 	 *
 	 * @param {string} pFilePath - The relative path of the file to edit
-	 */navigateToFile(pFilePath){if(!pFilePath){return;}let tmpSelf=this;// Determine which editor to use before fetching content
+	 */navigateToFile(pFilePath){if(!pFilePath){return;}// Guard: if the current file has unsaved changes, confirm
+// before navigating away.  This catches all entry points —
+// file browser clicks, vocabulary edits, topic navigation,
+// hash changes, and new file creation.
+if(this.pict.AppData.ContentEditor.IsDirty){let tmpSelf=this;let tmpModal=this.pict.views['Pict-Section-Modal'];if(tmpModal&&typeof tmpModal.confirm==='function'){tmpModal.confirm('You have unsaved changes to '+this.pict.AppData.ContentEditor.CurrentFile+'. Discard and open a different file?',{title:'Unsaved Changes',confirmLabel:'Discard',dangerous:true}).then(function(pConfirmed){if(pConfirmed){tmpSelf.pict.AppData.ContentEditor.IsDirty=false;tmpSelf.navigateToFile(pFilePath);}});return;}// Fallback: native confirm
+if(typeof confirm!=='undefined'&&!confirm('You have unsaved changes. Discard and open a different file?')){return;}this.pict.AppData.ContentEditor.IsDirty=false;}let tmpSelf=this;// Determine which editor to use before fetching content
 let tmpEditorType=this.getEditorTypeForFile(pFilePath);this.pict.AppData.ContentEditor.SaveStatus='';this.pict.AppData.ContentEditor.SaveStatusClass='';// Update the hash without triggering resolveHash again
 window.location.hash='#/edit/'+pFilePath;// Set the current file and editor type
 this.pict.AppData.ContentEditor.CurrentFile=pFilePath;this.pict.AppData.ContentEditor.IsDirty=false;this.pict.AppData.ContentEditor.ActiveEditor=tmpEditorType;// Clean up existing editors
@@ -6679,10 +10433,10 @@ let tmpEditorContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Ed
 	 * Cancel the close confirmation dialog.
 	 */cancelCloseFile(){this._hideCloseConfirmation();}/**
 	 * Show the unsaved-changes confirmation overlay.
-	 */_showCloseConfirmation(){let tmpOverlay=document.getElementById('ContentEditor-ConfirmOverlay');if(tmpOverlay){tmpOverlay.classList.add('open');}// Set up keyboard listener for Y/N/Esc
+	 */_showCloseConfirmation(){let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-ConfirmOverlay')[0];if(tmpOverlay){tmpOverlay.classList.add('open');}// Set up keyboard listener for Y/N/Esc
 if(!this._confirmKeyHandler){let tmpSelf=this;this._confirmKeyHandler=pEvent=>{let tmpKey=pEvent.key.toLowerCase();if(tmpKey==='y'){pEvent.preventDefault();tmpSelf.confirmCloseFile();}else if(tmpKey==='n'||pEvent.key==='Escape'){pEvent.preventDefault();tmpSelf.cancelCloseFile();}};}window.addEventListener('keydown',this._confirmKeyHandler);}/**
 	 * Hide the unsaved-changes confirmation overlay and remove the keyboard listener.
-	 */_hideCloseConfirmation(){let tmpOverlay=document.getElementById('ContentEditor-ConfirmOverlay');if(tmpOverlay){tmpOverlay.classList.remove('open');}if(this._confirmKeyHandler){window.removeEventListener('keydown',this._confirmKeyHandler);}}/**
+	 */_hideCloseConfirmation(){let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-ConfirmOverlay')[0];if(tmpOverlay){tmpOverlay.classList.remove('open');}if(this._confirmKeyHandler){window.removeEventListener('keydown',this._confirmKeyHandler);}}/**
 	 * Create a new file.
 	 *
 	 * @param {string} pFilePath - The path for the new file
@@ -6741,7 +10495,7 @@ if(tmpBestLevel===1){return tmpBestText;}}}}}return tmpBestText;}/**
 	 * Reads directly from the active editor instances so there is no
 	 * need to marshal first.  CodeMirror exposes line and character
 	 * counts on its document model at near-zero cost.
-	 */updateStats(){let tmpStatsEl=document.getElementById('ContentEditor-Stats');if(!tmpStatsEl){return;}let tmpActiveEditor=this.pict.AppData.ContentEditor.ActiveEditor;let tmpLines=0;let tmpChars=0;let tmpWords=0;if(tmpActiveEditor==='markdown'){let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&tmpEditorView._segmentEditors){for(let tmpKey in tmpEditorView._segmentEditors){let tmpEditor=tmpEditorView._segmentEditors[tmpKey];if(tmpEditor&&tmpEditor.state&&tmpEditor.state.doc){tmpLines+=tmpEditor.state.doc.lines;tmpChars+=tmpEditor.state.doc.length;let tmpText=tmpEditor.state.doc.toString();let tmpMatches=tmpText.match(/\S+/g);if(tmpMatches){tmpWords+=tmpMatches.length;}}}}}else if(tmpActiveEditor==='code'){let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView.codeJar){let tmpText=tmpCodeEditorView.codeJar.toString();tmpChars=tmpText.length;tmpLines=tmpText.split('\n').length;let tmpMatches=tmpText.match(/\S+/g);if(tmpMatches){tmpWords=tmpMatches.length;}}}else{// Binary or no file — clear stats
+	 */updateStats(){let tmpStatsEl=this.pict.ContentAssignment.getElement('#ContentEditor-Stats')[0];if(!tmpStatsEl){return;}let tmpActiveEditor=this.pict.AppData.ContentEditor.ActiveEditor;let tmpLines=0;let tmpChars=0;let tmpWords=0;if(tmpActiveEditor==='markdown'){let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&tmpEditorView._segmentEditors){for(let tmpKey in tmpEditorView._segmentEditors){let tmpEditor=tmpEditorView._segmentEditors[tmpKey];if(tmpEditor&&tmpEditor.state&&tmpEditor.state.doc){tmpLines+=tmpEditor.state.doc.lines;tmpChars+=tmpEditor.state.doc.length;let tmpText=tmpEditor.state.doc.toString();let tmpMatches=tmpText.match(/\S+/g);if(tmpMatches){tmpWords+=tmpMatches.length;}}}}}else if(tmpActiveEditor==='code'){let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView.codeJar){let tmpText=tmpCodeEditorView.codeJar.toString();tmpChars=tmpText.length;tmpLines=tmpText.split('\n').length;let tmpMatches=tmpText.match(/\S+/g);if(tmpMatches){tmpWords=tmpMatches.length;}}}else{// Binary or no file — clear stats
 tmpStatsEl.textContent='';return;}tmpStatsEl.textContent=tmpLines+' lines \u00B7 '+tmpWords+' words \u00B7 '+tmpChars+' chars';}/**
 	 * Mark the document as dirty (unsaved changes).
 	 */markDirty(){if(!this.pict.AppData.ContentEditor.IsDirty){this.pict.AppData.ContentEditor.IsDirty=true;this.pict.views['ContentEditor-TopBar'].render();}}/**
@@ -6752,7 +10506,7 @@ tmpStatsEl.textContent='';return;}tmpStatsEl.textContent=tmpLines+' lines \u00B7
 	 * Load editor settings from localStorage, overwriting the
 	 * current defaults for any keys that are present.
 	 */_loadSettings(){if(typeof window==='undefined'||!window.localStorage){return;}try{let tmpRaw=window.localStorage.getItem(this._settingsKey);if(!tmpRaw){return;}let tmpStored=JSON.parse(tmpRaw);let tmpSettings=this.pict.AppData.ContentEditor;if(typeof tmpStored.AutoSegmentMarkdown==='boolean'){tmpSettings.AutoSegmentMarkdown=tmpStored.AutoSegmentMarkdown;}if(typeof tmpStored.AutoSegmentDepth==='number'){tmpSettings.AutoSegmentDepth=tmpStored.AutoSegmentDepth;}if(typeof tmpStored.ContentPreviewMode==='string'){tmpSettings.ContentPreviewMode=tmpStored.ContentPreviewMode;}else if(typeof tmpStored.AutoContentPreview==='boolean'){// Backward compat: migrate old boolean setting
-tmpSettings.ContentPreviewMode=tmpStored.AutoContentPreview?'bottom':'off';}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":96,"./providers/Pict-Provider-ContentEditor.js":101,"./views/PictView-Editor-CodeEditor.js":102,"./views/PictView-Editor-Layout.js":103,"./views/PictView-Editor-MarkdownEditor.js":104,"./views/PictView-Editor-MarkdownReference.js":105,"./views/PictView-Editor-SettingsPanel.js":106,"./views/PictView-Editor-TopBar.js":107,"./views/PictView-Editor-Topics.js":108,"pict-application":44,"pict-section-filebrowser":63}],98:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],99:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
+tmpSettings.ContentPreviewMode=tmpStored.AutoContentPreview?'bottom':'off';}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":110,"./providers/Pict-Provider-ContentEditor.js":115,"./views/PictView-Editor-CodeEditor.js":116,"./views/PictView-Editor-Layout.js":117,"./views/PictView-Editor-MarkdownEditor.js":118,"./views/PictView-Editor-MarkdownReference.js":119,"./views/PictView-Editor-SettingsPanel.js":120,"./views/PictView-Editor-TopBar.js":121,"./views/PictView-Editor-Topics.js":122,"pict-application":44,"pict-provider-vocabulary":55,"pict-section-content":62,"pict-section-filebrowser":66,"pict-section-inlinedocumentation":80,"pict-section-modal":100}],112:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],113:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
  * Content Reader Application
  *
  * Extends pict-docuserve to serve standalone markdown content.
@@ -6767,7 +10521,7 @@ let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDoc
 if(tmpDocuserve.TopBar){if(!Array.isArray(tmpDocuserve.TopBar.ExternalLinks)){tmpDocuserve.TopBar.ExternalLinks=[];}tmpDocuserve.TopBar.ExternalLinks.push({Text:'Edit',Href:'/'});}else{tmpDocuserve.TopBarLoaded=true;tmpDocuserve.TopBar={Brand:'Content System',NavLinks:[],ExternalLinks:[{Text:'Edit',Href:'/'}]};}// Render the layout shell
 this.pict.views['Docuserve-Layout'].render();// Call the base PictApplication callback (skip docuserve's onAfterInitializeAsync
 // since we already did the catalog loading ourselves)
-return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":98,"pict-docuserve":46}],100:[function(require,module,exports){/**
+return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":112,"pict-docuserve":46}],114:[function(require,module,exports){/**
  * Combined browser bundle for Retold Content System.
  *
  * Exports both the reader and editor applications as window globals
@@ -6776,7 +10530,7 @@ return fCallback();});}}module.exports=ContentReaderApplication;module.exports.d
  * In index.html: Pict.safeLoadPictApplication(PictContentReader, 2)
  * In edit.html:  Pict.safeLoadPictApplication(PictContentEditor, 2)
  */module.exports={PictContentReader:require('./Pict-Application-ContentReader.js'),PictContentEditor:require('./Pict-Application-ContentEditor.js')};// Also expose on window for direct access
-if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":97,"./Pict-Application-ContentReader.js":99}],101:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
+if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":111,"./Pict-Application-ContentReader.js":113}],115:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
  * Content Editor Provider
  *
  * Handles communication with the server's REST API for content
@@ -6787,13 +10541,13 @@ if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictCont
 	 *
 	 * @param {string} pFilePath - The relative file path
 	 * @param {Function} fCallback - Callback receiving (error, contentString)
-	 */loadFile(pFilePath,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified','');}fetch('/api/content/read/'+encodeURIComponent(pFilePath)).then(pResponse=>{if(!pResponse.ok){return tmpCallback('File not found: '+pResponse.status,'');}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Content||'');}return tmpCallback(pData?pData.Error:'Unknown error','');}).catch(pError=>{this.log.warn(`ContentEditor: Error loading file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message,'');});}/**
+	 */loadFile(pFilePath,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified','');}fetch('/api/content/read/'+pFilePath.split('/').map(encodeURIComponent).join('/')).then(pResponse=>{if(!pResponse.ok){return tmpCallback('File not found: '+pResponse.status,'');}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null,pData.Content||'');}return tmpCallback(pData?pData.Error:'Unknown error','');}).catch(pError=>{this.log.warn(`ContentEditor: Error loading file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message,'');});}/**
 	 * Save markdown content to a file.
 	 *
 	 * @param {string} pFilePath - The relative file path
 	 * @param {string} pContent - The markdown content to save
 	 * @param {Function} fCallback - Callback receiving (error)
-	 */saveFile(pFilePath,pContent,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified');}fetch('/api/content/save/'+encodeURIComponent(pFilePath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Content:pContent})}).then(pResponse=>{if(!pResponse.ok){return tmpCallback('Save failed: '+pResponse.status);}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null);}return tmpCallback(pData?pData.Error:'Unknown error');}).catch(pError=>{this.log.warn(`ContentEditor: Error saving file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message);});}/**
+	 */saveFile(pFilePath,pContent,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};if(!pFilePath){return tmpCallback('No file path specified');}fetch('/api/content/save/'+pFilePath.split('/').map(encodeURIComponent).join('/'),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({Content:pContent})}).then(pResponse=>{if(!pResponse.ok){return tmpCallback('Save failed: '+pResponse.status);}return pResponse.json();}).then(pData=>{if(pData&&pData.Success){return tmpCallback(null);}return tmpCallback(pData?pData.Error:'Unknown error');}).catch(pError=>{this.log.warn(`ContentEditor: Error saving file [${pFilePath}]: ${pError}`);return tmpCallback(pError.message);});}/**
 	 * Upload an image file to the server.
 	 *
 	 * The image is saved into the content folder the user is currently
@@ -6802,7 +10556,7 @@ if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictCont
 	 * @param {File} pFile - The image file to upload
 	 * @param {Function} fCallback - Callback receiving (error, url)
 	 */uploadImage(pFile,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};// Determine the target folder from the currently open file
-let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn(`ContentEditor: Image upload failed: ${pError}`);return tmpCallback(pError.message);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":55}],102:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
+let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn(`ContentEditor: Image upload failed: ${pError}`);return tmpCallback(pError.message);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":58}],116:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
  * Map of file extensions to highlight.js language identifiers.
  *
  * highlight.js supports 190+ languages. This map covers the most common
@@ -6842,7 +10596,7 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 	 *
 	 * @param {string} pExtension - The file extension (without dot)
 	 * @returns {string} The highlight.js language identifier
-	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":58}],103:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":61}],117:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		#ContentEditor-Application-Container
 		{
 			display: flex;
@@ -6943,64 +10697,19 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 		{
 			background: #FAF8F4;
 		}
-		/* Collapsed state */
-		.content-editor-sidebar-wrap.collapsed
+		/* Vocabulary panel: map the provider's CSS custom
+		   properties to the CMS light-theme palette so the
+		   shared vocabulary module renders consistently. */
+		#ContentEditor-Vocabulary-Container
 		{
-			width: 0 !important;
-		}
-		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner
-		{
-			visibility: hidden;
-		}
-		.content-editor-sidebar-wrap.collapsed .content-editor-resize-handle
-		{
-			display: none;
-		}
-		/* Collapse / expand toggle */
-		.content-editor-sidebar-toggle
-		{
-			position: absolute;
-			top: 8px;
-			right: -20px;
-			width: 20px;
-			height: 28px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: #FAF8F4;
-			border: 1px solid #DDD6CA;
-			border-left: none;
-			border-radius: 0 4px 4px 0;
-			cursor: pointer;
-			z-index: 10;
-			color: #8A7F72;
-			font-size: 11px;
-			line-height: 1;
-			transition: color 0.15s;
-		}
-		.content-editor-sidebar-toggle:hover
-		{
-			color: #3D3229;
-		}
-		.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-toggle
-		{
-			right: -20px;
-		}
-		/* Resize handle */
-		.content-editor-resize-handle
-		{
-			flex-shrink: 0;
-			width: 5px;
-			cursor: col-resize;
-			background: transparent;
-			border-right: 1px solid #DDD6CA;
-			transition: background 0.15s;
-		}
-		.content-editor-resize-handle:hover,
-		.content-editor-resize-handle.dragging
-		{
-			background: #2E7D74;
-			border-right-color: #2E7D74;
+			--bg-primary: #FAF8F4;
+			--bg-secondary: #F5F0EA;
+			--bg-hover: #EDE9E3;
+			--border-color: #DDD6CA;
+			--accent: #2E7D74;
+			--text-primary: #3D3229;
+			--text-secondary: #5E5549;
+			--text-muted: #8A7F72;
 		}
 		/* File browser layout overrides for sidebar use */
 		#ContentEditor-Sidebar-Container .pict-filebrowser
@@ -7067,6 +10776,37 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 			flex: 1;
 			overflow-y: auto;
 			padding: 44px 16px 16px 16px;
+		}
+		/* Right-side inline documentation panel */
+		.content-editor-doc-panel
+		{
+			width: 340px;
+			min-width: 260px;
+			max-width: 500px;
+			border-left: 1px solid #DDD6CA;
+			overflow-y: auto;
+			background: #FAF8F4;
+			flex-shrink: 0;
+		}
+		.content-editor-doc-toggle
+		{
+			position: absolute;
+			top: 6px;
+			right: 8px;
+			background: #F0EDE8;
+			border: 1px solid #DDD6CA;
+			border-radius: 4px;
+			padding: 3px 8px;
+			font-size: 0.72rem;
+			font-weight: 600;
+			color: #5E5549;
+			cursor: pointer;
+			z-index: 5;
+		}
+		.content-editor-doc-toggle:hover
+		{
+			background: #EAE3D8;
+			color: #2E7D74;
 		}
 		/* Code editor: fill the container and remove outer border */
 		#ContentEditor-Editor-Container .pict-code-editor-wrap
@@ -7466,14 +11206,23 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 				flex-direction: column;
 			}
 
-			/* Sidebar becomes a horizontal strip at the top */
-			.content-editor-sidebar-wrap
+			/* Both panels become full-width horizontal strips */
+			.content-editor-sidebar-wrap,
+			.content-editor-doc-panel
 			{
 				width: 100% !important;
 				max-height: 40vh;
 				flex-shrink: 0;
-				border-bottom: 1px solid #DDD6CA;
 				border-right: none;
+			}
+			.content-editor-sidebar-wrap
+			{
+				border-bottom: 1px solid #DDD6CA;
+			}
+			.content-editor-doc-panel
+			{
+				border-left: none;
+				border-top: 1px solid #DDD6CA;
 			}
 
 			/* Give the Reference and Topics tabs much more room on mobile
@@ -7483,48 +11232,17 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 				max-height: 70vh;
 			}
 
-			/* When collapsed on mobile, hide the inner content but keep the
-			   toggle button visible (it's positioned below the sidebar strip) */
-			.content-editor-sidebar-wrap.collapsed
+			/* When panels are collapsed on mobile, zero height instead of
+			   zero width since the layout is stacked vertically */
+			.content-editor-sidebar-wrap.pict-panel-collapsed,
+			.content-editor-doc-panel.pict-panel-collapsed
 			{
 				width: 100% !important;
 				max-height: 0;
-				overflow: visible;
 			}
-			.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-inner
+			.content-editor-sidebar-wrap.pict-panel-collapsed .content-editor-sidebar-inner
 			{
 				display: none;
-			}
-
-			/* Hide the resize handle (desktop-only interaction) */
-			.content-editor-resize-handle
-			{
-				display: none;
-			}
-
-			/* Reposition the sidebar toggle for horizontal layout —
-			   place it at the bottom-center of the sidebar strip */
-			.content-editor-sidebar-toggle
-			{
-				position: absolute;
-				top: auto;
-				bottom: -20px;
-				right: auto;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 28px;
-				height: 20px;
-				border-radius: 0 0 4px 4px;
-				border: 1px solid #DDD6CA;
-				border-top: none;
-				z-index: 10;
-			}
-			.content-editor-sidebar-wrap.collapsed .content-editor-sidebar-toggle
-			{
-				bottom: -20px;
-				right: auto;
-				left: 50%;
-				transform: translateX(-50%);
 			}
 
 			/* Reduce editor container padding (less gutters) */
@@ -7577,7 +11295,7 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 	`,Templates:[{Hash:"ContentEditor-Layout-Shell-Template",Template:/*html*/`
 <div id="ContentEditor-TopBar-Container"></div>
 <div class="content-editor-body">
-	<div class="content-editor-sidebar-wrap" id="ContentEditor-SidebarWrap" style="width:250px">
+	<div class="content-editor-sidebar-wrap" id="ContentEditor-SidebarWrap">
 		<div class="content-editor-sidebar-inner">
 			<div class="content-editor-sidebar-tabs">
 				<button class="content-editor-sidebar-tab active" id="ContentEditor-SidebarTab-Files"
@@ -7586,17 +11304,19 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('reference')">Reference</button>
 				<button class="content-editor-sidebar-tab" id="ContentEditor-SidebarTab-Topics"
 					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('topics')">Topics</button>
-				<button class="content-editor-sidebar-addfile" title="New file"
-					onclick="{~P~}.PictApplication.promptNewFile()">+</button>
+				<button class="content-editor-sidebar-tab" id="ContentEditor-SidebarTab-Vocabulary"
+					onclick="{~P~}.views['ContentEditor-Layout'].switchSidebarTab('vocabulary')">Vocab</button>
+				<button class="content-editor-sidebar-addfile" id="ContentEditor-SidebarAddBtn" title="New file"
+					onclick="{~P~}.views['ContentEditor-Layout'].onSidebarAddClick()">+</button>
 			</div>
 			<div id="ContentEditor-Sidebar-Container" class="content-editor-sidebar-pane"></div>
 			<div id="ContentEditor-SidebarReference-Container" class="content-editor-sidebar-pane" style="display:none"></div>
 			<div id="ContentEditor-SidebarTopics-Container" class="content-editor-sidebar-pane" style="display:none"></div>
+			<div id="ContentEditor-Vocabulary-Container" class="content-editor-sidebar-pane" style="display:none"></div>
 		</div>
-		<div class="content-editor-resize-handle" id="ContentEditor-ResizeHandle"></div>
-		<div class="content-editor-sidebar-toggle" id="ContentEditor-SidebarToggle">&#x25C0;</div>
 	</div>
 	<div id="ContentEditor-Editor-Container"></div>
+	<div id="ContentEditor-Documentation-Panel" class="content-editor-doc-panel"></div>
 </div>
 <div class="content-editor-upload-overlay" id="ContentEditor-UploadOverlay"
 	onclick="{~P~}.views['ContentEditor-Layout'].onUploadOverlayClick(event)">
@@ -7608,8 +11328,8 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 		</div>
 		<div class="content-editor-upload-body">
 			<div class="content-editor-upload-dropzone" id="ContentEditor-UploadDropzone"
-				onclick="document.getElementById('ContentEditor-UploadFileInput').click()">
-				<div class="content-editor-upload-dropzone-icon">&#x1F4F7;</div>
+				onclick="{~P~}.ContentAssignment.getElement('#ContentEditor-UploadFileInput')[0].click()">
+				<div class="content-editor-upload-dropzone-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h2l1.5-2h5L12 5h2a1 1 0 011 1v6a1 1 0 01-1 1H2a1 1 0 01-1-1V6a1 1 0 011-1z"/><circle cx="8" cy="9" r="2.5"/></svg></div>
 				<div class="content-editor-upload-dropzone-text">Drop an image here or click to browse</div>
 				<div class="content-editor-upload-dropzone-hint">PNG, JPG, GIF, WebP, SVG, BMP</div>
 			</div>
@@ -7627,14 +11347,10 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 </div>
 `}],Renderables:[{RenderableHash:"ContentEditor-Layout-Shell",TemplateHash:"ContentEditor-Layout-Shell-Template",DestinationAddress:"#ContentEditor-Application-Container",RenderMethod:"replace"}]};class ContentEditorLayoutView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._minSidebarWidth=140;this._maxSidebarWidth=600;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render child views
 this.pict.views['ContentEditor-TopBar'].render();// Show welcome message in editor area if no file loaded
-let tmpEditorContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Editor-Container');if(tmpEditorContainer&&tmpEditorContainer[0]&&!this.pict.AppData.ContentEditor.CurrentFile){tmpEditorContainer[0].innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8A7F72;font-size:1.1em;">Select a file from the sidebar to begin editing</div>';}// Inject CSS
-this.pict.CSSMap.injectCSS();// Apply persisted sidebar state
-let tmpSettings=this.pict.AppData.ContentEditor;let tmpWrap=document.getElementById('ContentEditor-SidebarWrap');let tmpToggle=document.getElementById('ContentEditor-SidebarToggle');if(tmpWrap){let tmpIsMobile=window.innerWidth<=768;tmpWrap.style.width=tmpIsMobile?'100%':tmpSettings.SidebarWidth+'px';if(tmpSettings.SidebarCollapsed){tmpWrap.classList.add('collapsed');if(tmpToggle)tmpToggle.innerHTML=tmpIsMobile?'&#x25BC;':'&#x25B6;';}else if(tmpIsMobile){// Auto-collapse sidebar on narrow viewports.
-// Sync the setting so toggleSidebar() works correctly,
-// but don't persist — the desktop preference stays in localStorage.
-tmpSettings.SidebarCollapsed=true;tmpWrap.classList.add('collapsed');if(tmpToggle)tmpToggle.innerHTML='&#x25BC;';}}// Wire up sidebar toggle
-let tmpSelf=this;if(tmpToggle){tmpToggle.addEventListener('click',()=>{tmpSelf.toggleSidebar();});}// Wire up resize handle
-this._wireResizeHandle();// Listen for hash changes
+let tmpEditorContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Editor-Container');if(tmpEditorContainer&&tmpEditorContainer[0]&&!this.pict.AppData.ContentEditor.CurrentFile){this.pict.ContentAssignment.assignContent('#ContentEditor-Editor-Container','<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8A7F72;font-size:1.1em;">Select a file from the sidebar to begin editing</div>');}// Inject CSS
+this.pict.CSSMap.injectCSS();// Attach resizable/collapsible panel behavior to the
+// left sidebar via pict-section-modal's panel system.
+let tmpSelf=this;let tmpSettings=this.pict.AppData.ContentEditor;let tmpModal=this.pict.views['Pict-Section-Modal'];if(tmpModal&&typeof tmpModal.panel==='function'){let tmpIsMobile=window.innerWidth<=768;this._sidebarPanel=tmpModal.panel('#ContentEditor-SidebarWrap',{position:'left',width:tmpSettings.SidebarWidth||250,minWidth:140,maxWidth:600,collapsible:true,collapsed:tmpSettings.SidebarCollapsed||tmpIsMobile,persist:true,persistKey:'ContentEditor-Sidebar',onResize:pWidth=>{tmpSettings.SidebarWidth=pWidth;tmpSelf.pict.PictApplication.saveSettings();},onToggle:pCollapsed=>{tmpSettings.SidebarCollapsed=pCollapsed;tmpSelf.pict.PictApplication.saveSettings();}});}// Listen for hash changes
 window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});// Keyboard shortcuts
 window.addEventListener('keydown',pEvent=>{// Cmd+S (Mac) / Ctrl+S (Windows/Linux) to save
 if((pEvent.metaKey||pEvent.ctrlKey)&&pEvent.key==='s'){pEvent.preventDefault();tmpSelf.pict.PictApplication.saveCurrentFile();return;}// F1 — Toggle between Reference and Files; open sidebar if collapsed
@@ -7644,41 +11360,56 @@ if(pEvent.key==='F3'){pEvent.preventDefault();tmpSelf.toggleUploadForm();return;
 if(pEvent.key==='F4'){pEvent.preventDefault();tmpSelf.pict.PictApplication.handleF4TopicAction();return;}// Cmd+Shift+T / Ctrl+Shift+T — Toggle Topics tab
 if((pEvent.metaKey||pEvent.ctrlKey)&&pEvent.shiftKey&&(pEvent.key==='t'||pEvent.key==='T')){pEvent.preventDefault();tmpSelf.pict.PictApplication.handleF4TopicAction();return;}// Escape — Close the current file (if no overlay is open)
 if(pEvent.key==='Escape'){// Don't close if the upload overlay is open (let it close that first)
-let tmpUploadOverlay=document.getElementById('ContentEditor-UploadOverlay');if(tmpUploadOverlay&&tmpUploadOverlay.classList.contains('open')){tmpSelf.closeUploadForm();return;}// Don't interfere if the confirmation dialog is open
+let tmpUploadOverlay=tmpSelf.pict.ContentAssignment.getElement('#ContentEditor-UploadOverlay')[0];if(tmpUploadOverlay&&tmpUploadOverlay.classList.contains('open')){tmpSelf.closeUploadForm();return;}// Don't interfere if the confirmation dialog is open
 // (its own Y/N/Esc handler takes precedence)
-let tmpConfirmOverlay=document.getElementById('ContentEditor-ConfirmOverlay');if(tmpConfirmOverlay&&tmpConfirmOverlay.classList.contains('open')){return;}// Close the current file
+let tmpConfirmOverlay=tmpSelf.pict.ContentAssignment.getElement('#ContentEditor-ConfirmOverlay')[0];if(tmpConfirmOverlay&&tmpConfirmOverlay.classList.contains('open')){return;}// Close the current file
 if(tmpSelf.pict.AppData.ContentEditor.CurrentFile){pEvent.preventDefault();tmpSelf.pict.PictApplication.closeCurrentFile();return;}}});return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
+	 * Handle the sidebar "+" button click. Dispatches based on
+	 * which tab is currently active: Files → new file, Vocab → new term.
+	 */onSidebarAddClick(){let tmpActiveTab=this.getActiveSidebarTab();if(tmpActiveTab==='vocabulary'){let tmpVocabView=this.pict.views['ContentEditor-Vocabulary'];if(tmpVocabView&&typeof tmpVocabView.createTerm==='function'){tmpVocabView.createTerm();}}else{// Default: create a new file
+this.pict.PictApplication.promptNewFile();}}/**
+	 * Toggle the right-side documentation panel.
+	 *
+	 * If the panel was attached via the pict-section-modal panel
+	 * system, delegate to the panel handle.  Otherwise fall back
+	 * to the legacy display toggle.
+	 */toggleDocPanel(){// Use the panel handle if available (resize + collapse system)
+if(this.pict.PictApplication._docPanel){let tmpDocPanel=this.pict.PictApplication._docPanel;tmpDocPanel.toggle();// On first expand, trigger the inline docs provider to
+// load a default document.
+let tmpPanel=this.pict.ContentAssignment.getElement('#ContentEditor-Documentation-Panel')[0];if(tmpPanel&&!tmpPanel._initialized){tmpPanel._initialized=true;let tmpDocProvider=this.pict.providers&&this.pict.providers['Pict-InlineDocumentation'];if(tmpDocProvider&&typeof tmpDocProvider.loadDocument==='function'){tmpDocProvider.loadDocument('README.md');}}return;}// Legacy fallback: simple display toggle
+let tmpPanel=this.pict.ContentAssignment.getElement('#ContentEditor-Documentation-Panel')[0];if(!tmpPanel)return;let tmpVisible=tmpPanel.style.display!=='none';tmpPanel.style.display=tmpVisible?'none':'';if(!tmpVisible){let tmpDocProvider=this.pict.providers&&this.pict.providers['Pict-InlineDocumentation'];if(tmpDocProvider&&!tmpPanel._initialized){tmpPanel._initialized=true;if(typeof tmpDocProvider.loadDocument==='function'){tmpDocProvider.loadDocument('README.md');}}}}/**
 	 * Toggle the sidebar collapsed/expanded state.
-	 */toggleSidebar(){let tmpWrap=document.getElementById('ContentEditor-SidebarWrap');let tmpToggle=document.getElementById('ContentEditor-SidebarToggle');if(!tmpWrap){return;}let tmpSettings=this.pict.AppData.ContentEditor;tmpSettings.SidebarCollapsed=!tmpSettings.SidebarCollapsed;// Use vertical arrows on narrow viewports, horizontal on wide
-let tmpIsMobile=window.innerWidth<=768;if(tmpSettings.SidebarCollapsed){tmpWrap.classList.add('collapsed');if(tmpToggle)tmpToggle.innerHTML=tmpIsMobile?'&#x25BC;':'&#x25B6;';}else{tmpWrap.classList.remove('collapsed');tmpWrap.style.width=tmpIsMobile?'100%':tmpSettings.SidebarWidth+'px';if(tmpToggle)tmpToggle.innerHTML=tmpIsMobile?'&#x25B2;':'&#x25C0;';}this.pict.PictApplication.saveSettings();}/**
+	 */toggleSidebar(){if(this._sidebarPanel){this._sidebarPanel.toggle();return;}}/**
 	 * Switch the active sidebar tab.
 	 *
 	 * @param {string} pTab - 'files', 'reference', or 'topics'
-	 */switchSidebarTab(pTab){let tmpPanes={files:document.getElementById('ContentEditor-Sidebar-Container'),reference:document.getElementById('ContentEditor-SidebarReference-Container'),topics:document.getElementById('ContentEditor-SidebarTopics-Container')};let tmpTabs={files:document.getElementById('ContentEditor-SidebarTab-Files'),reference:document.getElementById('ContentEditor-SidebarTab-Reference'),topics:document.getElementById('ContentEditor-SidebarTab-Topics')};// Hide all panes and deactivate all tabs
+	 */switchSidebarTab(pTab){let tmpPanes={files:this.pict.ContentAssignment.getElement('#ContentEditor-Sidebar-Container')[0],reference:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarReference-Container')[0],topics:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTopics-Container')[0],vocabulary:this.pict.ContentAssignment.getElement('#ContentEditor-Vocabulary-Container')[0]};let tmpTabs={files:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Files')[0],reference:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Reference')[0],topics:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Topics')[0],vocabulary:this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Vocabulary')[0]};// Hide all panes and deactivate all tabs
 for(let tmpKey in tmpPanes){if(tmpPanes[tmpKey])tmpPanes[tmpKey].style.display='none';if(tmpTabs[tmpKey])tmpTabs[tmpKey].classList.remove('active');}// Show the selected pane and activate the selected tab
 if(tmpPanes[pTab])tmpPanes[pTab].style.display='';if(tmpTabs[pTab])tmpTabs[pTab].classList.add('active');// On mobile, give the Reference and Topics tabs more vertical space
-let tmpWrap=document.getElementById('ContentEditor-SidebarWrap');if(tmpWrap){if(pTab==='reference'||pTab==='topics'){tmpWrap.classList.add('sidebar-expanded-pane');}else{tmpWrap.classList.remove('sidebar-expanded-pane');}}// Lazy-render the Reference view on first switch
+let tmpWrap=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarWrap')[0];if(tmpWrap){if(pTab==='reference'||pTab==='topics'||pTab==='vocabulary'){tmpWrap.classList.add('sidebar-expanded-pane');}else{tmpWrap.classList.remove('sidebar-expanded-pane');}}// Update the "+" button tooltip based on active tab
+let tmpAddBtn=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarAddBtn')[0];if(tmpAddBtn){tmpAddBtn.title=pTab==='vocabulary'?'New vocabulary term':'New file';}// Lazy-render the Reference view on first switch
 if(pTab==='reference'){let tmpRefView=this.pict.views['ContentEditor-MarkdownReference'];if(tmpRefView&&!tmpRefView._hasRendered){tmpRefView.render();}}// Lazy-render the Topics view on first switch
-if(pTab==='topics'){let tmpTopicsView=this.pict.views['ContentEditor-Topics'];if(tmpTopicsView&&!tmpTopicsView._hasRendered){tmpTopicsView.render();}}}/**
+if(pTab==='topics'){let tmpTopicsView=this.pict.views['ContentEditor-Topics'];if(tmpTopicsView&&!tmpTopicsView._hasRendered){tmpTopicsView.render();}}// Lazy-render the Vocabulary view on first switch
+if(pTab==='vocabulary'){let tmpVocabView=this.pict.views['ContentEditor-Vocabulary'];if(tmpVocabView){tmpVocabView.refreshTermList();}}}/**
 	 * Handle F1: toggle between Reference and Files sidebar tabs.
 	 * If the sidebar is collapsed, open it and switch to Reference.
 	 */_handleF1(){let tmpSettings=this.pict.AppData.ContentEditor;// If sidebar is collapsed, expand it and go to Reference
 if(tmpSettings.SidebarCollapsed){this.toggleSidebar();this.switchSidebarTab('reference');return;}// Determine which tab is currently active
-let tmpRefTab=document.getElementById('ContentEditor-SidebarTab-Reference');let tmpIsOnRef=tmpRefTab&&tmpRefTab.classList.contains('active');// Toggle: if on Reference, go to Files; otherwise go to Reference
+let tmpRefTab=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Reference')[0];let tmpIsOnRef=tmpRefTab&&tmpRefTab.classList.contains('active');// Toggle: if on Reference, go to Files; otherwise go to Reference
 if(tmpIsOnRef){this.switchSidebarTab('files');}else{this.switchSidebarTab('reference');}}/**
 	 * Return the identifier of the currently active sidebar tab.
 	 *
 	 * @returns {string} 'files', 'reference', or 'topics'
-	 */getActiveSidebarTab(){let tmpRefTab=document.getElementById('ContentEditor-SidebarTab-Reference');let tmpTopicsTab=document.getElementById('ContentEditor-SidebarTab-Topics');if(tmpRefTab&&tmpRefTab.classList.contains('active'))return'reference';if(tmpTopicsTab&&tmpTopicsTab.classList.contains('active'))return'topics';return'files';}/**
+	 */getActiveSidebarTab(){let tmpRefTab=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Reference')[0];let tmpTopicsTab=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Topics')[0];let tmpVocabTab=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTab-Vocabulary')[0];if(tmpRefTab&&tmpRefTab.classList.contains('active'))return'reference';if(tmpTopicsTab&&tmpTopicsTab.classList.contains('active'))return'topics';if(tmpVocabTab&&tmpVocabTab.classList.contains('active'))return'vocabulary';return'files';}/**
 	 * Toggle the image upload form open/closed.
-	 */toggleUploadForm(){let tmpOverlay=document.getElementById('ContentEditor-UploadOverlay');if(!tmpOverlay){return;}if(tmpOverlay.classList.contains('open')){this.closeUploadForm();}else{this.openUploadForm();}}/**
+	 */toggleUploadForm(){let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-UploadOverlay')[0];if(!tmpOverlay){return;}if(tmpOverlay.classList.contains('open')){this.closeUploadForm();}else{this.openUploadForm();}}/**
 	 * Open the image upload form.
-	 */openUploadForm(){let tmpOverlay=document.getElementById('ContentEditor-UploadOverlay');if(tmpOverlay){tmpOverlay.classList.add('open');}// Wire up drag-drop on the dropzone
+	 */openUploadForm(){let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-UploadOverlay')[0];if(tmpOverlay){tmpOverlay.classList.add('open');}// Wire up drag-drop on the dropzone
 this._wireUploadDropzone();}/**
 	 * Close the image upload form and reset its state.
-	 */closeUploadForm(){let tmpOverlay=document.getElementById('ContentEditor-UploadOverlay');if(tmpOverlay){tmpOverlay.classList.remove('open');}// Reset the file input so the same file can be re-selected
-let tmpInput=document.getElementById('ContentEditor-UploadFileInput');if(tmpInput){tmpInput.value='';}// Clear status and result
-let tmpStatus=document.getElementById('ContentEditor-UploadStatus');if(tmpStatus)tmpStatus.innerHTML='';let tmpResult=document.getElementById('ContentEditor-UploadResult');if(tmpResult)tmpResult.innerHTML='';}/**
+	 */closeUploadForm(){let tmpOverlay=this.pict.ContentAssignment.getElement('#ContentEditor-UploadOverlay')[0];if(tmpOverlay){tmpOverlay.classList.remove('open');}// Reset the file input so the same file can be re-selected
+let tmpInput=this.pict.ContentAssignment.getElement('#ContentEditor-UploadFileInput')[0];if(tmpInput){tmpInput.value='';}// Clear status and result
+this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','');this.pict.ContentAssignment.assignContent('#ContentEditor-UploadResult','');}/**
 	 * Close overlay if the background (not the panel) is clicked.
 	 *
 	 * @param {MouseEvent} pEvent
@@ -7688,21 +11419,13 @@ let tmpStatus=document.getElementById('ContentEditor-UploadStatus');if(tmpStatus
 	 * @param {HTMLInputElement} pInput
 	 */onUploadFileSelected(pInput){if(pInput.files&&pInput.files.length>0){this._uploadFile(pInput.files[0]);}}/**
 	 * Wire drag-and-drop events on the upload dropzone.
-	 */_wireUploadDropzone(){let tmpDropzone=document.getElementById('ContentEditor-UploadDropzone');if(!tmpDropzone||tmpDropzone._wired){return;}tmpDropzone._wired=true;let tmpSelf=this;tmpDropzone.addEventListener('dragover',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.add('dragover');});tmpDropzone.addEventListener('dragleave',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.remove('dragover');});tmpDropzone.addEventListener('drop',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.remove('dragover');if(pEvent.dataTransfer&&pEvent.dataTransfer.files&&pEvent.dataTransfer.files.length>0){tmpSelf._uploadFile(pEvent.dataTransfer.files[0]);}});}/**
+	 */_wireUploadDropzone(){let tmpDropzone=this.pict.ContentAssignment.getElement('#ContentEditor-UploadDropzone')[0];if(!tmpDropzone||tmpDropzone._wired){return;}tmpDropzone._wired=true;let tmpSelf=this;tmpDropzone.addEventListener('dragover',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.add('dragover');});tmpDropzone.addEventListener('dragleave',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.remove('dragover');});tmpDropzone.addEventListener('drop',pEvent=>{pEvent.preventDefault();pEvent.stopPropagation();tmpDropzone.classList.remove('dragover');if(pEvent.dataTransfer&&pEvent.dataTransfer.files&&pEvent.dataTransfer.files.length>0){tmpSelf._uploadFile(pEvent.dataTransfer.files[0]);}});}/**
 	 * Upload a file using the ContentEditor provider.
 	 *
 	 * @param {File} pFile - The image file to upload
-	 */_uploadFile(pFile){let tmpStatus=document.getElementById('ContentEditor-UploadStatus');let tmpResult=document.getElementById('ContentEditor-UploadResult');if(!pFile){return;}// Validate it's an image
-if(!pFile.type.startsWith('image/')){if(tmpStatus){tmpStatus.innerHTML='<span class="content-editor-upload-status-error">Only image files are supported.</span>';}return;}if(tmpStatus){tmpStatus.innerHTML='Uploading <strong>'+pFile.name+'</strong>...';}if(tmpResult){tmpResult.innerHTML='';}let tmpSelf=this;let tmpProvider=this.pict.providers['ContentEditor-Provider'];if(!tmpProvider){if(tmpStatus){tmpStatus.innerHTML='<span class="content-editor-upload-status-error">Provider not available.</span>';}return;}tmpProvider.uploadImage(pFile,(pError,pURL)=>{if(pError){if(tmpStatus){tmpStatus.innerHTML='<span class="content-editor-upload-status-error">Upload failed: '+pError+'</span>';}return;}if(tmpStatus){tmpStatus.innerHTML='<span class="content-editor-upload-status-success">Uploaded successfully!</span>';}let tmpMarkdown='!['+pFile.name+']('+pURL+')';if(tmpResult){tmpResult.innerHTML='<div class="content-editor-upload-result">'+'<div class="content-editor-upload-result-label">Markdown</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+tmpMarkdown+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+tmpMarkdown.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'<div class="content-editor-upload-result-label" style="margin-top:8px">URL</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+pURL+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+pURL.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'</div>';}// Refresh the file list so the uploaded file shows
-tmpSelf.pict.PictApplication.loadFileList();});}/**
-	 * Wire up the drag-to-resize handle for the sidebar.
-	 */_wireResizeHandle(){let tmpHandle=document.getElementById('ContentEditor-ResizeHandle');let tmpWrap=document.getElementById('ContentEditor-SidebarWrap');if(!tmpHandle||!tmpWrap){return;}let tmpSelf=this;let tmpDragging=false;let tmpStartX=0;let tmpStartWidth=0;function onMouseDown(pEvent){if(tmpSelf.pict.AppData.ContentEditor.SidebarCollapsed){return;}pEvent.preventDefault();tmpDragging=true;tmpStartX=pEvent.clientX;tmpStartWidth=tmpWrap.offsetWidth;tmpHandle.classList.add('dragging');// Disable transitions while dragging for snappy feel
-tmpWrap.style.transition='none';// Prevent text selection while dragging
-document.body.style.userSelect='none';document.body.style.cursor='col-resize';document.addEventListener('mousemove',onMouseMove);document.addEventListener('mouseup',onMouseUp);}function onMouseMove(pEvent){if(!tmpDragging){return;}let tmpDelta=pEvent.clientX-tmpStartX;let tmpNewWidth=tmpStartWidth+tmpDelta;// Clamp
-if(tmpNewWidth<tmpSelf._minSidebarWidth){tmpNewWidth=tmpSelf._minSidebarWidth;}if(tmpNewWidth>tmpSelf._maxSidebarWidth){tmpNewWidth=tmpSelf._maxSidebarWidth;}tmpWrap.style.width=tmpNewWidth+'px';}function onMouseUp(){if(!tmpDragging){return;}tmpDragging=false;tmpHandle.classList.remove('dragging');// Restore transitions
-tmpWrap.style.transition='';// Restore body
-document.body.style.userSelect='';document.body.style.cursor='';// Persist the width to AppData and localStorage
-tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);}tmpHandle.addEventListener('mousedown',onMouseDown);}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],104:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
+	 */_uploadFile(pFile){if(!pFile){return;}// Validate it's an image
+if(!pFile.type.startsWith('image/')){this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Only image files are supported.</span>');return;}this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','Uploading <strong>'+pFile.name+'</strong>...');this.pict.ContentAssignment.assignContent('#ContentEditor-UploadResult','');let tmpSelf=this;let tmpProvider=this.pict.providers['ContentEditor-Provider'];if(!tmpProvider){this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Provider not available.</span>');return;}tmpProvider.uploadImage(pFile,(pError,pURL)=>{if(pError){tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Upload failed: '+pError+'</span>');return;}tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-success">Uploaded successfully!</span>');let tmpMarkdown='!['+pFile.name+']('+pURL+')';tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadResult','<div class="content-editor-upload-result">'+'<div class="content-editor-upload-result-label">Markdown</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+tmpMarkdown+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+tmpMarkdown.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'<div class="content-editor-upload-result-label" style="margin-top:8px">URL</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+pURL+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+pURL.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'</div>');// Refresh the file list so the uploaded file shows
+tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],118:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
  * Content Editor Markdown Editor View
  *
  * Extends pict-section-markdowneditor to integrate with the
@@ -7728,7 +11451,7 @@ tmpSelf.pict.AppData.ContentEditor.SidebarWidth=tmpWrap.offsetWidth;tmpSelf.pict
 	 *
 	 * @param {number} pSegmentIndex - The segment index that changed
 	 * @param {string} pContent - The new content
-	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":86}],105:[function(require,module,exports){const libPictView=require('pict-view');/**
+	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":92}],119:[function(require,module,exports){const libPictView=require('pict-view');/**
  * Built-in Markdown reference content.
  *
  * Pre-rendered HTML covering GitHub-Flavored Markdown, KaTeX math,
@@ -8182,8 +11905,8 @@ stateDiagram-v2
 	`,Templates:[{Hash:"ContentEditor-MarkdownReference-Template",Template:/*html*/`
 <div class="md-ref-container">
 	<div class="md-ref-docs-link">
-		<span>&#x1F4D6;</span>
-		<a href="/docs/" target="_blank">Full Documentation</a>
+		<span><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3C6.5 1.5 4 1 1 1.5v11c3-.5 5.5 0 7 1.5 1.5-1.5 4-2 7-1.5v-11c-3-.5-5.5 0-7 1.5z"/><line x1="8" y1="3" x2="8" y2="14"/></svg></span>
+		<a href="#" onclick="event.preventDefault();pict.views['ContentEditor-Layout'].toggleDocPanel()">Full Documentation</a>
 	</div>
 	<div class="md-ref-search-bar">
 		<input type="text" class="md-ref-search-input"
@@ -8208,7 +11931,7 @@ stateDiagram-v2
  * math, and Mermaid diagrams.  Provides a fixed search bar with
  * prev/next navigation and copy-to-clipboard buttons on all code blocks.
  */class ContentEditorMarkdownReferenceView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._hasRendered=false;this._searchMatches=[];this._currentMatchIndex=-1;this._originalContent='';}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this._hasRendered=true;// Cache the original innerHTML for search restoration
-let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl){this._originalContent=tmpContentEl.innerHTML;}// Inject CSS
+let tmpContentEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-Content')[0];if(tmpContentEl){this._originalContent=tmpContentEl.innerHTML;}// Inject CSS
 this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Copy the text content of a code block to the clipboard.
 	 *
@@ -8232,7 +11955,7 @@ let tmpMatch=this._searchMatches[this._currentMatchIndex];tmpMatch.classList.add
 	 * Perform text search using TreeWalker to find and highlight matches.
 	 *
 	 * @param {string} pQuery - The search term
-	 */_performSearch(pQuery){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(!tmpContentEl){return;}// Restore original content to clear previous highlights
+	 */_performSearch(pQuery){let tmpContentEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-Content')[0];if(!tmpContentEl){return;}// Restore original content to clear previous highlights
 tmpContentEl.innerHTML=this._originalContent;this._searchMatches=[];this._currentMatchIndex=-1;if(!pQuery||pQuery.length<2){this._updateSearchCount();this._updateNavButtons();return;}let tmpQueryLower=pQuery.toLowerCase();// Walk all text nodes and wrap matches in <mark>
 let tmpWalker=document.createTreeWalker(tmpContentEl,NodeFilter.SHOW_TEXT,null,false);let tmpNodesToProcess=[];let tmpNode;while(tmpNode=tmpWalker.nextNode()){if(tmpNode.nodeValue.toLowerCase().indexOf(tmpQueryLower)>=0){tmpNodesToProcess.push(tmpNode);}}for(let i=0;i<tmpNodesToProcess.length;i++){this._highlightTextNode(tmpNodesToProcess[i],tmpQueryLower);}// Collect all mark elements
 this._searchMatches=Array.from(tmpContentEl.querySelectorAll('mark.md-ref-highlight'));// Auto-navigate to first match
@@ -8246,11 +11969,11 @@ if(tmpIndex>tmpLastIndex){tmpFragment.appendChild(document.createTextNode(tmpTex
 let tmpMark=document.createElement('mark');tmpMark.className='md-ref-highlight';tmpMark.textContent=tmpText.substring(tmpIndex,tmpIndex+pQueryLower.length);tmpFragment.appendChild(tmpMark);tmpLastIndex=tmpIndex+pQueryLower.length;tmpIndex=tmpTextLower.indexOf(pQueryLower,tmpLastIndex);}// Remaining text after last match
 if(tmpLastIndex<tmpText.length){tmpFragment.appendChild(document.createTextNode(tmpText.substring(tmpLastIndex)));}tmpParent.replaceChild(tmpFragment,pTextNode);}/**
 	 * Update the match count display.
-	 */_updateSearchCount(){let tmpCountEl=document.getElementById('ContentEditor-MdRef-SearchCount');if(!tmpCountEl){return;}if(this._searchMatches.length===0){let tmpInput=document.getElementById('ContentEditor-MdRef-SearchInput');if(tmpInput&&tmpInput.value&&tmpInput.value.length>=2){tmpCountEl.textContent='0';}else{tmpCountEl.textContent='';}}else{tmpCountEl.textContent=this._currentMatchIndex+1+'/'+this._searchMatches.length;}}/**
+	 */_updateSearchCount(){let tmpCountEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchCount')[0];if(!tmpCountEl){return;}if(this._searchMatches.length===0){let tmpInput=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchInput')[0];if(tmpInput&&tmpInput.value&&tmpInput.value.length>=2){tmpCountEl.textContent='0';}else{tmpCountEl.textContent='';}}else{tmpCountEl.textContent=this._currentMatchIndex+1+'/'+this._searchMatches.length;}}/**
 	 * Enable/disable navigation buttons based on match count.
-	 */_updateNavButtons(){let tmpPrev=document.getElementById('ContentEditor-MdRef-SearchPrev');let tmpNext=document.getElementById('ContentEditor-MdRef-SearchNext');let tmpHasMatches=this._searchMatches.length>0;if(tmpPrev)tmpPrev.disabled=!tmpHasMatches;if(tmpNext)tmpNext.disabled=!tmpHasMatches;}/**
+	 */_updateNavButtons(){let tmpPrev=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchPrev')[0];let tmpNext=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchNext')[0];let tmpHasMatches=this._searchMatches.length>0;if(tmpPrev)tmpPrev.disabled=!tmpHasMatches;if(tmpNext)tmpNext.disabled=!tmpHasMatches;}/**
 	 * Clear search highlights and reset state.
-	 */_clearSearch(){let tmpContentEl=document.getElementById('ContentEditor-MdRef-Content');if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],106:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
+	 */_clearSearch(){let tmpContentEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-Content')[0];if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],120:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-settings-wrap
 		{
 			position: relative;
@@ -8586,7 +12309,7 @@ let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorVi
 let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView._editorElement&&this.pict.AppData.ContentEditor.ActiveEditor==='code'){if(pChecked){tmpCodeEditorView._editorElement.style.whiteSpace='pre-wrap';tmpCodeEditorView._editorElement.style.overflowWrap='break-word';}else{tmpCodeEditorView._editorElement.style.whiteSpace='pre';tmpCodeEditorView._editorElement.style.overflowWrap='normal';}}}onEditingControlsChanged(pChecked){this.pict.AppData.ContentEditor.MarkdownEditingControls=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to the markdown editor if it's currently active
 let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.toggleControls(pChecked);}}onContentPreviewModeChanged(pMode){this.pict.AppData.ContentEditor.ContentPreviewMode=pMode;this.pict.PictApplication.saveSettings();let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.setPreviewMode(pMode);}}onAutoSegmentChanged(pChecked){this.pict.AppData.ContentEditor.AutoSegmentMarkdown=pChecked;this.pict.PictApplication.saveSettings();// Enable/disable the depth dropdown
 let tmpSelect=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-SegmentDepth');if(tmpSelect&&tmpSelect[0]){tmpSelect[0].disabled=!pChecked;}}onSegmentDepthChanged(pValue){this.pict.AppData.ContentEditor.AutoSegmentDepth=parseInt(pValue,10)||1;this.pict.PictApplication.saveSettings();}onAutoPreviewImagesChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewImages=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewVideoChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewVideo=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewAudioChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewAudio=pChecked;this.pict.PictApplication.saveSettings();}onShowHiddenFilesChanged(pChecked){this.pict.AppData.ContentEditor.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();// Tell the server to include/exclude hidden files, then refresh
-let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],107:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],121:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-topbar
 		{
 			display: flex;
@@ -8926,6 +12649,9 @@ let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.p
 		<button class="content-editor-topbar-btn content-editor-topbar-btn-close"
 			onclick="{~P~}.PictApplication.closeCurrentFile()"
 			{~D:AppData.ContentEditor.CloseVisibilityAttr~}>Close</button>
+		<button class="content-editor-topbar-btn" id="ContentEditor-DocsToggle"
+			onclick="{~P~}.views['ContentEditor-Layout'].toggleDocPanel()"
+			title="Toggle documentation panel (right side)">Docs</button>
 		<div id="ContentEditor-SettingsPanel-Container"></div>
 	</div>
 </div>
@@ -8933,7 +12659,7 @@ let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.p
 	onclick="{~P~}.PictApplication.cancelCloseFile()">
 	<div class="content-editor-confirm-panel" onclick="event.stopPropagation()">
 		<div class="content-editor-confirm-body">
-			<div class="content-editor-confirm-icon">&#x26A0;</div>
+			<div class="content-editor-confirm-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L1 14h14z"/><line x1="8" y1="6" x2="8" y2="9"/><circle cx="8" cy="11.5" r="0.5" fill="currentColor" stroke="none"/></svg></div>
 			<div class="content-editor-confirm-title">Unsaved Changes</div>
 			<div class="content-editor-confirm-message">
 				This file has unsaved changes.<br>Close without saving?
@@ -8958,7 +12684,7 @@ tmpEditor.SaveDisabledAttr=!tmpEditor.CurrentFile||tmpEditor.IsSaving?'disabled'
 tmpEditor.SaveVisibilityAttr=tmpEditor.IsDirty||tmpEditor.IsSaving||tmpEditor.SaveStatus?'':'style="display:none"';// Hide close button when no file is open
 tmpEditor.CloseVisibilityAttr=tmpEditor.CurrentFile?'':'style="display:none"';// Build viewer hash link
 if(tmpEditor.CurrentFile){let tmpViewerPath=tmpEditor.CurrentFile.replace(/\.md$/,'');tmpEditor.ViewerHash='#/page/'+tmpViewerPath;}else{tmpEditor.ViewerHash='';}return super.onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render the settings panel inside our container
-let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],108:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
+let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
 		.topics-container
 		{
 			display: flex;
@@ -9240,6 +12966,51 @@ let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettin
 			onclick="pict.views['ContentEditor-Topics'].addTopic()">+ Add Topic</button>
 	</div>
 </div>
+`},{Hash:"Topics-Row-Template",Template:/*html*/`
+<div class="topics-row" ondblclick="{~P~}.views['{~D:Record.ViewHash~}'].startEditTopic('{~D:Record.CodeEscaped~}')">
+  <div class="topics-row-info">
+    <div class="topics-row-code">{~D:Record.Code~}</div>
+    <div class="topics-row-title">{~D:Record.Title~}</div>
+    <div class="topics-row-path">{~D:Record.PathDisplay~}</div>
+  </div>
+  <div class="topics-row-actions">
+    <button class="topics-row-btn" title="Edit" onclick="event.stopPropagation();{~P~}.views['{~D:Record.ViewHash~}'].startEditTopic('{~D:Record.CodeEscaped~}')"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/><line x1="9" y1="4" x2="12" y2="7"/></svg></button>
+    <button class="topics-row-btn topics-row-btn-delete" title="Delete" onclick="event.stopPropagation();{~P~}.views['{~D:Record.ViewHash~}'].removeTopic('{~D:Record.CodeEscaped~}')"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></button>
+    {~D:Record.NavigateButton~}
+  </div>
+</div>
+`},{Hash:"Topics-EditForm-Template",Template:/*html*/`
+<div class="topics-edit">
+  <div class="topics-edit-field">
+    <label class="topics-edit-label">Topic Code</label>
+    <input class="topics-edit-input" id="topics-edit-code" type="text" value="{~D:Record.Code~}" placeholder="My-Topic-Code">
+  </div>
+  <div class="topics-edit-field">
+    <label class="topics-edit-label">Title</label>
+    <input class="topics-edit-input" id="topics-edit-title" type="text" value="{~D:Record.Title~}" placeholder="Topic title">
+  </div>
+  <div class="topics-edit-field">
+    <label class="topics-edit-label">Help File Path</label>
+    <input class="topics-edit-input" id="topics-edit-path" type="text" value="{~D:Record.Path~}" placeholder="path/to/file.md">
+  </div>
+  <div class="topics-edit-field">
+    <label class="topics-edit-label">Line Number (optional)</label>
+    <input class="topics-edit-input" id="topics-edit-line" type="number" value="{~D:Record.Line~}" placeholder="e.g. 23" min="1">
+  </div>
+  <div class="topics-edit-actions">
+    <button class="topics-edit-save" onclick="{~P~}.views['{~D:Record.ViewHash~}'].saveEditTopic('{~D:Record.OriginalCode~}')">Save</button>
+    <button class="topics-edit-cancel" onclick="{~P~}.views['{~D:Record.ViewHash~}'].cancelEditTopic()">Cancel</button>
+  </div>
+</div>
+`},{Hash:"Topics-Empty-Template",Template:/*html*/`
+<div class="topics-empty">
+  <div class="topics-empty-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1h5l4 4v9a1 1 0 01-1 1H4a1 1 0 01-1-1V2a1 1 0 011-1z"/><path d="M9 1v4h4"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg></div>
+  <div>No topics file loaded</div>
+  <button class="topics-empty-btn" onclick="{~P~}.views['{~D:Record.ViewHash~}'].loadDefaultTopicsFile()">Load .pict_documentation_topics.json</button>
+  <button class="topics-empty-btn topics-empty-btn-secondary" onclick="{~P~}.views['{~D:Record.ViewHash~}'].promptSelectTopicsFile()">Select file...</button>
+</div>
+`},{Hash:"Topics-EmptyList-Template",Template:/*html*/`
+<div style="padding:16px;text-align:center;color:#8A7F72;font-size:0.78rem;">No topics yet. Click "+ Add Topic" to create one.</div>
 `}],Renderables:[{RenderableHash:"Topics-Wrap",TemplateHash:"Topics-Container-Template",DestinationAddress:"#ContentEditor-SidebarTopics-Container"}]};/**
  * Content Editor Topics View
  *
@@ -9252,8 +13023,8 @@ let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettin
 this._topics={};// The file path of the currently loaded topics file
 this._topicsFilePath='';// Whether the view has been rendered
 this._hasRendered=false;// The TopicCode currently being edited (null if none)
-this._editingTopicCode=null;}onAfterRender(){this._hasRendered=true;this.pict.CSSMap.injectCSS();// Check if we should show the empty state or the topic list
-if(!this._topicsFilePath){this._showEmptyState();}else{this._updateHeaderTitle();this.renderTopicList();}}/**
+this._editingTopicCode=null;}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this._hasRendered=true;this.pict.CSSMap.injectCSS();// Check if we should show the empty state or the topic list
+if(!this._topicsFilePath){this._showEmptyState();}else{this._updateHeaderTitle();this.renderTopicList();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}/**
 	 * Load a topics JSON file from the server.
 	 *
 	 * @param {string} pPath - Relative path to the topics JSON file
@@ -9280,11 +13051,11 @@ this._createDefaultTopicsFile(()=>{this.addTopic(pTopicData);});return;}let tmpD
 	 *
 	 * @param {string} pTopicCode - The TopicCode to edit
 	 */startEditTopic(pTopicCode){if(!pTopicCode||!this._topics[pTopicCode]){return;}this._editingTopicCode=pTopicCode;this.renderTopicList();// Focus the first input field
-let tmpInput=document.getElementById('topics-edit-code');if(tmpInput){tmpInput.focus();tmpInput.select();}}/**
+let tmpInput=this.pict.ContentAssignment.getElement('#topics-edit-code')[0];if(tmpInput){tmpInput.focus();tmpInput.select();}}/**
 	 * Save the inline edit form values back into the topics object.
 	 *
 	 * @param {string} pOriginalCode - The original TopicCode being edited
-	 */saveEditTopic(pOriginalCode){if(!pOriginalCode||!this._topics[pOriginalCode]){return;}let tmpCodeInput=document.getElementById('topics-edit-code');let tmpTitleInput=document.getElementById('topics-edit-title');let tmpPathInput=document.getElementById('topics-edit-path');let tmpLineInput=document.getElementById('topics-edit-line');if(!tmpCodeInput){return;}let tmpNewCode=tmpCodeInput.value.trim();let tmpNewTitle=tmpTitleInput?tmpTitleInput.value.trim():'';let tmpNewPath=tmpPathInput?tmpPathInput.value.trim():'';let tmpNewLine=tmpLineInput?parseInt(tmpLineInput.value,10):NaN;// Validate: TopicCode must not be empty
+	 */saveEditTopic(pOriginalCode){if(!pOriginalCode||!this._topics[pOriginalCode]){return;}let tmpCodeInput=this.pict.ContentAssignment.getElement('#topics-edit-code')[0];let tmpTitleInput=this.pict.ContentAssignment.getElement('#topics-edit-title')[0];let tmpPathInput=this.pict.ContentAssignment.getElement('#topics-edit-path')[0];let tmpLineInput=this.pict.ContentAssignment.getElement('#topics-edit-line')[0];if(!tmpCodeInput){return;}let tmpNewCode=tmpCodeInput.value.trim();let tmpNewTitle=tmpTitleInput?tmpTitleInput.value.trim():'';let tmpNewPath=tmpPathInput?tmpPathInput.value.trim():'';let tmpNewLine=tmpLineInput?parseInt(tmpLineInput.value,10):NaN;// Validate: TopicCode must not be empty
 if(!tmpNewCode){tmpCodeInput.style.borderColor='#D9534F';return;}// Validate: if code changed, it must be unique
 if(tmpNewCode!==pOriginalCode&&this._topics[tmpNewCode]){tmpCodeInput.style.borderColor='#D9534F';alert('A topic with code "'+tmpNewCode+'" already exists.');return;}// Remove the old entry if the code changed
 if(tmpNewCode!==pOriginalCode){delete this._topics[pOriginalCode];}let tmpTopic={TopicCode:tmpNewCode,TopicHelpFilePath:tmpNewPath,TopicTitle:tmpNewTitle};if(!isNaN(tmpNewLine)&&tmpNewLine>0){tmpTopic.RelevantMarkdownLine=tmpNewLine;}this._topics[tmpNewCode]=tmpTopic;this._editingTopicCode=null;let tmpSelf=this;this.saveTopicsFile(()=>{tmpSelf.renderTopicList();});}/**
@@ -9300,26 +13071,12 @@ if(typeof tmpTopic.RelevantMarkdownLine==='number'&&tmpTopic.RelevantMarkdownLin
 let tmpRunningLines=0;for(let tmpKey in tmpEditorView._segmentEditors){let tmpEditor=tmpEditorView._segmentEditors[tmpKey];if(tmpEditor&&tmpEditor.state&&tmpEditor.state.doc){let tmpSegmentLines=tmpEditor.state.doc.lines;if(tmpRunningLines+tmpSegmentLines>=tmpLine){// This segment contains the target line
 let tmpLocalLine=tmpLine-tmpRunningLines;if(tmpLocalLine<1)tmpLocalLine=1;if(tmpLocalLine>tmpSegmentLines)tmpLocalLine=tmpSegmentLines;let tmpLineInfo=tmpEditor.state.doc.line(tmpLocalLine);tmpEditor.dispatch({selection:{anchor:tmpLineInfo.from},scrollIntoView:true});tmpEditor.focus();break;}tmpRunningLines+=tmpSegmentLines;}}}},500);}}/**
 	 * Rebuild the topic list innerHTML from this._topics.
-	 */renderTopicList(){let tmpListEl=document.getElementById('ContentEditor-Topics-List');if(!tmpListEl){return;}let tmpKeys=Object.keys(this._topics);if(tmpKeys.length===0){tmpListEl.innerHTML='<div style="padding:16px;text-align:center;color:#8A7F72;font-size:0.78rem;">No topics yet. Click "+ Add Topic" to create one.</div>';return;}let tmpHTML='';for(let i=0;i<tmpKeys.length;i++){let tmpCode=tmpKeys[i];let tmpTopic=this._topics[tmpCode];if(this._editingTopicCode===tmpCode){// Render inline edit form
-tmpHTML+=this._buildEditFormHTML(tmpTopic);}else{// Render topic row
-tmpHTML+=this._buildTopicRowHTML(tmpTopic);}}tmpListEl.innerHTML=tmpHTML;}/**
-	 * Build the HTML for a topic row.
-	 *
-	 * @param {Object} pTopic - The topic object
-	 * @returns {string} HTML string
-	 */_buildTopicRowHTML(pTopic){let tmpCode=this._escapeHTML(pTopic.TopicCode||'');let tmpTitle=this._escapeHTML(pTopic.TopicTitle||'');let tmpPath=this._escapeHTML(pTopic.TopicHelpFilePath||'');let tmpLine=typeof pTopic.RelevantMarkdownLine==='number'?' :'+pTopic.RelevantMarkdownLine:'';let tmpCodeEscaped=this._escapeAttr(pTopic.TopicCode||'');let tmpHTML='<div class="topics-row" ondblclick="pict.views[\'ContentEditor-Topics\'].startEditTopic(\''+tmpCodeEscaped+'\')">';tmpHTML+='<div class="topics-row-info">';tmpHTML+='<div class="topics-row-code">'+tmpCode+'</div>';if(tmpTitle){tmpHTML+='<div class="topics-row-title">'+tmpTitle+'</div>';}if(tmpPath){tmpHTML+='<div class="topics-row-path">'+tmpPath+tmpLine+'</div>';}tmpHTML+='</div>';tmpHTML+='<div class="topics-row-actions">';tmpHTML+='<button class="topics-row-btn" title="Edit" onclick="event.stopPropagation();pict.views[\'ContentEditor-Topics\'].startEditTopic(\''+tmpCodeEscaped+'\')">\u270E</button>';tmpHTML+='<button class="topics-row-btn topics-row-btn-delete" title="Delete" onclick="event.stopPropagation();pict.views[\'ContentEditor-Topics\'].removeTopic(\''+tmpCodeEscaped+'\')">\u2716</button>';if(tmpPath){tmpHTML+='<button class="topics-row-btn" title="Go to file" onclick="event.stopPropagation();pict.views[\'ContentEditor-Topics\'].navigateToTopic(\''+tmpCodeEscaped+'\')">\u2192</button>';}tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}/**
-	 * Build the HTML for an inline edit form.
-	 *
-	 * @param {Object} pTopic - The topic object being edited
-	 * @returns {string} HTML string
-	 */_buildEditFormHTML(pTopic){let tmpCode=this._escapeAttr(pTopic.TopicCode||'');let tmpTitle=this._escapeAttr(pTopic.TopicTitle||'');let tmpPath=this._escapeAttr(pTopic.TopicHelpFilePath||'');let tmpLine=typeof pTopic.RelevantMarkdownLine==='number'?pTopic.RelevantMarkdownLine:'';let tmpOriginalCode=this._escapeAttr(pTopic.TopicCode||'');let tmpHTML='<div class="topics-edit">';tmpHTML+='<div class="topics-edit-field">';tmpHTML+='<label class="topics-edit-label">Topic Code</label>';tmpHTML+='<input class="topics-edit-input" id="topics-edit-code" type="text" value="'+tmpCode+'" placeholder="My-Topic-Code">';tmpHTML+='</div>';tmpHTML+='<div class="topics-edit-field">';tmpHTML+='<label class="topics-edit-label">Title</label>';tmpHTML+='<input class="topics-edit-input" id="topics-edit-title" type="text" value="'+tmpTitle+'" placeholder="Topic title">';tmpHTML+='</div>';tmpHTML+='<div class="topics-edit-field">';tmpHTML+='<label class="topics-edit-label">Help File Path</label>';tmpHTML+='<input class="topics-edit-input" id="topics-edit-path" type="text" value="'+tmpPath+'" placeholder="path/to/file.md">';tmpHTML+='</div>';tmpHTML+='<div class="topics-edit-field">';tmpHTML+='<label class="topics-edit-label">Line Number (optional)</label>';tmpHTML+='<input class="topics-edit-input" id="topics-edit-line" type="number" value="'+tmpLine+'" placeholder="e.g. 23" min="1">';tmpHTML+='</div>';tmpHTML+='<div class="topics-edit-actions">';tmpHTML+='<button class="topics-edit-save" onclick="pict.views[\'ContentEditor-Topics\'].saveEditTopic(\''+tmpOriginalCode+'\')">Save</button>';tmpHTML+='<button class="topics-edit-cancel" onclick="pict.views[\'ContentEditor-Topics\'].cancelEditTopic()">Cancel</button>';tmpHTML+='</div>';tmpHTML+='</div>';return tmpHTML;}/**
+	 */renderTopicList(){let tmpListEl=this.pict.ContentAssignment.getElement('#ContentEditor-Topics-List')[0];if(!tmpListEl){return;}let tmpKeys=Object.keys(this._topics);if(tmpKeys.length===0){this.pict.ContentAssignment.assignContent('#ContentEditor-Topics-List',this.pict.parseTemplateByHash('Topics-EmptyList-Template',{}));return;}let tmpHTML='';let tmpViewRef=this.pict.PictApplication.pict_configuration.Pict+'.views[\''+this.Hash+'\']';for(let i=0;i<tmpKeys.length;i++){let tmpCode=tmpKeys[i];let tmpTopic=this._topics[tmpCode];let tmpEscapedCode=this._escapeHTML(tmpTopic.TopicCode||'');let tmpAttrEscaped=this._escapeAttr(tmpTopic.TopicCode||'');let tmpEscapedTitle=this._escapeHTML(tmpTopic.TopicTitle||'');let tmpEscapedPath=this._escapeHTML(tmpTopic.TopicHelpFilePath||'');let tmpLineNum=typeof tmpTopic.RelevantMarkdownLine==='number'?tmpTopic.RelevantMarkdownLine:'';let tmpLineStr=typeof tmpTopic.RelevantMarkdownLine==='number'?' :'+tmpTopic.RelevantMarkdownLine:'';let tmpAttrEscapedPath=this._escapeAttr(tmpTopic.TopicHelpFilePath||'');let tmpAttrEscapedOrigCode=this._escapeAttr(tmpTopic.TopicCode||'');let tmpNavigateBtnHTML='';if(tmpTopic.TopicHelpFilePath){tmpNavigateBtnHTML='<button class="topics-row-btn" title="Go to file" onclick="event.stopPropagation();'+tmpViewRef+'.navigateToTopic(\''+tmpAttrEscaped+'\')"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg></button>';}let tmpRecord={ViewHash:this.Hash,Code:tmpEscapedCode,CodeEscaped:tmpAttrEscaped,Title:tmpEscapedTitle,PathDisplay:tmpEscapedPath+tmpLineStr,Path:tmpAttrEscapedPath,Line:tmpLineNum,OriginalCode:tmpAttrEscapedOrigCode,NavigateButton:tmpNavigateBtnHTML};if(this._editingTopicCode===tmpCode){// Render inline edit form
+tmpHTML+=this.pict.parseTemplateByHash('Topics-EditForm-Template',tmpRecord);}else{// Render topic row
+tmpHTML+=this.pict.parseTemplateByHash('Topics-Row-Template',tmpRecord);}}this.pict.ContentAssignment.assignContent('#ContentEditor-Topics-List',tmpHTML);}/**
 	 * Show the empty state (no topics file loaded).
-	 */_showEmptyState(){let tmpContainer=document.getElementById('ContentEditor-Topics-Container');if(!tmpContainer){// If the container doesn't exist yet, just render the whole view
-let tmpDestination=document.getElementById('ContentEditor-SidebarTopics-Container');if(tmpDestination){tmpDestination.innerHTML=this._buildEmptyStateHTML();}return;}tmpContainer.innerHTML=this._buildEmptyStateHTML();}/**
-	 * Build the empty state HTML.
-	 *
-	 * @returns {string} HTML string
-	 */_buildEmptyStateHTML(){let tmpHTML='<div class="topics-empty">';tmpHTML+='<div class="topics-empty-icon">&#x1F4D1;</div>';tmpHTML+='<div>No topics file loaded</div>';tmpHTML+='<button class="topics-empty-btn" onclick="pict.views[\'ContentEditor-Topics\'].loadDefaultTopicsFile()">Load .pict_documentation_topics.json</button>';tmpHTML+='<button class="topics-empty-btn topics-empty-btn-secondary" onclick="pict.views[\'ContentEditor-Topics\'].promptSelectTopicsFile()">Select file...</button>';tmpHTML+='</div>';return tmpHTML;}/**
+	 */_showEmptyState(){let tmpContainer=this.pict.ContentAssignment.getElement('#ContentEditor-Topics-Container')[0];if(!tmpContainer){// If the container doesn't exist yet, just render the whole view
+let tmpDestination=this.pict.ContentAssignment.getElement('#ContentEditor-SidebarTopics-Container')[0];if(tmpDestination){this.pict.ContentAssignment.assignContent('#ContentEditor-SidebarTopics-Container',this.pict.parseTemplateByHash('Topics-Empty-Template',{ViewHash:this.Hash}));}return;}this.pict.ContentAssignment.assignContent('#ContentEditor-Topics-Container',this.pict.parseTemplateByHash('Topics-Empty-Template',{ViewHash:this.Hash}));}/**
 	 * Attempt to load the default topics file (.pict_documentation_topics.json).
 	 * If it doesn't exist, create it.
 	 */loadDefaultTopicsFile(){let tmpSelf=this;let tmpDefaultPath='.pict_documentation_topics.json';this.loadTopicsFile(tmpDefaultPath,pError=>{if(pError){// File doesn't exist — create it
@@ -9332,11 +13089,11 @@ if(confirm('File not found. Create "'+tmpPath.trim()+'"?')){tmpSelf._topicsFileP
 	 * @param {Function} [fCallback] - Optional callback when done
 	 */_createDefaultTopicsFile(fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};let tmpSelf=this;let tmpDefaultPath='.pict_documentation_topics.json';this._topicsFilePath=tmpDefaultPath;this._topics={};this.pict.AppData.ContentEditor.TopicsFilePath=tmpDefaultPath;this.pict.PictApplication.saveSettings();this.saveTopicsFile(()=>{if(tmpSelf._hasRendered){tmpSelf.render();}tmpCallback();});}/**
 	 * Update the header title bar with the current file name.
-	 */_updateHeaderTitle(){let tmpTitle=document.getElementById('ContentEditor-Topics-HeaderTitle');if(tmpTitle){let tmpFileName=this._topicsFilePath.replace(/^.*\//,'');tmpTitle.textContent=tmpFileName||'Topics';tmpTitle.title=this._topicsFilePath;}}/**
+	 */_updateHeaderTitle(){let tmpTitle=this.pict.ContentAssignment.getElement('#ContentEditor-Topics-HeaderTitle')[0];if(tmpTitle){let tmpFileName=this._topicsFilePath.replace(/^.*\//,'');tmpTitle.textContent=tmpFileName||'Topics';tmpTitle.title=this._topicsFilePath;}}/**
 	 * Show or hide the footer (add button area).
 	 *
 	 * @param {boolean} pShow
-	 */_showFooter(pShow){let tmpFooter=document.getElementById('ContentEditor-Topics-Footer');if(tmpFooter){tmpFooter.style.display=pShow?'':'none';}}/**
+	 */_showFooter(pShow){let tmpFooter=this.pict.ContentAssignment.getElement('#ContentEditor-Topics-Footer')[0];if(tmpFooter){tmpFooter.style.display=pShow?'':'none';}}/**
 	 * Generate a unique topic code by appending a suffix if needed.
 	 *
 	 * @param {string} pBase - The base code
@@ -9351,7 +13108,7 @@ if(confirm('File not found. Create "'+tmpPath.trim()+'"?')){tmpSelf._topicsFileP
 	 *
 	 * @param {string} pStr
 	 * @returns {string}
-	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],109:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
+	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],123:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
 * This function traverses the list returning the node corresponding to the given key.
 *
 * That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list.
@@ -9366,13 +13123,13 @@ key:key,next:objects.next,value:value};}};/** @type {import('./list.d.ts').listH
 var listDelete=function(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){var root=$o&&$o.next;var deletedNode=listDelete($o,key);if(deletedNode&&root&&root===deletedNode){$o=void undefined;}return!!deletedNode;},get:function(key){return listGet($o,key);},has:function(key){return listHas($o,key);},set:function(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
 $o={next:void undefined};}// eslint-disable-next-line no-extra-parens
 listSet(/** @type {NonNullable<typeof $o>} */$o,key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41}],110:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
+return channel;};},{"es-errors/type":16,"object-inspect":41}],124:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
 if($m){return $mapGet($m,key);}},has:function(key){if($m){return $mapHas($m,key);}return false;},set:function(key,value){if(!$m){// @ts-expect-error TS can't handle narrowing a variable inside a closure
 $m=new $Map();}$mapSet($m,key,value);}};// @ts-expect-error TODO: figure out why TS is erroring here
-return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],111:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
+return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],125:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
 /** @type {NonNullable<typeof $m>} */$m.set(key,value);}}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":110}],112:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":109,"side-channel-map":110,"side-channel-weakmap":111}],113:[function(require,module,exports){/*
+return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":124}],126:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
+return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":123,"side-channel-map":124,"side-channel-weakmap":125}],127:[function(require,module,exports){/*
  * Copyright Joyent, Inc. and other Node contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9550,7 +13307,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
      * this especially happens in cases like
      * url.resolveObject('mailto:local1@domain1', 'local2@domain2')
      */var authInHost=result.host&&result.host.indexOf('@')>0?result.host.split('@'):false;if(authInHost){result.auth=authInHost.shift();result.hostname=authInHost.shift();result.host=result.hostname;}}mustEndAbs=mustEndAbs||result.host&&srcPath.length;if(mustEndAbs&&!isAbsolute){srcPath.unshift('');}if(srcPath.length>0){result.pathname=srcPath.join('/');}else{result.pathname=null;result.path=null;}// to support request.http
-if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":90,"qs":92}],114:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],115:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
+if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":104,"qs":106}],128:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],129:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');const libProviderFormattingUtilities=require('./providers/Pict-Provider-FormattingUtilities.js');const libProviderToastNotification=require('./providers/Pict-Provider-ToastNotification.js');const libProviderOperationStatus=require('./providers/Pict-Provider-OperationStatus.js');const libProviderCollectionManager=require('./providers/Pict-Provider-CollectionManager.js');const libProviderAISortManager=require('./providers/Pict-Provider-AISortManager.js');const libExtensionMaps=require('./RetoldRemote-ExtensionMaps.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
 const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewImageExplorer=require('./views/PictView-Remote-ImageExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');const libViewFileInfoPanel=require('./views/PictView-Remote-FileInfoPanel.js');const libViewSubimagesPanel=require('./views/PictView-Remote-SubimagesPanel.js');const libViewRegionsBrowser=require('./views/PictView-Remote-RegionsBrowser.js');// Application configuration
@@ -9705,11 +13462,11 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;if(typeof tmpSettings.ListShowExtension==='boolean')tmpRemote.ListShowExtension=tmpSettings.ListShowExtension;if(typeof tmpSettings.ListShowSize==='boolean')tmpRemote.ListShowSize=tmpSettings.ListShowSize;if(typeof tmpSettings.ListShowDate==='boolean')tmpRemote.ListShowDate=tmpSettings.ListShowDate;if(typeof tmpSettings.CollectionsPanelOpen==='boolean')tmpRemote.CollectionsPanelOpen=tmpSettings.CollectionsPanelOpen;if(tmpSettings.CollectionsPanelWidth)tmpRemote.CollectionsPanelWidth=tmpSettings.CollectionsPanelWidth;if(tmpSettings.LastUsedCollectionGUID)tmpRemote.LastUsedCollectionGUID=tmpSettings.LastUsedCollectionGUID;if(tmpSettings.FavoritesGUID)tmpRemote.FavoritesGUID=tmpSettings.FavoritesGUID;if(tmpSettings.AISortSettings&&typeof tmpSettings.AISortSettings==='object'){if(tmpSettings.AISortSettings.AIEndpoint)tmpRemote.AISortSettings.AIEndpoint=tmpSettings.AISortSettings.AIEndpoint;if(tmpSettings.AISortSettings.AIModel)tmpRemote.AISortSettings.AIModel=tmpSettings.AISortSettings.AIModel;if(tmpSettings.AISortSettings.AIProvider)tmpRemote.AISortSettings.AIProvider=tmpSettings.AISortSettings.AIProvider;if(tmpSettings.AISortSettings.NamingTemplate)tmpRemote.AISortSettings.NamingTemplate=tmpSettings.AISortSettings.NamingTemplate;}}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":114,"./RetoldRemote-ExtensionMaps.js":117,"./providers/Pict-Provider-AISortManager.js":121,"./providers/Pict-Provider-CollectionManager.js":122,"./providers/Pict-Provider-FormattingUtilities.js":123,"./providers/Pict-Provider-GalleryFilterSort.js":124,"./providers/Pict-Provider-GalleryNavigation.js":125,"./providers/Pict-Provider-OperationStatus.js":126,"./providers/Pict-Provider-RetoldRemote.js":127,"./providers/Pict-Provider-RetoldRemoteIcons.js":128,"./providers/Pict-Provider-RetoldRemoteTheme.js":129,"./providers/Pict-Provider-ToastNotification.js":130,"./views/PictView-Remote-AudioExplorer.js":141,"./views/PictView-Remote-CollectionsPanel.js":142,"./views/PictView-Remote-FileInfoPanel.js":143,"./views/PictView-Remote-Gallery.js":144,"./views/PictView-Remote-ImageExplorer.js":145,"./views/PictView-Remote-ImageViewer.js":146,"./views/PictView-Remote-Layout.js":147,"./views/PictView-Remote-MediaViewer.js":148,"./views/PictView-Remote-RegionsBrowser.js":149,"./views/PictView-Remote-SettingsPanel.js":150,"./views/PictView-Remote-SubimagesPanel.js":151,"./views/PictView-Remote-TopBar.js":152,"./views/PictView-Remote-VLCSetup.js":153,"./views/PictView-Remote-VideoExplorer.js":154,"pict-section-filebrowser":63,"retold-content-system":100}],116:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":128,"./RetoldRemote-ExtensionMaps.js":131,"./providers/Pict-Provider-AISortManager.js":135,"./providers/Pict-Provider-CollectionManager.js":136,"./providers/Pict-Provider-FormattingUtilities.js":137,"./providers/Pict-Provider-GalleryFilterSort.js":138,"./providers/Pict-Provider-GalleryNavigation.js":139,"./providers/Pict-Provider-OperationStatus.js":140,"./providers/Pict-Provider-RetoldRemote.js":141,"./providers/Pict-Provider-RetoldRemoteIcons.js":142,"./providers/Pict-Provider-RetoldRemoteTheme.js":143,"./providers/Pict-Provider-ToastNotification.js":144,"./views/PictView-Remote-AudioExplorer.js":155,"./views/PictView-Remote-CollectionsPanel.js":156,"./views/PictView-Remote-FileInfoPanel.js":157,"./views/PictView-Remote-Gallery.js":158,"./views/PictView-Remote-ImageExplorer.js":159,"./views/PictView-Remote-ImageViewer.js":160,"./views/PictView-Remote-Layout.js":161,"./views/PictView-Remote-MediaViewer.js":162,"./views/PictView-Remote-RegionsBrowser.js":163,"./views/PictView-Remote-SettingsPanel.js":164,"./views/PictView-Remote-SubimagesPanel.js":165,"./views/PictView-Remote-TopBar.js":166,"./views/PictView-Remote-VLCSetup.js":167,"./views/PictView-Remote-VideoExplorer.js":168,"pict-section-filebrowser":66,"retold-content-system":114}],130:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
- */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":115}],117:[function(require,module,exports){/**
+ */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":129}],131:[function(require,module,exports){/**
  * Shared extension category maps for retold-remote.
  *
  * Used by both client-side providers (GalleryFilterSort) and server-side
@@ -9747,7 +13504,7 @@ for(let tmpKey in RawImageExtensions){ImageExtensions[tmpKey]=true;}const VideoE
  *
  * @param {string} pExtension - Extension with or without leading dot
  * @returns {boolean}
- */function isRawImage(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();return!!RawImageExtensions[tmpExt];}module.exports.RawImageExtensions=RawImageExtensions;module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;module.exports.isRawImage=isRawImage;},{}],118:[function(require,module,exports){/**
+ */function isRawImage(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();return!!RawImageExtensions[tmpExt];}module.exports.RawImageExtensions=RawImageExtensions;module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;module.exports.isRawImage=isRawImage;},{}],132:[function(require,module,exports){/**
  * CollectionManager — Add Items Mixin
  *
  * Convenience methods for adding various media types to collections.
@@ -9858,7 +13615,7 @@ tmpDropdown.style.position='fixed';tmpDropdown.style.top='50px';tmpDropdown.styl
 setTimeout(function(){tmpSelf._boundCloseFolderChoice=function(pClickEvent){if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpAnchor){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('click',tmpSelf._boundCloseFolderChoice);// Close on Escape key
 tmpSelf._boundCloseFolderChoiceKey=function(pKeyEvent){if(pKeyEvent.key==='Escape'){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('keydown',tmpSelf._boundCloseFolderChoiceKey);},10);},/**
 	 * Close the folder choice prompt dropdown.
-	 */closeFolderChoicePrompt:function closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}};},{}],119:[function(require,module,exports){/**
+	 */closeFolderChoicePrompt:function closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}};},{}],133:[function(require,module,exports){/**
  * CollectionManager — Favorites Mixin
  *
  * Manages the Favorites collection: a special system collection
@@ -9910,7 +13667,7 @@ let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.g
 let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
 let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});}},/**
 	 * Render the favorites pane if the favorites tab is active.
-	 */_renderFavoritesPane:function _renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}};},{}],120:[function(require,module,exports){/**
+	 */_renderFavoritesPane:function _renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}};},{}],134:[function(require,module,exports){/**
  * CollectionManager — Operation Plan Mixin
  *
  * Methods for creating, executing, and undoing file-operation plans
@@ -9953,7 +13710,7 @@ this.updateCollection(tmpCollection);},/**
 	 *
 	 * @param {string} pItemID - Item ID
 	 */skipItemOperation:function skipItemOperation(pItemID){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].OperationStatus='skipped';break;}}let tmpPanel=this._getPanelView();if(tmpPanel){tmpPanel.renderContent();}// Save to server in background
-this.updateCollection(tmpCollection);}};},{}],121:[function(require,module,exports){/**
+this.updateCollection(tmpCollection);}};},{}],135:[function(require,module,exports){/**
  * Retold Remote -- AI Sort Manager Provider
  *
  * Client-side state management and API communication for the
@@ -10025,7 +13782,7 @@ let tmpCollManager=tmpSelf._getCollectionManager();if(tmpCollManager){let tmpRem
 	 * Whether a generation is currently in progress.
 	 *
 	 * @returns {boolean}
-	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":55}],122:[function(require,module,exports){/**
+	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":58}],136:[function(require,module,exports){/**
  * Retold Remote -- Collection Manager Provider
  *
  * Client-side state management and API communication for the
@@ -10205,7 +13962,7 @@ fetch('/api/collections/'+encodeURIComponent(tmpCollection.GUID),{method:'PUT',h
 	 * @param {string} pQuery - Search query
 	 * @returns {Array} Filtered collection summaries
 	 */searchCollections(pQuery){let tmpRemote=this._getRemote();let tmpQuery=(pQuery||'').toLowerCase();if(!tmpQuery){return tmpRemote.Collections;}return tmpRemote.Collections.filter(pCollection=>{let tmpName=(pCollection.Name||'').toLowerCase();let tmpDesc=(pCollection.Description||'').toLowerCase();let tmpTags=(pCollection.Tags||[]).join(' ').toLowerCase();return tmpName.indexOf(tmpQuery)>=0||tmpDesc.indexOf(tmpQuery)>=0||tmpTags.indexOf(tmpQuery)>=0;});}}// -- Mix in method groups from sub-modules --------------------------------
-Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerAddItems);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerOperationPlan);CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"./CollectionManager-AddItems":118,"./CollectionManager-Favorites":119,"./CollectionManager-OperationPlan":120,"pict-provider":55}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
+Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerAddItems);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerOperationPlan);CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"./CollectionManager-AddItems":132,"./CollectionManager-Favorites":133,"./CollectionManager-OperationPlan":134,"pict-provider":58}],137:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
 	 * Escape HTML special characters for safe insertion into markup.
 	 *
 	 * @param {string} pText - Raw text to escape
@@ -10227,7 +13984,7 @@ Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);O
 	 * @param {number} pSeconds - Duration in seconds
 	 * @param {boolean} pIncludeMilliseconds - If true, append tenths of a second
 	 * @returns {string} Formatted string like "1:23" or "1:02:34.5"
-	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":55}],124:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
+	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":58}],138:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
 // Pipeline
 // ──────────────────────────────────────────────
 /**
@@ -10321,7 +14078,7 @@ if(tmpRemote.SearchQuery){let tmpSearchLabel='Search: "'+tmpRemote.SearchQuery+'
 	 * Delete a saved preset.
 	 *
 	 * @param {number} pIndex - index into FilterPresets array
-	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":117,"pict-provider":55}],125:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
+	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58}],139:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
 	 * Calculate how many columns are in the current gallery grid by
 	 * inspecting the rendered DOM.  In list mode this is always 1.
 	 */recalculateColumns(){let tmpRemote=this.pict.AppData.RetoldRemote;// List mode is always a single column
@@ -10511,7 +14268,7 @@ tmpVLCURL='vlc://'+tmpStreamURL;}else{// Windows, macOS, Linux: encode the URL s
 // shell strips the colon from nested http:// URLs.
 tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);}this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use window.location for iOS (more reliable for custom URL schemes
 // on iOS Safari than a programmatic anchor click), anchor for others.
-if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":132,"./keyboard-handlers/KeyHandler-Gallery.js":133,"./keyboard-handlers/KeyHandler-ImageExplorer.js":134,"./keyboard-handlers/KeyHandler-Sidebar.js":135,"./keyboard-handlers/KeyHandler-VideoExplorer.js":136,"./keyboard-handlers/KeyHandler-Viewer.js":137,"pict-provider":55}],126:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
+if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":146,"./keyboard-handlers/KeyHandler-Gallery.js":147,"./keyboard-handlers/KeyHandler-ImageExplorer.js":148,"./keyboard-handlers/KeyHandler-Sidebar.js":149,"./keyboard-handlers/KeyHandler-VideoExplorer.js":150,"./keyboard-handlers/KeyHandler-Viewer.js":151,"pict-provider":58}],140:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
  * Pict-Provider-OperationStatus
  *
  * Client-side singleton that:
@@ -10623,7 +14380,7 @@ let tmpProto=typeof window!=='undefined'&&window.location&&window.location.proto
 });}_scheduleReconnect(){if(!this._wsShouldRun){return;}if(this._wsReconnectTimer){return;}let tmpDelay=RECONNECT_BACKOFF_MS[Math.min(this._wsReconnectAttempt,RECONNECT_BACKOFF_MS.length-1)];this._wsReconnectAttempt++;let tmpSelf=this;this._wsReconnectTimer=setTimeout(function(){tmpSelf._wsReconnectTimer=null;tmpSelf._connectWebSocket();},tmpDelay);}_sendWs(pMessage){if(!this._ws||!this._wsConnected){return;}try{this._ws.send(JSON.stringify(pMessage));}catch(pErr){// ignore
 }}_onWsMessage(pEvent){let tmpData;try{tmpData=JSON.parse(pEvent.data);}catch(pErr){return;}if(!tmpData||typeof tmpData.Type!=='string'){return;}switch(tmpData.Type){case'hello':// Connection handshake — nothing to do
 break;case'progress':if(this._operations.has(tmpData.OperationId)){this.updateOperation(tmpData.OperationId,{Phase:tmpData.Phase,Current:typeof tmpData.Current==='number'?tmpData.Current:undefined,Total:typeof tmpData.Total==='number'?tmpData.Total:undefined,Message:tmpData.Message,Cancelable:typeof tmpData.Cancelable==='boolean'?tmpData.Cancelable:undefined});}break;case'complete':if(this._operations.has(tmpData.OperationId)){this.completeOperation(tmpData.OperationId);}break;case'error':if(this._operations.has(tmpData.OperationId)){this.errorOperation(tmpData.OperationId,{message:tmpData.Error});}break;case'cancelled':if(this._operations.has(tmpData.OperationId)){let tmpOp=this._operations.get(tmpData.OperationId);tmpOp.Status='cancelled';tmpOp.Message='Cancelled';this._render();let tmpSelf=this;setTimeout(function(){tmpSelf._operations.delete(tmpData.OperationId);tmpSelf._render();},600);}break;case'pong':// Heartbeat response — nothing to do
-break;}}}OperationStatusProvider.default_configuration=_DefaultProviderConfiguration;module.exports=OperationStatusProvider;},{"pict-provider":55}],127:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+break;}}}OperationStatusProvider.default_configuration=_DefaultProviderConfiguration;module.exports=OperationStatusProvider;},{"pict-provider":58}],141:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -10705,7 +14462,7 @@ if(pData&&pData.Hash&&pData.Path){this.registerHash(pData.Path,pData.Hash);}fCal
 	 *
 	 * @param {string} pExtension - Lowercase extension
 	 * @returns {boolean}
-	 */_isImageExtension(pExtension){return libExtensionMaps.getCategory(pExtension)==='image';}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"../RetoldRemote-ExtensionMaps.js":117,"pict-provider":55}],128:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
+	 */_isImageExtension(pExtension){return libExtensionMaps.getCategory(pExtension)==='image';}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58}],142:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
 // DEFAULT DARK-THEME COLOR PALETTE
 //
 // Designed for retold-remote's dark navy background (#16162B).
@@ -10851,7 +14608,7 @@ return this.getIcon('file',tmpSize);}/**
 // registered in the icon extension map.  The base map imported from
 // pict-section-filebrowser only covers a handful of common formats;
 // this fills in the gaps (mpg, mpeg, ts, mts, 3gp, etc.)
-let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":117,"pict-provider":55,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":65}],129:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ThemeDefinitions=require('./RetoldRemote-ThemeDefinitions');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
+let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":68}],143:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ThemeDefinitions=require('./RetoldRemote-ThemeDefinitions');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
  * Theme provider for retold-remote.
  *
  * Manages 15 themes (5 grey-only + 10 fun) via CSS custom properties.
@@ -10887,7 +14644,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pThemeKey
 	 * @returns {Object|null}
-	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"./RetoldRemote-ThemeDefinitions":131,"pict-provider":55}],130:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
+	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"./RetoldRemote-ThemeDefinitions":145,"pict-provider":58}],144:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
 	 * Show a brief overlay indicator inside the viewer body.
 	 *
 	 * Reuses the #RetoldRemote-FitIndicator element, creating it if needed.
@@ -10902,7 +14659,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pMessage - Text to display
 	 * @param {number} pDuration - Milliseconds before removal (default 2000)
-	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":55}],131:[function(require,module,exports){/**
+	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":58}],145:[function(require,module,exports){/**
  * Theme definitions for retold-remote.
  *
  * Pure data module — 15 themes (5 grey-only, 10 fun, 1 debug).
@@ -10923,12 +14680,12 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 {Key:'neo-tokyo',Name:'Neo-Tokyo',Category:'Fun',Description:'Neon pink on dark navy',Variables:{'--retold-bg-primary':'#0D0D2B','--retold-bg-secondary':'#080820','--retold-bg-tertiary':'#121235','--retold-bg-panel':'#0F0F28','--retold-bg-viewer':'#060615','--retold-bg-hover':'#1A1A42','--retold-bg-selected':'#2A1845','--retold-bg-thumb':'#080820','--retold-text-primary':'#E8E0F0','--retold-text-secondary':'#D0C8E0','--retold-text-muted':'#9088A8','--retold-text-dim':'#6860A0','--retold-text-placeholder':'#504888','--retold-accent':'#FF2D8A','--retold-accent-hover':'#FF5AA0','--retold-border':'#2A2050','--retold-border-light':'#382868','--retold-danger':'#FF4466','--retold-danger-muted':'#AA3355','--retold-scrollbar':'#2A2050','--retold-scrollbar-hover':'#3A3068','--retold-selection-bg':'rgba(255, 45, 138, 0.25)','--retold-focus-outline':'#FF2D8A','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0C8E0',Accent:'#FF2D8A',Muted:'#6860A0',Light:'#121235',WarmBeige:'#141438',TealTint:'#100E30',Lavender:'#141232',AmberTint:'#1A1228',PdfFill:'#1A1028',PdfText:'#FF4466'}},{Key:'cyberpunk',Name:'Cyberpunk',Category:'Fun',Description:'Electric green on black',Variables:{'--retold-bg-primary':'#0A0E0A','--retold-bg-secondary':'#060806','--retold-bg-tertiary':'#0E120E','--retold-bg-panel':'#0C100C','--retold-bg-viewer':'#040604','--retold-bg-hover':'#142014','--retold-bg-selected':'#1A3A1A','--retold-bg-thumb':'#060806','--retold-text-primary':'#C8FFC8','--retold-text-secondary':'#A0D8A0','--retold-text-muted':'#608860','--retold-text-dim':'#406040','--retold-text-placeholder':'#305030','--retold-accent':'#00FF41','--retold-accent-hover':'#44FF77','--retold-border':'#1A2A1A','--retold-border-light':'#224022','--retold-danger':'#FF3333','--retold-danger-muted':'#AA2222','--retold-scrollbar':'#1A2A1A','--retold-scrollbar-hover':'#2A4A2A','--retold-selection-bg':'rgba(0, 255, 65, 0.2)','--retold-focus-outline':'#00FF41','--retold-font-family':"'Lucida Console', 'Courier New', monospace",'--retold-font-mono':"'Lucida Console', 'Courier New', monospace"},IconColors:{Primary:'#A0D8A0',Accent:'#00FF41',Muted:'#406040',Light:'#0E120E',WarmBeige:'#101610',TealTint:'#0C140C',Lavender:'#0E120E',AmberTint:'#141810',PdfFill:'#181010',PdfText:'#FF3333'}},{Key:'hotdog',Name:'Hotdog',Category:'Fun',Description:'Red and mustard yellow, garish',Variables:{'--retold-bg-primary':'#8B0000','--retold-bg-secondary':'#6B0000','--retold-bg-tertiary':'#7B0000','--retold-bg-panel':'#750000','--retold-bg-viewer':'#550000','--retold-bg-hover':'#AA1111','--retold-bg-selected':'#BB3300','--retold-bg-thumb':'#6B0000','--retold-text-primary':'#FFD700','--retold-text-secondary':'#FFC000','--retold-text-muted':'#CC9900','--retold-text-dim':'#AA7700','--retold-text-placeholder':'#886600','--retold-accent':'#FFD700','--retold-accent-hover':'#FFEE44','--retold-border':'#AA2222','--retold-border-light':'#BB3333','--retold-danger':'#FFFF00','--retold-danger-muted':'#CCCC00','--retold-scrollbar':'#AA2222','--retold-scrollbar-hover':'#CC3333','--retold-selection-bg':'rgba(255, 215, 0, 0.3)','--retold-focus-outline':'#FFD700','--retold-font-family':"Impact, 'Arial Black', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#FFC000',Accent:'#FFD700',Muted:'#AA7700',Light:'#7B0000',WarmBeige:'#800000',TealTint:'#6B0000',Lavender:'#780000',AmberTint:'#7A1000',PdfFill:'#6B0000',PdfText:'#FFFF00'}},{Key:'1970s-console',Name:'1970s Console',Category:'Fun',Description:'Amber phosphor on brown-black',Variables:{'--retold-bg-primary':'#1A1000','--retold-bg-secondary':'#140C00','--retold-bg-tertiary':'#1E1400','--retold-bg-panel':'#1C1200','--retold-bg-viewer':'#100A00','--retold-bg-hover':'#2A1C00','--retold-bg-selected':'#3A2800','--retold-bg-thumb':'#140C00','--retold-text-primary':'#FFAA00','--retold-text-secondary':'#DD8800','--retold-text-muted':'#AA6600','--retold-text-dim':'#884400','--retold-text-placeholder':'#663300','--retold-accent':'#FFCC00','--retold-accent-hover':'#FFDD44','--retold-border':'#2A1800','--retold-border-light':'#3A2200','--retold-danger':'#FF4400','--retold-danger-muted':'#AA3300','--retold-scrollbar':'#2A1800','--retold-scrollbar-hover':'#3A2800','--retold-selection-bg':'rgba(255, 204, 0, 0.2)','--retold-focus-outline':'#FFCC00','--retold-font-family':"'Courier New', 'Lucida Console', monospace",'--retold-font-mono':"'Courier New', 'Lucida Console', monospace"},IconColors:{Primary:'#DD8800',Accent:'#FFCC00',Muted:'#884400',Light:'#1E1400',WarmBeige:'#201800',TealTint:'#1A1000',Lavender:'#1C1200',AmberTint:'#221800',PdfFill:'#201000',PdfText:'#FF4400'}},{Key:'1980s-console',Name:'1980s Console',Category:'Fun',Description:'Green phosphor on black',Variables:{'--retold-bg-primary':'#001200','--retold-bg-secondary':'#000E00','--retold-bg-tertiary':'#001600','--retold-bg-panel':'#001400','--retold-bg-viewer':'#000A00','--retold-bg-hover':'#002200','--retold-bg-selected':'#003800','--retold-bg-thumb':'#000E00','--retold-text-primary':'#00FF00','--retold-text-secondary':'#00CC00','--retold-text-muted':'#009900','--retold-text-dim':'#006600','--retold-text-placeholder':'#004400','--retold-accent':'#00FF66','--retold-accent-hover':'#44FF88','--retold-border':'#002A00','--retold-border-light':'#003A00','--retold-danger':'#FF0000','--retold-danger-muted':'#AA0000','--retold-scrollbar':'#002A00','--retold-scrollbar-hover':'#004400','--retold-selection-bg':'rgba(0, 255, 102, 0.2)','--retold-focus-outline':'#00FF66','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#00CC00',Accent:'#00FF66',Muted:'#006600',Light:'#001600',WarmBeige:'#001A00',TealTint:'#001200',Lavender:'#001400',AmberTint:'#001800',PdfFill:'#140000',PdfText:'#FF0000'}},{Key:'1990s-website',Name:'1990s Web Site',Category:'Fun',Description:'Blue links on grey, beveled',Variables:{'--retold-bg-primary':'#C0C0C0','--retold-bg-secondary':'#B0B0B0','--retold-bg-tertiary':'#A8A8A8','--retold-bg-panel':'#B8B8B8','--retold-bg-viewer':'#D0D0D0','--retold-bg-hover':'#B8B8D0','--retold-bg-selected':'#000080','--retold-bg-thumb':'#B0B0B0','--retold-text-primary':'#000000','--retold-text-secondary':'#000080','--retold-text-muted':'#404040','--retold-text-dim':'#606060','--retold-text-placeholder':'#808080','--retold-accent':'#0000FF','--retold-accent-hover':'#0000CC','--retold-border':'#808080','--retold-border-light':'#A0A0A0','--retold-danger':'#FF0000','--retold-danger-muted':'#990000','--retold-scrollbar':'#808080','--retold-scrollbar-hover':'#606060','--retold-selection-bg':'rgba(0, 0, 128, 0.3)','--retold-focus-outline':'#0000FF','--retold-font-family':"'Times New Roman', Times, serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#000080',Accent:'#0000FF',Muted:'#606060',Light:'#A8A8A8',WarmBeige:'#B0B0B0',TealTint:'#A0A0A0',Lavender:'#ABABD0',AmberTint:'#B8B0A0',PdfFill:'#C0A0A0',PdfText:'#FF0000'}},{Key:'early-2000s',Name:'Early 2000s Web',Category:'Fun',Description:'Teal and silver, Web 2.0',Variables:{'--retold-bg-primary':'#E8F4F8','--retold-bg-secondary':'#D0E8EE','--retold-bg-tertiary':'#C0DDE6','--retold-bg-panel':'#D8EEF2','--retold-bg-viewer':'#F0F8FA','--retold-bg-hover':'#B0D4E0','--retold-bg-selected':'#88C4D8','--retold-bg-thumb':'#D0E8EE','--retold-text-primary':'#1A3A4A','--retold-text-secondary':'#2A4A5A','--retold-text-muted':'#5A7A8A','--retold-text-dim':'#7A9AAA','--retold-text-placeholder':'#9ABACA','--retold-accent':'#0099CC','--retold-accent-hover':'#00AADD','--retold-border':'#A0C8D8','--retold-border-light':'#B8D8E4','--retold-danger':'#CC3300','--retold-danger-muted':'#994422','--retold-scrollbar':'#A0C8D8','--retold-scrollbar-hover':'#88B8CC','--retold-selection-bg':'rgba(0, 153, 204, 0.2)','--retold-focus-outline':'#0099CC','--retold-font-family':"Verdana, Geneva, Tahoma, sans-serif",'--retold-font-mono':"'Lucida Console', Monaco, monospace"},IconColors:{Primary:'#2A4A5A',Accent:'#0099CC',Muted:'#7A9AAA',Light:'#C0DDE6',WarmBeige:'#D0E8EE',TealTint:'#B0D8E4',Lavender:'#C8DCE6',AmberTint:'#D8E0D0',PdfFill:'#E0C8C0',PdfText:'#CC3300'}},{Key:'synthwave',Name:'Synthwave',Category:'Fun',Description:'Purple and pink neon',Variables:{'--retold-bg-primary':'#1A0A2E','--retold-bg-secondary':'#140824','--retold-bg-tertiary':'#200E38','--retold-bg-panel':'#1C0C32','--retold-bg-viewer':'#100620','--retold-bg-hover':'#2A1848','--retold-bg-selected':'#3A2060','--retold-bg-thumb':'#140824','--retold-text-primary':'#E8C0F8','--retold-text-secondary':'#D0A8E8','--retold-text-muted':'#9878B8','--retold-text-dim':'#7858A8','--retold-text-placeholder':'#584088','--retold-accent':'#FF71CE','--retold-accent-hover':'#FF99DD','--retold-border':'#302050','--retold-border-light':'#402868','--retold-danger':'#FF4488','--retold-danger-muted':'#AA3366','--retold-scrollbar':'#302050','--retold-scrollbar-hover':'#402868','--retold-selection-bg':'rgba(255, 113, 206, 0.25)','--retold-focus-outline':'#FF71CE','--retold-font-family':"'Trebuchet MS', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0A8E8',Accent:'#FF71CE',Muted:'#7858A8',Light:'#200E38',WarmBeige:'#221040',TealTint:'#1A0C30',Lavender:'#1E0E36',AmberTint:'#241028',PdfFill:'#241020',PdfText:'#FF4488'}},{Key:'solarized-dark',Name:'Solarized Dark',Category:'Fun',Description:"Schoonover's classic palette",Variables:{'--retold-bg-primary':'#002B36','--retold-bg-secondary':'#073642','--retold-bg-tertiary':'#003B4A','--retold-bg-panel':'#00303C','--retold-bg-viewer':'#001E28','--retold-bg-hover':'#0A4858','--retold-bg-selected':'#155868','--retold-bg-thumb':'#073642','--retold-text-primary':'#FDF6E3','--retold-text-secondary':'#EEE8D5','--retold-text-muted':'#93A1A1','--retold-text-dim':'#839496','--retold-text-placeholder':'#657B83','--retold-accent':'#268BD2','--retold-accent-hover':'#45A0E0','--retold-border':'#0A4050','--retold-border-light':'#125868','--retold-danger':'#DC322F','--retold-danger-muted':'#AA2A28','--retold-scrollbar':'#0A4050','--retold-scrollbar-hover':'#125868','--retold-selection-bg':'rgba(38, 139, 210, 0.25)','--retold-focus-outline':'#268BD2','--retold-font-family':"'Source Code Pro', 'Fira Code', monospace",'--retold-font-mono':"'Source Code Pro', 'Fira Code', monospace"},IconColors:{Primary:'#EEE8D5',Accent:'#268BD2',Muted:'#839496',Light:'#003B4A',WarmBeige:'#073642',TealTint:'#004050',Lavender:'#003848',AmberTint:'#0A3A30',PdfFill:'#0A3028',PdfText:'#DC322F'}},{Key:'forest',Name:'Forest',Category:'Fun',Description:'Deep greens and earth browns',Variables:{'--retold-bg-primary':'#1A2018','--retold-bg-secondary':'#141A12','--retold-bg-tertiary':'#1E2620','--retold-bg-panel':'#1C221A','--retold-bg-viewer':'#101410','--retold-bg-hover':'#283828','--retold-bg-selected':'#344834','--retold-bg-thumb':'#141A12','--retold-text-primary':'#D0DCC8','--retold-text-secondary':'#B0C4A8','--retold-text-muted':'#809878','--retold-text-dim':'#607858','--retold-text-placeholder':'#486040','--retold-accent':'#6AAF5C','--retold-accent-hover':'#88CC78','--retold-border':'#2A3A28','--retold-border-light':'#3A4A38','--retold-danger':'#CC4422','--retold-danger-muted':'#884422','--retold-scrollbar':'#2A3A28','--retold-scrollbar-hover':'#3A4A38','--retold-selection-bg':'rgba(106, 175, 92, 0.25)','--retold-focus-outline':'#6AAF5C','--retold-font-family':"'Palatino Linotype', 'Book Antiqua', Palatino, serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#B0C4A8',Accent:'#6AAF5C',Muted:'#607858',Light:'#1E2620',WarmBeige:'#22281E',TealTint:'#1A221A',Lavender:'#1E2420',AmberTint:'#262218',PdfFill:'#261A18',PdfText:'#CC4422'}},// ===================================================================
 // DEBUG THEME (unique color per container for layout debugging)
 // ===================================================================
-{Key:'mobile-debug',Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}}];module.exports=_ThemeDefinitions;},{}],132:[function(require,module,exports){/**
+{Key:'mobile-debug',Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}}];module.exports=_ThemeDefinitions;},{}],146:[function(require,module,exports){/**
  * Audio explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;}}module.exports=handleAudioExplorerKey;},{}],133:[function(require,module,exports){/**
+ */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;}}module.exports=handleAudioExplorerKey;},{}],147:[function(require,module,exports){/**
  * Gallery mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10938,7 +14695,7 @@ pGalleryNav._showFilterBar();let tmpGalleryView=pGalleryNav.pict.views['RetoldRe
 pGalleryNav._showFilterBar();setTimeout(()=>{let tmpSortSelect=document.getElementById('RetoldRemote-Gallery-Sort');if(tmpSortSelect){tmpSortSelect.focus();}},50);}break;case'c':pEvent.preventDefault();pGalleryNav._toggleSettingsPanel();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpCursorItem=tmpItems[tmpIndex];let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpCursorItem&&tmpQuickGUID){if(tmpCursorItem.Type==='folder'||tmpCursorItem.Type==='archive'){// For folders, prompt user for folder reference vs folder contents
 tmpCollMgr.showFolderChoicePrompt(pChoice=>{let tmpAddItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpCursorItem.Path||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);});}else{// Quick-add the highlighted file item to the active collection
 let tmpAddItem={Type:'file',Path:tmpCursorItem.Path||'',Hash:tmpCursorItem.Hash||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);}}else{// No active or last-used collection, or no item — open the topbar dropdown
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],134:[function(require,module,exports){/**
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],148:[function(require,module,exports){/**
  * Image explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10946,7 +14703,7 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
  */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();// Escape unwinds one layer at a time: first exit edit mode
 // (if active), then exit new-region selection mode (if active),
 // and only close the whole explorer if neither is active.
-if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._selectionMode){tmpIEX._exitSelectionMode();}else{tmpIEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],135:[function(require,module,exports){/**
+if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._selectionMode){tmpIEX._exitSelectionMode();}else{tmpIEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],149:[function(require,module,exports){/**
  * Sidebar file list keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10954,7 +14711,7 @@ if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._select
  */function handleSidebarKey(pGalleryNav,pEvent){let tmpRows=document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');let tmpCount=tmpRows.length;if(tmpCount===0){// Nothing in the sidebar, bail back to gallery
 pGalleryNav._blurSidebar();return;}switch(pEvent.key){case'ArrowDown':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.min(pGalleryNav._sidebarCursorIndex+1,tmpCount-1));break;case'ArrowUp':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.max(pGalleryNav._sidebarCursorIndex-1,0));break;case'Home':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(0);break;case'End':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(tmpCount-1);break;case'Enter':pEvent.preventDefault();{// Click the focused row to open it (folder or file)
 let tmpRow=tmpRows[pGalleryNav._sidebarCursorIndex];if(tmpRow){// Fire the dblclick handler which opens folders / selects files
-let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],136:[function(require,module,exports){/**
+let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],150:[function(require,module,exports){/**
  * Video explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10964,7 +14721,7 @@ if(tmpVEX._previewKeyHandler){tmpVEX.closeFramePreview();}else{tmpVEX.goBack();}
 let tmpSelVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(!tmpSelVEX||tmpSelVEX._selectionStartTime<0||tmpSelVEX._selectionEndTime<0){// No selection active \u2014 do nothing
 break;}let tmpSelCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpSelCollMgr){let tmpStart=Math.min(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpEnd=Math.max(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpSelQuickGUID=tmpSelCollMgr.getQuickAddTargetGUID();if(tmpSelQuickGUID){tmpSelCollMgr.addVideoClipToCollection(tmpSelQuickGUID,tmpStart,tmpEnd);}else{let tmpSelTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpSelTopBar&&typeof tmpSelTopBar.showAddToCollectionDropdown==='function'){tmpSelTopBar.showAddToCollectionDropdown();}}}}break;case'[':pEvent.preventDefault();{// Set selection start marker at currently selected frame's timestamp
 let tmpStartVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpStartVEX&&tmpStartVEX._frameData&&tmpStartVEX._frameData.Frames&&tmpStartVEX._selectedFrameIndex>=0&&tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex]){let tmpTimestamp=tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex].Timestamp;tmpStartVEX.setSelectionStart(tmpTimestamp);}}break;case']':pEvent.preventDefault();{// Set selection end marker at currently selected frame's timestamp
-let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case' ':pEvent.preventDefault();{let tmpPlayVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpPlayVEX){tmpPlayVEX.playInBrowser();}}break;}}module.exports=handleVideoExplorerKey;},{}],137:[function(require,module,exports){/**
+let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case' ':pEvent.preventDefault();{let tmpPlayVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpPlayVEX){tmpPlayVEX.playInBrowser();}}break;}}module.exports=handleVideoExplorerKey;},{}],151:[function(require,module,exports){/**
  * Viewer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -10973,7 +14730,7 @@ let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&
 if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();return;case'a':pEvent.preventDefault();{let tmpMenuCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollMgr){let tmpMenuQuickGUID=tmpMenuCollMgr.getQuickAddTargetGUID();if(tmpMenuQuickGUID){tmpMenuCollMgr.addCurrentFileToCollection(tmpMenuQuickGUID);}else{let tmpMenuTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpMenuTopBar&&typeof tmpMenuTopBar.showAddToCollectionDropdown==='function'){tmpMenuTopBar.showAddToCollectionDropdown();}}}}return;case'b':pEvent.preventDefault();{let tmpMenuCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollManager){tmpMenuCollManager.togglePanel();}}return;case'h':pEvent.preventDefault();{let tmpMenuFavManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuFavManager){tmpMenuFavManager.toggleFavorite();}}return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();break;case'f':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'i':pEvent.preventDefault();pGalleryNav._toggleFileInfo();break;case' ':pEvent.preventDefault();pGalleryNav._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();pGalleryNav._zoomIn();break;case'-':pEvent.preventDefault();pGalleryNav._zoomOut();break;case'0':pEvent.preventDefault();pGalleryNav._zoomReset();break;case'z':pEvent.preventDefault();pGalleryNav._cycleFitMode();break;case's':pEvent.preventDefault();{let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){let tmpViewerMediaType=tmpRemote.CurrentViewerMediaType;if(tmpViewerMediaType==='document'){// Toggle region selection for EPUB or PDF
 if(typeof tmpMediaViewer.ebookToggleRegionSelect==='function'&&tmpMediaViewer._activeRendition){tmpMediaViewer.ebookToggleRegionSelect();}else if(typeof tmpMediaViewer.pdfToggleRegionSelect==='function'&&tmpMediaViewer._pdfDocument){tmpMediaViewer.pdfToggleRegionSelect();}}}}break;case'Enter':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){// Quick-add the currently viewed file
 tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{// No active or last-used collection — open the picker
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],138:[function(require,module,exports){/**
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],152:[function(require,module,exports){/**
  * MediaViewer — Code Viewer Mixin
  *
  * Syntax-highlighted code display using pict-section-code and CodeJar.
@@ -11005,7 +14762,7 @@ tmpSelf._activeCodeJar=window.CodeJar(tmpEditor,tmpHighlight,{tab:'\t',catchTab:
 tmpEditor.style.whiteSpace='pre';tmpEditor.style.overflowWrap='normal';// Set the content
 tmpSelf._activeCodeJar.updateCode(pText);// Make it read-only
 tmpEditor.setAttribute('contenteditable','false');// Render line numbers
-let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}};},{"pict-section-code":58}],139:[function(require,module,exports){/**
+let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}};},{"pict-section-code":61}],153:[function(require,module,exports){/**
  * MediaViewer — Ebook Viewer Mixin
  *
  * EPUB/MOBI rendering using epub.js, table of contents,
@@ -11087,7 +14844,7 @@ let tmpToggleBtn=document.getElementById('RetoldRemote-EbookRegionSelectBtn');if
 	 * POSTs to /api/media/subimage-regions and updates the sidebar.
 	 */ebookSaveLabel:function ebookSaveLabel(){let tmpSelf=this;if(!this._pendingEbookSelection){this.pict.providers['RetoldRemote-ToastNotification'].showToast('No selection to save.');return;}let tmpLabelField=document.getElementById('RetoldRemote-EbookLabelField');let tmpLabelValue=tmpLabelField?tmpLabelField.value.trim():'';if(!tmpLabelValue){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Enter a label for the selection.');return;}let tmpRegion=this._pendingEbookSelection;tmpRegion.Label=tmpLabelValue;let tmpPayload={Path:this.pict.AppData.RetoldRemote.CurrentViewerFile,Region:tmpRegion};fetch('/api/media/subimage-regions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpPayload)}).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.json();}).then(pData=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Selection saved: '+tmpLabelValue);// Clean up the selection state and UI
 tmpSelf.ebookCancelSelection();// Refresh the sidebar panel if a regions panel method exists
-if(typeof tmpSelf.refreshSubimageRegions==='function'){tmpSelf.refreshSubimageRegions();}}).catch(pError=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to save selection: '+pError.message);tmpSelf.pict.log.error('Ebook selection save error: '+pError.message);});}};},{}],140:[function(require,module,exports){/**
+if(typeof tmpSelf.refreshSubimageRegions==='function'){tmpSelf.refreshSubimageRegions();}}).catch(pError=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to save selection: '+pError.message);tmpSelf.pict.log.error('Ebook selection save error: '+pError.message);});}};},{}],154:[function(require,module,exports){/**
  * MediaViewer — PDF Viewer Mixin
  *
  * Full pdf.js canvas renderer with text layer, page navigation,
@@ -11243,7 +15000,7 @@ tmpOverlaysContainer.style.width=tmpCanvas.offsetWidth+'px';tmpOverlaysContainer
 tmpOverlaysContainer.innerHTML='';let tmpCurrentPage=this._pdfCurrentPage;let tmpScale=this._pdfScale;let tmpDisplayWidth=tmpCanvas.offsetWidth;let tmpCanvasWidth=tmpCanvas.width;let tmpDisplayScale=tmpDisplayWidth/tmpCanvasWidth;for(let i=0;i<this._pdfSavedRegions.length;i++){let tmpRegion=this._pdfSavedRegions[i];// Only show regions for the current page (or regions without a page number)
 if(tmpRegion.PageNumber&&tmpRegion.PageNumber!==tmpCurrentPage){continue;}// Only render visual-region types as overlays
 if(tmpRegion.Type!=='visual-region'){continue;}// Convert PDF coordinates to display pixels
-let tmpLeft=tmpRegion.X*tmpScale*tmpDisplayScale;let tmpTop=tmpRegion.Y*tmpScale*tmpDisplayScale;let tmpWidth=tmpRegion.Width*tmpScale*tmpDisplayScale;let tmpHeight=tmpRegion.Height*tmpScale*tmpDisplayScale;let tmpRectEl=document.createElement('div');tmpRectEl.className='retold-remote-pdf-region-rect';tmpRectEl.style.left=tmpLeft+'px';tmpRectEl.style.top=tmpTop+'px';tmpRectEl.style.width=tmpWidth+'px';tmpRectEl.style.height=tmpHeight+'px';if(tmpRegion.Label){let tmpLabelEl=document.createElement('div');tmpLabelEl.className='retold-remote-pdf-region-label';tmpLabelEl.textContent=tmpRegion.Label;tmpRectEl.appendChild(tmpLabelEl);}tmpOverlaysContainer.appendChild(tmpRectEl);}}};},{}],141:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
+let tmpLeft=tmpRegion.X*tmpScale*tmpDisplayScale;let tmpTop=tmpRegion.Y*tmpScale*tmpDisplayScale;let tmpWidth=tmpRegion.Width*tmpScale*tmpDisplayScale;let tmpHeight=tmpRegion.Height*tmpScale*tmpDisplayScale;let tmpRectEl=document.createElement('div');tmpRectEl.className='retold-remote-pdf-region-rect';tmpRectEl.style.left=tmpLeft+'px';tmpRectEl.style.top=tmpTop+'px';tmpRectEl.style.width=tmpWidth+'px';tmpRectEl.style.height=tmpHeight+'px';if(tmpRegion.Label){let tmpLabelEl=document.createElement('div');tmpLabelEl.className='retold-remote-pdf-region-label';tmpLabelEl.textContent=tmpRegion.Label;tmpRectEl.appendChild(tmpLabelEl);}tmpOverlaysContainer.appendChild(tmpRectEl);}}};},{}],155:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
 this._viewStart=0;// Start of visible range (0..1)
 this._viewEnd=1;// End of visible range (0..1)
 this._minZoom=0.005;// Minimum visible range (0.5% of total)
@@ -11383,7 +15140,7 @@ tmpSelf._applyPendingSelection();tmpSelf._updateSelectionButtons();tmpSelf._draw
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":88}],142:[function(require,module,exports){/**
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":102}],156:[function(require,module,exports){/**
  * Retold Remote -- Collections Panel View
  *
  * Right-side flyout panel for managing user-defined collections.
@@ -11469,7 +15226,7 @@ document.getElementById('RetoldRemote-ExportConfirmBtn').onclick=()=>{let tmpDes
 // (individual item count, cancel button, etc.)
 let tmpOpStatus=tmpSelf.pict.providers['RetoldRemote-OperationStatus'];let tmpOp=tmpOpStatus?tmpOpStatus.startOperation({Label:'Exporting collection'+(pCollectionName?': '+pCollectionName:''),Phase:'Starting export…',Cancelable:true}):null;let tmpFetchOptions={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DestinationPath:tmpDestPath})};if(tmpOp&&tmpOp.AbortController){tmpFetchOptions.signal=tmpOp.AbortController.signal;}if(tmpOp){tmpFetchOptions.headers['X-Op-Id']=tmpOp.OperationId;}fetch('/api/collections/'+encodeURIComponent(pGUID)+'/export',tmpFetchOptions).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){if(tmpOp&&tmpOpStatus){tmpOpStatus.completeOperation(tmpOp.OperationId);}let tmpMsg='Exported '+pResult.ExportedCount+' of '+pResult.TotalItems+' items';if(pResult.ErrorCount>0){tmpMsg+=' ('+pResult.ErrorCount+' errors)';}if(pResult.Cancelled){tmpMsg='Export cancelled after '+pResult.ExportedCount+' of '+pResult.TotalItems+' items';}tmpMsg+=' to '+pResult.DestinationPath;if(tmpStatus)tmpStatus.textContent=tmpMsg;if(tmpBtn)tmpBtn.textContent=pResult.Cancelled?'Close':'Done';let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast(tmpMsg);}// Auto-dismiss after a moment (only on success)
 if(!pResult.Cancelled){setTimeout(()=>{if(tmpDialog.parentElement){tmpDialog.parentElement.removeChild(tmpDialog);}},3000);}}else{if(tmpOp&&tmpOpStatus){tmpOpStatus.errorOperation(tmpOp.OperationId,{message:pResult&&pResult.Error||'Export failed'});}let tmpErrMsg=pResult&&pResult.Error||'Export failed';if(tmpStatus)tmpStatus.textContent=tmpErrMsg;if(tmpStatus)tmpStatus.style.color='#e06c75';if(tmpBtn)tmpBtn.textContent='Retry';if(tmpBtn)tmpBtn.disabled=false;}}).catch(pError=>{if(pError&&pError.name==='AbortError'){if(tmpStatus)tmpStatus.textContent='Cancelled';if(tmpBtn)tmpBtn.textContent='Close';if(tmpBtn)tmpBtn.disabled=false;return;}if(tmpOp&&tmpOpStatus){tmpOpStatus.errorOperation(tmpOp.OperationId,pError);}if(tmpStatus)tmpStatus.textContent='Request failed: '+pError.message;if(tmpStatus)tmpStatus.style.color='#e06c75';if(tmpBtn)tmpBtn.textContent='Retry';if(tmpBtn)tmpBtn.disabled=false;});};// Enter key in input triggers export
-if(tmpPathInput){tmpPathInput.onkeydown=pEvent=>{if(pEvent.key==='Enter'){document.getElementById('RetoldRemote-ExportConfirmBtn').click();}if(pEvent.key==='Escape'){tmpDialog.parentElement.removeChild(tmpDialog);}};}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":88}],143:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:``,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
+if(tmpPathInput){tmpPathInput.onkeydown=pEvent=>{if(pEvent.key==='Enter'){document.getElementById('RetoldRemote-ExportConfirmBtn').click();}if(pEvent.key==='Escape'){tmpDialog.parentElement.removeChild(tmpDialog);}};}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":102}],157:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:``,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
 	 * Determine the currently selected file path and fetch metadata.
 	 */_refreshForCurrentFile(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpPath='';// Try content editor current file first
 if(this.pict.AppData.ContentEditor&&this.pict.AppData.ContentEditor.CurrentFile){tmpPath=this.pict.AppData.ContentEditor.CurrentFile;}// Fall back to viewer state
@@ -11520,7 +15277,7 @@ tmpHTML+=`<button class="retold-remote-info-extract-btn" onclick="pict.views['Re
 // Formatting utilities
 // ---------------------------------------------------------------
 _row(pLabel,pValue){return`<div class="retold-remote-info-row"><span class="retold-remote-info-label">${this._esc(String(pLabel))}</span><span class="retold-remote-info-value">${this._esc(String(pValue))}</span></div>`;}_esc(pStr){if(!pStr){return'';}return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatSize(pBytes){if(!pBytes&&pBytes!==0){return'unknown';}let tmpBytes=parseInt(pBytes,10);if(tmpBytes<1024){return tmpBytes+' B';}if(tmpBytes<1024*1024){return(tmpBytes/1024).toFixed(1)+' KB';}if(tmpBytes<1024*1024*1024){return(tmpBytes/(1024*1024)).toFixed(1)+' MB';}return(tmpBytes/(1024*1024*1024)).toFixed(2)+' GB';}_formatDuration(pSeconds){if(!pSeconds&&pSeconds!==0){return'unknown';}let tmpSec=Math.floor(pSeconds);let tmpHours=Math.floor(tmpSec/3600);let tmpMins=Math.floor(tmpSec%3600/60);let tmpRem=tmpSec%60;if(tmpHours>0){return`${tmpHours}:${String(tmpMins).padStart(2,'0')}:${String(tmpRem).padStart(2,'0')}`;}return`${tmpMins}:${String(tmpRem).padStart(2,'0')}`;}_formatBitrate(pBits){if(!pBits){return'unknown';}let tmpBits=parseInt(pBits,10);if(tmpBits<1000){return tmpBits+' bps';}if(tmpBits<1000000){return(tmpBits/1000).toFixed(0)+' kbps';}return(tmpBits/1000000).toFixed(1)+' Mbps';}_formatFrameRate(pRate){if(!pRate){return'unknown';}// ffprobe returns frame rate as "24000/1001" or "30/1"
-if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":88}],144:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:``,Templates:[],Renderables:[]};// Chunked rendering tuning constants
+if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],158:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:``,Templates:[],Renderables:[]};// Chunked rendering tuning constants
 const _CHUNKED_RENDER_THRESHOLD=500;// Below this, render synchronously in one shot
 const _CHUNK_FIRST_SIZE=250;// First chunk — appears within one frame
 const _CHUNK_SUBSEQUENT_SIZE=500;// Later chunks — larger for throughput
@@ -11740,7 +15497,7 @@ pEvent.preventDefault();}_hideLongPressTooltip(){if(this._longPressTooltipEl){if
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":88}],145:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;this._loading=false;// Selection mode state
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":102}],159:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;this._loading=false;// Selection mode state
 this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;// { X, Y, Width, Height } in image coords
 this._selectionStart=null;// viewport point where drag began
 this._selectionStartScreenPos=null;// screen-pixel position of press (for click-vs-drag filter)
@@ -12157,7 +15914,7 @@ tmpSelf._revertRegion(pRegionID,pPrevious);tmpSelf._renderSavedRegionOverlays();
 	 * Look up a saved region by ID.
 	 */_findSavedRegion(pRegionID){for(let i=0;i<this._savedRegions.length;i++){if(this._savedRegions[i].ID===pRegionID){return this._savedRegions[i];}}return null;}/**
 	 * Cancel handler — also exits edit mode if active.
-	 */cancelSelection(){if(this._editingRegionID){this._exitRegionEditMode();return;}return this._cancelNewSelection();}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":88}],146:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
+	 */cancelSelection(){if(this._editingRegionID){this._exitRegionEditMode();return;}return this._cancelNewSelection();}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":102}],160:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
 	 *
@@ -12203,7 +15960,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 * @param {string} pMode - The mode identifier
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator(tmpLabel,1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":88}],147:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":102}],161:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
 				<div id="ContentEditor-TopBar-Container"></div>
 				<div class="content-editor-body">
 					<div class="content-editor-sidebar-wrap" style="width: 250px;">
@@ -12292,7 +16049,7 @@ let tmpEscapedPath=tmpPath.replace(/'/g,"\\'");tmpHTML+='<div class="retold-remo
 	 */_setupCollectionsResizeHandle(){let tmpHandle=document.querySelector('.retold-remote-collections-resize-handle');let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(!tmpHandle||!tmpWrap){return;}let tmpSelf=this;let tmpStartX=0;let tmpStartWidth=0;function onDragStart(pEvent){if(tmpWrap.classList.contains('collapsed')){return;}pEvent.preventDefault();tmpSelf._collectionsDragging=true;tmpHandle.classList.add('dragging');let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;tmpStartX=tmpClientX;tmpStartWidth=tmpWrap.getBoundingClientRect().width;document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);}function onDragMove(pEvent){if(!tmpSelf._collectionsDragging){return;}pEvent.preventDefault();let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;// Dragging left (negative deltaX) increases width
 let tmpDelta=tmpStartX-tmpClientX;let tmpNewWidth=Math.max(150,Math.min(600,tmpStartWidth+tmpDelta));tmpWrap.style.width=tmpNewWidth+'px';}function onDragEnd(){if(!tmpSelf._collectionsDragging){return;}tmpSelf._collectionsDragging=false;tmpHandle.classList.remove('dragging');let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelWidth=tmpWrap.getBoundingClientRect().width;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Recalculate gallery columns
 let tmpGalleryNav=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpGalleryNav&&typeof tmpGalleryNav.recalculateColumns==='function'){tmpGalleryNav.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onDragStart);tmpHandle.addEventListener('touchstart',onDragStart,{passive:false});// Double-click collapses the collections panel
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":88}],148:[function(require,module,exports){const libPictView=require('pict-view');const _MediaViewerEbookViewer=require('./MediaViewer-EbookViewer');const _MediaViewerCodeViewer=require('./MediaViewer-CodeViewer');const _MediaViewerPdfViewer=require('./MediaViewer-PdfViewer');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":102}],162:[function(require,module,exports){const libPictView=require('pict-view');const _MediaViewerEbookViewer=require('./MediaViewer-EbookViewer');const _MediaViewerCodeViewer=require('./MediaViewer-CodeViewer');const _MediaViewerPdfViewer=require('./MediaViewer-PdfViewer');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
 	 * Show the media viewer for a given file.
 	 *
 	 * @param {string} pFilePath  - Relative file path
@@ -12436,7 +16193,7 @@ tmpSelf._loadPdfViewer(tmpPdfURL,pFilePath);}).catch(pError=>{if(tmpContent){let
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":138,"./MediaViewer-EbookViewer":139,"./MediaViewer-PdfViewer":140,"pict-view":88}],149:[function(require,module,exports){const libPictView=require('pict-view');/**
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":152,"./MediaViewer-EbookViewer":153,"./MediaViewer-PdfViewer":154,"pict-view":102}],163:[function(require,module,exports){const libPictView=require('pict-view');/**
  * Regions Browser — folder-scoped listing of saved subimage regions
  * across all files.
  *
@@ -12657,7 +16414,7 @@ let tmpTitleEl=document.getElementById('RetoldRemote-RegionsBrowser-Title');if(t
 if(tmpIsImage){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pFilePath);// Wait for the explorer and its regions to load before zooming
 setTimeout(function(){let tmpIEX2=tmpSelf.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX2&&typeof tmpIEX2.zoomToRegion==='function'){tmpIEX2.zoomToRegion(pRegionID);}},900);return;}}// Fallback: open in the media viewer
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.showMedia(pFilePath,tmpIsImage?'image':'document');// Defer the jump-to-region call to after the viewer settles
-setTimeout(function(){let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.navigateToRegion==='function'){tmpSubPanel.navigateToRegion(pRegionID);}},900);}}}RetoldRemoteRegionsBrowserView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteRegionsBrowserView;},{"pict-view":88}],150:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
+setTimeout(function(){let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.navigateToRegion==='function'){tmpSubPanel.navigateToRegion(pRegionID);}},900);}}}RetoldRemoteRegionsBrowserView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteRegionsBrowserView;},{"pict-view":102}],164:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Gallery</div>';// View mode
@@ -12710,7 +16467,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 	 * @returns {string}
 	 */_escapeHTML(pStr){if(!pStr)return'';return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}/**
 	 * Re-run the filter/sort pipeline and refresh the gallery.
-	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":88}],151:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
+	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":102}],165:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
  * Subimages Panel — sidebar tab showing labeled subimage regions
  * for the currently viewed image file.
  *
@@ -12755,7 +16512,7 @@ let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpRemote.ActiveMode
 	 * @param {string} pRegionID - The region ID to delete
 	 */deleteRegion(pRegionID){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX&&tmpIEX._currentPath===this._currentPath){// Delegate to the explorer which handles the API call and overlay removal
 tmpIEX.deleteRegion(pRegionID);}else{// Delete directly via API
-let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":88}],152:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
+let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":102}],166:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
 				<div class="retold-remote-topbar">
 					<button class="retold-remote-topbar-sidebar-toggle" id="RetoldRemote-TopBar-SidebarToggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar"></button>
 					<button class="retold-remote-topbar-df-toggle" id="RetoldRemote-TopBar-DFToggle" onclick="pict.views['ContentEditor-TopBar'].toggleDistractionFree()" title="Distraction-free mode (d)"></button>
@@ -12867,7 +16624,7 @@ tmpBtn.style.position='relative';tmpBtn.appendChild(tmpDropdown);// Close on out
 setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pClickEvent=>{if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpBtn){tmpSelf._closeAddToCollectionDropdown();}});},10);});}/**
 	 * Close the add-to-collection dropdown.
 	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}// Clear any pending clip context that was never consumed
-let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":88}],153:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":102}],167:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
 if(/Macintosh/i.test(tmpUA)&&typeof navigator!=='undefined'&&navigator.maxTouchPoints>1){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
 let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
 let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
@@ -12887,7 +16644,7 @@ return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\
 // protocol to use it.  The handler URL-decodes the argument because
 // the client percent-encodes the URL to prevent Windows from
 // stripping colons in nested http:// URLs.
-return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":88}],154:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
+return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":102}],168:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
 this._selectionModeActive=false;this._selectionStartTime=-1;this._selectionEndTime=-1;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// 'start', 'end', or null
 // Cached provider references (resolved lazily)
 this._fmt=null;this._provider=null;}// -----------------------------------------------------------------
@@ -13030,7 +16787,7 @@ let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimel
 	 *
 	 * @param {string} pMessage - Error message
 	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}// -- Mix in method groups from sub-modules --------------------------------
-Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":155,"./VideoExplorer-Preview":156,"./VideoExplorer-Selection":157,"pict-view":88}],155:[function(require,module,exports){/**
+Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":169,"./VideoExplorer-Preview":170,"./VideoExplorer-Selection":171,"pict-view":102}],169:[function(require,module,exports){/**
  * VideoExplorer — Custom Frames Mixin
  *
  * Methods for extracting individual frames at arbitrary timestamps,
@@ -13112,7 +16869,7 @@ tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});},/**
 	 *
 	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
 	 * @returns {number} Seconds
-	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],156:[function(require,module,exports){/**
+	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],170:[function(require,module,exports){/**
  * VideoExplorer — Frame Preview Mixin
  *
  * Full-screen frame preview overlay with keyboard navigation
@@ -13165,7 +16922,7 @@ this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stop
 	 * Update the preview to show the frame at the current position.
 	 */_updatePreviewFrame:function _updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
 let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
-this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],157:[function(require,module,exports){/**
+this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],171:[function(require,module,exports){/**
  * VideoExplorer — Selection Mixin
  *
  * Methods for timeline range selection: toggling selection mode,
@@ -13256,5 +17013,5 @@ let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRan
 /**
 	 * Save the current selection state to the server (fire-and-forget).
 	 * Called whenever the selection changes.
-	 */_saveState:function _saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}};},{}]},{},[116])(116);});
+	 */_saveState:function _saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}};},{}]},{},[130])(130);});
 //# sourceMappingURL=retold-remote.js.map

@@ -168,7 +168,7 @@ Exported files are named `{sortOrder}_{label}.{ext}` so the order is preserved o
 
 To export, click the **⇩ Export** button in the collection detail header. You will be prompted for a destination path (relative to the content root).
 
-The export endpoint is restricted to paths within the content root for safety — paths containing `..` or absolute paths are rejected.
+The export endpoint is restricted to paths within the content root for safety -- paths containing `..` or absolute paths are rejected.
 
 ## Data Storage
 

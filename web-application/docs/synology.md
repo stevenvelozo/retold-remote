@@ -21,27 +21,27 @@ The fix: **build the image on a real computer (your laptop, desktop, dev worksta
 
 ## Prerequisites
 
-- **DSM 7.2 or newer** with **Container Manager** installed (Package Center → Install Container Manager)
+- **DSM 7.2 or newer** with **Container Manager** installed (Package Center -> Install Container Manager)
 - A development machine with **Docker installed** (Docker Desktop, OrbStack, Colima, or native Docker on Linux)
 - At least **2 GB of free RAM** on the NAS for the running container
 - A few GB of free disk space on the NAS for the loaded image and cache
 - Your media folder somewhere on the NAS (e.g., `/volume1/media`, `/volume1/photo`, `/volume1/video`)
 
-## ⚠️ ARCHITECTURE — READ THIS FIRST ⚠️
+## ⚠ ARCHITECTURE -- READ THIS FIRST ⚠
 
 **This is the single most common cause of "videos and large images don't work" on a Synology.** Read it before building anything.
 
 ### Most Synology NAS units are amd64
 
-Almost every Synology NAS — including all Celeron, Pentium, Atom, Ryzen, and Xeon-based models — is **amd64** (also called x86_64). Only a handful of low-end ARM-based models (e.g., DS118, DS220j, DS223j) are arm64.
+Almost every Synology NAS -- including all Celeron, Pentium, Atom, Ryzen, and Xeon-based models -- is **amd64** (also called x86_64). Only a handful of low-end ARM-based models (e.g., DS118, DS220j, DS223j) are arm64.
 
 **Find your NAS architecture:**
 
 ```bash
 ssh admin@your-nas
 uname -m
-# x86_64  → amd64 (most Synology models)
-# aarch64 → arm64 (a handful of low-end models)
+# x86_64  -> amd64 (most Synology models)
+# aarch64 -> arm64 (a handful of low-end models)
 ```
 
 Or check the [Synology spec sheet](https://www.synology.com/en-global/products) for your model under "CPU".
@@ -57,14 +57,14 @@ If you build the image on:
 | Linux desktop (Intel/AMD) | amd64 | amd64 (most) | No |
 | Raspberry Pi 4/5 | arm64 | amd64 (most) | **YES** |
 
-If you build on an Apple Silicon Mac and your NAS is amd64 (the most common case), **you must explicitly pass `--amd64` to the build script** or you'll get an arm64 image that runs on the NAS through QEMU emulation. Native code (sharp/libvips, ffmpeg, ImageMagick, LibreOffice, Calibre) is **5-20x slower under emulation and frequently times out** — which produces exactly the symptoms of "small thumbnails work, large image previews and video frame extraction don't work".
+If you build on an Apple Silicon Mac and your NAS is amd64 (the most common case), **you must explicitly pass `--amd64` to the build script** or you'll get an arm64 image that runs on the NAS through QEMU emulation. Native code (sharp/libvips, ffmpeg, ImageMagick, LibreOffice, Calibre) is **5-20x slower under emulation and frequently times out** -- which produces exactly the symptoms of "small thumbnails work, large image previews and video frame extraction don't work".
 
 ### What the build script does about it
 
-As of the current version, `./docker-build-and-save.sh` **refuses to run** without an explicit `--amd64` or `--arm64` flag. There is no silent default. This is intentional — it's safer to fail fast than to silently produce a broken image.
+As of the current version, `./docker-build-and-save.sh` **refuses to run** without an explicit `--amd64` or `--arm64` flag. There is no silent default. This is intentional -- it's safer to fail fast than to silently produce a broken image.
 
 ```bash
-# CORRECT — explicit target:
+# CORRECT -- explicit target:
 ./docker-build-and-save.sh --amd64               # for Intel/AMD Synology (most)
 ./docker-build-and-save.sh --arm64               # for ARM-based Synology
 ./docker-build-and-save.sh slim --amd64          # slim variant + amd64
@@ -97,19 +97,19 @@ The included `docker-smoke-test.sh` (run from your dev machine against any image
 
 ### 1. On your dev machine: build the image
 
-Clone the retold-remote repo (if you haven't already) and run the build script. **You must pass `--amd64` or `--arm64`** — the script refuses to run without it (see the architecture section above for why).
+Clone the retold-remote repo (if you haven't already) and run the build script. **You must pass `--amd64` or `--arm64`** -- the script refuses to run without it (see the architecture section above for why).
 
 ```bash
 cd retold-remote
 
-# Full image (3 GB) — includes LibreOffice + Calibre for doc conversion
+# Full image (3 GB) -- includes LibreOffice + Calibre for doc conversion
 # Most Synology NAS units are amd64:
 ./docker-build-and-save.sh --amd64
 
-# OR: slim image (1.8 GB) — no LibreOffice, no Calibre, no MOBI support
+# OR: slim image (1.8 GB) -- no LibreOffice, no Calibre, no MOBI support
 ./docker-build-and-save.sh slim --amd64
 
-# OR: ARM-based Synology (rare — only DS118, DS220j, DS223j, etc.):
+# OR: ARM-based Synology (rare -- only DS118, DS220j, DS223j, etc.):
 ./docker-build-and-save.sh --arm64
 ./docker-build-and-save.sh slim --arm64
 ```
@@ -140,7 +140,7 @@ The image is amd64 but the host is arm64.
 The container will run under QEMU emulation, which is very slow...
 ```
 
-That warning at the top is **normal and expected** when you're cross-building on a Mac for an amd64 NAS — but tests that use heavy native code may time out under emulation. **The image will still work fine on the actual NAS** because there's no emulation there. If all tests pass even under emulation, you're golden.
+That warning at the top is **normal and expected** when you're cross-building on a Mac for an amd64 NAS -- but tests that use heavy native code may time out under emulation. **The image will still work fine on the actual NAS** because there's no emulation there. If all tests pass even under emulation, you're golden.
 
 If you want to skip emulation and just verify the build is correct, build a matching image for your build host arch and smoke-test that one too:
 
@@ -165,12 +165,12 @@ Copy two files into that folder:
 You can use File Station upload, scp, or rsync. Example via scp:
 
 ```bash
-# Use the -O flag to force the legacy SCP protocol — see the note below.
+# Use the -O flag to force the legacy SCP protocol -- see the note below.
 scp -O retold-stack-image.tar.gz docker-compose.yml \
   admin@your-nas-ip:/volume1/docker/retold-stack/
 ```
 
-> **Heads up — OpenSSH 9.0+ scp gotcha:** Modern scp (OpenSSH 9.0 and later) defaults to SFTP under the hood, and Synology's SFTP daemon errors out with `dest open ".../foo/": No such file or directory` on trailing-slash directory destinations even when the directory exists and you have full read/write access.
+> **Heads up -- OpenSSH 9.0+ scp gotcha:** Modern scp (OpenSSH 9.0 and later) defaults to SFTP under the hood, and Synology's SFTP daemon errors out with `dest open ".../foo/": No such file or directory` on trailing-slash directory destinations even when the directory exists and you have full read/write access.
 >
 > The `-O` flag forces the legacy SCP/RCP protocol and sidesteps the issue. If `-O` still gives you trouble, try one of these alternatives:
 >
@@ -184,17 +184,17 @@ scp -O retold-stack-image.tar.gz docker-compose.yml \
 >   admin@your-nas-ip:/volume1/docker/retold-stack/
 > ```
 >
-> If even rsync fails with permission errors, check **DSM Control Panel → File Services → FTP → SFTP** and make sure **Enable SFTP service** is checked. SSH access and SFTP are separate switches in DSM.
+> If even rsync fails with permission errors, check **DSM Control Panel -> File Services -> FTP -> SFTP** and make sure **Enable SFTP service** is checked. SSH access and SFTP are separate switches in DSM.
 
 ### 4. Load the image on the NAS
 
-There are two ways to do this — pick whichever feels easier.
+There are two ways to do this -- pick whichever feels easier.
 
 **Option A: Container Manager UI**
 
-1. Open **Container Manager** → **Image** → **Add** → **Add From File**
+1. Open **Container Manager** -> **Image** -> **Add** -> **Add From File**
 2. Browse to `/volume1/docker/retold-stack/retold-stack-image.tar.gz` and select it
-3. Wait for the import to finish (a couple of minutes — it's decompressing 1+ GB)
+3. Wait for the import to finish (a couple of minutes -- it's decompressing 1+ GB)
 
 **Option B: SSH (faster)**
 
@@ -223,7 +223,7 @@ Container Manager doesn't set environment variables by default, so **replace tha
 
 ```yaml
 volumes:
-  - /volume1/media:/media:ro   # ← your NAS media folder
+  - /volume1/media:/media:ro   # <- your NAS media folder
 ```
 
 Common choices:
@@ -236,7 +236,7 @@ Common choices:
 | `/volume1/music` | `- /volume1/music:/media:ro` |
 | Multiple folders | See [Multiple Media Folders](#multiple-media-folders) below |
 
-The `:ro` suffix means read-only — the container can browse but never modify your media. Leave this unless you need collection export to write back to the media folder (use `:rw` in that case).
+The `:ro` suffix means read-only -- the container can browse but never modify your media. Leave this unless you need collection export to write back to the media folder (use `:rw` in that case).
 
 ### 6. Create the project in Container Manager
 
@@ -250,7 +250,7 @@ The `:ro` suffix means read-only — the container can browse but never modify y
 5. Container Manager will read the compose file and show the service it detected (`retold-stack`)
 6. Click **Next**, review the settings, and click **Done**
 
-Because the compose file uses `image: retold-stack:latest` (not `build:`), Container Manager skips the build step entirely. It just creates the named volumes and starts the container — usually within 30 seconds.
+Because the compose file uses `image: retold-stack:latest` (not `build:`), Container Manager skips the build step entirely. It just creates the named volumes and starts the container -- usually within 30 seconds.
 
 ### 7. Browse to the web UI
 
@@ -271,7 +271,7 @@ If you've published the image to a registry (Docker Hub, GitHub Container Regist
 ```yaml
 services:
   retold-stack:
-    image: ghcr.io/yourname/retold-stack:latest    # ← your registry path
+    image: ghcr.io/yourname/retold-stack:latest    # <- your registry path
 ```
 
 Then before creating the project on the NAS, run `docker login <registry>` via SSH if it's a private registry. Container Manager will pull the image automatically when the project starts.
@@ -282,11 +282,11 @@ This is the cleanest workflow if you maintain a CI pipeline that publishes image
 
 If you really want to build on the NAS itself (e.g., to make local modifications to the source):
 
-1. Copy the **entire** retold-remote source tree to `/volume1/docker/retold-stack/` — including `Dockerfile`, `package.json`, `package-lock.json`, `source/`, `web-application/`, `css/`, `html/`, and `.dockerignore`. The folder structure must match the repo exactly.
+1. Copy the **entire** retold-remote source tree to `/volume1/docker/retold-stack/` -- including `Dockerfile`, `package.json`, `package-lock.json`, `source/`, `web-application/`, `css/`, `html/`, and `.dockerignore`. The folder structure must match the repo exactly.
 2. Edit `docker-compose.yml`:
    - Comment out the `image: retold-stack:latest` line
    - Uncomment the `build:` block
-3. In Container Manager → Project → Create, point at the folder. Container Manager will run `docker build` against the local Dockerfile.
+3. In Container Manager -> Project -> Create, point at the folder. Container Manager will run `docker build` against the local Dockerfile.
 
 Expect this to take **30-60 minutes** on most NAS hardware and roughly **5 GB of free space** during the build (intermediate layers + base image + final image). It's almost always faster to build on a real machine and transfer the tar.
 
@@ -311,7 +311,7 @@ Adjust these based on your NAS hardware:
 | Mid-range (DS220+, DS920+) | 2-4 GB | 1-2 GB (default 2G works) |
 | High-end (DS1621+, DS923+) | 4-32 GB | 2-8 GB |
 
-LibreOffice and Calibre conversions can spike memory usage — if you see OOM kills in the logs, bump the limit up.
+LibreOffice and Calibre conversions can spike memory usage -- if you see OOM kills in the logs, bump the limit up.
 
 ### Low-RAM NAS: Use the Slim Variant
 
@@ -321,17 +321,17 @@ If your NAS has limited RAM (under 2 GB) or limited disk space, build the slim v
 ./docker-build-and-save.sh slim
 ```
 
-This produces `retold-stack-image-slim.tar.gz` (~600 MB compressed). Transfer and load it the same way as the full image — it tags itself as `retold-stack:slim`. Then update the compose file's image line:
+This produces `retold-stack-image-slim.tar.gz` (~600 MB compressed). Transfer and load it the same way as the full image -- it tags itself as `retold-stack:slim`. Then update the compose file's image line:
 
 ```yaml
-image: retold-stack:slim   # ← was retold-stack:latest
+image: retold-stack:slim   # <- was retold-stack:latest
 ```
 
 The slim variant:
 - **1.81 GB** uncompressed instead of 3.0 GB (about 1.2 GB smaller)
 - Still supports all image, video, audio, PDF, and EPUB features
 - **Does not** support DOC, DOCX, RTF, ODT, WPD, MOBI, or PowerPoint/Excel
-- **Does not** support MOBI→EPUB conversion
+- **Does not** support MOBI->EPUB conversion
 
 ## Volume Mounts Explained
 
@@ -344,7 +344,7 @@ The compose file defines four volume mounts:
 | `ultravisor-data:/data` | `/data` | Ultravisor datastore + work queue journal + staging |
 | `retold-config:/config` | `/config` | Generated stack config files |
 
-The last three are **named Docker volumes** — Synology stores them under `/volume1/@docker/volumes/retold-stack_<name>/`. They persist across container restarts and image rebuilds.
+The last three are **named Docker volumes** -- Synology stores them under `/volume1/@docker/volumes/retold-stack_<name>/`. They persist across container restarts and image rebuilds.
 
 ### Using Host Folders Instead
 
@@ -387,7 +387,7 @@ volumes:
   - /volume1/ebooks:/media/Books:ro
 ```
 
-Either approach works — the first is simpler for large numbers of folders.
+Either approach works -- the first is simpler for large numbers of folders.
 
 ## Updating the Container
 
@@ -400,8 +400,8 @@ When a new version of Retold Remote is released:
    ```bash
    sudo docker load -i retold-stack-image.tar.gz
    ```
-   (or use Container Manager → Image → Add → Add From File again)
-5. In Container Manager → Project → `retold-stack` → **Stop**, then **Start**
+   (or use Container Manager -> Image -> Add -> Add From File again)
+5. In Container Manager -> Project -> `retold-stack` -> **Stop**, then **Start**
 
 The container will restart using the freshly loaded image. Your cache, datastore, and config are stored in named volumes so they survive the update untouched.
 
@@ -411,7 +411,7 @@ If you're pulling from a registry instead, just `docker compose pull && docker c
 
 If you want to expose Retold Remote over HTTPS via a domain name, use Synology's built-in reverse proxy:
 
-1. **Control Panel** → **Login Portal** → **Advanced** → **Reverse Proxy**
+1. **Control Panel** -> **Login Portal** -> **Advanced** -> **Reverse Proxy**
 2. Click **Create** and fill in:
    - **Source protocol**: HTTPS
    - **Source hostname**: `media.yourdomain.com` (or whatever subdomain you prefer)
@@ -428,7 +428,7 @@ You can then access Retold Remote at `https://media.yourdomain.com/` with Synolo
 
 ### "Small images work but videos and large images don't" (the most common issue)
 
-If the gallery loads, small thumbnails appear, but anything that needs heavy processing (large image previews, video frame extraction, audio waveforms, document conversion) silently fails or hangs — **you almost certainly have an architecture mismatch**.
+If the gallery loads, small thumbnails appear, but anything that needs heavy processing (large image previews, video frame extraction, audio waveforms, document conversion) silently fails or hangs -- **you almost certainly have an architecture mismatch**.
 
 **Quick diagnosis:**
 
@@ -475,7 +475,7 @@ If `-O` still doesn't work, try specifying the destination filename explicitly (
 rsync -avh --progress retold-stack-image.tar.gz steven@nas-ip:/volume1/docker/retold-stack/
 ```
 
-If even rsync fails, check that SFTP is actually enabled at **DSM Control Panel → File Services → FTP → SFTP → Enable SFTP service**. SSH access and SFTP are separate toggles in DSM.
+If even rsync fails, check that SFTP is actually enabled at **DSM Control Panel -> File Services -> FTP -> SFTP -> Enable SFTP service**. SSH access and SFTP are separate toggles in DSM.
 
 ### Project creation error: "unable to evaluate symlinks in Dockerfile path"
 
@@ -491,11 +491,11 @@ This means your `docker-compose.yml` is using `build:` instead of `image:`, but 
    services:
      retold-stack:
        image: retold-stack:latest
-       # build:               ← must be commented out
+       # build:               <- must be commented out
        #   context: .
        #   dockerfile: Dockerfile
    ```
-2. Make sure you've actually loaded the image first: `sudo docker load -i retold-stack-image.tar.gz` (or via Container Manager's Image → Add → From File). Verify with `sudo docker images | grep retold-stack`.
+2. Make sure you've actually loaded the image first: `sudo docker load -i retold-stack-image.tar.gz` (or via Container Manager's Image -> Add -> From File). Verify with `sudo docker images | grep retold-stack`.
 3. Recreate the project in Container Manager.
 
 ### Other common issues
@@ -504,17 +504,17 @@ This means your `docker-compose.yml` is using `build:` instead of `image:`, but 
 |---------|-----|
 | `image not found: retold-stack:latest` | You forgot step 4 (load the image). Run `sudo docker load -i retold-stack-image.tar.gz` first, then start the project. |
 | `exec format error` when starting the container | The image was built for the wrong CPU architecture. Most Synology models are AMD64. Rebuild with `./docker-build-and-save.sh --amd64` (or `--arm64` for ARM-based models) and reload. |
-| Container won't start, logs show "permission denied" on /media | The `node` user inside the container (UID 1000) can't read your media folder. Either chmod the folder to world-readable, or run the container as a different user with `user: "0:0"` in compose (runs as root — less secure but works) |
+| Container won't start, logs show "permission denied" on /media | The `node` user inside the container (UID 1000) can't read your media folder. Either chmod the folder to world-readable, or run the container as a different user with `user: "0:0"` in compose (runs as root -- less secure but works) |
 | Logs show "Ultravisor did not become ready within 30000ms" | Resource-constrained NAS. Increase the memory limit in compose, or use the slim variant |
 | Port 7777 already in use | Change the host-side port in compose: `- "8080:7777"` (leaves container side on 7777) |
-| Can't reach http://nas-ip:7777/ from another machine | Check Synology **Control Panel → Security → Firewall**. Make sure port 7777 is allowed. |
-| Thumbnails are slow / CPU spikes | Normal during first browse — thumbnails are generated on demand and cached. Subsequent browses of the same folder will be instant. |
+| Can't reach http://nas-ip:7777/ from another machine | Check Synology **Control Panel -> Security -> Firewall**. Make sure port 7777 is allowed. |
+| Thumbnails are slow / CPU spikes | Normal during first browse -- thumbnails are generated on demand and cached. Subsequent browses of the same folder will be instant. |
 | Container uses too much memory | Reduce the `memory:` limit in compose, or use the slim variant to drop Calibre and LibreOffice |
 | Collection export fails with "Destination path must be within the content root" | Remember that exports go to subfolders of the `/media` mount. If you mounted `:ro` you'll need to change it to `:rw` or mount a separate writable folder |
 
 ### Viewing Logs
 
-In Container Manager → Container → `retold-stack` → **Details** → **Log** tab. You'll see output from both the main retold-remote process and the child ultravisor process, with `[ultravisor]` prefixes for the latter.
+In Container Manager -> Container -> `retold-stack` -> **Details** -> **Log** tab. You'll see output from both the main retold-remote process and the child ultravisor process, with `[ultravisor]` prefixes for the latter.
 
 Via SSH:
 
@@ -532,10 +532,10 @@ Useful for checking installed tools (`which ffmpeg`, `soffice --version`, etc.),
 
 ## Performance Tips
 
-- **Store the cache on SSD** if your NAS has an M.2 SSD cache — thumbnails are I/O-intensive
-- **Use a faster network** — the 54321 port between the beacon (retold-remote) and the coordinator (ultravisor) is localhost, but media I/O from `/volume1` benefits from good disk speed
+- **Store the cache on SSD** if your NAS has an M.2 SSD cache -- thumbnails are I/O-intensive
+- **Use a faster network** -- the 54321 port between the beacon (retold-remote) and the coordinator (ultravisor) is localhost, but media I/O from `/volume1` benefits from good disk speed
 - **Preload thumbnails** by browsing a folder once; subsequent visits hit the cache
-- **Adjust the memory limit upward** if you regularly browse very large images (>100 MP) or convert long documents — LibreOffice spikes can hit 1.5 GB
+- **Adjust the memory limit upward** if you regularly browse very large images (>100 MP) or convert long documents -- LibreOffice spikes can hit 1.5 GB
 - **Disable hashing** (`--no-hash` in CMD, already the default) for slightly faster URL resolution on resource-constrained NAS units
 
 ## Architecture Inside the Container
@@ -547,7 +547,7 @@ Useful for checking installed tools (`which ffmpeg`, `soffice --version`, etc.),
 │  Node process 1 (main): retold-remote                     │
 │   ├─ HTTP server on :7777                                  │
 │   ├─ Orator-Conversion embedded                            │
-│   └─ Ultravisor Beacon client → connects to :54321        │
+│   └─ Ultravisor Beacon client -> connects to :54321        │
 │                                                            │
 │  Node process 2 (child): ultravisor                       │
 │   ├─ HTTP server on :54321                                │
@@ -573,7 +573,7 @@ Useful for checking installed tools (`which ffmpeg`, `soffice --version`, etc.),
 
 ## Uninstalling
 
-In Container Manager → Project → `retold-stack` → **Stop** → **Delete**.
+In Container Manager -> Project -> `retold-stack` -> **Stop** -> **Delete**.
 
 To also remove the cached data:
 
