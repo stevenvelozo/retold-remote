@@ -470,6 +470,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 
 	/**
 	 * Probe image dimensions, then decide how to display it:
+	 *   - File ≤ DirectDisplayMaxFileSize (default 15 MiB, non-raw): direct content URL
 	 *   - ≤4096px: load direct content URL in the normal viewer
 	 *   - 4096–8192px: load a server preview in the normal viewer, show Explore button
 	 *   - >8192px: auto-launch the OpenSeadragon image explorer
@@ -490,6 +491,20 @@ class RetoldRemoteMediaViewerView extends libPictView
 			{
 				// If the probe failed or sharp isn't available, fall back to direct load
 				if (!pResult || !pResult.Success)
+				{
+					tmpSelf._insertImageTag(pContentURL, pFileName, false);
+					return;
+				}
+
+				// Small-file short-circuit: if the original is within the configured
+				// direct-display budget and the browser can decode it natively,
+				// skip both the server preview and the OpenSeadragon explorer.
+				// Raw camera formats always go through the preview pipeline.
+				if (!pResult.IsRawFormat
+					&& typeof pResult.OrigFileSize === 'number'
+					&& typeof pResult.DirectDisplayMaxFileSize === 'number'
+					&& pResult.DirectDisplayMaxFileSize > 0
+					&& pResult.OrigFileSize <= pResult.DirectDisplayMaxFileSize)
 				{
 					tmpSelf._insertImageTag(pContentURL, pFileName, false);
 					return;

@@ -35,6 +35,9 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		this.options.CommandOptions.push(
 			{ Name: '-l, --logfile [path]', Description: 'Write logs to a file (auto-generates timestamped name if path omitted).', Default: '' });
 
+		this.options.CommandOptions.push(
+			{ Name: '--direct-image-max-mb [mb]', Description: 'Max original-file size (MB) to display an image directly instead of via OpenSeadragon. Set to 0 to always use the explorer. Default 15.', Default: '' });
+
 		this.addCommand();
 	}
 
@@ -127,16 +130,29 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 		{
 			let tmpSetupServer = require('../RetoldRemote-Server-Setup.js');
 
-			tmpSetupServer(
+			let tmpSetupOptions =
+			{
+				ContentPath: tmpContentPath,
+				DistPath: tmpDistPath,
+				Port: tmpPort,
+				HashedFilenames: tmpHashedFilenames,
+				CacheRoot: tmpCacheRoot,
+				CacheServer: tmpCacheServer,
+				UltravisorURL: tmpUltravisorURL
+			};
+
+			let tmpDirectMaxMB = this.CommandOptions.directImageMaxMb;
+			if (typeof tmpDirectMaxMB === 'string' && tmpDirectMaxMB.length > 0)
+			{
+				let tmpMB = parseFloat(tmpDirectMaxMB);
+				if (!isNaN(tmpMB) && tmpMB >= 0)
 				{
-					ContentPath: tmpContentPath,
-					DistPath: tmpDistPath,
-					Port: tmpPort,
-					HashedFilenames: tmpHashedFilenames,
-					CacheRoot: tmpCacheRoot,
-					CacheServer: tmpCacheServer,
-					UltravisorURL: tmpUltravisorURL
-				},
+					tmpSetupOptions.DirectDisplayMaxFileSize = Math.round(tmpMB * 1024 * 1024);
+				}
+			}
+
+			tmpSetupServer(
+				tmpSetupOptions,
 				function (pError, pServerInfo)
 				{
 					if (pError)

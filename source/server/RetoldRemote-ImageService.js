@@ -49,7 +49,12 @@ const _DefaultServiceConfiguration =
 	"DziQuality": 80,
 	"PreviewQuality": 85,
 	// Only generate preview/tiles for images larger than this (pixels on longest side)
-	"LargeImageThreshold": 4096
+	"LargeImageThreshold": 4096,
+	// Original-file-size (bytes) at or below which the viewer will load the
+	// image directly instead of routing through the OpenSeadragon explorer or
+	// server-side downscaled preview. Raw camera formats always go through the
+	// preview pipeline regardless of size (browsers can't decode raw). 15 MiB.
+	"DirectDisplayMaxFileSize": 15 * 1024 * 1024
 };
 
 class RetoldRemoteImageService extends libFableServiceProviderBase

@@ -212,10 +212,25 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			});
 
 			// Set up the large-image preview and DZI tile service
-			let tmpImageService = new libRetoldRemoteImageService(tmpFable,
+			let tmpImageServiceOptions = { ContentPath: tmpContentPath };
+			let tmpDirectMaxBytes = null;
+			if (typeof pOptions.DirectDisplayMaxFileSize === 'number' && pOptions.DirectDisplayMaxFileSize >= 0)
 			{
-				ContentPath: tmpContentPath
-			});
+				tmpDirectMaxBytes = pOptions.DirectDisplayMaxFileSize;
+			}
+			else if (process.env.RETOLD_DIRECT_IMAGE_MAX_BYTES)
+			{
+				let tmpParsed = parseInt(process.env.RETOLD_DIRECT_IMAGE_MAX_BYTES, 10);
+				if (!isNaN(tmpParsed) && tmpParsed >= 0)
+				{
+					tmpDirectMaxBytes = tmpParsed;
+				}
+			}
+			if (tmpDirectMaxBytes !== null)
+			{
+				tmpImageServiceOptions.DirectDisplayMaxFileSize = tmpDirectMaxBytes;
+			}
+			let tmpImageService = new libRetoldRemoteImageService(tmpFable, tmpImageServiceOptions);
 
 			// Set up the subimage region service
 			let tmpSubimageService = new libRetoldRemoteSubimageService(tmpFable,
@@ -1955,6 +1970,26 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 								{
 									pResponse.send(500, { Success: false, Error: pError.message });
 									return fNext();
+								}
+
+								// Always surface the original file size (the manifest's FileSize
+								// field gets overwritten with the generated preview's size when
+								// NeedsPreview=true). The client uses OrigFileSize against
+								// DirectDisplayMaxFileSize to decide whether to bypass the
+								// OpenSeadragon explorer / downscaled preview and load the
+								// source image directly.
+								if (pResult && typeof pResult === 'object')
+								{
+									try
+									{
+										let tmpStat = libFs.statSync(tmpAbsPath);
+										pResult.OrigFileSize = tmpStat.size;
+									}
+									catch (pStatError)
+									{
+										// Non-fatal — client will fall through to existing logic
+									}
+									pResult.DirectDisplayMaxFileSize = tmpImageService.options.DirectDisplayMaxFileSize;
 								}
 
 								pResponse.send(pResult);
