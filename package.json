@@ -1,6 +1,6 @@
 {
     "name": "retold-remote",
-    "version": "0.0.26",
+    "version": "0.0.27",
     "description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
     "main": "source/Pict-RetoldRemote-Bundle.js",
     "bin": {
@@ -28,6 +28,58 @@
         "examples": "npx quack examples",
         "docs": "npx quack prepare-docs ./docs -d ./modules",
         "docs-serve": "npx quack docs-serve ./docs"
+    },
+    "retoldBeacon": {
+        "displayName": "Retold Remote",
+        "description": "NAS media browser with gallery views and keyboard navigation; serves a content folder over HTTP and registers as a beacon.",
+        "category": "content",
+        "mode": "standalone-service",
+        "bin": "source/cli/RetoldRemote-CLI-Run.js",
+        "argTemplate": [
+            "serve",
+            {
+                "fromLabPath": "ContentPath"
+            },
+            "-p",
+            {
+                "fromLabPath": "Port"
+            },
+            "-u",
+            {
+                "fromLabPath": "UltravisorURL"
+            }
+        ],
+        "healthCheck": {
+            "path": "/"
+        },
+        "defaultPort": 7777,
+        "requiresUltravisor": true,
+        "configForm": {
+            "Fields": [
+                {
+                    "Name": "HostContentPath",
+                    "Label": "Host folder to serve",
+                    "Type": "text",
+                    "Required": true,
+                    "Help": "Absolute path on the host whose contents will be served; bind-mounted read-only into the container at /app/content."
+                }
+            ]
+        },
+        "docker": {
+            "image": "retold-remote",
+            "dockerfile": "retold-remote.Dockerfile",
+            "dataMountPath": "/app/data",
+            "configMountPath": "/app/data/config.json",
+            "contentMountPath": "/app/content",
+            "exposedPort": 7777,
+            "configMounts": [
+                {
+                    "ConfigField": "HostContentPath",
+                    "Target": "/app/content",
+                    "ReadOnly": true
+                }
+            ]
+        }
     },
     "author": "steven velozo <steven@velozo.com>",
     "license": "MIT",
