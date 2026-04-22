@@ -16128,6 +16128,7 @@ let tmpLastTap=0;let tmpOnTouchEnd=function(pEvent){let tmpNow=Date.now();if(tmp
 	 * Build a lightweight placeholder while probing image dimensions.
 	 */_buildImagePlaceholderHTML(pFileName){let tmpEscapedName=this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pFileName);return'<div id="RetoldRemote-ImagePlaceholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--retold-text-dim);font-size:0.85rem;">'+'Loading '+tmpEscapedName+'\u2026</div>';}/**
 	 * Probe image dimensions, then decide how to display it:
+	 *   - File ≤ DirectDisplayMaxFileSize (default 15 MiB, non-raw): direct content URL
 	 *   - ≤4096px: load direct content URL in the normal viewer
 	 *   - 4096–8192px: load a server preview in the normal viewer, show Explore button
 	 *   - >8192px: auto-launch the OpenSeadragon image explorer
@@ -16136,7 +16137,11 @@ let tmpLastTap=0;let tmpOnTouchEnd=function(pEvent){let tmpNow=Date.now();if(tmp
 	 * @param {string} pContentURL - Direct content URL (fallback)
 	 * @param {string} pFileName   - Display name
 	 */_probeAndShowImage(pFilePath,pContentURL,pFileName){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(pFilePath):encodeURIComponent(pFilePath);fetch('/api/media/image-preview?path='+tmpPathParam).then(pResponse=>pResponse.json()).then(pResult=>{// If the probe failed or sharp isn't available, fall back to direct load
-if(!pResult||!pResult.Success){tmpSelf._insertImageTag(pContentURL,pFileName,false);return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);// >8192px: auto-launch the OpenSeadragon image explorer
+if(!pResult||!pResult.Success){tmpSelf._insertImageTag(pContentURL,pFileName,false);return;}// Small-file short-circuit: if the original is within the configured
+// direct-display budget and the browser can decode it natively,
+// skip both the server preview and the OpenSeadragon explorer.
+// Raw camera formats always go through the preview pipeline.
+if(!pResult.IsRawFormat&&typeof pResult.OrigFileSize==='number'&&typeof pResult.DirectDisplayMaxFileSize==='number'&&pResult.DirectDisplayMaxFileSize>0&&pResult.OrigFileSize<=pResult.DirectDisplayMaxFileSize){tmpSelf._insertImageTag(pContentURL,pFileName,false);return;}let tmpLongest=Math.max(pResult.OrigWidth||0,pResult.OrigHeight||0);// >8192px: auto-launch the OpenSeadragon image explorer
 if(tmpLongest>8192){let tmpIEX=tmpSelf.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pFilePath);return;}// Fall through if explorer view isn't available
 }// 4096–8192px: use the server preview
 if(pResult.NeedsPreview&&pResult.CacheKey){let tmpPreviewURL='/api/media/image-preview-file/'+encodeURIComponent(pResult.CacheKey)+'/'+encodeURIComponent(pResult.OutputFilename);tmpSelf._insertImageTag(tmpPreviewURL,pFileName,true,pResult.OrigWidth,pResult.OrigHeight);return;}// ≤4096px: load the direct content URL
