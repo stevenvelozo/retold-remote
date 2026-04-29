@@ -204,6 +204,47 @@ docker load -i retold-stack-image.tar.gz
 
 Then start the stack with the included `docker-compose.yml` (which references `retold-stack:latest` by default). No source tree needed on the target host.
 
+### macOS Gotcha: Colima needs the `buildx` plugin
+
+`docker-build-and-save.sh` uses `docker buildx build --platform <arch> ...` so it can cross-build (and so the `--arm64` / `--amd64` flags work).  Docker Desktop ships the `buildx` plugin by default, but [Colima](https://github.com/abiosoft/colima) — the lightweight Docker Desktop replacement most macOS dev hosts use — does **not**.  If you run the script on a Colima-backed CLI without buildx, you'll see:
+
+```text
+[1/3] Building image (this may take 5-15 minutes)...
+unknown flag: --platform
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+```
+
+That's the docker CLI failing to parse the command line because it doesn't know `buildx` is a subcommand.  Despite the error wording, **this is not an architecture problem** and Colima itself is fine — it just needs the buildx plugin installed alongside it.
+
+**One-time fix** (Homebrew):
+
+```bash
+brew install docker-buildx
+
+# Make the plugin discoverable to the docker CLI
+mkdir -p ~/.docker/cli-plugins
+ln -sfn "$(brew --prefix)/opt/docker-buildx/bin/docker-buildx" \
+        ~/.docker/cli-plugins/docker-buildx
+
+docker buildx version          # should print a version banner
+
+# Create a builder backed by Colima's docker engine
+docker buildx create --use --name colima-builder --driver docker-container
+docker buildx inspect --bootstrap
+```
+
+After that, `./docker-build-and-save.sh full --arm64` (and the `--amd64` variant) work cleanly.
+
+**For multi-arch builds on Apple Silicon**, restart Colima with the Apple Virtualization framework + Rosetta 2 so emulated x86_64 builds run reasonably fast instead of crawling under qemu:
+
+```bash
+colima stop
+colima start --vm-type vz --cpu 4 --memory 8 --vz-rosetta
+```
+
+`--vz-rosetta` requires Colima 0.6+; check with `colima version`.  This gives you transparent x86_64 emulation similar to Docker Desktop's default behavior — the `--amd64` builds will then run at near-native speed under Rosetta translation rather than full CPU emulation.
+
 ### Manual Docker Run
 
 If you prefer `docker run` over Compose:
