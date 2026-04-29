@@ -51,17 +51,10 @@ class ToolDetector
 	}
 
 	/**
-	 * Check if the sharp module is available AND functional.
-	 *
-	 * A bare require('sharp') can succeed even when the native binary
-	 * is missing or incompatible (e.g. on Synology NAS where node-gyp
-	 * can't compile).  To catch that, we create a tiny 1×1 pixel
-	 * buffer synchronously — this exercises the native or WASM binding.
-	 *
-	 * Sharp's internal resolution chain tries the native platform binary
-	 * first, then falls back to @img/sharp-wasm32 if installed.  We
-	 * detect which mode is active by checking whether the native
-	 * platform package resolves.
+	 * Check if sharp is available AND functional via the retold-sharp wrapper.
+	 * retold-sharp.checkAvailable() runs the smoke test (1x1 raw pixel buffer)
+	 * to catch the case where the module loads but the underlying binary won't
+	 * actually run on this machine (e.g. Synology NAS).
 	 *
 	 * @returns {{ available: boolean, mode: string|null, module: function|null }}
 	 */
@@ -69,32 +62,13 @@ class ToolDetector
 	{
 		try
 		{
-			let tmpSharp = require('sharp');
-			// Smoke test: instantiate with raw pixel data to exercise the
-			// native or WASM binding (the constructor validates immediately).
-			tmpSharp(Buffer.from([0, 0, 0]), { raw: { width: 1, height: 1, channels: 3 } });
-
-			// Determine mode: check if the native platform package directory
-			// exists in node_modules.  require.resolve() can fail due to
-			// exports map issues, so we check the filesystem directly.
-			let tmpMode = 'native';
-			try
-			{
-				let tmpLibFs = require('fs');
-				let tmpLibPath = require('path');
-				let tmpPlatform = process.platform + '-' + process.arch;
-				let tmpNativePkgDir = tmpLibPath.join(__dirname, '..', '..', 'node_modules', '@img', 'sharp-' + tmpPlatform);
-				if (!tmpLibFs.existsSync(tmpNativePkgDir))
-				{
-					tmpMode = 'wasm';
-				}
-			}
-			catch (pError)
-			{
-				tmpMode = 'wasm';
-			}
-
-			return { available: true, mode: tmpMode, module: tmpSharp };
+			let tmpRetoldSharp = require('retold-sharp');
+			let tmpStatus = tmpRetoldSharp.checkAvailable();
+			return {
+				available: tmpStatus.available,
+				mode: tmpStatus.mode,
+				module: tmpStatus.available ? tmpRetoldSharp : null
+			};
 		}
 		catch (pError)
 		{
