@@ -1237,7 +1237,7 @@ if(startDot===-1)startDot=i;else if(preDotState!==1)preDotState=1;}else if(start
 // have a good chance at having a non-empty extension
 preDotState=-1;}}if(startDot===-1||end===-1||// We saw a non-dot character immediately before the dot
 preDotState===0||// The (right-most) trimmed path component is exactly '..'
-preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":103}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
+preDotState===1&&startDot===end-1&&startDot===startPart+1){if(end!==-1){if(startPart===0&&isAbsolute)ret.base=ret.name=path.slice(1,end);else ret.base=ret.name=path.slice(startPart,end);}}else{if(startPart===0&&isAbsolute){ret.name=path.slice(1,startDot);ret.base=path.slice(1,end);}else{ret.name=path.slice(startPart,startDot);ret.base=path.slice(startPart,end);}ret.ext=path.slice(startDot,end);}if(startPart>0)ret.dir=path.slice(0,startPart-1);else if(isAbsolute)ret.dir='/';return ret;},sep:'/',delimiter:':',win32:null,posix:null};posix.posix=posix;module.exports=posix;}).call(this);}).call(this,require('_process'));},{"_process":111}],43:[function(require,module,exports){module.exports={"name":"pict-application","version":"1.0.33","description":"Application base class for a pict view-based application","main":"source/Pict-Application.js","scripts":{"test":"npx quack test","start":"node source/Pict-Application.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-application-image:local","docker-dev-run":"docker run -it -d --name pict-application-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-application\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-application-image:local","docker-dev-shell":"docker exec -it pict-application-dev /bin/bash","tests":"npx quack test -g","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Application.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-application.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-application/issues"},"homepage":"https://github.com/stevenvelozo/pict-application#readme","devDependencies":{"@eslint/js":"^9.28.0","browser-env":"^3.3.0","eslint":"^9.28.0","pict":"^1.0.348","pict-provider":"^1.0.10","pict-view":"^1.0.66","quackage":"^1.0.58","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable-serviceproviderbase":"^3.0.19"}};},{}],44:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictSettings={Name:'DefaultPictApplication',// The main "viewport" is the view that is used to host our application
 MainViewportViewIdentifier:'Default-View',MainViewportRenderableHash:false,MainViewportDestinationAddress:false,MainViewportDefaultDataAddress:false,// Whether or not we should automatically render the main viewport and other autorender views after we initialize the pict application
 AutoSolveAfterInitialize:true,AutoRenderMainViewportViewAfterInitialize:true,AutoRenderViewsAfterInitialize:false,AutoLoginAfterInitialize:false,AutoLoadDataAfterLogin:false,ConfigurationOnlyViews:[],Manifests:{},// The prefix to prepend on all template destination hashes
 IdentifierAddressPrefix:'PICT-'};/**
@@ -2402,7 +2402,7 @@ this.pict.CSSMap.injectCSS();// Resolve the current hash on initial load
 this.pict.PictApplication.resolveHash();// Listen for hash changes so that plain <a href="#/..."> links trigger
 // navigation.  This covers sidebar links, splash action buttons,
 // in-content links, and browser back/forward navigation.
-if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+if(!this._HashChangeListenerBound){this._HashChangeListenerBound=true;let tmpSelf=this;window.addEventListener('hashchange',()=>{tmpSelf.pict.PictApplication.resolveHash();});}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=DocuserveLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],50:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Search",DefaultRenderable:"Docuserve-Search-Display",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-search {
 			padding: 2em 3em;
 			max-width: 900px;
@@ -2499,7 +2499,7 @@ let tmpHTML='';for(let i=0;i<tmpResults.length;i++){let tmpResult=tmpResults[i];
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveSearchView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],51:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Sidebar",DefaultRenderable:"Docuserve-Sidebar-Content",DefaultDestinationAddress:"#Docuserve-Sidebar-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-sidebar {
 			display: flex;
 			flex-direction: column;
@@ -2763,7 +2763,7 @@ let tmpGroupRoute=tmpGroup.Route||'';if(!tmpGroupRoute){for(let k=0;k<tmpGroup.M
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSidebarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],52:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-Splash",DefaultRenderable:"Docuserve-Splash-Content",DefaultDestinationAddress:"#Docuserve-Content-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-splash {
 			display: flex;
 			flex-direction: column;
@@ -2900,7 +2900,7 @@ return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;
 	 *
 	 * @param {string} pText - The text to escape
 	 * @returns {string} The escaped text
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=DocusserveSplashView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],53:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"Docuserve-TopBar",DefaultRenderable:"Docuserve-TopBar-Content",DefaultDestinationAddress:"#Docuserve-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.docuserve-topbar {
 			display: flex;
 			align-items: center;
@@ -3091,7 +3091,7 @@ let tmpBrand='Documentation';if(tmpDocuserve.CoverLoaded&&tmpDocuserve.Cover&&tm
 	 * Sanitize a title string, preserving only <small> tags.
 	 */sanitizeTitle(pText){if(!pText){return'';}return this.escapeHTML(pText).replace(/&lt;small&gt;/gi,'<small>').replace(/&lt;\/small&gt;/gi,'</small>');}/**
 	 * Escape HTML special characters.
-	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],54:[function(require,module,exports){/**
+	 */escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}}module.exports=DocuserveTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],54:[function(require,module,exports){/**
  * Vocabulary popover CSS — injected by the provider into the Pict
  * CSS cascade so any app that registers the provider gets the
  * popover styles for free.
@@ -3565,7 +3565,7 @@ onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){this._rend
 	 */_renderTermList(){let tmpListEl=this.pict.ContentAssignment.getElement('#vocab-mgr-list')[0];if(!tmpListEl)return;let tmpProvider=this._getProvider();let tmpTerms=tmpProvider?tmpProvider.getTerms():[];let tmpFiltered=tmpTerms;if(this._FilterText){let tmpFilter=this._FilterText;tmpFiltered=tmpTerms.filter(function(t){return t.slug.indexOf(tmpFilter)!==-1||t.title.toLowerCase().indexOf(tmpFilter)!==-1;});}let tmpHTML='';for(let i=0;i<tmpFiltered.length;i++){let tmpTerm=tmpFiltered[i];let tmpIsActive=tmpTerm.slug===this._SelectedSlug;let tmpShortText=(tmpTerm.short||'').substring(0,80);if(tmpTerm.short&&tmpTerm.short.length>80)tmpShortText+='...';let tmpRecord={ViewHash:this.Hash,slug:tmpTerm.slug,title:tmpTerm.title,shortTruncated:this._escapeHTML(tmpShortText),shortEscaped:this._escapeHTML(tmpTerm.short||''),bodyEscaped:this._escapeHTML(this._Body)};if(tmpIsActive&&this._Body){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermActive',tmpRecord);}else if(tmpIsActive){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermActiveLoading',tmpRecord);}else{tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-TermItem',tmpRecord);}}if(tmpFiltered.length===0&&this._FilterText){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-EmptyFilter',{});}else if(tmpFiltered.length===0){tmpHTML+=this.pict.parseTemplateByHash('VocabMgr-Empty',{});}this.pict.ContentAssignment.assignContent('#vocab-mgr-list',tmpHTML);}// ================================================================
 // Utilities
 // ================================================================
-_escapeHTML(pText){return(pText||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=PictViewVocabularyManager;module.exports.default_configuration=defaultOptions;},{"pict-view":102}],57:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],58:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
+_escapeHTML(pText){return(pText||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=PictViewVocabularyManager;module.exports.default_configuration=defaultOptions;},{"pict-view":110}],57:[function(require,module,exports){module.exports={"name":"pict-provider","version":"1.0.12","description":"Pict Provider Base Class","main":"source/Pict-Provider.js","scripts":{"start":"node source/Pict-Provider.js","test":"npx quack test","tests":"npx quack test -g","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-provider-image:local","docker-dev-run":"docker run -it -d --name pict-provider-dev -p 24125:8080 -p 30027:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-provider\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-provider-image:local","docker-dev-shell":"docker exec -it pict-provider-dev /bin/bash","lint":"eslint source/**","types":"tsc -p ."},"types":"types/source/Pict-Provider.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-provider.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-provider/issues"},"homepage":"https://github.com/stevenvelozo/pict-provider#readme","devDependencies":{"@eslint/js":"^9.39.1","eslint":"^9.39.1","pict":"^1.0.351","quackage":"^1.0.58","typescript":"^5.9.3"},"dependencies":{"fable-serviceproviderbase":"^3.0.19"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]}};},{}],58:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictProviderSettings={ProviderIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,AutoLoadDataWithApp:true,AutoLoadDataOrdinal:0,AutoSolveWithApp:true,AutoSolveOrdinal:0,Manifests:{},Templates:[]};class PictProvider extends libFableServiceBase{/**
 	 * @param {import('fable')} pFable - The Fable instance.
@@ -3855,7 +3855,7 @@ let tmpCode=this.codeJar.toString();this.codeJar.destroy();this.codeJar=this._co
 	 * Marshal code content from the data address into the view.
 	 */marshalToView(){super.marshalToView();if(this.codeJar&&this.options.CodeDataAddress){let tmpCode=this._resolveCodeContent();if(typeof tmpCode==='string'){this.codeJar.updateCode(tmpCode);this._updateLineNumbers();}}}/**
 	 * Marshal the current code content back to the data address.
-	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":59,"./Pict-Section-Code-DefaultConfiguration.js":60,"pict-view":102}],62:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
+	 */marshalFromView(){super.marshalFromView();if(this.codeJar&&this.options.CodeDataAddress){this.onCodeChange(this.codeJar.toString());}}}module.exports=PictSectionCode;module.exports.default_configuration=_DefaultConfiguration;module.exports.createHighlighter=libCreateHighlighter;},{"./Pict-Code-Highlighter.js":59,"./Pict-Section-Code-DefaultConfiguration.js":60,"pict-view":110}],62:[function(require,module,exports){// The container for all the Pict-Section-Content related code.
 // The main content view class
 module.exports=require('./views/Pict-View-Content.js');// The content provider (markdown parsing, HTML escaping)
 module.exports.PictContentProvider=require('./providers/Pict-Provider-Content.js');},{"./providers/Pict-Provider-Content.js":63,"./views/Pict-View-Content.js":64}],63:[function(require,module,exports){const libPictProvider=require('pict-provider');const libCreateHighlighter=require('pict-section-code').createHighlighter;/**
@@ -4509,7 +4509,7 @@ let tmpZoomBtns=tmpOverlay.querySelectorAll('[data-action="zoom-in"], [data-acti
 	 *
 	 * @param {string} [pMessage] - Loading message (defaults to 'Loading content...')
 	 * @param {string} [pContainerID] - The container element ID (defaults to 'Pict-Content-Body')
-	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],65:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
+	 */showLoading(pMessage,pContainerID){let tmpContainerID=pContainerID||'Pict-Content-Body';let tmpMessage=pMessage||'Loading content...';this.pict.ContentAssignment.assignContent('#'+tmpContainerID,'<div class="pict-content-loading">'+tmpMessage+'</div>');}}module.exports=PictContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],65:[function(require,module,exports){module.exports={"ViewIdentifier":"Pict-FileBrowser","DefaultRenderable":"FileBrowser-Container","DefaultDestinationAddress":"#Pict-FileBrowser-Container","AutoRender":false,// --- FileBrowser State ---
 // These are the four core state values for the file browser.
 // They live in AppData at the addresses below.
 "StateAddresses":{"Layout":"AppData.PictFileBrowser.Layout","RootLocation":"AppData.PictFileBrowser.RootLocation","CurrentLocation":"AppData.PictFileBrowser.CurrentLocation","CurrentFile":"AppData.PictFileBrowser.CurrentFile"},// Default state values
@@ -5285,7 +5285,7 @@ tmpNodes.sort((pA,pB)=>{return pA.Name.localeCompare(pB.Name);});return fCallbac
 	 *
 	 * @param {string} pRelativePath - Path relative to basePath
 	 * @param {Function} fCallback - Callback(pError, pInfo)
-	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":127}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
+	 */getFileInfo(pRelativePath,fCallback){let tmpAbsolutePath=this.resolveSafePath(pRelativePath);if(!tmpAbsolutePath){return fCallback(new Error('Invalid path'));}libFS.stat(tmpAbsolutePath,(pError,pStats)=>{if(pError){if(pError.code==='ENOENT'){return fCallback(new Error('Path not found'));}return fCallback(pError);}let tmpName=libPath.basename(tmpAbsolutePath);let tmpInfo={Name:tmpName,Path:pRelativePath||tmpName,Type:pStats.isDirectory()?'folder':'file',Size:pStats.size,Modified:pStats.mtime,Created:pStats.birthtime};if(!pStats.isDirectory()){tmpInfo.Extension=libPath.extname(tmpName);}return fCallback(null,tmpInfo);});}}module.exports=PictFileBrowserService;module.exports.default_configuration=_DefaultServiceConfiguration;}).call(this);}).call(this,"/node_modules/pict-section-filebrowser/source/services");},{"fable-serviceproviderbase":20,"fs":2,"path":42,"url":135}],73:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseSearch","DefaultRenderable":"BrowseSearch-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseSearch-Container-Template","Template":/*html*/`
 <div class="pict-fb-search">
 	<input type="text" class="pict-fb-search-input"
 		id="Pict-FileBrowser-SearchInput"
@@ -5320,7 +5320,7 @@ this._lastResults=tmpResults;}/**
 	 * Handle clicking a search result.
 	 *
 	 * @param {number} pIndex - The result index
-	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
+	 */selectResult(pIndex){if(!this._lastResults||pIndex>=this._lastResults.length){return;}let tmpEntry=this._lastResults[pIndex];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];if(tmpListProvider){tmpListProvider.openEntry(tmpEntry);}}}module.exports=PictViewFileBrowserBrowseSearch;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],74:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-BrowseTree","DefaultRenderable":"BrowseTree-Container","DefaultDestinationAddress":"#Pict-FileBrowser-BrowsePane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-BrowseTree-Container-Template","Template":/*html*/`<div class="pict-fb-tree" id="Pict-FileBrowser-Tree"></div>`},{"Hash":"FileBrowser-BrowseTree-Node-Template","Template":/*html*/`
 <div class="pict-fb-tree-node{~D:Record.SelectedClass~}" style="padding-left: {~D:Record.Indent~}px;" data-path="{~D:Record.Path~}" onclick="{~D:Record.ClickHandler~}">
 	<span class="{~D:Record.ToggleClass~}" onclick="{~D:Record.ToggleHandler~}">{~D:Record.ToggleIcon~}</span>
 	<span class="pict-fb-tree-icon">{~D:Record.Icon~}</span>
@@ -5377,7 +5377,7 @@ let tmpCached=tmpBrowseProvider.getChildFolders(pPath);if(!tmpCached){if(typeof 
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserBrowseTree;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],75:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListDetail","DefaultRenderable":"ListDetail-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListDetail-Container-Template","Template":/*html*/`
 <div class="pict-fb-detail" id="Pict-FileBrowser-DetailList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-Breadcrumb"></div>
 	<div class="pict-fb-detail-header">
@@ -5429,7 +5429,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Current-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],76:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListDetail;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],76:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ListIcons","DefaultRenderable":"ListIcons-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ListPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ListIcons-Container-Template","Template":/*html*/`
 <div id="Pict-FileBrowser-IconList">
 	<div class="pict-fb-breadcrumb" id="Pict-FileBrowser-IconBreadcrumb"></div>
 	<div class="pict-fb-icons" id="Pict-FileBrowser-IconGrid"></div>
@@ -5467,7 +5467,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * Get the current location from state.
 	 *
 	 * @returns {string} The current location path
-	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],77:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
+	 */getCurrentLocation(){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses.CurrentLocation||'AppData.PictFileBrowser.CurrentLocation';return this.pict.manifest.getValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress)||'';}}module.exports=PictViewFileBrowserListIcons;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],77:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewFileInfo","DefaultRenderable":"ViewFileInfo-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewFileInfo-Container-Template","Template":/*html*/`<div class="pict-fb-fileinfo" id="Pict-FileBrowser-FileInfo"></div>`},{"Hash":"FileBrowser-ViewFileInfo-Detail-Template","Template":/*html*/`
 <div class="pict-fb-fileinfo-title">{~D:Record.Name~}</div>
 <table class="pict-fb-fileinfo-table">
 	<tr>
@@ -5500,7 +5500,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with file info.
 	 */onAfterRender(pRenderable){this.rebuildFileInfo();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the file info display.
-	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],78:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
+	 */rebuildFileInfo(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpListProvider=this.pict.providers['Pict-FileBrowser-List'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpEmptyHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Empty-Template',{});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpEmptyHTML);return;}let tmpRecord={Name:tmpCurrentFile.Name||'Unknown',TypeDescription:tmpViewProvider?tmpViewProvider.getFileTypeDescription(tmpCurrentFile):'File',SizeFormatted:tmpListProvider?tmpListProvider.formatFileSize(tmpCurrentFile.Size):tmpCurrentFile.Size||'--',ModifiedFormatted:tmpListProvider?tmpListProvider.formatDate(tmpCurrentFile.Modified):tmpCurrentFile.Modified||'--',Extension:tmpCurrentFile.Extension||'--',Path:tmpCurrentFile.Path||'--'};let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewFileInfo-Detail-Template',tmpRecord);this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-FileInfo',tmpHTML);}}module.exports=PictViewFileBrowserViewFileInfo;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],78:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={"ViewIdentifier":"Pict-FileBrowser-ViewImage","DefaultRenderable":"ViewImage-Container","DefaultDestinationAddress":"#Pict-FileBrowser-ViewPane","AutoRender":false,"Templates":[{"Hash":"FileBrowser-ViewImage-Container-Template","Template":/*html*/`<div class="pict-fb-image-viewer" id="Pict-FileBrowser-ImageViewer"></div>`},{"Hash":"FileBrowser-ViewImage-Display-Template","Template":/*html*/`<img src="{~D:Record.ImageURL~}" alt="{~D:Record.Name~}" />`},{"Hash":"FileBrowser-ViewImage-NoImage-Template","Template":/*html*/`<div class="pict-fb-image-viewer-none">{~D:Record.Message~}</div>`}],"Renderables":[{"RenderableHash":"ViewImage-Container","TemplateHash":"FileBrowser-ViewImage-Container-Template","DestinationAddress":"#Pict-FileBrowser-ViewPane","RenderMethod":"replace"}]};/**
  * Viewing view that displays an image preview for the currently selected file.
  *
  * If the selected file is an image and has a URL or ThumbnailURL, it renders
@@ -5509,7 +5509,7 @@ tmpHTML+=this.pict.parseTemplateByHash('FileBrowser-Breadcrumb-Segment-Template'
 	 * After rendering the container, populate with the image or message.
 	 */onAfterRender(pRenderable){this.rebuildImageView();this.pict.CSSMap.injectCSS();return super.onAfterRender(pRenderable);}/**
 	 * Rebuild the image viewer display.
-	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],79:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
+	 */rebuildImageView(){let tmpViewProvider=this.pict.providers['Pict-FileBrowser-View'];let tmpCurrentFile=tmpViewProvider?tmpViewProvider.getCurrentFile():null;if(!tmpCurrentFile){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No file selected'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpIsImage=tmpViewProvider?tmpViewProvider.isImage(tmpCurrentFile):false;if(!tmpIsImage){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'Selected file is not an image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpImageURL=tmpViewProvider?tmpViewProvider.getImageURL(tmpCurrentFile):null;if(!tmpImageURL){let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-NoImage-Template',{Message:'No image URL available'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);return;}let tmpHTML=this.pict.parseTemplateByHash('FileBrowser-ViewImage-Display-Template',{ImageURL:tmpImageURL,Name:tmpCurrentFile.Name||'Image'});this.pict.ContentAssignment.assignContent('#Pict-FileBrowser-ImageViewer',tmpHTML);}}module.exports=PictViewFileBrowserViewImage;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],79:[function(require,module,exports){const libPictView=require('pict-view');const _DefaultConfiguration=require('../Pict-Section-FileBrowser-DefaultConfiguration.js');const libBrowseProvider=require('../providers/Pict-Provider-FileBrowserBrowse.js');const libListProvider=require('../providers/Pict-Provider-FileBrowserList.js');const libViewProvider=require('../providers/Pict-Provider-FileBrowserView.js');const libLayoutProvider=require('../providers/Pict-Provider-FileBrowserLayout.js');const libIconProvider=require('../providers/Pict-Provider-FileBrowserIcons.js');/**
  * Main FileBrowser view.
  *
  * Renders the outer container layout (browse pane, list pane, view pane)
@@ -5539,10 +5539,907 @@ if(!this.pict.AppData.PictFileBrowser.FileList){this.pict.AppData.PictFileBrowse
 	 *
 	 * @param {string} pKey - One of: Layout, RootLocation, CurrentLocation, CurrentFile
 	 * @param {*} pValue - The value to set
-	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":65,"../providers/Pict-Provider-FileBrowserBrowse.js":67,"../providers/Pict-Provider-FileBrowserIcons.js":68,"../providers/Pict-Provider-FileBrowserLayout.js":69,"../providers/Pict-Provider-FileBrowserList.js":70,"../providers/Pict-Provider-FileBrowserView.js":71,"pict-view":102}],80:[function(require,module,exports){// The container for all the Pict-Section-InlineDocumentation related code.
+	 */setState(pKey,pValue){let tmpStateAddresses=this.options.StateAddresses||{};let tmpAddress=tmpStateAddresses[pKey];if(!tmpAddress){return;}this.pict.manifest.setValueByHash({AppData:this.pict.AppData,Pict:this.pict},tmpAddress,pValue);}}module.exports=PictViewFileBrowser;module.exports.default_configuration=_DefaultConfiguration;},{"../Pict-Section-FileBrowser-DefaultConfiguration.js":65,"../providers/Pict-Provider-FileBrowserBrowse.js":67,"../providers/Pict-Provider-FileBrowserIcons.js":68,"../providers/Pict-Provider-FileBrowserLayout.js":69,"../providers/Pict-Provider-FileBrowserList.js":70,"../providers/Pict-Provider-FileBrowserView.js":71,"pict-view":110}],80:[function(require,module,exports){/**
+ * Pict-Modal-Confirm
+ *
+ * Builds confirm and double-confirm dialog DOM, returns Promises.
+ */class PictModalConfirm{constructor(pModal){this._modal=pModal;}/**
+	 * Show a single-step confirmation dialog.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options (title, confirmLabel, cancelLabel, dangerous)
+	 * @returns {Promise<boolean>}
+	 */confirm(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultConfirmOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDialog(tmpOptions.title,pMessage,fResolve,tmpOptions);this._showDialog(tmpDialog,fResolve);});}/**
+	 * Show a two-step confirmation dialog.
+	 *
+	 * If confirmPhrase is provided, user must type it to enable the confirm button.
+	 * Otherwise, first click changes button text, second click confirms.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options (title, confirmPhrase, phrasePrompt, confirmLabel, cancelLabel)
+	 * @returns {Promise<boolean>}
+	 */doubleConfirm(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultDoubleConfirmOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDoubleConfirmDialog(tmpOptions.title,pMessage,fResolve,tmpOptions);this._showDialog(tmpDialog,fResolve);});}/**
+	 * Build a standard confirm dialog element.
+	 *
+	 * @param {string} pTitle
+	 * @param {string} pMessage
+	 * @param {function} fResolve - Promise resolver
+	 * @param {object} pOptions
+	 * @returns {HTMLElement}
+	 */_buildDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpBtnStyle=pOptions.dangerous?'danger':'primary';let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+'<p>'+this._escapeHTML(pMessage)+'</p>'+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--'+tmpBtnStyle+'" data-action="confirm">'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpConfirmBtn.addEventListener('click',()=>{tmpDismiss(true);});tmpDialog._dismiss=tmpDismiss;tmpDialog._focusTarget=tmpCancelBtn;return tmpDialog;}/**
+	 * Build a double-confirm dialog element.
+	 *
+	 * @param {string} pTitle
+	 * @param {string} pMessage
+	 * @param {function} fResolve - Promise resolver
+	 * @param {object} pOptions
+	 * @returns {HTMLElement}
+	 */_buildDoubleConfirmDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpHasPhrase=typeof pOptions.confirmPhrase==='string'&&pOptions.confirmPhrase.length>0;let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';let tmpBodyContent='<p>'+this._escapeHTML(pMessage)+'</p>';if(tmpHasPhrase){let tmpPromptText=pOptions.phrasePrompt.replace('{phrase}',pOptions.confirmPhrase);tmpBodyContent+='<div class="pict-modal-confirm-prompt">'+this._escapeHTML(tmpPromptText)+'</div>'+'<input type="text" class="pict-modal-confirm-input" autocomplete="off" spellcheck="false" />';}tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+tmpBodyContent+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--danger" data-action="confirm" disabled>'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});if(tmpHasPhrase){// Phrase-based: enable confirm button when input matches
+let tmpInput=tmpDialog.querySelector('.pict-modal-confirm-input');tmpInput.addEventListener('input',()=>{tmpConfirmBtn.disabled=tmpInput.value!==pOptions.confirmPhrase;});tmpConfirmBtn.addEventListener('click',()=>{if(!tmpConfirmBtn.disabled){tmpDismiss(true);}});tmpDialog._focusTarget=tmpInput;}else{// Two-click: first click changes label, second click confirms
+let tmpClickCount=0;let tmpOriginalLabel=pOptions.confirmLabel;tmpConfirmBtn.disabled=false;tmpConfirmBtn.addEventListener('click',()=>{tmpClickCount++;if(tmpClickCount===1){tmpConfirmBtn.textContent='Click again to confirm';}else{tmpDismiss(true);}});tmpDialog._focusTarget=tmpCancelBtn;}tmpDialog._dismiss=tmpDismiss;return tmpDialog;}/**
+	 * Show a dialog element: append to body, show overlay, animate in.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {function} fResolve - Promise resolver (for overlay click dismiss)
+	 */_showDialog(pDialog,fResolve){let tmpModalEntry={element:pDialog,dismiss:pDialog._dismiss,type:'confirm'};// Show overlay
+let tmpOverlayClickHandler=null;if(this._modal.options.OverlayClickDismisses){tmpOverlayClickHandler=()=>{pDialog._dismiss(false);};}this._modal._overlay.show(tmpOverlayClickHandler);// Append to body
+document.body.appendChild(pDialog);// Track active modal
+this._modal._activeModals.push(tmpModalEntry);// Animate in
+void pDialog.offsetHeight;pDialog.classList.add('pict-modal-visible');// Focus
+if(pDialog._focusTarget){pDialog._focusTarget.focus();}// Keyboard handler
+pDialog._keyHandler=pEvent=>{if(pEvent.key==='Escape'){pDialog._dismiss(false);}};document.addEventListener('keydown',pDialog._keyHandler);}/**
+	 * Dismiss a dialog: animate out, remove from DOM, hide overlay.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {*} pResult - Value to resolve the promise with
+	 * @param {function} fResolve - Promise resolver
+	 */_dismissDialog(pDialog,pResult,fResolve){// Prevent double-dismiss
+if(pDialog._dismissed){return;}pDialog._dismissed=true;// Remove keyboard handler
+if(pDialog._keyHandler){document.removeEventListener('keydown',pDialog._keyHandler);}// Animate out
+pDialog.classList.remove('pict-modal-visible');// Remove from active modals
+this._modal._activeModals=this._modal._activeModals.filter(pEntry=>{return pEntry.element!==pDialog;});// Update overlay click handler to point to new topmost modal
+if(this._modal._activeModals.length>0){let tmpTopModal=this._modal._activeModals[this._modal._activeModals.length-1];this._modal._overlay.updateClickHandler(this._modal.options.OverlayClickDismisses?tmpTopModal.dismiss:null);}// Hide overlay
+this._modal._overlay.hide();// Remove from DOM after transition
+setTimeout(()=>{if(pDialog.parentNode){pDialog.parentNode.removeChild(pDialog);}},220);// Resolve promise
+fResolve(pResult);}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalConfirm;},{}],81:[function(require,module,exports){/**
+ * Pict-Modal-Overlay
+ *
+ * Manages a shared backdrop overlay element appended to document.body.
+ * Reference-counted — created on first modal open, removed when last closes.
+ */class PictModalOverlay{constructor(pModal){this._modal=pModal;this._element=null;this._refCount=0;}/**
+	 * Show the overlay (incrementing reference count).
+	 * Creates the DOM element on first call.
+	 *
+	 * @param {function} [fOnClick] - Optional click handler (e.g. dismiss topmost modal)
+	 */show(fOnClick){this._refCount++;if(!this._element){this._element=document.createElement('div');this._element.className='pict-modal-overlay';document.body.appendChild(this._element);// Force reflow so the transition animates
+void this._element.offsetHeight;this._element.classList.add('pict-modal-visible');}if(fOnClick){// Store the latest click handler (for the topmost modal)
+this._currentClickHandler=fOnClick;this._element.onclick=pEvent=>{if(pEvent.target===this._element&&this._currentClickHandler){this._currentClickHandler();}};}}/**
+	 * Update the overlay click handler (e.g. when topmost modal changes).
+	 *
+	 * @param {function} [fOnClick] - New click handler
+	 */updateClickHandler(fOnClick){this._currentClickHandler=fOnClick||null;}/**
+	 * Hide the overlay (decrementing reference count).
+	 * Removes the DOM element when reference count reaches zero.
+	 */hide(){this._refCount--;if(this._refCount<=0){this._refCount=0;if(this._element){this._element.classList.remove('pict-modal-visible');let tmpElement=this._element;// Remove after transition
+setTimeout(()=>{if(tmpElement.parentNode){tmpElement.parentNode.removeChild(tmpElement);}},220);this._element=null;this._currentClickHandler=null;}}}/**
+	 * Force-remove the overlay regardless of reference count.
+	 */destroy(){this._refCount=0;if(this._element&&this._element.parentNode){this._element.parentNode.removeChild(this._element);}this._element=null;this._currentClickHandler=null;}}module.exports=PictModalOverlay;},{}],82:[function(require,module,exports){/**
+ * Pict-Modal-Panel
+ *
+ * Adds resizable and collapsible panel behavior to any DOM element.
+ * Follows the handler composition pattern used by the other modal
+ * handlers (confirm, window, toast, tooltip).
+ *
+ * Usage:
+ *   let handle = modal.panel('#my-panel', { position: 'right', width: 340 });
+ *   handle.toggle();
+ *   handle.destroy();
+ */class PictModalPanel{constructor(pModal){this._modal=pModal;this._panels=[];}/**
+	 * Attach resizable/collapsible panel behavior to an element.
+	 *
+	 * @param {string} pTargetSelector - CSS selector for the panel element
+	 * @param {object} [pOptions] - Panel options
+	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
+	 */create(pTargetSelector,pOptions){let tmpDefaults=this._modal&&this._modal.options&&this._modal.options.DefaultPanelOptions||{};let tmpOptions=Object.assign({},{position:'right',width:340,minWidth:200,maxWidth:600,collapsible:true,collapsed:false,persist:false,persistKey:'',onResize:null,onToggle:null},tmpDefaults,pOptions);if(typeof document==='undefined')return this._nullHandle();let tmpTarget=document.querySelector(pTargetSelector);if(!tmpTarget)return this._nullHandle();let tmpId=this._modal._nextId();let tmpIsRight=tmpOptions.position==='right';let tmpIsCollapsed=false;let tmpCurrentWidth=tmpOptions.width;let tmpDestroyed=false;// Restore persisted state
+if(tmpOptions.persist&&tmpOptions.persistKey){try{let tmpStored=localStorage.getItem('pict-panel-'+tmpOptions.persistKey);if(tmpStored){let tmpParsed=JSON.parse(tmpStored);if(typeof tmpParsed.width==='number')tmpCurrentWidth=tmpParsed.width;if(typeof tmpParsed.collapsed==='boolean')tmpOptions.collapsed=tmpParsed.collapsed;}}catch(e){/* ignore */}}// Apply classes and initial width
+tmpTarget.classList.add('pict-panel');tmpTarget.classList.add(tmpIsRight?'pict-panel-right':'pict-panel-left');tmpTarget.style.width=tmpCurrentWidth+'px';// Remove display:none if present — panel uses width collapse instead
+if(tmpTarget.style.display==='none'){tmpTarget.style.display='';}// ── Create the edge container ───────────────────────
+let tmpEdge=document.createElement('div');tmpEdge.className='pict-panel-edge '+(tmpIsRight?'pict-panel-edge-right':'pict-panel-edge-left');// Resize handle
+let tmpResize=document.createElement('div');tmpResize.className='pict-panel-resize';tmpEdge.appendChild(tmpResize);// Collapse tab (chevron SVG)
+let tmpTab=null;if(tmpOptions.collapsible){tmpTab=document.createElement('div');tmpTab.className='pict-panel-tab';tmpTab.title='Toggle panel';tmpEdge.appendChild(tmpTab);}// Insert edge as a sibling so it is not clipped by the
+// panel's own overflow (e.g. overflow-y: auto for scrolling).
+// Right panels: edge goes BEFORE the panel (left side).
+// Left panels: edge goes AFTER the panel (right side).
+if(tmpTarget.parentNode){if(tmpIsRight){tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget);}else{tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget.nextSibling);}}else{tmpTarget.insertBefore(tmpEdge,tmpTarget.firstChild);}// ── Chevron SVG helper ──────────────────────────────
+let tmpChevronRight='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,3 11,8 6,13"/></svg>';let tmpChevronLeft='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg>';let tmpUpdateChevron=()=>{if(!tmpTab)return;if(tmpIsRight){tmpTab.innerHTML=tmpIsCollapsed?tmpChevronLeft:tmpChevronRight;}else{tmpTab.innerHTML=tmpIsCollapsed?tmpChevronRight:tmpChevronLeft;}};// ── Persist helper ──────────────────────────────────
+let tmpPersist=()=>{if(!tmpOptions.persist||!tmpOptions.persistKey)return;try{localStorage.setItem('pict-panel-'+tmpOptions.persistKey,JSON.stringify({width:tmpCurrentWidth,collapsed:tmpIsCollapsed}));}catch(e){/* ignore */}};// ── Collapse / expand ───────────────────────────────
+let tmpCollapse=()=>{if(tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(true);};let tmpExpand=()=>{if(!tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=false;tmpEdge.classList.remove('pict-panel-edge-collapsed');tmpTarget.classList.remove('pict-panel-collapsed');tmpTarget.style.width=tmpCurrentWidth+'px';tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(false);};let tmpToggle=()=>{if(tmpIsCollapsed)tmpExpand();else tmpCollapse();};let tmpSetWidth=pWidth=>{if(tmpDestroyed)return;let tmpWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,pWidth));tmpCurrentWidth=tmpWidth;if(!tmpIsCollapsed){tmpTarget.style.width=tmpWidth+'px';}tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpWidth);};// ── Tab click ───────────────────────────────────────
+if(tmpTab){tmpTab.addEventListener('click',pEvent=>{pEvent.stopPropagation();tmpToggle();});}// ── Resize drag ─────────────────────────────────────
+let tmpOnMouseDown=pEvent=>{if(tmpIsCollapsed)return;pEvent.preventDefault();let tmpStartX=pEvent.clientX;let tmpStartWidth=tmpTarget.offsetWidth;tmpResize.classList.add('dragging');tmpTarget.style.transition='none';document.body.style.userSelect='none';document.body.style.cursor='col-resize';let tmpOnMouseMove=pMoveEvent=>{let tmpDelta=tmpIsRight?tmpStartX-pMoveEvent.clientX:pMoveEvent.clientX-tmpStartX;let tmpNewWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,tmpStartWidth+tmpDelta));tmpTarget.style.width=tmpNewWidth+'px';};let tmpOnMouseUp=pUpEvent=>{document.removeEventListener('mousemove',tmpOnMouseMove);document.removeEventListener('mouseup',tmpOnMouseUp);tmpResize.classList.remove('dragging');tmpTarget.style.transition='';document.body.style.userSelect='';document.body.style.cursor='';// Capture the final width
+tmpCurrentWidth=tmpTarget.offsetWidth;tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpCurrentWidth);};document.addEventListener('mousemove',tmpOnMouseMove);document.addEventListener('mouseup',tmpOnMouseUp);};tmpResize.addEventListener('mousedown',tmpOnMouseDown);// ── Initial state ───────────────────────────────────
+tmpUpdateChevron();if(tmpOptions.collapsed){tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();}// ── Destroy ─────────────────────────────────────────
+let tmpDestroy=()=>{if(tmpDestroyed)return;tmpDestroyed=true;tmpResize.removeEventListener('mousedown',tmpOnMouseDown);if(tmpEdge.parentNode)tmpEdge.remove();tmpTarget.classList.remove('pict-panel','pict-panel-right','pict-panel-left','pict-panel-collapsed');tmpTarget.style.width='';tmpTarget.style.transition='';let tmpIdx=this._panels.indexOf(tmpHandle);if(tmpIdx>=0)this._panels.splice(tmpIdx,1);};// ── Return handle ───────────────────────────────────
+let tmpHandle={id:tmpId,collapse:tmpCollapse,expand:tmpExpand,toggle:tmpToggle,setWidth:tmpSetWidth,destroy:tmpDestroy};this._panels.push(tmpHandle);return tmpHandle;}/**
+	 * Return a no-op handle for server-side or missing-element cases.
+	 */_nullHandle(){return{id:0,collapse:()=>{},expand:()=>{},toggle:()=>{},setWidth:()=>{},destroy:()=>{}};}/**
+	 * Destroy all active panels.
+	 */destroyAll(){let tmpPanels=this._panels.slice();for(let i=0;i<tmpPanels.length;i++){tmpPanels[i].destroy();}}}module.exports=PictModalPanel;},{}],83:[function(require,module,exports){/**
+ * Pict-Modal-Toast
+ *
+ * Manages toast notification elements with auto-dismiss and stacking.
+ */class PictModalToast{constructor(pModal){this._modal=pModal;this._containers={};}/**
+	 * Show a toast notification.
+	 *
+	 * @param {string} pMessage - Toast message text
+	 * @param {object} [pOptions] - Options (type, duration, position, dismissible)
+	 * @returns {{ dismiss: function }} Handle with dismiss method
+	 */toast(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultToastOptions,pOptions);let tmpContainer=this._getContainer(tmpOptions.position);let tmpId=this._modal._nextId();let tmpToast=document.createElement('div');tmpToast.className='pict-modal-toast pict-modal-toast--'+tmpOptions.type;tmpToast.id='pict-modal-toast-'+tmpId;let tmpContent='<span class="pict-modal-toast-message">'+this._escapeHTML(pMessage)+'</span>';if(tmpOptions.dismissible){tmpContent+='<button class="pict-modal-toast-dismiss" aria-label="Dismiss">&times;</button>';}tmpToast.innerHTML=tmpContent;// Create handle
+let tmpDismissed=false;let tmpTimeoutHandle=null;let tmpDismiss=()=>{if(tmpDismissed){return;}tmpDismissed=true;if(tmpTimeoutHandle){clearTimeout(tmpTimeoutHandle);}// Exit animation
+tmpToast.classList.remove('pict-modal-visible');tmpToast.classList.add('pict-modal-toast-exit');// Remove from active list
+this._modal._activeToasts=this._modal._activeToasts.filter(pEntry=>{return pEntry.element!==tmpToast;});// Remove from DOM after transition
+setTimeout(()=>{if(tmpToast.parentNode){tmpToast.parentNode.removeChild(tmpToast);}this._cleanupContainer(tmpOptions.position);},220);};let tmpHandle={dismiss:tmpDismiss};// Wire dismiss button
+if(tmpOptions.dismissible){let tmpDismissBtn=tmpToast.querySelector('.pict-modal-toast-dismiss');if(tmpDismissBtn){tmpDismissBtn.addEventListener('click',tmpDismiss);}}// Append to container
+tmpContainer.appendChild(tmpToast);// Track
+let tmpEntry={element:tmpToast,dismiss:tmpDismiss,handle:tmpHandle};this._modal._activeToasts.push(tmpEntry);// Animate in
+void tmpToast.offsetHeight;tmpToast.classList.add('pict-modal-visible');// Auto-dismiss
+if(tmpOptions.duration>0){tmpTimeoutHandle=setTimeout(tmpDismiss,tmpOptions.duration);}return tmpHandle;}/**
+	 * Get or create a toast container for the given position.
+	 *
+	 * @param {string} pPosition - Position key (e.g. 'top-right')
+	 * @returns {HTMLElement}
+	 */_getContainer(pPosition){if(this._containers[pPosition]){return this._containers[pPosition];}let tmpContainer=document.createElement('div');tmpContainer.className='pict-modal-toast-container pict-modal-toast-container--'+pPosition;document.body.appendChild(tmpContainer);this._containers[pPosition]=tmpContainer;return tmpContainer;}/**
+	 * Remove a container if it has no more toasts.
+	 *
+	 * @param {string} pPosition
+	 */_cleanupContainer(pPosition){let tmpContainer=this._containers[pPosition];if(tmpContainer&&tmpContainer.children.length===0){if(tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}delete this._containers[pPosition];}}/**
+	 * Dismiss all active toasts.
+	 */dismissAll(){let tmpToasts=this._modal._activeToasts.slice();for(let i=0;i<tmpToasts.length;i++){tmpToasts[i].dismiss();}}/**
+	 * Destroy all containers.
+	 */destroy(){this.dismissAll();let tmpPositions=Object.keys(this._containers);for(let i=0;i<tmpPositions.length;i++){let tmpContainer=this._containers[tmpPositions[i]];if(tmpContainer&&tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}}this._containers={};}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalToast;},{}],84:[function(require,module,exports){/**
+ * Pict-Modal-Tooltip
+ *
+ * Manages simple text and rich HTML tooltips with positioning and auto-flip.
+ */class PictModalTooltip{constructor(pModal){this._modal=pModal;}/**
+	 * Attach a simple text tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pText - Tooltip text
+	 * @param {object} [pOptions] - Options (position, delay, maxWidth)
+	 * @returns {{ destroy: function }} Handle to remove the tooltip
+	 */tooltip(pElement,pText,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pText,false,tmpOptions);}/**
+	 * Attach a rich HTML tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pHTMLContent - HTML content for the tooltip
+	 * @param {object} [pOptions] - Options (position, delay, maxWidth, interactive)
+	 * @returns {{ destroy: function }} Handle to remove the tooltip
+	 */richTooltip(pElement,pHTMLContent,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pHTMLContent,true,tmpOptions);}/**
+	 * Internal: attach tooltip event listeners to an element.
+	 *
+	 * @param {HTMLElement} pElement
+	 * @param {string} pContent
+	 * @param {boolean} pIsHTML
+	 * @param {object} pOptions
+	 * @returns {{ destroy: function }}
+	 */_attachTooltip(pElement,pContent,pIsHTML,pOptions){let tmpTooltipElement=null;let tmpShowTimeout=null;let tmpHideTimeout=null;let tmpDestroyed=false;let tmpId=this._modal._nextId();let tmpShow=()=>{if(tmpDestroyed||tmpTooltipElement){return;}tmpTooltipElement=document.createElement('div');tmpTooltipElement.className='pict-modal-tooltip pict-modal-tooltip--'+pOptions.position;tmpTooltipElement.id='pict-modal-tooltip-'+tmpId;tmpTooltipElement.setAttribute('role','tooltip');tmpTooltipElement.style.maxWidth=pOptions.maxWidth;if(pOptions.interactive){tmpTooltipElement.classList.add('pict-modal-tooltip-interactive');}// Arrow
+let tmpArrow=document.createElement('div');tmpArrow.className='pict-modal-tooltip-arrow';// Content
+let tmpContentDiv=document.createElement('div');if(pIsHTML){tmpContentDiv.innerHTML=pContent;}else{tmpContentDiv.textContent=pContent;}tmpTooltipElement.appendChild(tmpArrow);tmpTooltipElement.appendChild(tmpContentDiv);document.body.appendChild(tmpTooltipElement);// Set aria-describedby on target
+pElement.setAttribute('aria-describedby',tmpTooltipElement.id);// Position
+this._positionTooltip(tmpTooltipElement,pElement,pOptions.position);// Animate in
+void tmpTooltipElement.offsetHeight;tmpTooltipElement.classList.add('pict-modal-visible');// Track
+this._modal._activeTooltips.push({element:tmpTooltipElement,targetElement:pElement,destroy:tmpDestroy});// For interactive tooltips, allow hovering over the tooltip itself
+if(pOptions.interactive&&tmpTooltipElement){tmpTooltipElement.addEventListener('mouseenter',()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}});tmpTooltipElement.addEventListener('mouseleave',()=>{tmpHide();});}};let tmpHide=()=>{if(!tmpTooltipElement){return;}tmpTooltipElement.classList.remove('pict-modal-visible');let tmpEl=tmpTooltipElement;tmpTooltipElement=null;// Remove aria
+pElement.removeAttribute('aria-describedby');// Remove from tracking
+this._modal._activeTooltips=this._modal._activeTooltips.filter(pEntry=>{return pEntry.element!==tmpEl;});setTimeout(()=>{if(tmpEl.parentNode){tmpEl.parentNode.removeChild(tmpEl);}},220);};let tmpOnMouseEnter=()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnMouseLeave=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}// Small delay before hiding to allow moving to interactive tooltip
+if(pOptions.interactive){tmpHideTimeout=setTimeout(tmpHide,100);}else{tmpHide();}};let tmpOnFocusIn=()=>{tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnFocusOut=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}tmpHide();};// Attach listeners
+pElement.addEventListener('mouseenter',tmpOnMouseEnter);pElement.addEventListener('mouseleave',tmpOnMouseLeave);pElement.addEventListener('focusin',tmpOnFocusIn);pElement.addEventListener('focusout',tmpOnFocusOut);let tmpDestroy=()=>{if(tmpDestroyed){return;}tmpDestroyed=true;if(tmpShowTimeout){clearTimeout(tmpShowTimeout);}if(tmpHideTimeout){clearTimeout(tmpHideTimeout);}tmpHide();pElement.removeEventListener('mouseenter',tmpOnMouseEnter);pElement.removeEventListener('mouseleave',tmpOnMouseLeave);pElement.removeEventListener('focusin',tmpOnFocusIn);pElement.removeEventListener('focusout',tmpOnFocusOut);};return{destroy:tmpDestroy};}/**
+	 * Position a tooltip element relative to the target element.
+	 * Flips direction if the tooltip would overflow the viewport.
+	 *
+	 * @param {HTMLElement} pTooltip
+	 * @param {HTMLElement} pTarget
+	 * @param {string} pPosition - 'top', 'bottom', 'left', 'right'
+	 */_positionTooltip(pTooltip,pTarget,pPosition){let tmpTargetRect=pTarget.getBoundingClientRect();let tmpTooltipRect=pTooltip.getBoundingClientRect();let tmpGap=8;let tmpPosition=pPosition;// Flip if needed
+if(tmpPosition==='top'&&tmpTargetRect.top<tmpTooltipRect.height+tmpGap){tmpPosition='bottom';}else if(tmpPosition==='bottom'&&window.innerHeight-tmpTargetRect.bottom<tmpTooltipRect.height+tmpGap){tmpPosition='top';}else if(tmpPosition==='left'&&tmpTargetRect.left<tmpTooltipRect.width+tmpGap){tmpPosition='right';}else if(tmpPosition==='right'&&window.innerWidth-tmpTargetRect.right<tmpTooltipRect.width+tmpGap){tmpPosition='left';}// Update class for arrow direction
+pTooltip.className=pTooltip.className.replace(/pict-modal-tooltip--\w+/,'pict-modal-tooltip--'+tmpPosition);let tmpTop=0;let tmpLeft=0;switch(tmpPosition){case'top':tmpTop=tmpTargetRect.top-tmpTooltipRect.height-tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'bottom':tmpTop=tmpTargetRect.bottom+tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'left':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.left-tmpTooltipRect.width-tmpGap;break;case'right':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.right+tmpGap;break;}// Clamp to viewport
+tmpLeft=Math.max(4,Math.min(tmpLeft,window.innerWidth-tmpTooltipRect.width-4));tmpTop=Math.max(4,Math.min(tmpTop,window.innerHeight-tmpTooltipRect.height-4));pTooltip.style.top=tmpTop+'px';pTooltip.style.left=tmpLeft+'px';}/**
+	 * Dismiss all active tooltips.
+	 */dismissAll(){let tmpTooltips=this._modal._activeTooltips.slice();for(let i=0;i<tmpTooltips.length;i++){tmpTooltips[i].destroy();}}}module.exports=PictModalTooltip;},{}],85:[function(require,module,exports){/**
+ * Pict-Modal-Window
+ *
+ * Builds custom floating modal windows with arbitrary content and buttons.
+ */class PictModalWindow{constructor(pModal){this._modal=pModal;}/**
+	 * Show a custom modal window.
+	 *
+	 * @param {object} [pOptions] - Options
+	 * @param {string} [pOptions.title] - Dialog title
+	 * @param {string} [pOptions.content] - HTML content for the body
+	 * @param {Array} [pOptions.buttons] - Array of { Hash, Label, Style }
+	 * @param {boolean} [pOptions.closeable] - Whether the close button and overlay dismiss are enabled
+	 * @param {string} [pOptions.width] - CSS width value
+	 * @param {function} [pOptions.onOpen] - Called after dialog is shown, receives dialog element
+	 * @param {function} [pOptions.onClose] - Called after dialog is dismissed
+	 * @returns {Promise<string|null>} Resolves with clicked button Hash, or null on close
+	 */show(pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultModalOptions,pOptions);return new Promise(fResolve=>{let tmpDialog=this._buildDialog(tmpOptions,fResolve);this._showDialog(tmpDialog,tmpOptions,fResolve);});}/**
+	 * Build the modal dialog element.
+	 *
+	 * @param {object} pOptions
+	 * @param {function} fResolve
+	 * @returns {HTMLElement}
+	 */_buildDialog(pOptions,fResolve){let tmpId=this._modal._nextId();let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width=pOptions.width;// Header
+let tmpHeaderHTML='';if(pOptions.title||pOptions.closeable){tmpHeaderHTML='<div class="pict-modal-dialog-header">';tmpHeaderHTML+='<span class="pict-modal-dialog-title">'+this._escapeHTML(pOptions.title)+'</span>';if(pOptions.closeable){tmpHeaderHTML+='<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>';}tmpHeaderHTML+='</div>';}// Body
+let tmpBodyHTML='<div class="pict-modal-dialog-body">'+(pOptions.content||'')+'</div>';// Footer with buttons
+let tmpFooterHTML='';if(pOptions.buttons&&pOptions.buttons.length>0){tmpFooterHTML='<div class="pict-modal-dialog-footer">';for(let i=0;i<pOptions.buttons.length;i++){let tmpButton=pOptions.buttons[i];let tmpBtnClass='pict-modal-btn';if(tmpButton.Style){tmpBtnClass+=' pict-modal-btn--'+tmpButton.Style;}tmpFooterHTML+='<button class="'+tmpBtnClass+'" data-hash="'+this._escapeHTML(tmpButton.Hash)+'">'+this._escapeHTML(tmpButton.Label)+'</button>';}tmpFooterHTML+='</div>';}tmpDialog.innerHTML=tmpHeaderHTML+tmpBodyHTML+tmpFooterHTML;let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve,pOptions);};// Wire close button
+if(pOptions.closeable){let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');if(tmpCloseBtn){tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(null);});}}// Wire action buttons
+let tmpActionButtons=tmpDialog.querySelectorAll('[data-hash]');for(let i=0;i<tmpActionButtons.length;i++){let tmpBtn=tmpActionButtons[i];tmpBtn.addEventListener('click',()=>{tmpDismiss(tmpBtn.getAttribute('data-hash'));});}tmpDialog._dismiss=tmpDismiss;return tmpDialog;}/**
+	 * Show the dialog: append to body, show overlay, animate in.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {object} pOptions
+	 * @param {function} fResolve
+	 */_showDialog(pDialog,pOptions,fResolve){let tmpModalEntry={element:pDialog,dismiss:pDialog._dismiss,type:'window'};// Show overlay
+let tmpOverlayClickHandler=null;if(this._modal.options.OverlayClickDismisses&&pOptions.closeable){tmpOverlayClickHandler=()=>{pDialog._dismiss(null);};}this._modal._overlay.show(tmpOverlayClickHandler);// Append to body
+document.body.appendChild(pDialog);// Track
+this._modal._activeModals.push(tmpModalEntry);// Animate in
+void pDialog.offsetHeight;pDialog.classList.add('pict-modal-visible');// Focus first button or close button
+let tmpFocusTarget=pDialog.querySelector('.pict-modal-btn')||pDialog.querySelector('.pict-modal-dialog-close');if(tmpFocusTarget){tmpFocusTarget.focus();}// Keyboard handler
+pDialog._keyHandler=pEvent=>{if(pEvent.key==='Escape'&&pOptions.closeable){pDialog._dismiss(null);}};document.addEventListener('keydown',pDialog._keyHandler);// onOpen callback
+if(typeof pOptions.onOpen==='function'){pOptions.onOpen(pDialog);}}/**
+	 * Dismiss the dialog: animate out, remove from DOM, hide overlay.
+	 *
+	 * @param {HTMLElement} pDialog
+	 * @param {*} pResult
+	 * @param {function} fResolve
+	 * @param {object} pOptions
+	 */_dismissDialog(pDialog,pResult,fResolve,pOptions){if(pDialog._dismissed){return;}pDialog._dismissed=true;if(pDialog._keyHandler){document.removeEventListener('keydown',pDialog._keyHandler);}pDialog.classList.remove('pict-modal-visible');this._modal._activeModals=this._modal._activeModals.filter(pEntry=>{return pEntry.element!==pDialog;});if(this._modal._activeModals.length>0){let tmpTopModal=this._modal._activeModals[this._modal._activeModals.length-1];this._modal._overlay.updateClickHandler(this._modal.options.OverlayClickDismisses?tmpTopModal.dismiss:null);}this._modal._overlay.hide();setTimeout(()=>{if(pDialog.parentNode){pDialog.parentNode.removeChild(pDialog);}},220);if(typeof pOptions.onClose==='function'){pOptions.onClose(pResult);}fResolve(pResult);}/**
+	 * Escape HTML special characters.
+	 *
+	 * @param {string} pText
+	 * @returns {string}
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalWindow;},{}],86:[function(require,module,exports){module.exports={"AutoInitialize":true,"AutoRender":false,"AutoSolveWithApp":false,"ViewIdentifier":"Pict-Section-Modal","OverlayClickDismisses":true,"DefaultConfirmOptions":{"title":"Confirm","confirmLabel":"OK","cancelLabel":"Cancel","dangerous":false},"DefaultDoubleConfirmOptions":{"title":"Are you sure?","confirmLabel":"Confirm","cancelLabel":"Cancel","phrasePrompt":"Type \"{phrase}\" to confirm:","confirmPhrase":""},"DefaultModalOptions":{"title":"","content":"","buttons":[],"closeable":true,"width":"480px"},"DefaultTooltipOptions":{"position":"top","delay":200,"maxWidth":"300px","interactive":false},"DefaultToastOptions":{"type":"info","duration":3000,"position":"top-right","dismissible":true},"DefaultPanelOptions":{"position":"right","width":340,"minWidth":200,"maxWidth":600,"collapsible":true,"collapsed":false,"persist":false,"persistKey":""},"Templates":[],"Renderables":[],"CSS":/*css*/`
+/* pict-section-modal */
+.pict-modal-root
+{
+	/* Overlay */
+	--pict-modal-overlay-bg: rgba(0, 0, 0, 0.5);
+
+	/* Dialog */
+	--pict-modal-bg: #ffffff;
+	--pict-modal-fg: #1a1a1a;
+	--pict-modal-border: #e0e0e0;
+	--pict-modal-border-radius: 8px;
+	--pict-modal-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+	--pict-modal-header-bg: #f5f5f5;
+	--pict-modal-header-fg: #1a1a1a;
+	--pict-modal-header-border: #e0e0e0;
+
+	/* Buttons */
+	--pict-modal-btn-bg: #e0e0e0;
+	--pict-modal-btn-fg: #1a1a1a;
+	--pict-modal-btn-hover-bg: #d0d0d0;
+	--pict-modal-btn-primary-bg: #2563eb;
+	--pict-modal-btn-primary-fg: #ffffff;
+	--pict-modal-btn-primary-hover-bg: #1d4ed8;
+	--pict-modal-btn-danger-bg: #dc2626;
+	--pict-modal-btn-danger-fg: #ffffff;
+	--pict-modal-btn-danger-hover-bg: #b91c1c;
+	--pict-modal-btn-border-radius: 4px;
+
+	/* Toast */
+	--pict-modal-toast-bg: #333333;
+	--pict-modal-toast-fg: #ffffff;
+	--pict-modal-toast-success-bg: #16a34a;
+	--pict-modal-toast-warning-bg: #d97706;
+	--pict-modal-toast-error-bg: #dc2626;
+	--pict-modal-toast-info-bg: #2563eb;
+	--pict-modal-toast-border-radius: 6px;
+	--pict-modal-toast-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+	/* Tooltip */
+	--pict-modal-tooltip-bg: #1a1a1a;
+	--pict-modal-tooltip-fg: #ffffff;
+	--pict-modal-tooltip-border-radius: 4px;
+	--pict-modal-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+	/* Typography */
+	--pict-modal-font-family: system-ui, -apple-system, sans-serif;
+	--pict-modal-font-size: 14px;
+	--pict-modal-title-font-size: 16px;
+
+	/* Animation */
+	--pict-modal-transition-duration: 200ms;
+}
+
+/* Overlay */
+.pict-modal-overlay
+{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background: var(--pict-modal-overlay-bg);
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-overlay.pict-modal-visible
+{
+	opacity: 1;
+}
+
+/* Dialog */
+.pict-modal-dialog
+{
+	position: fixed;
+	z-index: 1010;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) translateY(-20px);
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease,
+	            transform var(--pict-modal-transition-duration) ease;
+
+	max-width: 90vw;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+
+	background: var(--pict-modal-bg);
+	color: var(--pict-modal-fg);
+	border: 1px solid var(--pict-modal-border);
+	border-radius: var(--pict-modal-border-radius);
+	box-shadow: var(--pict-modal-shadow);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+}
+
+.pict-modal-dialog.pict-modal-visible
+{
+	opacity: 1;
+	transform: translate(-50%, -50%) translateY(0);
+}
+
+.pict-modal-dialog-header
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px;
+	background: var(--pict-modal-header-bg);
+	color: var(--pict-modal-header-fg);
+	border-bottom: 1px solid var(--pict-modal-header-border);
+	border-radius: var(--pict-modal-border-radius) var(--pict-modal-border-radius) 0 0;
+}
+
+.pict-modal-dialog-title
+{
+	font-size: var(--pict-modal-title-font-size);
+	font-weight: 600;
+}
+
+.pict-modal-dialog-close
+{
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	color: var(--pict-modal-fg);
+	padding: 0 4px;
+	line-height: 1;
+	opacity: 0.6;
+}
+
+.pict-modal-dialog-close:hover
+{
+	opacity: 1;
+}
+
+.pict-modal-dialog-body
+{
+	padding: 16px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.pict-modal-dialog-footer
+{
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 12px 16px;
+	border-top: 1px solid var(--pict-modal-border);
+}
+
+/* Buttons */
+.pict-modal-btn
+{
+	padding: 8px 16px;
+	border: none;
+	border-radius: var(--pict-modal-btn-border-radius);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	cursor: pointer;
+	background: var(--pict-modal-btn-bg);
+	color: var(--pict-modal-btn-fg);
+	transition: background var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-btn:hover
+{
+	background: var(--pict-modal-btn-hover-bg);
+}
+
+.pict-modal-btn:disabled
+{
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.pict-modal-btn--primary
+{
+	background: var(--pict-modal-btn-primary-bg);
+	color: var(--pict-modal-btn-primary-fg);
+}
+
+.pict-modal-btn--primary:hover
+{
+	background: var(--pict-modal-btn-primary-hover-bg);
+}
+
+.pict-modal-btn--danger
+{
+	background: var(--pict-modal-btn-danger-bg);
+	color: var(--pict-modal-btn-danger-fg);
+}
+
+.pict-modal-btn--danger:hover
+{
+	background: var(--pict-modal-btn-danger-hover-bg);
+}
+
+/* Double confirm input */
+.pict-modal-confirm-input
+{
+	width: 100%;
+	padding: 8px 12px;
+	margin-top: 12px;
+	border: 1px solid var(--pict-modal-border);
+	border-radius: var(--pict-modal-btn-border-radius);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	box-sizing: border-box;
+}
+
+.pict-modal-confirm-input:focus
+{
+	outline: 2px solid var(--pict-modal-btn-primary-bg);
+	outline-offset: -1px;
+}
+
+.pict-modal-confirm-prompt
+{
+	margin-top: 12px;
+	font-size: 13px;
+	color: var(--pict-modal-fg);
+	opacity: 0.7;
+}
+
+/* Toast container */
+.pict-modal-toast-container
+{
+	position: fixed;
+	z-index: 1030;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	pointer-events: none;
+	max-width: 400px;
+}
+
+.pict-modal-toast-container--top-right
+{
+	top: 16px;
+	right: 16px;
+}
+
+.pict-modal-toast-container--top-left
+{
+	top: 16px;
+	left: 16px;
+}
+
+.pict-modal-toast-container--bottom-right
+{
+	bottom: 16px;
+	right: 16px;
+}
+
+.pict-modal-toast-container--bottom-left
+{
+	bottom: 16px;
+	left: 16px;
+}
+
+.pict-modal-toast-container--top-center
+{
+	top: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.pict-modal-toast-container--bottom-center
+{
+	bottom: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+/* Toast */
+.pict-modal-toast
+{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 16px;
+	border-radius: var(--pict-modal-toast-border-radius);
+	box-shadow: var(--pict-modal-toast-shadow);
+	font-family: var(--pict-modal-font-family);
+	font-size: var(--pict-modal-font-size);
+	background: var(--pict-modal-toast-bg);
+	color: var(--pict-modal-toast-fg);
+	pointer-events: auto;
+	opacity: 0;
+	transform: translateX(100%);
+	transition: opacity var(--pict-modal-transition-duration) ease,
+	            transform var(--pict-modal-transition-duration) ease;
+}
+
+.pict-modal-toast.pict-modal-visible
+{
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.pict-modal-toast.pict-modal-toast-exit
+{
+	opacity: 0;
+	transform: translateX(100%);
+}
+
+.pict-modal-toast--info
+{
+	background: var(--pict-modal-toast-info-bg);
+}
+
+.pict-modal-toast--success
+{
+	background: var(--pict-modal-toast-success-bg);
+}
+
+.pict-modal-toast--warning
+{
+	background: var(--pict-modal-toast-warning-bg);
+}
+
+.pict-modal-toast--error
+{
+	background: var(--pict-modal-toast-error-bg);
+}
+
+.pict-modal-toast-message
+{
+	flex: 1;
+}
+
+.pict-modal-toast-dismiss
+{
+	background: none;
+	border: none;
+	color: inherit;
+	font-size: 18px;
+	cursor: pointer;
+	padding: 0 2px;
+	line-height: 1;
+	opacity: 0.7;
+}
+
+.pict-modal-toast-dismiss:hover
+{
+	opacity: 1;
+}
+
+/* Tooltip */
+.pict-modal-tooltip
+{
+	position: fixed;
+	z-index: 1020;
+	padding: 6px 10px;
+	border-radius: var(--pict-modal-tooltip-border-radius);
+	box-shadow: var(--pict-modal-tooltip-shadow);
+	background: var(--pict-modal-tooltip-bg);
+	color: var(--pict-modal-tooltip-fg);
+	font-family: var(--pict-modal-font-family);
+	font-size: 13px;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--pict-modal-transition-duration) ease;
+	white-space: normal;
+	word-wrap: break-word;
+}
+
+.pict-modal-tooltip.pict-modal-tooltip-interactive
+{
+	pointer-events: auto;
+}
+
+.pict-modal-tooltip.pict-modal-visible
+{
+	opacity: 1;
+}
+
+.pict-modal-tooltip-arrow
+{
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: var(--pict-modal-tooltip-bg);
+	transform: rotate(45deg);
+}
+
+.pict-modal-tooltip--top .pict-modal-tooltip-arrow
+{
+	bottom: -4px;
+	left: 50%;
+	margin-left: -4px;
+}
+
+.pict-modal-tooltip--bottom .pict-modal-tooltip-arrow
+{
+	top: -4px;
+	left: 50%;
+	margin-left: -4px;
+}
+
+.pict-modal-tooltip--left .pict-modal-tooltip-arrow
+{
+	right: -4px;
+	top: 50%;
+	margin-top: -4px;
+}
+
+.pict-modal-tooltip--right .pict-modal-tooltip-arrow
+{
+	left: -4px;
+	top: 50%;
+	margin-top: -4px;
+}
+
+/* ── Resizable / Collapsible Panels ──────────────── */
+.pict-panel
+{
+	position: relative;
+	transition: width 0.2s ease;
+	flex-shrink: 0;
+	overflow: visible;
+}
+.pict-panel-collapsed
+{
+	width: 0 !important;
+	min-width: 0 !important;
+	overflow: visible;
+}
+.pict-panel-collapsed > *:not(.pict-panel-edge)
+{
+	display: none;
+}
+
+/* Edge container — zero-width flex sibling of the panel.
+   Sits next to the panel in the flex layout; children
+   use absolute positioning to overlap the panel boundary. */
+.pict-panel-edge
+{
+	position: relative;
+	width: 0;
+	flex-shrink: 0;
+	z-index: 50;
+	overflow: visible;
+}
+
+/* Resize handle — thin strip on the panel boundary */
+.pict-panel-resize
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	cursor: col-resize;
+	background: transparent;
+	transition: background 0.15s, width 0.15s;
+}
+.pict-panel-edge-right .pict-panel-resize
+{
+	right: 0;
+	border-right: 1px solid var(--pict-panel-border, #DDD6CA);
+}
+.pict-panel-edge-left .pict-panel-resize
+{
+	left: 0;
+	border-left: 1px solid var(--pict-panel-border, #DDD6CA);
+}
+.pict-panel-resize:hover,
+.pict-panel-edge:hover .pict-panel-resize
+{
+	width: 5px;
+	background: var(--pict-panel-accent, #2E7D74);
+	opacity: 0.5;
+}
+.pict-panel-resize.dragging
+{
+	width: 5px;
+	background: var(--pict-panel-accent, #2E7D74);
+	opacity: 1;
+	transition: none;
+}
+.pict-panel-edge-collapsed .pict-panel-resize
+{
+	display: none;
+}
+
+/* Collapse tab — tucked sliver at rest, slides out on hover */
+.pict-panel-tab
+{
+	position: absolute;
+	top: 8px;
+	width: 8px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: var(--pict-panel-border, #DDD6CA);
+	border: 1px solid var(--pict-panel-border, #DDD6CA);
+	cursor: pointer;
+	color: var(--pict-panel-fg, #8A7F72);
+	font-size: 10px;
+	line-height: 1;
+	opacity: 0.5;
+	transition: opacity 0.25s, width 0.2s ease, height 0.2s ease, left 0.2s ease, right 0.2s ease, background 0.2s;
+	z-index: 51;
+}
+.pict-panel-edge:hover .pict-panel-tab,
+.pict-panel-tab:hover
+{
+	width: 20px;
+	height: 32px;
+	opacity: 1;
+	overflow: visible;
+	background: var(--pict-panel-bg, #FAF8F4);
+}
+/* Right panel: tab to the left of the edge */
+.pict-panel-edge-right .pict-panel-tab
+{
+	right: 0;
+	border-right: none;
+	border-radius: 4px 0 0 4px;
+}
+.pict-panel-edge-right:hover .pict-panel-tab,
+.pict-panel-edge-right .pict-panel-tab:hover
+{
+	right: 0;
+}
+/* Left panel: tab to the right of the edge */
+.pict-panel-edge-left .pict-panel-tab
+{
+	left: 0;
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+}
+.pict-panel-edge-left:hover .pict-panel-tab,
+.pict-panel-edge-left .pict-panel-tab:hover
+{
+	left: 0;
+}
+/* When collapsed — more visible */
+.pict-panel-edge-collapsed .pict-panel-tab
+{
+	width: 10px;
+	height: 28px;
+	opacity: 0.6;
+}
+.pict-panel-edge-collapsed .pict-panel-tab:hover,
+.pict-panel-edge-collapsed:hover .pict-panel-tab
+{
+	width: 20px;
+	height: 32px;
+	opacity: 1;
+	overflow: visible;
+	background: var(--pict-panel-bg, #FAF8F4);
+}
+`};},{}],87:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictModalOverlay=require('./Pict-Modal-Overlay.js');const libPictModalConfirm=require('./Pict-Modal-Confirm.js');const libPictModalWindow=require('./Pict-Modal-Window.js');const libPictModalToast=require('./Pict-Modal-Toast.js');const libPictModalTooltip=require('./Pict-Modal-Tooltip.js');const libPictModalPanel=require('./Pict-Modal-Panel.js');const _DefaultConfiguration=require('./Pict-Section-Modal-DefaultConfiguration.js');class PictSectionModal extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this._activeModals=[];this._activeTooltips=[];this._activeToasts=[];this._idCounter=0;this._overlay=new libPictModalOverlay(this);this._confirm=new libPictModalConfirm(this);this._window=new libPictModalWindow(this);this._toast=new libPictModalToast(this);this._tooltip=new libPictModalTooltip(this);this._panel=new libPictModalPanel(this);}onBeforeInitialize(){super.onBeforeInitialize();// Ensure the root class is on the body for CSS variable scoping
+if(typeof document!=='undefined'&&document.body){if(!document.body.classList.contains('pict-modal-root')){document.body.classList.add('pict-modal-root');}}return super.onBeforeInitialize();}/**
+	 * Generate a unique ID for DOM elements.
+	 *
+	 * @returns {number}
+	 */_nextId(){this._idCounter++;return this._idCounter;}// -- Confirm API --
+/**
+	 * Show a confirmation dialog.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options { title, confirmLabel, cancelLabel, dangerous }
+	 * @returns {Promise<boolean>}
+	 */confirm(pMessage,pOptions){return this._confirm.confirm(pMessage,pOptions);}/**
+	 * Show a two-step confirmation dialog.
+	 *
+	 * If confirmPhrase is set, the user must type it to enable the confirm button.
+	 * If no confirmPhrase, the first click changes the button text and the second click confirms.
+	 *
+	 * @param {string} pMessage - The confirmation message
+	 * @param {object} [pOptions] - Options { title, confirmPhrase, phrasePrompt, confirmLabel, cancelLabel }
+	 * @returns {Promise<boolean>}
+	 */doubleConfirm(pMessage,pOptions){return this._confirm.doubleConfirm(pMessage,pOptions);}// -- Modal Window API --
+/**
+	 * Show a custom modal window.
+	 *
+	 * @param {object} [pOptions] - Options { title, content, buttons, closeable, width, onOpen, onClose }
+	 * @returns {Promise<string|null>} Resolves with the clicked button Hash, or null on close
+	 */show(pOptions){return this._window.show(pOptions);}// -- Tooltip API --
+/**
+	 * Attach a simple text tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pText - Tooltip text
+	 * @param {object} [pOptions] - Options { position, delay, maxWidth }
+	 * @returns {{ destroy: function }}
+	 */tooltip(pElement,pText,pOptions){return this._tooltip.tooltip(pElement,pText,pOptions);}/**
+	 * Attach a rich HTML tooltip to an element.
+	 *
+	 * @param {HTMLElement} pElement - Target element
+	 * @param {string} pHTMLContent - HTML content
+	 * @param {object} [pOptions] - Options { position, delay, maxWidth, interactive }
+	 * @returns {{ destroy: function }}
+	 */richTooltip(pElement,pHTMLContent,pOptions){return this._tooltip.richTooltip(pElement,pHTMLContent,pOptions);}// -- Toast API --
+/**
+	 * Show a toast notification.
+	 *
+	 * @param {string} pMessage - Toast message
+	 * @param {object} [pOptions] - Options { type, duration, position, dismissible }
+	 * @returns {{ dismiss: function }}
+	 */toast(pMessage,pOptions){return this._toast.toast(pMessage,pOptions);}// -- Panel API --
+/**
+	 * Attach resizable/collapsible panel behavior to a DOM element.
+	 *
+	 * @param {string} pTargetSelector - CSS selector for the panel element
+	 * @param {object} [pOptions] - Options { position, width, minWidth, maxWidth, collapsible, collapsed, persist, persistKey, onResize, onToggle }
+	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
+	 */panel(pTargetSelector,pOptions){return this._panel.create(pTargetSelector,pOptions);}// -- Cleanup API --
+/**
+	 * Dismiss all open modals.
+	 */dismissModals(){let tmpModals=this._activeModals.slice();for(let i=tmpModals.length-1;i>=0;i--){tmpModals[i].dismiss(null);}}/**
+	 * Dismiss all active tooltips.
+	 */dismissTooltips(){this._tooltip.dismissAll();}/**
+	 * Dismiss all active toasts.
+	 */dismissToasts(){this._toast.dismissAll();}/**
+	 * Dismiss everything: modals, tooltips, and toasts.
+	 */dismissAll(){this.dismissModals();this.dismissTooltips();this.dismissToasts();}/**
+	 * Clean up all DOM elements when the view is destroyed.
+	 *//**
+	 * Destroy all active panels.
+	 */destroyPanels(){this._panel.destroyAll();}destroy(){this.dismissAll();this.destroyPanels();this._overlay.destroy();this._toast.destroy();if(typeof super.destroy==='function'){return super.destroy();}}}module.exports=PictSectionModal;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-Modal-Confirm.js":80,"./Pict-Modal-Overlay.js":81,"./Pict-Modal-Panel.js":82,"./Pict-Modal-Toast.js":83,"./Pict-Modal-Tooltip.js":84,"./Pict-Modal-Window.js":85,"./Pict-Section-Modal-DefaultConfiguration.js":86,"pict-view":110}],88:[function(require,module,exports){// The container for all the Pict-Section-InlineDocumentation related code.
 // The main inline documentation provider (primary API surface)
 module.exports=require('./providers/Pict-Provider-InlineDocumentation.js');// Exported views for advanced usage
-module.exports.InlineDocumentationLayoutView=require('./views/Pict-View-InlineDocumentation-Layout.js');module.exports.InlineDocumentationContentView=require('./views/Pict-View-InlineDocumentation-Content.js');module.exports.InlineDocumentationNavView=require('./views/Pict-View-InlineDocumentation-Nav.js');module.exports.InlineDocumentationTopicManagerView=require('./views/Pict-View-InlineDocumentation-TopicManager.js');},{"./providers/Pict-Provider-InlineDocumentation.js":81,"./views/Pict-View-InlineDocumentation-Content.js":82,"./views/Pict-View-InlineDocumentation-Layout.js":83,"./views/Pict-View-InlineDocumentation-Nav.js":84,"./views/Pict-View-InlineDocumentation-TopicManager.js":85}],81:[function(require,module,exports){const libPictProvider=require('pict-provider');const libPictSectionContent=require('pict-section-content');const libPictContentProvider=libPictSectionContent.PictContentProvider;const libPictSectionModal=require('pict-section-modal');const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const libLunr=require('lunr');const libViewLayout=require('../views/Pict-View-InlineDocumentation-Layout.js');const libViewContent=require('../views/Pict-View-InlineDocumentation-Content.js');const libViewNav=require('../views/Pict-View-InlineDocumentation-Nav.js');const libViewTopicManager=require('../views/Pict-View-InlineDocumentation-TopicManager.js');/**
+module.exports.InlineDocumentationLayoutView=require('./views/Pict-View-InlineDocumentation-Layout.js');module.exports.InlineDocumentationContentView=require('./views/Pict-View-InlineDocumentation-Content.js');module.exports.InlineDocumentationNavView=require('./views/Pict-View-InlineDocumentation-Nav.js');module.exports.InlineDocumentationTopicManagerView=require('./views/Pict-View-InlineDocumentation-TopicManager.js');},{"./providers/Pict-Provider-InlineDocumentation.js":89,"./views/Pict-View-InlineDocumentation-Content.js":90,"./views/Pict-View-InlineDocumentation-Layout.js":91,"./views/Pict-View-InlineDocumentation-Nav.js":92,"./views/Pict-View-InlineDocumentation-TopicManager.js":93}],89:[function(require,module,exports){const libPictProvider=require('pict-provider');const libPictSectionContent=require('pict-section-content');const libPictContentProvider=libPictSectionContent.PictContentProvider;const libPictSectionModal=require('pict-section-modal');const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const libLunr=require('lunr');const libViewLayout=require('../views/Pict-View-InlineDocumentation-Layout.js');const libViewContent=require('../views/Pict-View-InlineDocumentation-Content.js');const libViewNav=require('../views/Pict-View-InlineDocumentation-Nav.js');const libViewTopicManager=require('../views/Pict-View-InlineDocumentation-TopicManager.js');/**
  * Inline Documentation Provider
  *
  * The primary API for embedding a documentation browser in a Pict application.
@@ -6019,7 +6916,7 @@ if(tmpLinkMatch){tmpCurrentGroup.Items.push({Name:tmpLinkMatch[1].trim(),Path:th
 	 *
 	 * @param {string} pPath - The path that was not found
 	 * @returns {string} HTML to display
-	 */_getErrorPageHTML(pPath){let tmpPath=this._ContentProvider.escapeHTML(pPath||'unknown');return'<div class="pict-inline-doc-not-found">'+'<h2>Page Not Found</h2>'+'<p>The document <code>'+tmpPath+'</code> could not be loaded.</p>'+'</div>';}}const _DefaultConfiguration={ProviderIdentifier:"Pict-InlineDocumentation",AutoInitialize:true,AutoInitializeOrdinal:0};module.exports=InlineDocumentationProvider;module.exports.default_configuration=_DefaultConfiguration;},{"../views/Pict-View-InlineDocumentation-Content.js":82,"../views/Pict-View-InlineDocumentation-Layout.js":83,"../views/Pict-View-InlineDocumentation-Nav.js":84,"../views/Pict-View-InlineDocumentation-TopicManager.js":85,"lunr":32,"pict-provider":58,"pict-section-content":62,"pict-section-markdowneditor":92,"pict-section-modal":100}],82:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Content",DefaultRenderable:"InlineDoc-Content-Display",DefaultContentDestinationAddress:"#InlineDoc-Content-Container",AutoRender:false,CSS:/*css*/`
+	 */_getErrorPageHTML(pPath){let tmpPath=this._ContentProvider.escapeHTML(pPath||'unknown');return'<div class="pict-inline-doc-not-found">'+'<h2>Page Not Found</h2>'+'<p>The document <code>'+tmpPath+'</code> could not be loaded.</p>'+'</div>';}}const _DefaultConfiguration={ProviderIdentifier:"Pict-InlineDocumentation",AutoInitialize:true,AutoInitializeOrdinal:0};module.exports=InlineDocumentationProvider;module.exports.default_configuration=_DefaultConfiguration;},{"../views/Pict-View-InlineDocumentation-Content.js":90,"../views/Pict-View-InlineDocumentation-Layout.js":91,"../views/Pict-View-InlineDocumentation-Nav.js":92,"../views/Pict-View-InlineDocumentation-TopicManager.js":93,"lunr":32,"pict-provider":58,"pict-section-content":62,"pict-section-markdowneditor":100,"pict-section-modal":87}],90:[function(require,module,exports){const libPictContentView=require('pict-section-content');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Content",DefaultRenderable:"InlineDoc-Content-Display",DefaultContentDestinationAddress:"#InlineDoc-Content-Container",AutoRender:false,CSS:/*css*/`
 		.pict-inline-doc-content {
 			padding: 1em 1.25em;
 			max-width: 100%;
@@ -6383,7 +7280,7 @@ this.renderEditToolbar();}/**
 	 * Links with rel="pict-inline-doc-link:path" are intercepted and
 	 * routed through the provider's loadDocument() method.
 	 */_wireInternalLinks(){if(typeof document==='undefined'){return;}let tmpContainer=document.getElementById('InlineDoc-Content-Body');if(!tmpContainer){return;}let tmpLinks=tmpContainer.querySelectorAll('a[rel^="pict-inline-doc-link:"]');let tmpProvider=this.pict.providers['Pict-InlineDocumentation'];for(let i=0;i<tmpLinks.length;i++){let tmpLink=tmpLinks[i];let tmpRel=tmpLink.getAttribute('rel');let tmpPath=tmpRel.replace('pict-inline-doc-link:','');// Check if this is a cross-module link that should open externally
-if(tmpProvider&&typeof tmpProvider.isExternalPath==='function'&&tmpProvider.isExternalPath(tmpPath)){let tmpExternalURL=tmpProvider.resolveExternalURL(tmpPath);if(tmpExternalURL){tmpLink.setAttribute('href',tmpExternalURL);tmpLink.setAttribute('target','_blank');tmpLink.setAttribute('rel','noopener');continue;}}tmpLink.addEventListener('click',pEvent=>{pEvent.preventDefault();if(tmpProvider){tmpProvider.loadDocument(tmpPath);}});}}}module.exports=InlineDocumentationContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":62}],83:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Layout",DefaultRenderable:"InlineDoc-Layout-Container",DefaultContentDestinationAddress:"#InlineDoc-Container",AutoRender:false,CSS:/*css*/`
+if(tmpProvider&&typeof tmpProvider.isExternalPath==='function'&&tmpProvider.isExternalPath(tmpPath)){let tmpExternalURL=tmpProvider.resolveExternalURL(tmpPath);if(tmpExternalURL){tmpLink.setAttribute('href',tmpExternalURL);tmpLink.setAttribute('target','_blank');tmpLink.setAttribute('rel','noopener');continue;}}tmpLink.addEventListener('click',pEvent=>{pEvent.preventDefault();if(tmpProvider){tmpProvider.loadDocument(tmpPath);}});}}}module.exports=InlineDocumentationContentView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-content":62}],91:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Layout",DefaultRenderable:"InlineDoc-Layout-Container",DefaultContentDestinationAddress:"#InlineDoc-Container",AutoRender:false,CSS:/*css*/`
 		.pict-inline-doc {
 			display: flex;
 			flex-direction: row;
@@ -6443,7 +7340,7 @@ this._setupCompactModeObserver();return super.onAfterRender();}/**
 	 * Below the threshold, the nav switches to a horizontal top bar.
 	 */_setupCompactModeObserver(){if(typeof document==='undefined'||typeof ResizeObserver==='undefined'){return;}let tmpContainer=document.querySelector('.pict-inline-doc');if(!tmpContainer){return;}// Clean up any previous observer
 if(this._resizeObserver){this._resizeObserver.disconnect();}let tmpCompactThreshold=550;this._resizeObserver=new ResizeObserver(pEntries=>{for(let i=0;i<pEntries.length;i++){let tmpWidth=pEntries[i].contentRect.width;if(tmpWidth<tmpCompactThreshold){tmpContainer.classList.add('pict-inline-doc-compact');}else{tmpContainer.classList.remove('pict-inline-doc-compact');}}});this._resizeObserver.observe(tmpContainer);// Also do an immediate check
-let tmpWidth=tmpContainer.offsetWidth;if(tmpWidth>0&&tmpWidth<tmpCompactThreshold){tmpContainer.classList.add('pict-inline-doc-compact');}}}module.exports=InlineDocumentationLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],84:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Nav",DefaultRenderable:"InlineDoc-Nav-Display",DefaultContentDestinationAddress:"#InlineDoc-Nav-Container",AutoRender:false,CSS:/*css*/`
+let tmpWidth=tmpContainer.offsetWidth;if(tmpWidth>0&&tmpWidth<tmpCompactThreshold){tmpContainer.classList.add('pict-inline-doc-compact');}}}module.exports=InlineDocumentationLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],92:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-Nav",DefaultRenderable:"InlineDoc-Nav-Display",DefaultContentDestinationAddress:"#InlineDoc-Nav-Container",AutoRender:false,CSS:/*css*/`
 		.pict-inline-doc-nav {
 			display: flex;
 			flex-direction: column;
@@ -6775,7 +7672,7 @@ let tmpBindBtn=pContainer.querySelector('#InlineDoc-Nav-BindTopic');if(tmpBindBt
 	 *
 	 * @param {string} pText - Text to escape
 	 * @returns {string} Escaped text
-	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationNavView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],85:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-TopicManager",AutoRender:false,CSS:/*css*/`
+	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationNavView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],93:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"InlineDoc-TopicManager",AutoRender:false,CSS:/*css*/`
 		.pict-inline-doc-tm-topic-list {
 			max-height: 400px;
 			overflow-y: auto;
@@ -7320,7 +8217,7 @@ let tmpRouteTypeBtns=pDialog.querySelectorAll('.pict-inline-doc-tm-bind-route-ty
 	 *
 	 * @param {string} pText - Text to escape
 	 * @returns {string} Escaped text
-	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationTopicManagerView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],86:[function(require,module,exports){/**
+	 */_escapeHTML(pText){if(!pText){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=InlineDocumentationTopicManagerView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],94:[function(require,module,exports){/**
  * Pict-MDE-CodeMirror: Helper module for PictSectionMarkdownEditor
  *
  * Handles CodeMirror editor instance creation, extension configuration,
@@ -7421,7 +8318,7 @@ continue;}// Build a human-readable size label
 let tmpSizeBytes=Math.round(tmpPayloadLength*0.75);// base64 to bytes approx
 let tmpSizeLabel;if(tmpSizeBytes>=1024*1024){tmpSizeLabel=(tmpSizeBytes/(1024*1024)).toFixed(1)+'MB';}else if(tmpSizeBytes>=1024){tmpSizeLabel=Math.round(tmpSizeBytes/1024)+'KB';}else{tmpSizeLabel=tmpSizeBytes+'B';}let tmpMimeType=tmpMatch[1]||'image';let tmpWidgetLabel=`\u2026${tmpSizeLabel})`;// Replace from the start of the base64 payload to after the closing paren
 let tmpWidget=tmpDecoration.replace({widget:new DataURIWidget(tmpWidgetLabel)});tmpDecorations.push(tmpWidget.range(tmpPayloadStart,tmpPayloadEnd+1));}}return tmpDecoration.set(tmpDecorations,true);}// Create the ViewPlugin
-let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],87:[function(require,module,exports){/**
+let tmpPlugin=tmpViewPlugin.fromClass(class{constructor(pEditorView){this.decorations=buildDecorations(pEditorView);}update(pUpdate){if(pUpdate.docChanged||pUpdate.viewportChanged){this.decorations=buildDecorations(pUpdate.view);}}},{decorations:pPlugin=>pPlugin.decorations});return tmpPlugin;};};},{}],95:[function(require,module,exports){/**
  * Pict-MDE-DragAndReorder: Helper module for PictSectionMarkdownEditor
  *
  * Handles segment drag-and-drop reordering, active segment management,
@@ -7516,7 +8413,7 @@ tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.se
 	 * Reset the sidebar back to default sticky positioning (no cursor tracking).
 	 *
 	 * @param {number} pSegmentIndex - The internal segment index
-	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],88:[function(require,module,exports){/**
+	 */pView._resetSidebarPosition=function _resetSidebarPosition(pSegmentIndex){let tmpSegmentEl=document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);if(!tmpSegmentEl){return;}let tmpQuadrantTR=tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');if(!tmpQuadrantTR){return;}tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');};};},{}],96:[function(require,module,exports){/**
  * Pict-MDE-Formatting: Helper module for PictSectionMarkdownEditor
  *
  * Handles markdown formatting operations (bold, italic, code, heading, link)
@@ -7545,7 +8442,7 @@ let tmpLine=tmpState.doc.lineAt(tmpFrom);let tmpLineText=tmpLine.text;// Toggle:
 if(tmpLineText.startsWith(tmpFormat.prefix)){tmpChanges={from:tmpLine.from,to:tmpLine.from+tmpFormat.prefix.length,insert:''};}else{tmpChanges={from:tmpLine.from,insert:tmpFormat.prefix};}tmpEditor.dispatch({changes:tmpChanges});}else if(tmpFormat.before&&tmpFormat.after){// Surround style (links)
 if(tmpHasSelection){let tmpInsert=tmpFormat.before+tmpSelectedText+tmpFormat.after;tmpChanges={from:tmpFrom,to:tmpTo,insert:tmpInsert};// Place cursor on the "url" part
 tmpCursorPos=tmpFrom+tmpFormat.before.length+tmpSelectedText.length+2;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos,head:tmpCursorPos+3}});}else{let tmpInsert=tmpFormat.before+tmpFormat.after;tmpChanges={from:tmpFrom,insert:tmpInsert};tmpCursorPos=tmpFrom+tmpFormat.before.length;tmpEditor.dispatch({changes:tmpChanges,selection:{anchor:tmpCursorPos}});}}// Re-focus the editor after clicking a sidebar button
-tmpEditor.focus();};};},{}],89:[function(require,module,exports){/**
+tmpEditor.focus();};};},{}],97:[function(require,module,exports){/**
  * Pict-MDE-ImageHandling: Helper module for PictSectionMarkdownEditor
  *
  * Handles image operations: file picker, file processing (hook or base64
@@ -7603,7 +8500,7 @@ let tmpHTML='';for(let i=0;i<tmpMatches.length;i++){let tmpAlt=tmpMatches[i].alt
 	 */pView._wireImageDragEvents=function _wireImageDragEvents(pEditorContainer,pSegmentIndex){pEditorContainer.addEventListener('dragover',pEvent=>{// Only handle file drags, not segment-reorder drags
 if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.types||pEvent.dataTransfer.types.indexOf('Files')<0){return;}pEvent.preventDefault();pEvent.dataTransfer.dropEffect='copy';pEditorContainer.classList.add('pict-mde-image-dragover');});pEditorContainer.addEventListener('dragleave',pEvent=>{// Only clear if actually leaving the element
 if(!pEditorContainer.contains(pEvent.relatedTarget)){pEditorContainer.classList.remove('pict-mde-image-dragover');}});pEditorContainer.addEventListener('drop',pEvent=>{pEditorContainer.classList.remove('pict-mde-image-dragover');// Only handle file drops, not segment-reorder drops
-if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],90:[function(require,module,exports){/**
+if(pView._dragSourceIndex>=0){return;}if(!pEvent.dataTransfer||!pEvent.dataTransfer.files||pEvent.dataTransfer.files.length<1){return;}let tmpFile=pEvent.dataTransfer.files[0];if(tmpFile.type&&tmpFile.type.startsWith('image/')){pEvent.preventDefault();pEvent.stopPropagation();pView._processImageFile(tmpFile,pSegmentIndex);}});};};},{}],98:[function(require,module,exports){/**
  * Pict-MDE-RichPreview: Helper module for PictSectionMarkdownEditor
  *
  * Handles rich content preview rendering via pict-section-content:
@@ -7683,7 +8580,7 @@ pView._renderedViewGeneration++;let tmpGeneration=pView._renderedViewGeneration;
 let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-content`);if(tmpContentContainer){let tmpContentID='PictMDE-RenderedViewContent';tmpContentContainer.id=tmpContentID;pView._postRenderMermaid(tmpContentID,-1,tmpGeneration);pView._postRenderKaTeX(tmpContentID);}};/**
 	 * Switch back from rendered view to the editing view: rebuild the
 	 * full editor UI from the data.
-	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":62}],91:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
+	 */pView._restoreEditingView=function _restoreEditingView(){let tmpContainer=pView._getContainerElement();if(!tmpContainer){return;}tmpContainer.classList.remove('pict-mde-rendered-mode');pView._buildEditorUI();};};},{"pict-section-content":62}],99:[function(require,module,exports){module.exports={"DefaultRenderable":"MarkdownEditor-Wrap","DefaultDestinationAddress":"#MarkdownEditor-Container-Div","Templates":[{"Hash":"MarkdownEditor-Container","Template":/*html*/`<div class="pict-mde" id="PictMDE-Container"></div>`},{"Hash":"MarkdownEditor-Segment","Template":/*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
 	<div class="pict-mde-left-controls">
 		<div class="pict-mde-quadrant-tl"></div>
 		<div class="pict-mde-quadrant-bl"></div>
@@ -8510,7 +9407,7 @@ let tmpContentContainer=tmpContainer.querySelector(`#${tmpRenderedViewID} .pict-
 		padding: 4px 4px;
 	}
 }
-`};},{}],92:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
+`};},{}],100:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictSectionContent=require('pict-section-content');const _DefaultConfiguration=require('./Pict-Section-MarkdownEditor-DefaultConfiguration.js');// Helper modules
 const libFormatting=require('./Pict-MDE-Formatting.js');const libImageHandling=require('./Pict-MDE-ImageHandling.js');const libDragAndReorder=require('./Pict-MDE-DragAndReorder.js');const libRichPreview=require('./Pict-MDE-RichPreview.js');const libCodeMirror=require('./Pict-MDE-CodeMirror.js');class PictSectionMarkdownEditor extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this.initialRenderComplete=false;// CodeMirror prototype references (injected by consumer or found on window)
 this._codeMirrorModules=null;// Map of segment index to CodeMirror EditorView instance
 this._segmentEditors={};// Internal segment counter (monotonically increasing for unique IDs)
@@ -8777,7 +9674,7 @@ this._swapHiddenPreviewState(tmpLogicalIndex,tmpLogicalIndex+1);this._swapSegmen
 	 */marshalFromView(){super.marshalFromView();this._marshalAllEditorsToData();}/**
 	 * Destroy all editors and clean up.
 	 */destroy(){for(let tmpIndex in this._segmentEditors){if(this._segmentEditors[tmpIndex]){this._segmentEditors[tmpIndex].destroy();}}this._segmentEditors={};// Clear rich preview debounce timers
-for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};this._segmentTabStates={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":86,"./Pict-MDE-DragAndReorder.js":87,"./Pict-MDE-Formatting.js":88,"./Pict-MDE-ImageHandling.js":89,"./Pict-MDE-RichPreview.js":90,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":91,"pict-section-content":62,"pict-view":102}],93:[function(require,module,exports){/**
+for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimers[tmpIndex]);}this._richPreviewTimers={};this._richPreviewGenerations={};this._segmentTabStates={};}}module.exports=PictSectionMarkdownEditor;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-MDE-CodeMirror.js":94,"./Pict-MDE-DragAndReorder.js":95,"./Pict-MDE-Formatting.js":96,"./Pict-MDE-ImageHandling.js":97,"./Pict-MDE-RichPreview.js":98,"./Pict-Section-MarkdownEditor-DefaultConfiguration.js":99,"pict-section-content":62,"pict-view":110}],101:[function(require,module,exports){/**
  * Pict-Modal-Confirm
  *
  * Builds confirm and double-confirm dialog DOM, returns Promises.
@@ -8804,7 +9701,7 @@ for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimer
 	 * @param {function} fResolve - Promise resolver
 	 * @param {object} pOptions
 	 * @returns {HTMLElement}
-	 */_buildDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpBtnStyle=pOptions.dangerous?'danger':'primary';let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+'<p>'+this._escapeHTML(pMessage)+'</p>'+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--'+tmpBtnStyle+'" data-action="confirm">'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpConfirmBtn.addEventListener('click',()=>{tmpDismiss(true);});tmpDialog._dismiss=tmpDismiss;tmpDialog._focusTarget=tmpCancelBtn;return tmpDialog;}/**
+	 */_buildDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpBtnStyle=pOptions.dangerous?'danger':'primary';let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';if(pOptions.unbounded){tmpDialog.className+=' pict-modal-dialog--unbounded';}tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+'<p>'+this._escapeHTML(pMessage)+'</p>'+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--'+tmpBtnStyle+'" data-action="confirm">'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpConfirmBtn.addEventListener('click',()=>{tmpDismiss(true);});tmpDialog._dismiss=tmpDismiss;tmpDialog._focusTarget=tmpCancelBtn;return tmpDialog;}/**
 	 * Build a double-confirm dialog element.
 	 *
 	 * @param {string} pTitle
@@ -8812,7 +9709,7 @@ for(let tmpIndex in this._richPreviewTimers){clearTimeout(this._richPreviewTimer
 	 * @param {function} fResolve - Promise resolver
 	 * @param {object} pOptions
 	 * @returns {HTMLElement}
-	 */_buildDoubleConfirmDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpHasPhrase=typeof pOptions.confirmPhrase==='string'&&pOptions.confirmPhrase.length>0;let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';let tmpBodyContent='<p>'+this._escapeHTML(pMessage)+'</p>';if(tmpHasPhrase){let tmpPromptText=pOptions.phrasePrompt.replace('{phrase}',pOptions.confirmPhrase);tmpBodyContent+='<div class="pict-modal-confirm-prompt">'+this._escapeHTML(tmpPromptText)+'</div>'+'<input type="text" class="pict-modal-confirm-input" autocomplete="off" spellcheck="false" />';}tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+tmpBodyContent+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--danger" data-action="confirm" disabled>'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});if(tmpHasPhrase){// Phrase-based: enable confirm button when input matches
+	 */_buildDoubleConfirmDialog(pTitle,pMessage,fResolve,pOptions){let tmpId=this._modal._nextId();let tmpHasPhrase=typeof pOptions.confirmPhrase==='string'&&pOptions.confirmPhrase.length>0;let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';if(pOptions.unbounded){tmpDialog.className+=' pict-modal-dialog--unbounded';}tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width='420px';let tmpBodyContent='<p>'+this._escapeHTML(pMessage)+'</p>';if(tmpHasPhrase){let tmpPromptText=pOptions.phrasePrompt.replace('{phrase}',pOptions.confirmPhrase);tmpBodyContent+='<div class="pict-modal-confirm-prompt">'+this._escapeHTML(tmpPromptText)+'</div>'+'<input type="text" class="pict-modal-confirm-input" autocomplete="off" spellcheck="false" />';}tmpDialog.innerHTML='<div class="pict-modal-dialog-header">'+'<span class="pict-modal-dialog-title">'+this._escapeHTML(pTitle)+'</span>'+'<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>'+'</div>'+'<div class="pict-modal-dialog-body">'+tmpBodyContent+'</div>'+'<div class="pict-modal-dialog-footer">'+'<button class="pict-modal-btn" data-action="cancel">'+this._escapeHTML(pOptions.cancelLabel)+'</button>'+'<button class="pict-modal-btn pict-modal-btn--danger" data-action="confirm" disabled>'+this._escapeHTML(pOptions.confirmLabel)+'</button>'+'</div>';let tmpCloseBtn=tmpDialog.querySelector('.pict-modal-dialog-close');let tmpCancelBtn=tmpDialog.querySelector('[data-action="cancel"]');let tmpConfirmBtn=tmpDialog.querySelector('[data-action="confirm"]');let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve);};tmpCloseBtn.addEventListener('click',()=>{tmpDismiss(false);});tmpCancelBtn.addEventListener('click',()=>{tmpDismiss(false);});if(tmpHasPhrase){// Phrase-based: enable confirm button when input matches
 let tmpInput=tmpDialog.querySelector('.pict-modal-confirm-input');tmpInput.addEventListener('input',()=>{tmpConfirmBtn.disabled=tmpInput.value!==pOptions.confirmPhrase;});tmpConfirmBtn.addEventListener('click',()=>{if(!tmpConfirmBtn.disabled){tmpDismiss(true);}});tmpDialog._focusTarget=tmpInput;}else{// Two-click: first click changes label, second click confirms
 let tmpClickCount=0;let tmpOriginalLabel=pOptions.confirmLabel;tmpConfirmBtn.disabled=false;tmpConfirmBtn.addEventListener('click',()=>{tmpClickCount++;if(tmpClickCount===1){tmpConfirmBtn.textContent='Click again to confirm';}else{tmpDismiss(true);}});tmpDialog._focusTarget=tmpCancelBtn;}tmpDialog._dismiss=tmpDismiss;return tmpDialog;}/**
 	 * Show a dialog element: append to body, show overlay, animate in.
@@ -8844,155 +9741,7 @@ fResolve(pResult);}/**
 	 *
 	 * @param {string} pText
 	 * @returns {string}
-	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalConfirm;},{}],94:[function(require,module,exports){/**
- * Pict-Modal-Overlay
- *
- * Manages a shared backdrop overlay element appended to document.body.
- * Reference-counted — created on first modal open, removed when last closes.
- */class PictModalOverlay{constructor(pModal){this._modal=pModal;this._element=null;this._refCount=0;}/**
-	 * Show the overlay (incrementing reference count).
-	 * Creates the DOM element on first call.
-	 *
-	 * @param {function} [fOnClick] - Optional click handler (e.g. dismiss topmost modal)
-	 */show(fOnClick){this._refCount++;if(!this._element){this._element=document.createElement('div');this._element.className='pict-modal-overlay';document.body.appendChild(this._element);// Force reflow so the transition animates
-void this._element.offsetHeight;this._element.classList.add('pict-modal-visible');}if(fOnClick){// Store the latest click handler (for the topmost modal)
-this._currentClickHandler=fOnClick;this._element.onclick=pEvent=>{if(pEvent.target===this._element&&this._currentClickHandler){this._currentClickHandler();}};}}/**
-	 * Update the overlay click handler (e.g. when topmost modal changes).
-	 *
-	 * @param {function} [fOnClick] - New click handler
-	 */updateClickHandler(fOnClick){this._currentClickHandler=fOnClick||null;}/**
-	 * Hide the overlay (decrementing reference count).
-	 * Removes the DOM element when reference count reaches zero.
-	 */hide(){this._refCount--;if(this._refCount<=0){this._refCount=0;if(this._element){this._element.classList.remove('pict-modal-visible');let tmpElement=this._element;// Remove after transition
-setTimeout(()=>{if(tmpElement.parentNode){tmpElement.parentNode.removeChild(tmpElement);}},220);this._element=null;this._currentClickHandler=null;}}}/**
-	 * Force-remove the overlay regardless of reference count.
-	 */destroy(){this._refCount=0;if(this._element&&this._element.parentNode){this._element.parentNode.removeChild(this._element);}this._element=null;this._currentClickHandler=null;}}module.exports=PictModalOverlay;},{}],95:[function(require,module,exports){/**
- * Pict-Modal-Panel
- *
- * Adds resizable and collapsible panel behavior to any DOM element.
- * Follows the handler composition pattern used by the other modal
- * handlers (confirm, window, toast, tooltip).
- *
- * Usage:
- *   let handle = modal.panel('#my-panel', { position: 'right', width: 340 });
- *   handle.toggle();
- *   handle.destroy();
- */class PictModalPanel{constructor(pModal){this._modal=pModal;this._panels=[];}/**
-	 * Attach resizable/collapsible panel behavior to an element.
-	 *
-	 * @param {string} pTargetSelector - CSS selector for the panel element
-	 * @param {object} [pOptions] - Panel options
-	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
-	 */create(pTargetSelector,pOptions){let tmpDefaults=this._modal&&this._modal.options&&this._modal.options.DefaultPanelOptions||{};let tmpOptions=Object.assign({},{position:'right',width:340,minWidth:200,maxWidth:600,collapsible:true,collapsed:false,persist:false,persistKey:'',onResize:null,onToggle:null},tmpDefaults,pOptions);if(typeof document==='undefined')return this._nullHandle();let tmpTarget=document.querySelector(pTargetSelector);if(!tmpTarget)return this._nullHandle();let tmpId=this._modal._nextId();let tmpIsRight=tmpOptions.position==='right';let tmpIsCollapsed=false;let tmpCurrentWidth=tmpOptions.width;let tmpDestroyed=false;// Restore persisted state
-if(tmpOptions.persist&&tmpOptions.persistKey){try{let tmpStored=localStorage.getItem('pict-panel-'+tmpOptions.persistKey);if(tmpStored){let tmpParsed=JSON.parse(tmpStored);if(typeof tmpParsed.width==='number')tmpCurrentWidth=tmpParsed.width;if(typeof tmpParsed.collapsed==='boolean')tmpOptions.collapsed=tmpParsed.collapsed;}}catch(e){/* ignore */}}// Apply classes and initial width
-tmpTarget.classList.add('pict-panel');tmpTarget.classList.add(tmpIsRight?'pict-panel-right':'pict-panel-left');tmpTarget.style.width=tmpCurrentWidth+'px';// Remove display:none if present — panel uses width collapse instead
-if(tmpTarget.style.display==='none'){tmpTarget.style.display='';}// ── Create the edge container ───────────────────────
-let tmpEdge=document.createElement('div');tmpEdge.className='pict-panel-edge '+(tmpIsRight?'pict-panel-edge-right':'pict-panel-edge-left');// Resize handle
-let tmpResize=document.createElement('div');tmpResize.className='pict-panel-resize';tmpEdge.appendChild(tmpResize);// Collapse tab (chevron SVG)
-let tmpTab=null;if(tmpOptions.collapsible){tmpTab=document.createElement('div');tmpTab.className='pict-panel-tab';tmpTab.title='Toggle panel';tmpEdge.appendChild(tmpTab);}// Insert edge as a sibling so it is not clipped by the
-// panel's own overflow (e.g. overflow-y: auto for scrolling).
-// Right panels: edge goes BEFORE the panel (left side).
-// Left panels: edge goes AFTER the panel (right side).
-if(tmpTarget.parentNode){if(tmpIsRight){tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget);}else{tmpTarget.parentNode.insertBefore(tmpEdge,tmpTarget.nextSibling);}}else{tmpTarget.insertBefore(tmpEdge,tmpTarget.firstChild);}// ── Chevron SVG helper ──────────────────────────────
-let tmpChevronRight='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,3 11,8 6,13"/></svg>';let tmpChevronLeft='<svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg>';let tmpUpdateChevron=()=>{if(!tmpTab)return;if(tmpIsRight){tmpTab.innerHTML=tmpIsCollapsed?tmpChevronLeft:tmpChevronRight;}else{tmpTab.innerHTML=tmpIsCollapsed?tmpChevronRight:tmpChevronLeft;}};// ── Persist helper ──────────────────────────────────
-let tmpPersist=()=>{if(!tmpOptions.persist||!tmpOptions.persistKey)return;try{localStorage.setItem('pict-panel-'+tmpOptions.persistKey,JSON.stringify({width:tmpCurrentWidth,collapsed:tmpIsCollapsed}));}catch(e){/* ignore */}};// ── Collapse / expand ───────────────────────────────
-let tmpCollapse=()=>{if(tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(true);};let tmpExpand=()=>{if(!tmpIsCollapsed||tmpDestroyed)return;tmpIsCollapsed=false;tmpEdge.classList.remove('pict-panel-edge-collapsed');tmpTarget.classList.remove('pict-panel-collapsed');tmpTarget.style.width=tmpCurrentWidth+'px';tmpUpdateChevron();tmpPersist();if(typeof tmpOptions.onToggle==='function')tmpOptions.onToggle(false);};let tmpToggle=()=>{if(tmpIsCollapsed)tmpExpand();else tmpCollapse();};let tmpSetWidth=pWidth=>{if(tmpDestroyed)return;let tmpWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,pWidth));tmpCurrentWidth=tmpWidth;if(!tmpIsCollapsed){tmpTarget.style.width=tmpWidth+'px';}tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpWidth);};// ── Tab click ───────────────────────────────────────
-if(tmpTab){tmpTab.addEventListener('click',pEvent=>{pEvent.stopPropagation();tmpToggle();});}// ── Resize drag ─────────────────────────────────────
-let tmpOnMouseDown=pEvent=>{if(tmpIsCollapsed)return;pEvent.preventDefault();let tmpStartX=pEvent.clientX;let tmpStartWidth=tmpTarget.offsetWidth;tmpResize.classList.add('dragging');tmpTarget.style.transition='none';document.body.style.userSelect='none';document.body.style.cursor='col-resize';let tmpOnMouseMove=pMoveEvent=>{let tmpDelta=tmpIsRight?tmpStartX-pMoveEvent.clientX:pMoveEvent.clientX-tmpStartX;let tmpNewWidth=Math.max(tmpOptions.minWidth,Math.min(tmpOptions.maxWidth,tmpStartWidth+tmpDelta));tmpTarget.style.width=tmpNewWidth+'px';};let tmpOnMouseUp=pUpEvent=>{document.removeEventListener('mousemove',tmpOnMouseMove);document.removeEventListener('mouseup',tmpOnMouseUp);tmpResize.classList.remove('dragging');tmpTarget.style.transition='';document.body.style.userSelect='';document.body.style.cursor='';// Capture the final width
-tmpCurrentWidth=tmpTarget.offsetWidth;tmpPersist();if(typeof tmpOptions.onResize==='function')tmpOptions.onResize(tmpCurrentWidth);};document.addEventListener('mousemove',tmpOnMouseMove);document.addEventListener('mouseup',tmpOnMouseUp);};tmpResize.addEventListener('mousedown',tmpOnMouseDown);// ── Initial state ───────────────────────────────────
-tmpUpdateChevron();if(tmpOptions.collapsed){tmpIsCollapsed=true;tmpTarget.classList.add('pict-panel-collapsed');tmpEdge.classList.add('pict-panel-edge-collapsed');tmpUpdateChevron();}// ── Destroy ─────────────────────────────────────────
-let tmpDestroy=()=>{if(tmpDestroyed)return;tmpDestroyed=true;tmpResize.removeEventListener('mousedown',tmpOnMouseDown);if(tmpEdge.parentNode)tmpEdge.remove();tmpTarget.classList.remove('pict-panel','pict-panel-right','pict-panel-left','pict-panel-collapsed');tmpTarget.style.width='';tmpTarget.style.transition='';let tmpIdx=this._panels.indexOf(tmpHandle);if(tmpIdx>=0)this._panels.splice(tmpIdx,1);};// ── Return handle ───────────────────────────────────
-let tmpHandle={id:tmpId,collapse:tmpCollapse,expand:tmpExpand,toggle:tmpToggle,setWidth:tmpSetWidth,destroy:tmpDestroy};this._panels.push(tmpHandle);return tmpHandle;}/**
-	 * Return a no-op handle for server-side or missing-element cases.
-	 */_nullHandle(){return{id:0,collapse:()=>{},expand:()=>{},toggle:()=>{},setWidth:()=>{},destroy:()=>{}};}/**
-	 * Destroy all active panels.
-	 */destroyAll(){let tmpPanels=this._panels.slice();for(let i=0;i<tmpPanels.length;i++){tmpPanels[i].destroy();}}}module.exports=PictModalPanel;},{}],96:[function(require,module,exports){/**
- * Pict-Modal-Toast
- *
- * Manages toast notification elements with auto-dismiss and stacking.
- */class PictModalToast{constructor(pModal){this._modal=pModal;this._containers={};}/**
-	 * Show a toast notification.
-	 *
-	 * @param {string} pMessage - Toast message text
-	 * @param {object} [pOptions] - Options (type, duration, position, dismissible)
-	 * @returns {{ dismiss: function }} Handle with dismiss method
-	 */toast(pMessage,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultToastOptions,pOptions);let tmpContainer=this._getContainer(tmpOptions.position);let tmpId=this._modal._nextId();let tmpToast=document.createElement('div');tmpToast.className='pict-modal-toast pict-modal-toast--'+tmpOptions.type;tmpToast.id='pict-modal-toast-'+tmpId;let tmpContent='<span class="pict-modal-toast-message">'+this._escapeHTML(pMessage)+'</span>';if(tmpOptions.dismissible){tmpContent+='<button class="pict-modal-toast-dismiss" aria-label="Dismiss">&times;</button>';}tmpToast.innerHTML=tmpContent;// Create handle
-let tmpDismissed=false;let tmpTimeoutHandle=null;let tmpDismiss=()=>{if(tmpDismissed){return;}tmpDismissed=true;if(tmpTimeoutHandle){clearTimeout(tmpTimeoutHandle);}// Exit animation
-tmpToast.classList.remove('pict-modal-visible');tmpToast.classList.add('pict-modal-toast-exit');// Remove from active list
-this._modal._activeToasts=this._modal._activeToasts.filter(pEntry=>{return pEntry.element!==tmpToast;});// Remove from DOM after transition
-setTimeout(()=>{if(tmpToast.parentNode){tmpToast.parentNode.removeChild(tmpToast);}this._cleanupContainer(tmpOptions.position);},220);};let tmpHandle={dismiss:tmpDismiss};// Wire dismiss button
-if(tmpOptions.dismissible){let tmpDismissBtn=tmpToast.querySelector('.pict-modal-toast-dismiss');if(tmpDismissBtn){tmpDismissBtn.addEventListener('click',tmpDismiss);}}// Append to container
-tmpContainer.appendChild(tmpToast);// Track
-let tmpEntry={element:tmpToast,dismiss:tmpDismiss,handle:tmpHandle};this._modal._activeToasts.push(tmpEntry);// Animate in
-void tmpToast.offsetHeight;tmpToast.classList.add('pict-modal-visible');// Auto-dismiss
-if(tmpOptions.duration>0){tmpTimeoutHandle=setTimeout(tmpDismiss,tmpOptions.duration);}return tmpHandle;}/**
-	 * Get or create a toast container for the given position.
-	 *
-	 * @param {string} pPosition - Position key (e.g. 'top-right')
-	 * @returns {HTMLElement}
-	 */_getContainer(pPosition){if(this._containers[pPosition]){return this._containers[pPosition];}let tmpContainer=document.createElement('div');tmpContainer.className='pict-modal-toast-container pict-modal-toast-container--'+pPosition;document.body.appendChild(tmpContainer);this._containers[pPosition]=tmpContainer;return tmpContainer;}/**
-	 * Remove a container if it has no more toasts.
-	 *
-	 * @param {string} pPosition
-	 */_cleanupContainer(pPosition){let tmpContainer=this._containers[pPosition];if(tmpContainer&&tmpContainer.children.length===0){if(tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}delete this._containers[pPosition];}}/**
-	 * Dismiss all active toasts.
-	 */dismissAll(){let tmpToasts=this._modal._activeToasts.slice();for(let i=0;i<tmpToasts.length;i++){tmpToasts[i].dismiss();}}/**
-	 * Destroy all containers.
-	 */destroy(){this.dismissAll();let tmpPositions=Object.keys(this._containers);for(let i=0;i<tmpPositions.length;i++){let tmpContainer=this._containers[tmpPositions[i]];if(tmpContainer&&tmpContainer.parentNode){tmpContainer.parentNode.removeChild(tmpContainer);}}this._containers={};}/**
-	 * Escape HTML special characters.
-	 *
-	 * @param {string} pText
-	 * @returns {string}
-	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalToast;},{}],97:[function(require,module,exports){/**
- * Pict-Modal-Tooltip
- *
- * Manages simple text and rich HTML tooltips with positioning and auto-flip.
- */class PictModalTooltip{constructor(pModal){this._modal=pModal;}/**
-	 * Attach a simple text tooltip to an element.
-	 *
-	 * @param {HTMLElement} pElement - Target element
-	 * @param {string} pText - Tooltip text
-	 * @param {object} [pOptions] - Options (position, delay, maxWidth)
-	 * @returns {{ destroy: function }} Handle to remove the tooltip
-	 */tooltip(pElement,pText,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pText,false,tmpOptions);}/**
-	 * Attach a rich HTML tooltip to an element.
-	 *
-	 * @param {HTMLElement} pElement - Target element
-	 * @param {string} pHTMLContent - HTML content for the tooltip
-	 * @param {object} [pOptions] - Options (position, delay, maxWidth, interactive)
-	 * @returns {{ destroy: function }} Handle to remove the tooltip
-	 */richTooltip(pElement,pHTMLContent,pOptions){let tmpOptions=Object.assign({},this._modal.options.DefaultTooltipOptions,pOptions);return this._attachTooltip(pElement,pHTMLContent,true,tmpOptions);}/**
-	 * Internal: attach tooltip event listeners to an element.
-	 *
-	 * @param {HTMLElement} pElement
-	 * @param {string} pContent
-	 * @param {boolean} pIsHTML
-	 * @param {object} pOptions
-	 * @returns {{ destroy: function }}
-	 */_attachTooltip(pElement,pContent,pIsHTML,pOptions){let tmpTooltipElement=null;let tmpShowTimeout=null;let tmpHideTimeout=null;let tmpDestroyed=false;let tmpId=this._modal._nextId();let tmpShow=()=>{if(tmpDestroyed||tmpTooltipElement){return;}tmpTooltipElement=document.createElement('div');tmpTooltipElement.className='pict-modal-tooltip pict-modal-tooltip--'+pOptions.position;tmpTooltipElement.id='pict-modal-tooltip-'+tmpId;tmpTooltipElement.setAttribute('role','tooltip');tmpTooltipElement.style.maxWidth=pOptions.maxWidth;if(pOptions.interactive){tmpTooltipElement.classList.add('pict-modal-tooltip-interactive');}// Arrow
-let tmpArrow=document.createElement('div');tmpArrow.className='pict-modal-tooltip-arrow';// Content
-let tmpContentDiv=document.createElement('div');if(pIsHTML){tmpContentDiv.innerHTML=pContent;}else{tmpContentDiv.textContent=pContent;}tmpTooltipElement.appendChild(tmpArrow);tmpTooltipElement.appendChild(tmpContentDiv);document.body.appendChild(tmpTooltipElement);// Set aria-describedby on target
-pElement.setAttribute('aria-describedby',tmpTooltipElement.id);// Position
-this._positionTooltip(tmpTooltipElement,pElement,pOptions.position);// Animate in
-void tmpTooltipElement.offsetHeight;tmpTooltipElement.classList.add('pict-modal-visible');// Track
-this._modal._activeTooltips.push({element:tmpTooltipElement,targetElement:pElement,destroy:tmpDestroy});// For interactive tooltips, allow hovering over the tooltip itself
-if(pOptions.interactive&&tmpTooltipElement){tmpTooltipElement.addEventListener('mouseenter',()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}});tmpTooltipElement.addEventListener('mouseleave',()=>{tmpHide();});}};let tmpHide=()=>{if(!tmpTooltipElement){return;}tmpTooltipElement.classList.remove('pict-modal-visible');let tmpEl=tmpTooltipElement;tmpTooltipElement=null;// Remove aria
-pElement.removeAttribute('aria-describedby');// Remove from tracking
-this._modal._activeTooltips=this._modal._activeTooltips.filter(pEntry=>{return pEntry.element!==tmpEl;});setTimeout(()=>{if(tmpEl.parentNode){tmpEl.parentNode.removeChild(tmpEl);}},220);};let tmpOnMouseEnter=()=>{if(tmpHideTimeout){clearTimeout(tmpHideTimeout);tmpHideTimeout=null;}tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnMouseLeave=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}// Small delay before hiding to allow moving to interactive tooltip
-if(pOptions.interactive){tmpHideTimeout=setTimeout(tmpHide,100);}else{tmpHide();}};let tmpOnFocusIn=()=>{tmpShowTimeout=setTimeout(tmpShow,pOptions.delay);};let tmpOnFocusOut=()=>{if(tmpShowTimeout){clearTimeout(tmpShowTimeout);tmpShowTimeout=null;}tmpHide();};// Attach listeners
-pElement.addEventListener('mouseenter',tmpOnMouseEnter);pElement.addEventListener('mouseleave',tmpOnMouseLeave);pElement.addEventListener('focusin',tmpOnFocusIn);pElement.addEventListener('focusout',tmpOnFocusOut);let tmpDestroy=()=>{if(tmpDestroyed){return;}tmpDestroyed=true;if(tmpShowTimeout){clearTimeout(tmpShowTimeout);}if(tmpHideTimeout){clearTimeout(tmpHideTimeout);}tmpHide();pElement.removeEventListener('mouseenter',tmpOnMouseEnter);pElement.removeEventListener('mouseleave',tmpOnMouseLeave);pElement.removeEventListener('focusin',tmpOnFocusIn);pElement.removeEventListener('focusout',tmpOnFocusOut);};return{destroy:tmpDestroy};}/**
-	 * Position a tooltip element relative to the target element.
-	 * Flips direction if the tooltip would overflow the viewport.
-	 *
-	 * @param {HTMLElement} pTooltip
-	 * @param {HTMLElement} pTarget
-	 * @param {string} pPosition - 'top', 'bottom', 'left', 'right'
-	 */_positionTooltip(pTooltip,pTarget,pPosition){let tmpTargetRect=pTarget.getBoundingClientRect();let tmpTooltipRect=pTooltip.getBoundingClientRect();let tmpGap=8;let tmpPosition=pPosition;// Flip if needed
-if(tmpPosition==='top'&&tmpTargetRect.top<tmpTooltipRect.height+tmpGap){tmpPosition='bottom';}else if(tmpPosition==='bottom'&&window.innerHeight-tmpTargetRect.bottom<tmpTooltipRect.height+tmpGap){tmpPosition='top';}else if(tmpPosition==='left'&&tmpTargetRect.left<tmpTooltipRect.width+tmpGap){tmpPosition='right';}else if(tmpPosition==='right'&&window.innerWidth-tmpTargetRect.right<tmpTooltipRect.width+tmpGap){tmpPosition='left';}// Update class for arrow direction
-pTooltip.className=pTooltip.className.replace(/pict-modal-tooltip--\w+/,'pict-modal-tooltip--'+tmpPosition);let tmpTop=0;let tmpLeft=0;switch(tmpPosition){case'top':tmpTop=tmpTargetRect.top-tmpTooltipRect.height-tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'bottom':tmpTop=tmpTargetRect.bottom+tmpGap;tmpLeft=tmpTargetRect.left+tmpTargetRect.width/2-tmpTooltipRect.width/2;break;case'left':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.left-tmpTooltipRect.width-tmpGap;break;case'right':tmpTop=tmpTargetRect.top+tmpTargetRect.height/2-tmpTooltipRect.height/2;tmpLeft=tmpTargetRect.right+tmpGap;break;}// Clamp to viewport
-tmpLeft=Math.max(4,Math.min(tmpLeft,window.innerWidth-tmpTooltipRect.width-4));tmpTop=Math.max(4,Math.min(tmpTop,window.innerHeight-tmpTooltipRect.height-4));pTooltip.style.top=tmpTop+'px';pTooltip.style.left=tmpLeft+'px';}/**
-	 * Dismiss all active tooltips.
-	 */dismissAll(){let tmpTooltips=this._modal._activeTooltips.slice();for(let i=0;i<tmpTooltips.length;i++){tmpTooltips[i].destroy();}}}module.exports=PictModalTooltip;},{}],98:[function(require,module,exports){/**
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalConfirm;},{}],102:[function(require,module,exports){arguments[4][81][0].apply(exports,arguments);},{"dup":81}],103:[function(require,module,exports){arguments[4][82][0].apply(exports,arguments);},{"dup":82}],104:[function(require,module,exports){arguments[4][83][0].apply(exports,arguments);},{"dup":83}],105:[function(require,module,exports){arguments[4][84][0].apply(exports,arguments);},{"dup":84}],106:[function(require,module,exports){/**
  * Pict-Modal-Window
  *
  * Builds custom floating modal windows with arbitrary content and buttons.
@@ -9005,6 +9754,7 @@ tmpLeft=Math.max(4,Math.min(tmpLeft,window.innerWidth-tmpTooltipRect.width-4));t
 	 * @param {Array} [pOptions.buttons] - Array of { Hash, Label, Style }
 	 * @param {boolean} [pOptions.closeable] - Whether the close button and overlay dismiss are enabled
 	 * @param {string} [pOptions.width] - CSS width value
+	 * @param {boolean} [pOptions.unbounded] - If true, removes the default 90vh/90vw viewport cap. The dialog will grow with its content and may extend beyond the viewport.
 	 * @param {function} [pOptions.onOpen] - Called after dialog is shown, receives dialog element
 	 * @param {function} [pOptions.onClose] - Called after dialog is dismissed
 	 * @returns {Promise<string|null>} Resolves with clicked button Hash, or null on close
@@ -9014,7 +9764,7 @@ tmpLeft=Math.max(4,Math.min(tmpLeft,window.innerWidth-tmpTooltipRect.width-4));t
 	 * @param {object} pOptions
 	 * @param {function} fResolve
 	 * @returns {HTMLElement}
-	 */_buildDialog(pOptions,fResolve){let tmpId=this._modal._nextId();let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width=pOptions.width;// Header
+	 */_buildDialog(pOptions,fResolve){let tmpId=this._modal._nextId();let tmpDialog=document.createElement('div');tmpDialog.className='pict-modal-dialog';if(pOptions.unbounded){tmpDialog.className+=' pict-modal-dialog--unbounded';}tmpDialog.id='pict-modal-'+tmpId;tmpDialog.setAttribute('role','dialog');tmpDialog.setAttribute('aria-modal','true');tmpDialog.style.width=pOptions.width;// Header
 let tmpHeaderHTML='';if(pOptions.title||pOptions.closeable){tmpHeaderHTML='<div class="pict-modal-dialog-header">';tmpHeaderHTML+='<span class="pict-modal-dialog-title">'+this._escapeHTML(pOptions.title)+'</span>';if(pOptions.closeable){tmpHeaderHTML+='<button class="pict-modal-dialog-close" aria-label="Close">&times;</button>';}tmpHeaderHTML+='</div>';}// Body
 let tmpBodyHTML='<div class="pict-modal-dialog-body">'+(pOptions.content||'')+'</div>';// Footer with buttons
 let tmpFooterHTML='';if(pOptions.buttons&&pOptions.buttons.length>0){tmpFooterHTML='<div class="pict-modal-dialog-footer">';for(let i=0;i<pOptions.buttons.length;i++){let tmpButton=pOptions.buttons[i];let tmpBtnClass='pict-modal-btn';if(tmpButton.Style){tmpBtnClass+=' pict-modal-btn--'+tmpButton.Style;}tmpFooterHTML+='<button class="'+tmpBtnClass+'" data-hash="'+this._escapeHTML(tmpButton.Hash)+'">'+this._escapeHTML(tmpButton.Label)+'</button>';}tmpFooterHTML+='</div>';}tmpDialog.innerHTML=tmpHeaderHTML+tmpBodyHTML+tmpFooterHTML;let tmpDismiss=pResult=>{this._dismissDialog(tmpDialog,pResult,fResolve,pOptions);};// Wire close button
@@ -9044,7 +9794,7 @@ if(typeof pOptions.onOpen==='function'){pOptions.onOpen(pDialog);}}/**
 	 *
 	 * @param {string} pText
 	 * @returns {string}
-	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalWindow;},{}],99:[function(require,module,exports){module.exports={"AutoInitialize":true,"AutoRender":false,"AutoSolveWithApp":false,"ViewIdentifier":"Pict-Section-Modal","OverlayClickDismisses":true,"DefaultConfirmOptions":{"title":"Confirm","confirmLabel":"OK","cancelLabel":"Cancel","dangerous":false},"DefaultDoubleConfirmOptions":{"title":"Are you sure?","confirmLabel":"Confirm","cancelLabel":"Cancel","phrasePrompt":"Type \"{phrase}\" to confirm:","confirmPhrase":""},"DefaultModalOptions":{"title":"","content":"","buttons":[],"closeable":true,"width":"480px"},"DefaultTooltipOptions":{"position":"top","delay":200,"maxWidth":"300px","interactive":false},"DefaultToastOptions":{"type":"info","duration":3000,"position":"top-right","dismissible":true},"DefaultPanelOptions":{"position":"right","width":340,"minWidth":200,"maxWidth":600,"collapsible":true,"collapsed":false,"persist":false,"persistKey":""},"Templates":[],"Renderables":[],"CSS":/*css*/`
+	 */_escapeHTML(pText){if(typeof pText!=='string'){return'';}return pText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}}module.exports=PictModalWindow;},{}],107:[function(require,module,exports){module.exports={"AutoInitialize":true,"AutoRender":false,"AutoSolveWithApp":false,"ViewIdentifier":"Pict-Section-Modal","OverlayClickDismisses":true,"DefaultConfirmOptions":{"title":"Confirm","confirmLabel":"OK","cancelLabel":"Cancel","dangerous":false,"unbounded":false},"DefaultDoubleConfirmOptions":{"title":"Are you sure?","confirmLabel":"Confirm","cancelLabel":"Cancel","phrasePrompt":"Type \"{phrase}\" to confirm:","confirmPhrase":"","unbounded":false},"DefaultModalOptions":{"title":"","content":"","buttons":[],"closeable":true,"width":"480px","unbounded":false},"DefaultTooltipOptions":{"position":"top","delay":200,"maxWidth":"300px","interactive":false},"DefaultToastOptions":{"type":"info","duration":3000,"position":"top-right","dismissible":true},"DefaultPanelOptions":{"position":"right","width":340,"minWidth":200,"maxWidth":600,"collapsible":true,"collapsed":false,"persist":false,"persistKey":""},"Templates":[],"Renderables":[],"CSS":/*css*/`
 /* pict-section-modal */
 .pict-modal-root
 {
@@ -9147,6 +9897,15 @@ if(typeof pOptions.onOpen==='function'){pOptions.onOpen(pDialog);}}/**
 {
 	opacity: 1;
 	transform: translate(-50%, -50%) translateY(0);
+}
+
+/* Unbounded modifier — lets callers opt out of the 90vh/90vw viewport cap.
+   Use with caution: content taller than the viewport will push buttons
+   below the fold. */
+.pict-modal-dialog.pict-modal-dialog--unbounded
+{
+	max-height: none;
+	max-width: none;
 }
 
 .pict-modal-dialog-header
@@ -9605,76 +10364,7 @@ if(typeof pOptions.onOpen==='function'){pOptions.onOpen(pDialog);}}/**
 	overflow: visible;
 	background: var(--pict-panel-bg, #FAF8F4);
 }
-`};},{}],100:[function(require,module,exports){const libPictViewClass=require('pict-view');const libPictModalOverlay=require('./Pict-Modal-Overlay.js');const libPictModalConfirm=require('./Pict-Modal-Confirm.js');const libPictModalWindow=require('./Pict-Modal-Window.js');const libPictModalToast=require('./Pict-Modal-Toast.js');const libPictModalTooltip=require('./Pict-Modal-Tooltip.js');const libPictModalPanel=require('./Pict-Modal-Panel.js');const _DefaultConfiguration=require('./Pict-Section-Modal-DefaultConfiguration.js');class PictSectionModal extends libPictViewClass{constructor(pFable,pOptions,pServiceHash){let tmpOptions=Object.assign({},_DefaultConfiguration,pOptions);super(pFable,tmpOptions,pServiceHash);this._activeModals=[];this._activeTooltips=[];this._activeToasts=[];this._idCounter=0;this._overlay=new libPictModalOverlay(this);this._confirm=new libPictModalConfirm(this);this._window=new libPictModalWindow(this);this._toast=new libPictModalToast(this);this._tooltip=new libPictModalTooltip(this);this._panel=new libPictModalPanel(this);}onBeforeInitialize(){super.onBeforeInitialize();// Ensure the root class is on the body for CSS variable scoping
-if(typeof document!=='undefined'&&document.body){if(!document.body.classList.contains('pict-modal-root')){document.body.classList.add('pict-modal-root');}}return super.onBeforeInitialize();}/**
-	 * Generate a unique ID for DOM elements.
-	 *
-	 * @returns {number}
-	 */_nextId(){this._idCounter++;return this._idCounter;}// -- Confirm API --
-/**
-	 * Show a confirmation dialog.
-	 *
-	 * @param {string} pMessage - The confirmation message
-	 * @param {object} [pOptions] - Options { title, confirmLabel, cancelLabel, dangerous }
-	 * @returns {Promise<boolean>}
-	 */confirm(pMessage,pOptions){return this._confirm.confirm(pMessage,pOptions);}/**
-	 * Show a two-step confirmation dialog.
-	 *
-	 * If confirmPhrase is set, the user must type it to enable the confirm button.
-	 * If no confirmPhrase, the first click changes the button text and the second click confirms.
-	 *
-	 * @param {string} pMessage - The confirmation message
-	 * @param {object} [pOptions] - Options { title, confirmPhrase, phrasePrompt, confirmLabel, cancelLabel }
-	 * @returns {Promise<boolean>}
-	 */doubleConfirm(pMessage,pOptions){return this._confirm.doubleConfirm(pMessage,pOptions);}// -- Modal Window API --
-/**
-	 * Show a custom modal window.
-	 *
-	 * @param {object} [pOptions] - Options { title, content, buttons, closeable, width, onOpen, onClose }
-	 * @returns {Promise<string|null>} Resolves with the clicked button Hash, or null on close
-	 */show(pOptions){return this._window.show(pOptions);}// -- Tooltip API --
-/**
-	 * Attach a simple text tooltip to an element.
-	 *
-	 * @param {HTMLElement} pElement - Target element
-	 * @param {string} pText - Tooltip text
-	 * @param {object} [pOptions] - Options { position, delay, maxWidth }
-	 * @returns {{ destroy: function }}
-	 */tooltip(pElement,pText,pOptions){return this._tooltip.tooltip(pElement,pText,pOptions);}/**
-	 * Attach a rich HTML tooltip to an element.
-	 *
-	 * @param {HTMLElement} pElement - Target element
-	 * @param {string} pHTMLContent - HTML content
-	 * @param {object} [pOptions] - Options { position, delay, maxWidth, interactive }
-	 * @returns {{ destroy: function }}
-	 */richTooltip(pElement,pHTMLContent,pOptions){return this._tooltip.richTooltip(pElement,pHTMLContent,pOptions);}// -- Toast API --
-/**
-	 * Show a toast notification.
-	 *
-	 * @param {string} pMessage - Toast message
-	 * @param {object} [pOptions] - Options { type, duration, position, dismissible }
-	 * @returns {{ dismiss: function }}
-	 */toast(pMessage,pOptions){return this._toast.toast(pMessage,pOptions);}// -- Panel API --
-/**
-	 * Attach resizable/collapsible panel behavior to a DOM element.
-	 *
-	 * @param {string} pTargetSelector - CSS selector for the panel element
-	 * @param {object} [pOptions] - Options { position, width, minWidth, maxWidth, collapsible, collapsed, persist, persistKey, onResize, onToggle }
-	 * @returns {{ collapse, expand, toggle, setWidth, destroy }} Panel handle
-	 */panel(pTargetSelector,pOptions){return this._panel.create(pTargetSelector,pOptions);}// -- Cleanup API --
-/**
-	 * Dismiss all open modals.
-	 */dismissModals(){let tmpModals=this._activeModals.slice();for(let i=tmpModals.length-1;i>=0;i--){tmpModals[i].dismiss(null);}}/**
-	 * Dismiss all active tooltips.
-	 */dismissTooltips(){this._tooltip.dismissAll();}/**
-	 * Dismiss all active toasts.
-	 */dismissToasts(){this._toast.dismissAll();}/**
-	 * Dismiss everything: modals, tooltips, and toasts.
-	 */dismissAll(){this.dismissModals();this.dismissTooltips();this.dismissToasts();}/**
-	 * Clean up all DOM elements when the view is destroyed.
-	 *//**
-	 * Destroy all active panels.
-	 */destroyPanels(){this._panel.destroyAll();}destroy(){this.dismissAll();this.destroyPanels();this._overlay.destroy();this._toast.destroy();if(typeof super.destroy==='function'){return super.destroy();}}}module.exports=PictSectionModal;module.exports.default_configuration=_DefaultConfiguration;},{"./Pict-Modal-Confirm.js":93,"./Pict-Modal-Overlay.js":94,"./Pict-Modal-Panel.js":95,"./Pict-Modal-Toast.js":96,"./Pict-Modal-Tooltip.js":97,"./Pict-Modal-Window.js":98,"./Pict-Section-Modal-DefaultConfiguration.js":99,"pict-view":102}],101:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.68","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.363","quackage":"^1.0.65","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.67","fable-serviceproviderbase":"^3.0.19"}};},{}],102:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
+`};},{}],108:[function(require,module,exports){arguments[4][87][0].apply(exports,arguments);},{"./Pict-Modal-Confirm.js":101,"./Pict-Modal-Overlay.js":102,"./Pict-Modal-Panel.js":103,"./Pict-Modal-Toast.js":104,"./Pict-Modal-Tooltip.js":105,"./Pict-Modal-Window.js":106,"./Pict-Section-Modal-DefaultConfiguration.js":107,"dup":87,"pict-view":110}],109:[function(require,module,exports){module.exports={"name":"pict-view","version":"1.0.68","description":"Pict View Base Class","main":"source/Pict-View.js","scripts":{"test":"npx quack test","tests":"npx quack test -g","start":"node source/Pict-View.js","coverage":"npx quack coverage","build":"npx quack build","docker-dev-build":"docker build ./ -f Dockerfile_LUXURYCode -t pict-view-image:local","docker-dev-run":"docker run -it -d --name pict-view-dev -p 30001:8080 -p 38086:8086 -v \"$PWD/.config:/home/coder/.config\"  -v \"$PWD:/home/coder/pict-view\" -u \"$(id -u):$(id -g)\" -e \"DOCKER_USER=$USER\" pict-view-image:local","docker-dev-shell":"docker exec -it pict-view-dev /bin/bash","types":"tsc -p .","lint":"eslint source/**"},"types":"types/source/Pict-View.d.ts","repository":{"type":"git","url":"git+https://github.com/stevenvelozo/pict-view.git"},"author":"steven velozo <steven@velozo.com>","license":"MIT","bugs":{"url":"https://github.com/stevenvelozo/pict-view/issues"},"homepage":"https://github.com/stevenvelozo/pict-view#readme","devDependencies":{"@eslint/js":"^9.39.1","browser-env":"^3.3.0","eslint":"^9.39.1","pict":"^1.0.363","quackage":"^1.0.65","typescript":"^5.9.3"},"mocha":{"diff":true,"extension":["js"],"package":"./package.json","reporter":"spec","slow":"75","timeout":"5000","ui":"tdd","watch-files":["source/**/*.js","test/**/*.js"],"watch-ignore":["lib/vendor"]},"dependencies":{"fable":"^3.1.67","fable-serviceproviderbase":"^3.0.19"}};},{}],110:[function(require,module,exports){const libFableServiceBase=require('fable-serviceproviderbase');const libPackage=require('../package.json');const defaultPictViewSettings={DefaultRenderable:false,DefaultDestinationAddress:false,DefaultTemplateRecordAddress:false,ViewIdentifier:false,// If this is set to true, when the App initializes this will.
 // After the App initializes, initialize will be called as soon as it's added.
 AutoInitialize:true,AutoInitializeOrdinal:0,// If this is set to true, when the App autorenders (on load) this will.
 // After the App initializes, render will be called as soon as it's added.
@@ -9981,7 +10671,7 @@ if(tmpIsRootRenderable&&pRenderable&&pRenderable.TransactionHash){this.pict.Tran
 	 * Lifecycle hook that triggers after data is marshaled into the view (async flow).
 	 *
 	 * @param {ErrorCallback} fCallback - The callback to call when the async operation is complete.
-	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":101,"fable-serviceproviderbase":20}],103:[function(require,module,exports){// shim for using process in browser
+	 */onAfterMarshalToViewAsync(fCallback){this.onAfterMarshalToView();return fCallback();}/** @return {boolean} - True if the object is a PictView. */get isPictView(){return true;}}module.exports=PictView;},{"../package.json":109,"fable-serviceproviderbase":20}],111:[function(require,module,exports){// shim for using process in browser
 var process=module.exports={};// cached from whatever global is present so that test runners that stub it
 // don't break things.  But we need to wrap it in a try catch in case it is
 // wrapped in strict mode code which doesn't define any globals.  It's inside a
@@ -9999,7 +10689,7 @@ return cachedClearTimeout.call(null,marker);}catch(e){// same as above but when 
 // Some versions of I.E. have different rules for clearTimeout vs setTimeout
 return cachedClearTimeout.call(this,marker);}}}var queue=[];var draining=false;var currentQueue;var queueIndex=-1;function cleanUpNextTick(){if(!draining||!currentQueue){return;}draining=false;if(currentQueue.length){queue=currentQueue.concat(queue);}else{queueIndex=-1;}if(queue.length){drainQueue();}}function drainQueue(){if(draining){return;}var timeout=runTimeout(cleanUpNextTick);draining=true;var len=queue.length;while(len){currentQueue=queue;queue=[];while(++queueIndex<len){if(currentQueue){currentQueue[queueIndex].run();}}queueIndex=-1;len=queue.length;}currentQueue=null;draining=false;runClearTimeout(timeout);}process.nextTick=function(fun){var args=new Array(arguments.length-1);if(arguments.length>1){for(var i=1;i<arguments.length;i++){args[i-1]=arguments[i];}}queue.push(new Item(fun,args));if(queue.length===1&&!draining){runTimeout(drainQueue);}};// v8 likes predictible objects
 function Item(fun,array){this.fun=fun;this.array=array;}Item.prototype.run=function(){this.fun.apply(null,this.array);};process.title='browser';process.browser=true;process.env={};process.argv=[];process.version='';// empty string to avoid regexp issues
-process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],104:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
+process.versions={};function noop(){}process.on=noop;process.addListener=noop;process.once=noop;process.off=noop;process.removeListener=noop;process.removeAllListeners=noop;process.emit=noop;process.prependListener=noop;process.prependOnceListener=noop;process.listeners=function(name){return[];};process.binding=function(name){throw new Error('process.binding is not supported');};process.cwd=function(){return'/';};process.chdir=function(dir){throw new Error('process.chdir is not supported');};process.umask=function(){return 0;};},{}],112:[function(require,module,exports){(function(global){(function(){/*! https://mths.be/punycode v1.4.1 by @mathias */;(function(root){/** Detect free variables */var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;var freeModule=typeof module=='object'&&module&&!module.nodeType&&module;var freeGlobal=typeof global=='object'&&global;if(freeGlobal.global===freeGlobal||freeGlobal.window===freeGlobal||freeGlobal.self===freeGlobal){root=freeGlobal;}/**
 	 * The `punycode` object.
 	 * @name punycode
 	 * @type Object
@@ -10154,7 +10844,7 @@ for/* no condition */(q=delta,k=base;;k+=base){t=k<=bias?tMin:k>=bias+tMax?tMax:
 if(typeof define=='function'&&typeof define.amd=='object'&&define.amd){define('punycode',function(){return punycode;});}else if(freeExports&&freeModule){if(module.exports==freeExports){// in Node.js, io.js, or RingoJS v0.8.0+
 freeModule.exports=punycode;}else{// in Narwhal or RingoJS v0.7.0-
 for(key in punycode){punycode.hasOwnProperty(key)&&(freeExports[key]=punycode[key]);}}}else{// in Rhino or a web browser
-root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],105:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],106:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":105,"./parse":107,"./stringify":108}],107:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
+root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],113:[function(require,module,exports){'use strict';var replace=String.prototype.replace;var percentTwenties=/%20/g;var Format={RFC1738:'RFC1738',RFC3986:'RFC3986'};module.exports={'default':Format.RFC3986,formatters:{RFC1738:function(value){return replace.call(value,percentTwenties,'+');},RFC3986:function(value){return String(value);}},RFC1738:Format.RFC1738,RFC3986:Format.RFC3986};},{}],114:[function(require,module,exports){'use strict';var stringify=require('./stringify');var parse=require('./parse');var formats=require('./formats');module.exports={formats:formats,parse:parse,stringify:stringify};},{"./formats":113,"./parse":115,"./stringify":116}],115:[function(require,module,exports){'use strict';var utils=require('./utils');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;var defaults={allowDots:false,allowEmptyArrays:false,allowPrototypes:false,allowSparse:false,arrayLimit:20,charset:'utf-8',charsetSentinel:false,comma:false,decodeDotInKeys:false,decoder:utils.decode,delimiter:'&',depth:5,duplicates:'combine',ignoreQueryPrefix:false,interpretNumericEntities:false,parameterLimit:1000,parseArrays:true,plainObjects:false,strictDepth:false,strictMerge:true,strictNullHandling:false,throwOnLimitExceeded:false};var interpretNumericEntities=function(str){return str.replace(/&#(\d+);/g,function($0,numberStr){return String.fromCharCode(parseInt(numberStr,10));});};var parseArrayValue=function(val,options,currentArrayLength){if(val&&typeof val==='string'&&options.comma&&val.indexOf(',')>-1){return val.split(',');}if(options.throwOnLimitExceeded&&currentArrayLength>=options.arrayLimit){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}return val;};// This is what browsers will submit when the ✓ character occurs in an
 // application/x-www-form-urlencoded body and the encoding of the page containing
 // the form is iso-8859-1, or when the submitted form has an accept-charset
 // attribute of iso-8859-1. Presumably also with other charsets that do not contain
@@ -10162,18 +10852,18 @@ root.punycode=punycode;}})(this);}).call(this);}).call(this,typeof global!=="und
 var isoSentinel='utf8=%26%2310003%3B';// encodeURIComponent('&#10003;')
 // These are the percent-encoded utf-8 octets representing a checkmark, indicating that the request actually is utf-8 encoded.
 var charsetSentinel='utf8=%E2%9C%93';// encodeURIComponent('✓')
-var parseValues=function parseQueryStringValues(str,options){var obj={__proto__:null};var cleanStr=options.ignoreQueryPrefix?str.replace(/^\?/,''):str;cleanStr=cleanStr.replace(/%5B/gi,'[').replace(/%5D/gi,']');var limit=options.parameterLimit===Infinity?void undefined:options.parameterLimit;var parts=cleanStr.split(options.delimiter,options.throwOnLimitExceeded?limit+1:limit);if(options.throwOnLimitExceeded&&parts.length>limit){throw new RangeError('Parameter limit exceeded. Only '+limit+' parameter'+(limit===1?'':'s')+' allowed.');}var skipIndex=-1;// Keep track of where the utf8 sentinel was found
+var parseValues=function parseQueryStringValues(str,options){var obj={__proto__:null};var cleanStr=options.ignoreQueryPrefix?str.replace(/^\?/,''):str;cleanStr=cleanStr.replace(/%5B/gi,'[').replace(/%5D/gi,']');var limit=options.parameterLimit===Infinity?void undefined:options.parameterLimit;var parts=cleanStr.split(options.delimiter,options.throwOnLimitExceeded&&typeof limit!=='undefined'?limit+1:limit);if(options.throwOnLimitExceeded&&typeof limit!=='undefined'&&parts.length>limit){throw new RangeError('Parameter limit exceeded. Only '+limit+' parameter'+(limit===1?'':'s')+' allowed.');}var skipIndex=-1;// Keep track of where the utf8 sentinel was found
 var i;var charset=options.charset;if(options.charsetSentinel){for(i=0;i<parts.length;++i){if(parts[i].indexOf('utf8=')===0){if(parts[i]===charsetSentinel){charset='utf-8';}else if(parts[i]===isoSentinel){charset='iso-8859-1';}skipIndex=i;i=parts.length;// The eslint settings do not allow break;
 }}}for(i=0;i<parts.length;++i){if(i===skipIndex){continue;}var part=parts[i];var bracketEqualsPos=part.indexOf(']=');var pos=bracketEqualsPos===-1?part.indexOf('='):bracketEqualsPos+1;var key;var val;if(pos===-1){key=options.decoder(part,defaults.decoder,charset,'key');val=options.strictNullHandling?null:'';}else{key=options.decoder(part.slice(0,pos),defaults.decoder,charset,'key');if(key!==null){val=utils.maybeMap(parseArrayValue(part.slice(pos+1),options,isArray(obj[key])?obj[key].length:0),function(encodedVal){return options.decoder(encodedVal,defaults.decoder,charset,'value');});}}if(val&&options.interpretNumericEntities&&charset==='iso-8859-1'){val=interpretNumericEntities(String(val));}if(part.indexOf('[]=')>-1){val=isArray(val)?[val]:val;}if(options.comma&&isArray(val)&&val.length>options.arrayLimit){if(options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}val=utils.combine([],val,options.arrayLimit,options.plainObjects);}if(key!==null){var existing=has.call(obj,key);if(existing&&(options.duplicates==='combine'||part.indexOf('[]=')>-1)){obj[key]=utils.combine(obj[key],val,options.arrayLimit,options.plainObjects);}else if(!existing||options.duplicates==='last'){obj[key]=val;}}}return obj;};var parseObject=function(chain,val,options,valuesParsed){var currentArrayLength=0;if(chain.length>0&&chain[chain.length-1]==='[]'){var parentKey=chain.slice(0,-1).join('');currentArrayLength=Array.isArray(val)&&val[parentKey]?val[parentKey].length:0;}var leaf=valuesParsed?val:parseArrayValue(val,options,currentArrayLength);for(var i=chain.length-1;i>=0;--i){var obj;var root=chain[i];if(root==='[]'&&options.parseArrays){if(utils.isOverflow(leaf)){// leaf is already an overflow object, preserve it
 obj=leaf;}else{obj=options.allowEmptyArrays&&(leaf===''||options.strictNullHandling&&leaf===null)?[]:utils.combine([],leaf,options.arrayLimit,options.plainObjects);}}else{obj=options.plainObjects?{__proto__:null}:{};var cleanRoot=root.charAt(0)==='['&&root.charAt(root.length-1)===']'?root.slice(1,-1):root;var decodedRoot=options.decodeDotInKeys?cleanRoot.replace(/%2E/g,'.'):cleanRoot;var index=parseInt(decodedRoot,10);var isValidArrayIndex=!isNaN(index)&&root!==decodedRoot&&String(index)===decodedRoot&&index>=0&&options.parseArrays;if(!options.parseArrays&&decodedRoot===''){obj={0:leaf};}else if(isValidArrayIndex&&index<options.arrayLimit){obj=[];obj[index]=leaf;}else if(isValidArrayIndex&&options.throwOnLimitExceeded){throw new RangeError('Array limit exceeded. Only '+options.arrayLimit+' element'+(options.arrayLimit===1?'':'s')+' allowed in an array.');}else if(isValidArrayIndex){obj[index]=leaf;utils.markOverflow(obj,index);}else if(decodedRoot!=='__proto__'){obj[decodedRoot]=leaf;}}leaf=obj;}return leaf;};var splitKeyIntoSegments=function splitKeyIntoSegments(givenKey,options){var key=options.allowDots?givenKey.replace(/\.([^.[]+)/g,'[$1]'):givenKey;if(options.depth<=0){if(!options.plainObjects&&has.call(Object.prototype,key)){if(!options.allowPrototypes){return;}}return[key];}var brackets=/(\[[^[\]]*])/;var child=/(\[[^[\]]*])/g;var segment=brackets.exec(key);var parent=segment?key.slice(0,segment.index):key;var keys=[];if(parent){if(!options.plainObjects&&has.call(Object.prototype,parent)){if(!options.allowPrototypes){return;}}keys[keys.length]=parent;}var i=0;while((segment=child.exec(key))!==null&&i<options.depth){i+=1;var segmentContent=segment[1].slice(1,-1);if(!options.plainObjects&&has.call(Object.prototype,segmentContent)){if(!options.allowPrototypes){return;}}keys[keys.length]=segment[1];}if(segment){if(options.strictDepth===true){throw new RangeError('Input depth exceeded depth option of '+options.depth+' and strictDepth is true');}keys[keys.length]='['+key.slice(segment.index)+']';}return keys;};var parseKeys=function parseQueryStringKeys(givenKey,val,options,valuesParsed){if(!givenKey){return;}var keys=splitKeyIntoSegments(givenKey,options);if(!keys){return;}return parseObject(keys,val,options,valuesParsed);};var normalizeParseOptions=function normalizeParseOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.decodeDotInKeys!=='undefined'&&typeof opts.decodeDotInKeys!=='boolean'){throw new TypeError('`decodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.decoder!==null&&typeof opts.decoder!=='undefined'&&typeof opts.decoder!=='function'){throw new TypeError('Decoder has to be a function.');}if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}if(typeof opts.throwOnLimitExceeded!=='undefined'&&typeof opts.throwOnLimitExceeded!=='boolean'){throw new TypeError('`throwOnLimitExceeded` option must be a boolean');}var charset=typeof opts.charset==='undefined'?defaults.charset:opts.charset;var duplicates=typeof opts.duplicates==='undefined'?defaults.duplicates:opts.duplicates;if(duplicates!=='combine'&&duplicates!=='first'&&duplicates!=='last'){throw new TypeError('The duplicates option must be either combine, first, or last');}var allowDots=typeof opts.allowDots==='undefined'?opts.decodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,allowPrototypes:typeof opts.allowPrototypes==='boolean'?opts.allowPrototypes:defaults.allowPrototypes,allowSparse:typeof opts.allowSparse==='boolean'?opts.allowSparse:defaults.allowSparse,arrayLimit:typeof opts.arrayLimit==='number'?opts.arrayLimit:defaults.arrayLimit,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,comma:typeof opts.comma==='boolean'?opts.comma:defaults.comma,decodeDotInKeys:typeof opts.decodeDotInKeys==='boolean'?opts.decodeDotInKeys:defaults.decodeDotInKeys,decoder:typeof opts.decoder==='function'?opts.decoder:defaults.decoder,delimiter:typeof opts.delimiter==='string'||utils.isRegExp(opts.delimiter)?opts.delimiter:defaults.delimiter,// eslint-disable-next-line no-implicit-coercion, no-extra-parens
 depth:typeof opts.depth==='number'||opts.depth===false?+opts.depth:defaults.depth,duplicates:duplicates,ignoreQueryPrefix:opts.ignoreQueryPrefix===true,interpretNumericEntities:typeof opts.interpretNumericEntities==='boolean'?opts.interpretNumericEntities:defaults.interpretNumericEntities,parameterLimit:typeof opts.parameterLimit==='number'?opts.parameterLimit:defaults.parameterLimit,parseArrays:opts.parseArrays!==false,plainObjects:typeof opts.plainObjects==='boolean'?opts.plainObjects:defaults.plainObjects,strictDepth:typeof opts.strictDepth==='boolean'?!!opts.strictDepth:defaults.strictDepth,strictMerge:typeof opts.strictMerge==='boolean'?!!opts.strictMerge:defaults.strictMerge,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling,throwOnLimitExceeded:typeof opts.throwOnLimitExceeded==='boolean'?opts.throwOnLimitExceeded:false};};module.exports=function(str,opts){var options=normalizeParseOptions(opts);if(str===''||str===null||typeof str==='undefined'){return options.plainObjects?{__proto__:null}:{};}var tempObj=typeof str==='string'?parseValues(str,options):str;var obj=options.plainObjects?{__proto__:null}:{};// Iterate over the keys and setup the new object
-var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":109}],108:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
+var keys=Object.keys(tempObj);for(var i=0;i<keys.length;++i){var key=keys[i];var newObj=parseKeys(key,tempObj[key],options,typeof str==='string');obj=utils.merge(obj,newObj,options);}if(options.allowSparse===true){return obj;}return utils.compact(obj);};},{"./utils":117}],116:[function(require,module,exports){'use strict';var getSideChannel=require('side-channel');var utils=require('./utils');var formats=require('./formats');var has=Object.prototype.hasOwnProperty;var arrayPrefixGenerators={brackets:function brackets(prefix){return prefix+'[]';},comma:'comma',indices:function indices(prefix,key){return prefix+'['+key+']';},repeat:function repeat(prefix){return prefix;}};var isArray=Array.isArray;var push=Array.prototype.push;var pushToArray=function(arr,valueOrArray){push.apply(arr,isArray(valueOrArray)?valueOrArray:[valueOrArray]);};var toISO=Date.prototype.toISOString;var defaultFormat=formats['default'];var defaults={addQueryPrefix:false,allowDots:false,allowEmptyArrays:false,arrayFormat:'indices',charset:'utf-8',charsetSentinel:false,commaRoundTrip:false,delimiter:'&',encode:true,encodeDotInKeys:false,encoder:utils.encode,encodeValuesOnly:false,filter:void undefined,format:defaultFormat,formatter:formats.formatters[defaultFormat],// deprecated
 indices:false,serializeDate:function serializeDate(date){return toISO.call(date);},skipNulls:false,strictNullHandling:false};var isNonNullishPrimitive=function isNonNullishPrimitive(v){return typeof v==='string'||typeof v==='number'||typeof v==='boolean'||typeof v==='symbol'||typeof v==='bigint';};var sentinel={};var stringify=function stringify(object,prefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,sideChannel){var obj=object;var tmpSc=sideChannel;var step=0;var findFlag=false;while((tmpSc=tmpSc.get(sentinel))!==void undefined&&!findFlag){// Where object last appeared in the ref tree
 var pos=tmpSc.get(object);step+=1;if(typeof pos!=='undefined'){if(pos===step){throw new RangeError('Cyclic object value');}else{findFlag=true;// Break while
 }}if(typeof tmpSc.get(sentinel)==='undefined'){step=0;}}if(typeof filter==='function'){obj=filter(prefix,obj);}else if(obj instanceof Date){obj=serializeDate(obj);}else if(generateArrayPrefix==='comma'&&isArray(obj)){obj=utils.maybeMap(obj,function(value){if(value instanceof Date){return serializeDate(value);}return value;});}if(obj===null){if(strictNullHandling){return encoder&&!encodeValuesOnly?encoder(prefix,defaults.encoder,charset,'key',format):prefix;}obj='';}if(isNonNullishPrimitive(obj)||utils.isBuffer(obj)){if(encoder){var keyValue=encodeValuesOnly?prefix:encoder(prefix,defaults.encoder,charset,'key',format);return[formatter(keyValue)+'='+formatter(encoder(obj,defaults.encoder,charset,'value',format))];}return[formatter(prefix)+'='+formatter(String(obj))];}var values=[];if(typeof obj==='undefined'){return values;}var objKeys;if(generateArrayPrefix==='comma'&&isArray(obj)){// we need to join elements in
 if(encodeValuesOnly&&encoder){obj=utils.maybeMap(obj,encoder);}objKeys=[{value:obj.length>0?obj.join(',')||null:void undefined}];}else if(isArray(filter)){objKeys=filter;}else{var keys=Object.keys(obj);objKeys=sort?keys.sort(sort):keys;}var encodedPrefix=encodeDotInKeys?String(prefix).replace(/\./g,'%2E'):String(prefix);var adjustedPrefix=commaRoundTrip&&isArray(obj)&&obj.length===1?encodedPrefix+'[]':encodedPrefix;if(allowEmptyArrays&&isArray(obj)&&obj.length===0){return adjustedPrefix+'[]';}for(var j=0;j<objKeys.length;++j){var key=objKeys[j];var value=typeof key==='object'&&key&&typeof key.value!=='undefined'?key.value:obj[key];if(skipNulls&&value===null){continue;}var encodedKey=allowDots&&encodeDotInKeys?String(key).replace(/\./g,'%2E'):String(key);var keyPrefix=isArray(obj)?typeof generateArrayPrefix==='function'?generateArrayPrefix(adjustedPrefix,encodedKey):adjustedPrefix:adjustedPrefix+(allowDots?'.'+encodedKey:'['+encodedKey+']');sideChannel.set(object,step);var valueSideChannel=getSideChannel();valueSideChannel.set(sentinel,sideChannel);pushToArray(values,stringify(value,keyPrefix,generateArrayPrefix,commaRoundTrip,allowEmptyArrays,strictNullHandling,skipNulls,encodeDotInKeys,generateArrayPrefix==='comma'&&encodeValuesOnly&&isArray(obj)?null:encoder,filter,sort,allowDots,serializeDate,format,formatter,encodeValuesOnly,charset,valueSideChannel));}return values;};var normalizeStringifyOptions=function normalizeStringifyOptions(opts){if(!opts){return defaults;}if(typeof opts.allowEmptyArrays!=='undefined'&&typeof opts.allowEmptyArrays!=='boolean'){throw new TypeError('`allowEmptyArrays` option can only be `true` or `false`, when provided');}if(typeof opts.encodeDotInKeys!=='undefined'&&typeof opts.encodeDotInKeys!=='boolean'){throw new TypeError('`encodeDotInKeys` option can only be `true` or `false`, when provided');}if(opts.encoder!==null&&typeof opts.encoder!=='undefined'&&typeof opts.encoder!=='function'){throw new TypeError('Encoder has to be a function.');}var charset=opts.charset||defaults.charset;if(typeof opts.charset!=='undefined'&&opts.charset!=='utf-8'&&opts.charset!=='iso-8859-1'){throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');}var format=formats['default'];if(typeof opts.format!=='undefined'){if(!has.call(formats.formatters,opts.format)){throw new TypeError('Unknown format option provided.');}format=opts.format;}var formatter=formats.formatters[format];var filter=defaults.filter;if(typeof opts.filter==='function'||isArray(opts.filter)){filter=opts.filter;}var arrayFormat;if(opts.arrayFormat in arrayPrefixGenerators){arrayFormat=opts.arrayFormat;}else if('indices'in opts){arrayFormat=opts.indices?'indices':'repeat';}else{arrayFormat=defaults.arrayFormat;}if('commaRoundTrip'in opts&&typeof opts.commaRoundTrip!=='boolean'){throw new TypeError('`commaRoundTrip` must be a boolean, or absent');}var allowDots=typeof opts.allowDots==='undefined'?opts.encodeDotInKeys===true?true:defaults.allowDots:!!opts.allowDots;return{addQueryPrefix:typeof opts.addQueryPrefix==='boolean'?opts.addQueryPrefix:defaults.addQueryPrefix,allowDots:allowDots,allowEmptyArrays:typeof opts.allowEmptyArrays==='boolean'?!!opts.allowEmptyArrays:defaults.allowEmptyArrays,arrayFormat:arrayFormat,charset:charset,charsetSentinel:typeof opts.charsetSentinel==='boolean'?opts.charsetSentinel:defaults.charsetSentinel,commaRoundTrip:!!opts.commaRoundTrip,delimiter:typeof opts.delimiter==='undefined'?defaults.delimiter:opts.delimiter,encode:typeof opts.encode==='boolean'?opts.encode:defaults.encode,encodeDotInKeys:typeof opts.encodeDotInKeys==='boolean'?opts.encodeDotInKeys:defaults.encodeDotInKeys,encoder:typeof opts.encoder==='function'?opts.encoder:defaults.encoder,encodeValuesOnly:typeof opts.encodeValuesOnly==='boolean'?opts.encodeValuesOnly:defaults.encodeValuesOnly,filter:filter,format:format,formatter:formatter,serializeDate:typeof opts.serializeDate==='function'?opts.serializeDate:defaults.serializeDate,skipNulls:typeof opts.skipNulls==='boolean'?opts.skipNulls:defaults.skipNulls,sort:typeof opts.sort==='function'?opts.sort:null,strictNullHandling:typeof opts.strictNullHandling==='boolean'?opts.strictNullHandling:defaults.strictNullHandling};};module.exports=function(object,opts){var obj=object;var options=normalizeStringifyOptions(opts);var objKeys;var filter;if(typeof options.filter==='function'){filter=options.filter;obj=filter('',obj);}else if(isArray(options.filter)){filter=options.filter;objKeys=filter;}var keys=[];if(typeof obj!=='object'||obj===null){return'';}var generateArrayPrefix=arrayPrefixGenerators[options.arrayFormat];var commaRoundTrip=generateArrayPrefix==='comma'&&options.commaRoundTrip;if(!objKeys){objKeys=Object.keys(obj);}if(options.sort){objKeys.sort(options.sort);}var sideChannel=getSideChannel();for(var i=0;i<objKeys.length;++i){var key=objKeys[i];var value=obj[key];if(options.skipNulls&&value===null){continue;}pushToArray(keys,stringify(value,key,generateArrayPrefix,commaRoundTrip,options.allowEmptyArrays,options.strictNullHandling,options.skipNulls,options.encodeDotInKeys,options.encode?options.encoder:null,options.filter,options.sort,options.allowDots,options.serializeDate,options.format,options.formatter,options.encodeValuesOnly,options.charset,sideChannel));}var joined=keys.join(options.delimiter);var prefix=options.addQueryPrefix===true?'?':'';if(options.charsetSentinel){if(options.charset==='iso-8859-1'){// encodeURIComponent('&#10003;'), the "numeric entity" representation of a checkmark
 prefix+='utf8=%26%2310003%3B&';}else{// encodeURIComponent('✓')
-prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":105,"./utils":109,"side-channel":126}],109:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
+prefix+='utf8=%E2%9C%93&';}}return joined.length>0?prefix+joined:'';};},{"./formats":113,"./utils":117,"side-channel":134}],117:[function(require,module,exports){'use strict';var formats=require('./formats');var getSideChannel=require('side-channel');var has=Object.prototype.hasOwnProperty;var isArray=Array.isArray;// Track objects created from arrayLimit overflow using side-channel
 // Stores the current max numeric index for O(1) lookup
 var overflowChannel=getSideChannel();var markOverflow=function markOverflow(obj,maxIndex){overflowChannel.set(obj,maxIndex);return obj;};var isOverflow=function isOverflow(obj){return overflowChannel.has(obj);};var getMaxIndex=function getMaxIndex(obj){return overflowChannel.get(obj);};var setMaxIndex=function setMaxIndex(obj,maxIndex){overflowChannel.set(obj,maxIndex);};var hexTable=function(){var array=[];for(var i=0;i<256;++i){array[array.length]='%'+((i<16?'0':'')+i.toString(16)).toUpperCase();}return array;}();var compactQueue=function compactQueue(queue){while(queue.length>1){var item=queue.pop();var obj=item.obj[item.prop];if(isArray(obj)){var compacted=[];for(var j=0;j<obj.length;++j){if(typeof obj[j]!=='undefined'){compacted[compacted.length]=obj[j];}}item.obj[item.prop]=compacted;}}};var arrayToObject=function arrayToObject(source,options){var obj=options&&options.plainObjects?{__proto__:null}:{};for(var i=0;i<source.length;++i){if(typeof source[i]!=='undefined'){obj[i]=source[i];}}return obj;};var merge=function merge(target,source,options){/* eslint no-param-reassign: 0 */if(!source){return target;}if(typeof source!=='object'&&typeof source!=='function'){if(isArray(target)){var nextIndex=target.length;if(options&&typeof options.arrayLimit==='number'&&nextIndex>options.arrayLimit){return markOverflow(arrayToObject(target.concat(source),options),nextIndex);}target[nextIndex]=source;}else if(target&&typeof target==='object'){if(isOverflow(target)){// Add at next numeric index for overflow objects
 var newIndex=getMaxIndex(target)+1;target[newIndex]=source;setMaxIndex(target,newIndex);}else if(options&&options.strictMerge){return[target,source];}else if(options&&(options.plainObjects||options.allowPrototypes)||!has.call(Object.prototype,source)){target[source]=true;}}else{return[target,source];}return target;}if(!target||typeof target!=='object'){if(isOverflow(source)){// Create new object with target at 0, source values shifted by 1
@@ -10190,7 +10880,7 @@ if(str.length===0){return str;}var string=str;if(typeof str==='symbol'){string=S
 ||c>=0x61&&c<=0x7A// A-Z
 ||format===formats.RFC1738&&(c===0x28||c===0x29)// ( )
 ){arr[arr.length]=segment.charAt(i);continue;}if(c<0x80){arr[arr.length]=hexTable[c];continue;}if(c<0x800){arr[arr.length]=hexTable[0xC0|c>>6]+hexTable[0x80|c&0x3F];continue;}if(c<0xD800||c>=0xE000){arr[arr.length]=hexTable[0xE0|c>>12]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];continue;}i+=1;c=0x10000+((c&0x3FF)<<10|segment.charCodeAt(i)&0x3FF);arr[arr.length]=hexTable[0xF0|c>>18]+hexTable[0x80|c>>12&0x3F]+hexTable[0x80|c>>6&0x3F]+hexTable[0x80|c&0x3F];}out+=arr.join('');}return out;};var compact=function compact(value){var queue=[{obj:{o:value},prop:'o'}];var refs=[];for(var i=0;i<queue.length;++i){var item=queue[i];var obj=item.obj[item.prop];var keys=Object.keys(obj);for(var j=0;j<keys.length;++j){var key=keys[j];var val=obj[key];if(typeof val==='object'&&val!==null&&refs.indexOf(val)===-1){queue[queue.length]={obj:obj,prop:key};refs[refs.length]=val;}}}compactQueue(queue);return value;};var isRegExp=function isRegExp(obj){return Object.prototype.toString.call(obj)==='[object RegExp]';};var isBuffer=function isBuffer(obj){if(!obj||typeof obj!=='object'){return false;}return!!(obj.constructor&&obj.constructor.isBuffer&&obj.constructor.isBuffer(obj));};var combine=function combine(a,b,arrayLimit,plainObjects){// If 'a' is already an overflow object, add to it
-if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":105,"side-channel":126}],110:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],111:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
+if(isOverflow(a)){var newIndex=getMaxIndex(a)+1;a[newIndex]=b;setMaxIndex(a,newIndex);return a;}var result=[].concat(a,b);if(result.length>arrayLimit){return markOverflow(arrayToObject(result,{plainObjects:plainObjects}),result.length-1);}return result;};var maybeMap=function maybeMap(val,fn){if(isArray(val)){var mapped=[];for(var i=0;i<val.length;i+=1){mapped[mapped.length]=fn(val[i]);}return mapped;}return fn(val);};module.exports={arrayToObject:arrayToObject,assign:assign,combine:combine,compact:compact,decode:decode,encode:encode,isBuffer:isBuffer,isOverflow:isOverflow,isRegExp:isRegExp,markOverflow:markOverflow,maybeMap:maybeMap,merge:merge};},{"./formats":113,"side-channel":134}],118:[function(require,module,exports){module.exports={"Name":"Retold Content Editor","Hash":"ContentEditor","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentEditor-Pict-Application"}};},{}],119:[function(require,module,exports){const libPictApplication=require('pict-application');// File browser
 const libPictSectionFileBrowser=require('pict-section-filebrowser');// Vocabulary auto-linking + popover system (shared with retold-labs)
 const libPictProviderVocabulary=require('pict-provider-vocabulary');// Inline documentation (right-side panel)
 const libPictSectionInlineDocumentation=require('pict-section-inlinedocumentation');// Modal system (panels, dialogs, tooltips, toasts)
@@ -10506,7 +11196,7 @@ tmpStatsEl.textContent='';return;}tmpStatsEl.textContent=tmpLines+' lines \u00B7
 	 * Load editor settings from localStorage, overwriting the
 	 * current defaults for any keys that are present.
 	 */_loadSettings(){if(typeof window==='undefined'||!window.localStorage){return;}try{let tmpRaw=window.localStorage.getItem(this._settingsKey);if(!tmpRaw){return;}let tmpStored=JSON.parse(tmpRaw);let tmpSettings=this.pict.AppData.ContentEditor;if(typeof tmpStored.AutoSegmentMarkdown==='boolean'){tmpSettings.AutoSegmentMarkdown=tmpStored.AutoSegmentMarkdown;}if(typeof tmpStored.AutoSegmentDepth==='number'){tmpSettings.AutoSegmentDepth=tmpStored.AutoSegmentDepth;}if(typeof tmpStored.ContentPreviewMode==='string'){tmpSettings.ContentPreviewMode=tmpStored.ContentPreviewMode;}else if(typeof tmpStored.AutoContentPreview==='boolean'){// Backward compat: migrate old boolean setting
-tmpSettings.ContentPreviewMode=tmpStored.AutoContentPreview?'bottom':'off';}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":110,"./providers/Pict-Provider-ContentEditor.js":115,"./views/PictView-Editor-CodeEditor.js":116,"./views/PictView-Editor-Layout.js":117,"./views/PictView-Editor-MarkdownEditor.js":118,"./views/PictView-Editor-MarkdownReference.js":119,"./views/PictView-Editor-SettingsPanel.js":120,"./views/PictView-Editor-TopBar.js":121,"./views/PictView-Editor-Topics.js":122,"pict-application":44,"pict-provider-vocabulary":55,"pict-section-content":62,"pict-section-filebrowser":66,"pict-section-inlinedocumentation":80,"pict-section-modal":100}],112:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],113:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
+tmpSettings.ContentPreviewMode=tmpStored.AutoContentPreview?'bottom':'off';}if(typeof tmpStored.MarkdownEditingControls==='boolean'){tmpSettings.MarkdownEditingControls=tmpStored.MarkdownEditingControls;}if(typeof tmpStored.MarkdownWordWrap==='boolean'){tmpSettings.MarkdownWordWrap=tmpStored.MarkdownWordWrap;}if(typeof tmpStored.CodeWordWrap==='boolean'){tmpSettings.CodeWordWrap=tmpStored.CodeWordWrap;}if(typeof tmpStored.SidebarCollapsed==='boolean'){tmpSettings.SidebarCollapsed=tmpStored.SidebarCollapsed;}if(typeof tmpStored.SidebarWidth==='number'){tmpSettings.SidebarWidth=tmpStored.SidebarWidth;}if(typeof tmpStored.AutoPreviewImages==='boolean'){tmpSettings.AutoPreviewImages=tmpStored.AutoPreviewImages;}if(typeof tmpStored.AutoPreviewVideo==='boolean'){tmpSettings.AutoPreviewVideo=tmpStored.AutoPreviewVideo;}if(typeof tmpStored.AutoPreviewAudio==='boolean'){tmpSettings.AutoPreviewAudio=tmpStored.AutoPreviewAudio;}if(typeof tmpStored.ShowHiddenFiles==='boolean'){tmpSettings.ShowHiddenFiles=tmpStored.ShowHiddenFiles;}if(typeof tmpStored.TopicsFilePath==='string'){tmpSettings.TopicsFilePath=tmpStored.TopicsFilePath;}}catch(pError){this.log.warn('Failed to load settings: '+pError.message);}}}module.exports=ContentEditorApplication;module.exports.default_configuration=require('./Pict-Application-ContentEditor-Configuration.json');},{"./Pict-Application-ContentEditor-Configuration.json":118,"./providers/Pict-Provider-ContentEditor.js":123,"./views/PictView-Editor-CodeEditor.js":124,"./views/PictView-Editor-Layout.js":125,"./views/PictView-Editor-MarkdownEditor.js":126,"./views/PictView-Editor-MarkdownReference.js":127,"./views/PictView-Editor-SettingsPanel.js":128,"./views/PictView-Editor-TopBar.js":129,"./views/PictView-Editor-Topics.js":130,"pict-application":44,"pict-provider-vocabulary":55,"pict-section-content":62,"pict-section-filebrowser":66,"pict-section-inlinedocumentation":88,"pict-section-modal":108}],120:[function(require,module,exports){module.exports={"Name":"Retold Content Reader","Hash":"ContentReader","MainViewportViewIdentifier":"Docuserve-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false,"pict_configuration":{"Product":"ContentReader-Pict-Application"}};},{}],121:[function(require,module,exports){const libDocuserveApplication=require('pict-docuserve');/**
  * Content Reader Application
  *
  * Extends pict-docuserve to serve standalone markdown content.
@@ -10521,7 +11211,7 @@ let tmpDocuserve=this.pict.AppData.Docuserve;if(tmpDocuserve.CoverLoaded&&tmpDoc
 if(tmpDocuserve.TopBar){if(!Array.isArray(tmpDocuserve.TopBar.ExternalLinks)){tmpDocuserve.TopBar.ExternalLinks=[];}tmpDocuserve.TopBar.ExternalLinks.push({Text:'Edit',Href:'/'});}else{tmpDocuserve.TopBarLoaded=true;tmpDocuserve.TopBar={Brand:'Content System',NavLinks:[],ExternalLinks:[{Text:'Edit',Href:'/'}]};}// Render the layout shell
 this.pict.views['Docuserve-Layout'].render();// Call the base PictApplication callback (skip docuserve's onAfterInitializeAsync
 // since we already did the catalog loading ourselves)
-return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":112,"pict-docuserve":46}],114:[function(require,module,exports){/**
+return fCallback();});}}module.exports=ContentReaderApplication;module.exports.default_configuration=require('./Pict-Application-ContentReader-Configuration.json');},{"./Pict-Application-ContentReader-Configuration.json":120,"pict-docuserve":46}],122:[function(require,module,exports){/**
  * Combined browser bundle for Retold Content System.
  *
  * Exports both the reader and editor applications as window globals
@@ -10530,7 +11220,7 @@ return fCallback();});}}module.exports=ContentReaderApplication;module.exports.d
  * In index.html: Pict.safeLoadPictApplication(PictContentReader, 2)
  * In edit.html:  Pict.safeLoadPictApplication(PictContentEditor, 2)
  */module.exports={PictContentReader:require('./Pict-Application-ContentReader.js'),PictContentEditor:require('./Pict-Application-ContentEditor.js')};// Also expose on window for direct access
-if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":111,"./Pict-Application-ContentReader.js":113}],115:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
+if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictContentReader;window.PictContentEditor=module.exports.PictContentEditor;}},{"./Pict-Application-ContentEditor.js":119,"./Pict-Application-ContentReader.js":121}],123:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
  * Content Editor Provider
  *
  * Handles communication with the server's REST API for content
@@ -10556,7 +11246,7 @@ if(typeof window!=='undefined'){window.PictContentReader=module.exports.PictCont
 	 * @param {File} pFile - The image file to upload
 	 * @param {Function} fCallback - Callback receiving (error, url)
 	 */uploadImage(pFile,fCallback){let tmpCallback=typeof fCallback==='function'?fCallback:()=>{};// Determine the target folder from the currently open file
-let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn(`ContentEditor: Image upload failed: ${pError}`);return tmpCallback(pError.message);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":58}],116:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
+let tmpUploadPath='';let tmpCurrentFile=this.pict.AppData.ContentEditor.CurrentFile;if(tmpCurrentFile){let tmpLastSlash=tmpCurrentFile.lastIndexOf('/');if(tmpLastSlash>0){tmpUploadPath=tmpCurrentFile.substring(0,tmpLastSlash);}}else if(this.pict.AppData.PictFileBrowser&&this.pict.AppData.PictFileBrowser.CurrentLocation){tmpUploadPath=this.pict.AppData.PictFileBrowser.CurrentLocation;}let tmpHeaders={'Content-Type':pFile.type,'x-filename':pFile.name};if(tmpUploadPath){tmpHeaders['x-upload-path']=tmpUploadPath;}fetch('/api/content/upload-image',{method:'POST',body:pFile,headers:tmpHeaders}).then(pResponse=>pResponse.json()).then(pData=>{if(pData&&pData.Success&&pData.URL){return tmpCallback(null,pData.URL);}return tmpCallback(pData?pData.Error:'Upload failed');}).catch(pError=>{this.log.warn(`ContentEditor: Image upload failed: ${pError}`);return tmpCallback(pError.message);});}}module.exports=ContentEditorProvider;module.exports.default_configuration={ProviderIdentifier:"ContentEditor-Provider",AutoInitialize:true,AutoInitializeOrdinal:0};},{"pict-provider":58}],124:[function(require,module,exports){const libPictSectionCode=require('pict-section-code');/**
  * Map of file extensions to highlight.js language identifiers.
  *
  * highlight.js supports 190+ languages. This map covers the most common
@@ -10596,7 +11286,7 @@ if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.Pi
 	 *
 	 * @param {string} pExtension - The file extension (without dot)
 	 * @returns {string} The highlight.js language identifier
-	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":61}],117:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
+	 */static getLanguageForExtension(pExtension){if(!pExtension){return'plaintext';}let tmpExt=pExtension.toLowerCase();return _ExtensionLanguageMap[tmpExt]||'plaintext';}}module.exports=ContentEditorCodeEditorView;module.exports.default_configuration=_ViewConfiguration;module.exports.ExtensionLanguageMap=_ExtensionLanguageMap;},{"pict-section-code":61}],125:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"ContentEditor-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:/*css*/`
 		#ContentEditor-Application-Container
 		{
 			display: flex;
@@ -11425,7 +12115,7 @@ this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','');this
 	 * @param {File} pFile - The image file to upload
 	 */_uploadFile(pFile){if(!pFile){return;}// Validate it's an image
 if(!pFile.type.startsWith('image/')){this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Only image files are supported.</span>');return;}this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','Uploading <strong>'+pFile.name+'</strong>...');this.pict.ContentAssignment.assignContent('#ContentEditor-UploadResult','');let tmpSelf=this;let tmpProvider=this.pict.providers['ContentEditor-Provider'];if(!tmpProvider){this.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Provider not available.</span>');return;}tmpProvider.uploadImage(pFile,(pError,pURL)=>{if(pError){tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-error">Upload failed: '+pError+'</span>');return;}tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadStatus','<span class="content-editor-upload-status-success">Uploaded successfully!</span>');let tmpMarkdown='!['+pFile.name+']('+pURL+')';tmpSelf.pict.ContentAssignment.assignContent('#ContentEditor-UploadResult','<div class="content-editor-upload-result">'+'<div class="content-editor-upload-result-label">Markdown</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+tmpMarkdown+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+tmpMarkdown.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'<div class="content-editor-upload-result-label" style="margin-top:8px">URL</div>'+'<div class="content-editor-upload-result-url">'+'<span class="content-editor-upload-result-text">'+pURL+'</span>'+'<button class="content-editor-upload-result-copy" onclick="'+"navigator.clipboard.writeText('"+pURL.replace(/'/g,"\\'")+"').then(function(){this.textContent='Copied!'}.bind(this))"+'">Copy</button>'+'</div>'+'</div>');// Refresh the file list so the uploaded file shows
-tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],118:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
+tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorLayoutView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],126:[function(require,module,exports){const libPictSectionMarkdownEditor=require('pict-section-markdowneditor');const _ViewConfiguration={ViewIdentifier:"ContentEditor-MarkdownEditor",DefaultRenderable:"MarkdownEditor-Wrap",DefaultDestinationAddress:"#ContentEditor-Editor-Container",TargetElementAddress:"#ContentEditor-Editor-Container",ContentDataAddress:"AppData.ContentEditor.Document.Segments",ReadOnly:false,EnableRichPreview:true,AutoRender:false,Renderables:[{RenderableHash:"MarkdownEditor-Wrap",TemplateHash:"MarkdownEditor-Container",DestinationAddress:"#ContentEditor-Editor-Container"}]};/**
  * Content Editor Markdown Editor View
  *
  * Extends pict-section-markdowneditor to integrate with the
@@ -11451,7 +12141,7 @@ tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorLay
 	 *
 	 * @param {number} pSegmentIndex - The segment index that changed
 	 * @param {string} pContent - The new content
-	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":92}],119:[function(require,module,exports){const libPictView=require('pict-view');/**
+	 */onContentChange(pSegmentIndex,pContent){if(this.pict.PictApplication){this.pict.PictApplication.markDirty();this.pict.PictApplication.updateStats();}}}module.exports=ContentEditorMarkdownEditorView;module.exports.default_configuration=_ViewConfiguration;},{"pict-section-markdowneditor":100}],127:[function(require,module,exports){const libPictView=require('pict-view');/**
  * Built-in Markdown reference content.
  *
  * Pre-rendered HTML covering GitHub-Flavored Markdown, KaTeX math,
@@ -11973,7 +12663,7 @@ if(tmpLastIndex<tmpText.length){tmpFragment.appendChild(document.createTextNode(
 	 * Enable/disable navigation buttons based on match count.
 	 */_updateNavButtons(){let tmpPrev=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchPrev')[0];let tmpNext=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-SearchNext')[0];let tmpHasMatches=this._searchMatches.length>0;if(tmpPrev)tmpPrev.disabled=!tmpHasMatches;if(tmpNext)tmpNext.disabled=!tmpHasMatches;}/**
 	 * Clear search highlights and reset state.
-	 */_clearSearch(){let tmpContentEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-Content')[0];if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],120:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
+	 */_clearSearch(){let tmpContentEl=this.pict.ContentAssignment.getElement('#ContentEditor-MdRef-Content')[0];if(tmpContentEl&&this._originalContent){tmpContentEl.innerHTML=this._originalContent;}this._searchMatches=[];this._currentMatchIndex=-1;this._updateSearchCount();this._updateNavButtons();}}module.exports=ContentEditorMarkdownReferenceView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],128:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-SettingsPanel",DefaultRenderable:"ContentEditor-SettingsPanel-Display",DefaultDestinationAddress:"#ContentEditor-SettingsPanel-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-settings-wrap
 		{
 			position: relative;
@@ -12309,7 +12999,7 @@ let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorVi
 let tmpCodeEditorView=this.pict.views['ContentEditor-CodeEditor'];if(tmpCodeEditorView&&tmpCodeEditorView._editorElement&&this.pict.AppData.ContentEditor.ActiveEditor==='code'){if(pChecked){tmpCodeEditorView._editorElement.style.whiteSpace='pre-wrap';tmpCodeEditorView._editorElement.style.overflowWrap='break-word';}else{tmpCodeEditorView._editorElement.style.whiteSpace='pre';tmpCodeEditorView._editorElement.style.overflowWrap='normal';}}}onEditingControlsChanged(pChecked){this.pict.AppData.ContentEditor.MarkdownEditingControls=pChecked;this.pict.PictApplication.saveSettings();// Live-apply to the markdown editor if it's currently active
 let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.toggleControls(pChecked);}}onContentPreviewModeChanged(pMode){this.pict.AppData.ContentEditor.ContentPreviewMode=pMode;this.pict.PictApplication.saveSettings();let tmpEditorView=this.pict.views['ContentEditor-MarkdownEditor'];if(tmpEditorView&&this.pict.AppData.ContentEditor.ActiveEditor==='markdown'){tmpEditorView.setPreviewMode(pMode);}}onAutoSegmentChanged(pChecked){this.pict.AppData.ContentEditor.AutoSegmentMarkdown=pChecked;this.pict.PictApplication.saveSettings();// Enable/disable the depth dropdown
 let tmpSelect=this.pict.ContentAssignment.getElement('#ContentEditor-Setting-SegmentDepth');if(tmpSelect&&tmpSelect[0]){tmpSelect[0].disabled=!pChecked;}}onSegmentDepthChanged(pValue){this.pict.AppData.ContentEditor.AutoSegmentDepth=parseInt(pValue,10)||1;this.pict.PictApplication.saveSettings();}onAutoPreviewImagesChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewImages=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewVideoChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewVideo=pChecked;this.pict.PictApplication.saveSettings();}onAutoPreviewAudioChanged(pChecked){this.pict.AppData.ContentEditor.AutoPreviewAudio=pChecked;this.pict.PictApplication.saveSettings();}onShowHiddenFilesChanged(pChecked){this.pict.AppData.ContentEditor.ShowHiddenFiles=pChecked;this.pict.PictApplication.saveSettings();// Tell the server to include/exclude hidden files, then refresh
-let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],121:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
+let tmpSelf=this;this.pict.PictApplication.syncHiddenFilesSetting(()=>{tmpSelf.pict.PictApplication.loadFileList();});}}module.exports=ContentEditorSettingsPanelView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],129:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"ContentEditor-TopBar-Display",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:/*css*/`
 		.content-editor-topbar
 		{
 			display: flex;
@@ -12684,7 +13374,7 @@ tmpEditor.SaveDisabledAttr=!tmpEditor.CurrentFile||tmpEditor.IsSaving?'disabled'
 tmpEditor.SaveVisibilityAttr=tmpEditor.IsDirty||tmpEditor.IsSaving||tmpEditor.SaveStatus?'':'style="display:none"';// Hide close button when no file is open
 tmpEditor.CloseVisibilityAttr=tmpEditor.CurrentFile?'':'style="display:none"';// Build viewer hash link
 if(tmpEditor.CurrentFile){let tmpViewerPath=tmpEditor.CurrentFile.replace(/\.md$/,'');tmpEditor.ViewerHash='#/page/'+tmpViewerPath;}else{tmpEditor.ViewerHash='';}return super.onBeforeRender(pRenderable,pRenderDestinationAddress,pRecord);}onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent){// Render the settings panel inside our container
-let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],122:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
+let tmpSettingsPanel=this.pict.views['ContentEditor-SettingsPanel'];if(tmpSettingsPanel){tmpSettingsPanel.render();}return super.onAfterRender(pRenderable,pRenderDestinationAddress,pRecord,pContent);}}module.exports=ContentEditorTopBarView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],130:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Topics",DefaultRenderable:"Topics-Wrap",DefaultDestinationAddress:"#ContentEditor-SidebarTopics-Container",AutoRender:false,CSS:/*css*/`
 		.topics-container
 		{
 			display: flex;
@@ -13108,7 +13798,7 @@ if(confirm('File not found. Create "'+tmpPath.trim()+'"?')){tmpSelf._topicsFileP
 	 *
 	 * @param {string} pStr
 	 * @returns {string}
-	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],123:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
+	 */_escapeAttr(pStr){return String(pStr).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}}module.exports=ContentEditorTopicsView;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],131:[function(require,module,exports){'use strict';var inspect=require('object-inspect');var $TypeError=require('es-errors/type');/*
 * This function traverses the list returning the node corresponding to the given key.
 *
 * That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list.
@@ -13120,16 +13810,15 @@ curr.next=/** @type {NonNullable<typeof list.next>} */list.next;list.next=curr;/
 }return curr;}}};/** @type {import('./list.d.ts').listGet} */var listGet=function(objects,key){if(!objects){return void undefined;}var node=listGetNode(objects,key);return node&&node.value;};/** @type {import('./list.d.ts').listSet} */var listSet=function(objects,key,value){var node=listGetNode(objects,key);if(node){node.value=value;}else{// Prepend the new node to the beginning of the list
 objects.next=/** @type {import('./list.d.ts').ListNode<typeof value, typeof key>} */{// eslint-disable-line no-param-reassign, no-extra-parens
 key:key,next:objects.next,value:value};}};/** @type {import('./list.d.ts').listHas} */var listHas=function(objects,key){if(!objects){return false;}return!!listGetNode(objects,key);};/** @type {import('./list.d.ts').listDelete} */// eslint-disable-next-line consistent-return
-var listDelete=function(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){var root=$o&&$o.next;var deletedNode=listDelete($o,key);if(deletedNode&&root&&root===deletedNode){$o=void undefined;}return!!deletedNode;},get:function(key){return listGet($o,key);},has:function(key){return listHas($o,key);},set:function(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
+var listDelete=function(objects,key){if(objects){return listGetNode(objects,key,true);}};/** @type {import('.')} */module.exports=function getSideChannelList(){/** @typedef {ReturnType<typeof getSideChannelList>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {import('./list.d.ts').RootNode<V, K> | undefined} */var $o;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){var deletedNode=listDelete($o,key);if(deletedNode&&$o&&!$o.next){$o=void undefined;}return!!deletedNode;},get:function(key){return listGet($o,key);},has:function(key){return listHas($o,key);},set:function(key,value){if(!$o){// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
 $o={next:void undefined};}// eslint-disable-next-line no-extra-parens
-listSet(/** @type {NonNullable<typeof $o>} */$o,key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41}],124:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
+listSet(/** @type {NonNullable<typeof $o>} */$o,key,value);}};return channel;};},{"es-errors/type":16,"object-inspect":41}],132:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var $TypeError=require('es-errors/type');var $Map=GetIntrinsic('%Map%',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => V} */var $mapGet=callBound('Map.prototype.get',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K, value: V) => void} */var $mapSet=callBound('Map.prototype.set',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapHas=callBound('Map.prototype.has',true);/** @type {<K, V>(thisArg: Map<K, V>, key: K) => boolean} */var $mapDelete=callBound('Map.prototype.delete',true);/** @type {<K, V>(thisArg: Map<K, V>) => number} */var $mapSize=callBound('Map.prototype.size',true);/** @type {import('.')} */module.exports=!!$Map&&/** @type {Exclude<import('.'), false>} */function getSideChannelMap(){/** @typedef {ReturnType<typeof getSideChannelMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {Map<K, V> | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($m){var result=$mapDelete($m,key);if($mapSize($m)===0){$m=void undefined;}return result;}return false;},get:function(key){// eslint-disable-line consistent-return
 if($m){return $mapGet($m,key);}},has:function(key){if($m){return $mapHas($m,key);}return false;},set:function(key,value){if(!$m){// @ts-expect-error TS can't handle narrowing a variable inside a closure
 $m=new $Map();}$mapSet($m,key,value);}};// @ts-expect-error TODO: figure out why TS is erroring here
-return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],125:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
+return channel;};},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41}],133:[function(require,module,exports){'use strict';var GetIntrinsic=require('get-intrinsic');var callBound=require('call-bound');var inspect=require('object-inspect');var getSideChannelMap=require('side-channel-map');var $TypeError=require('es-errors/type');var $WeakMap=GetIntrinsic('%WeakMap%',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => V} */var $weakMapGet=callBound('WeakMap.prototype.get',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K, value: V) => void} */var $weakMapSet=callBound('WeakMap.prototype.set',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapHas=callBound('WeakMap.prototype.has',true);/** @type {<K extends object, V>(thisArg: WeakMap<K, V>, key: K) => boolean} */var $weakMapDelete=callBound('WeakMap.prototype.delete',true);/** @type {import('.')} */module.exports=$WeakMap?/** @type {Exclude<import('.'), false>} */function getSideChannelWeakMap(){/** @typedef {ReturnType<typeof getSideChannelWeakMap>} Channel *//** @typedef {Parameters<Channel['get']>[0]} K *//** @typedef {Parameters<Channel['set']>[1]} V *//** @type {WeakMap<K & object, V> | undefined} */var $wm;/** @type {Channel | undefined} */var $m;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapDelete($wm,key);}}else if(getSideChannelMap){if($m){return $m['delete'](key);}}return false;},get:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapGet($wm,key);}}return $m&&$m.get(key);},has:function(key){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if($wm){return $weakMapHas($wm,key);}}return!!$m&&$m.has(key);},set:function(key,value){if($WeakMap&&key&&(typeof key==='object'||typeof key==='function')){if(!$wm){$wm=new $WeakMap();}$weakMapSet($wm,key,value);}else if(getSideChannelMap){if(!$m){$m=getSideChannelMap();}// eslint-disable-next-line no-extra-parens
 /** @type {NonNullable<typeof $m>} */$m.set(key,value);}}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":124}],126:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
-return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":123,"side-channel-map":124,"side-channel-weakmap":125}],127:[function(require,module,exports){/*
+return channel;}:getSideChannelMap;},{"call-bound":8,"es-errors/type":16,"get-intrinsic":23,"object-inspect":41,"side-channel-map":132}],134:[function(require,module,exports){'use strict';var $TypeError=require('es-errors/type');var inspect=require('object-inspect');var getSideChannelList=require('side-channel-list');var getSideChannelMap=require('side-channel-map');var getSideChannelWeakMap=require('side-channel-weakmap');var makeChannel=getSideChannelWeakMap||getSideChannelMap||getSideChannelList;/** @type {import('.')} */module.exports=function getSideChannel(){/** @typedef {ReturnType<typeof getSideChannel>} Channel *//** @type {Channel | undefined} */var $channelData;/** @type {Channel} */var channel={assert:function(key){if(!channel.has(key)){throw new $TypeError('Side channel does not contain '+inspect(key));}},'delete':function(key){return!!$channelData&&$channelData['delete'](key);},get:function(key){return $channelData&&$channelData.get(key);},has:function(key){return!!$channelData&&$channelData.has(key);},set:function(key,value){if(!$channelData){$channelData=makeChannel();}$channelData.set(key,value);}};// @ts-expect-error TODO: figure out why this is erroring
+return channel;};},{"es-errors/type":16,"object-inspect":41,"side-channel-list":131,"side-channel-map":132,"side-channel-weakmap":133}],135:[function(require,module,exports){/*
  * Copyright Joyent, Inc. and other Node contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13307,7 +13996,7 @@ if(psychotic){result.hostname=isAbsolute?'':srcPath.length?srcPath.shift():'';re
      * this especially happens in cases like
      * url.resolveObject('mailto:local1@domain1', 'local2@domain2')
      */var authInHost=result.host&&result.host.indexOf('@')>0?result.host.split('@'):false;if(authInHost){result.auth=authInHost.shift();result.hostname=authInHost.shift();result.host=result.hostname;}}mustEndAbs=mustEndAbs||result.host&&srcPath.length;if(mustEndAbs&&!isAbsolute){srcPath.unshift('');}if(srcPath.length>0){result.pathname=srcPath.join('/');}else{result.pathname=null;result.path=null;}// to support request.http
-if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":104,"qs":106}],128:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],129:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
+if(result.pathname!==null||result.search!==null){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'');}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result;};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1);}host=host.substr(0,host.length-port.length);}if(host){this.hostname=host;}};exports.parse=urlParse;exports.resolve=urlResolve;exports.resolveObject=urlResolveObject;exports.format=urlFormat;exports.Url=Url;},{"punycode/":112,"qs":114}],136:[function(require,module,exports){module.exports={"Name":"Retold Remote","MainViewportViewIdentifier":"ContentEditor-Layout","AutoSolveAfterInitialize":true,"AutoRenderMainViewportViewAfterInitialize":false,"AutoRenderViewsAfterInitialize":false};},{}],137:[function(require,module,exports){const libContentEditorApplication=require('retold-content-system').PictContentEditor;const libPictSectionFileBrowser=require('pict-section-filebrowser');// Providers
 const libProviderRetoldRemote=require('./providers/Pict-Provider-RetoldRemote.js');const libProviderGalleryNavigation=require('./providers/Pict-Provider-GalleryNavigation.js');const libProviderGalleryFilterSort=require('./providers/Pict-Provider-GalleryFilterSort.js');const libProviderRetoldRemoteIcons=require('./providers/Pict-Provider-RetoldRemoteIcons.js');const libProviderRetoldRemoteTheme=require('./providers/Pict-Provider-RetoldRemoteTheme.js');const libProviderFormattingUtilities=require('./providers/Pict-Provider-FormattingUtilities.js');const libProviderToastNotification=require('./providers/Pict-Provider-ToastNotification.js');const libProviderOperationStatus=require('./providers/Pict-Provider-OperationStatus.js');const libProviderCollectionManager=require('./providers/Pict-Provider-CollectionManager.js');const libProviderAISortManager=require('./providers/Pict-Provider-AISortManager.js');const libExtensionMaps=require('./RetoldRemote-ExtensionMaps.js');// Views (replace parent views)
 const libViewLayout=require('./views/PictView-Remote-Layout.js');const libViewTopBar=require('./views/PictView-Remote-TopBar.js');const libViewSettingsPanel=require('./views/PictView-Remote-SettingsPanel.js');// Views (new)
 const libViewGallery=require('./views/PictView-Remote-Gallery.js');const libViewMediaViewer=require('./views/PictView-Remote-MediaViewer.js');const libViewImageViewer=require('./views/PictView-Remote-ImageViewer.js');const libViewVideoExplorer=require('./views/PictView-Remote-VideoExplorer.js');const libViewAudioExplorer=require('./views/PictView-Remote-AudioExplorer.js');const libViewImageExplorer=require('./views/PictView-Remote-ImageExplorer.js');const libViewVLCSetup=require('./views/PictView-Remote-VLCSetup.js');const libViewCollectionsPanel=require('./views/PictView-Remote-CollectionsPanel.js');const libViewFileInfoPanel=require('./views/PictView-Remote-FileInfoPanel.js');const libViewSubimagesPanel=require('./views/PictView-Remote-SubimagesPanel.js');const libViewRegionsBrowser=require('./views/PictView-Remote-RegionsBrowser.js');// Application configuration
@@ -13462,11 +14151,11 @@ tmpDetailRows.parentElement.appendChild(tmpBtn);}/**
 }}/**
 	 * Load RetoldRemote settings from localStorage.
 	 */_loadRemoteSettings(){try{let tmpStored=localStorage.getItem('retold-remote-settings');if(tmpStored){let tmpSettings=JSON.parse(tmpStored);let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpSettings.Theme)tmpRemote.Theme=tmpSettings.Theme;if(tmpSettings.ViewMode)tmpRemote.ViewMode=tmpSettings.ViewMode;if(tmpSettings.ThumbnailSize)tmpRemote.ThumbnailSize=tmpSettings.ThumbnailSize;if(tmpSettings.GalleryFilter){tmpRemote.GalleryFilter=tmpSettings.GalleryFilter;tmpRemote.FilterState.MediaType=tmpSettings.GalleryFilter;}if(typeof tmpSettings.ShowHiddenFiles==='boolean')tmpRemote.ShowHiddenFiles=tmpSettings.ShowHiddenFiles;if(typeof tmpSettings.DistractionFreeShowNav==='boolean')tmpRemote.DistractionFreeShowNav=tmpSettings.DistractionFreeShowNav;if(tmpSettings.ImageFitMode)tmpRemote.ImageFitMode=tmpSettings.ImageFitMode;if(typeof tmpSettings.SidebarCollapsed==='boolean')tmpRemote.SidebarCollapsed=tmpSettings.SidebarCollapsed;if(tmpSettings.SidebarWidth)tmpRemote.SidebarWidth=tmpSettings.SidebarWidth;if(tmpSettings.SortField)tmpRemote.SortField=tmpSettings.SortField;if(tmpSettings.SortDirection)tmpRemote.SortDirection=tmpSettings.SortDirection;if(Array.isArray(tmpSettings.FilterPresets))tmpRemote.FilterPresets=tmpSettings.FilterPresets;if(typeof tmpSettings.FilterPanelOpen==='boolean')tmpRemote.FilterPanelOpen=tmpSettings.FilterPanelOpen;if(typeof tmpSettings.AutoplayVideo==='boolean')tmpRemote.AutoplayVideo=tmpSettings.AutoplayVideo;if(typeof tmpSettings.AutoplayAudio==='boolean')tmpRemote.AutoplayAudio=tmpSettings.AutoplayAudio;if(typeof tmpSettings.ListShowExtension==='boolean')tmpRemote.ListShowExtension=tmpSettings.ListShowExtension;if(typeof tmpSettings.ListShowSize==='boolean')tmpRemote.ListShowSize=tmpSettings.ListShowSize;if(typeof tmpSettings.ListShowDate==='boolean')tmpRemote.ListShowDate=tmpSettings.ListShowDate;if(typeof tmpSettings.CollectionsPanelOpen==='boolean')tmpRemote.CollectionsPanelOpen=tmpSettings.CollectionsPanelOpen;if(tmpSettings.CollectionsPanelWidth)tmpRemote.CollectionsPanelWidth=tmpSettings.CollectionsPanelWidth;if(tmpSettings.LastUsedCollectionGUID)tmpRemote.LastUsedCollectionGUID=tmpSettings.LastUsedCollectionGUID;if(tmpSettings.FavoritesGUID)tmpRemote.FavoritesGUID=tmpSettings.FavoritesGUID;if(tmpSettings.AISortSettings&&typeof tmpSettings.AISortSettings==='object'){if(tmpSettings.AISortSettings.AIEndpoint)tmpRemote.AISortSettings.AIEndpoint=tmpSettings.AISortSettings.AIEndpoint;if(tmpSettings.AISortSettings.AIModel)tmpRemote.AISortSettings.AIModel=tmpSettings.AISortSettings.AIModel;if(tmpSettings.AISortSettings.AIProvider)tmpRemote.AISortSettings.AIProvider=tmpSettings.AISortSettings.AIProvider;if(tmpSettings.AISortSettings.NamingTemplate)tmpRemote.AISortSettings.NamingTemplate=tmpSettings.AISortSettings.NamingTemplate;}}}catch(pError){// localStorage may not be available
-}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":128,"./RetoldRemote-ExtensionMaps.js":131,"./providers/Pict-Provider-AISortManager.js":135,"./providers/Pict-Provider-CollectionManager.js":136,"./providers/Pict-Provider-FormattingUtilities.js":137,"./providers/Pict-Provider-GalleryFilterSort.js":138,"./providers/Pict-Provider-GalleryNavigation.js":139,"./providers/Pict-Provider-OperationStatus.js":140,"./providers/Pict-Provider-RetoldRemote.js":141,"./providers/Pict-Provider-RetoldRemoteIcons.js":142,"./providers/Pict-Provider-RetoldRemoteTheme.js":143,"./providers/Pict-Provider-ToastNotification.js":144,"./views/PictView-Remote-AudioExplorer.js":155,"./views/PictView-Remote-CollectionsPanel.js":156,"./views/PictView-Remote-FileInfoPanel.js":157,"./views/PictView-Remote-Gallery.js":158,"./views/PictView-Remote-ImageExplorer.js":159,"./views/PictView-Remote-ImageViewer.js":160,"./views/PictView-Remote-Layout.js":161,"./views/PictView-Remote-MediaViewer.js":162,"./views/PictView-Remote-RegionsBrowser.js":163,"./views/PictView-Remote-SettingsPanel.js":164,"./views/PictView-Remote-SubimagesPanel.js":165,"./views/PictView-Remote-TopBar.js":166,"./views/PictView-Remote-VLCSetup.js":167,"./views/PictView-Remote-VideoExplorer.js":168,"pict-section-filebrowser":66,"retold-content-system":114}],130:[function(require,module,exports){/**
+}}}module.exports=RetoldRemoteApplication;},{"./Pict-Application-RetoldRemote-Configuration.json":136,"./RetoldRemote-ExtensionMaps.js":139,"./providers/Pict-Provider-AISortManager.js":143,"./providers/Pict-Provider-CollectionManager.js":144,"./providers/Pict-Provider-FormattingUtilities.js":145,"./providers/Pict-Provider-GalleryFilterSort.js":146,"./providers/Pict-Provider-GalleryNavigation.js":147,"./providers/Pict-Provider-OperationStatus.js":148,"./providers/Pict-Provider-RetoldRemote.js":149,"./providers/Pict-Provider-RetoldRemoteIcons.js":150,"./providers/Pict-Provider-RetoldRemoteTheme.js":151,"./providers/Pict-Provider-ToastNotification.js":152,"./views/PictView-Remote-AudioExplorer.js":163,"./views/PictView-Remote-CollectionsPanel.js":164,"./views/PictView-Remote-FileInfoPanel.js":165,"./views/PictView-Remote-Gallery.js":166,"./views/PictView-Remote-ImageExplorer.js":167,"./views/PictView-Remote-ImageViewer.js":168,"./views/PictView-Remote-Layout.js":169,"./views/PictView-Remote-MediaViewer.js":170,"./views/PictView-Remote-RegionsBrowser.js":171,"./views/PictView-Remote-SettingsPanel.js":172,"./views/PictView-Remote-SubimagesPanel.js":173,"./views/PictView-Remote-TopBar.js":174,"./views/PictView-Remote-VLCSetup.js":175,"./views/PictView-Remote-VideoExplorer.js":176,"pict-section-filebrowser":66,"retold-content-system":122}],138:[function(require,module,exports){/**
  * Retold Remote -- Browser Bundle Entry
  *
  * Exports the RetoldRemote application class for browser consumption.
- */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":129}],131:[function(require,module,exports){/**
+ */module.exports={RetoldRemoteApplication:require('./Pict-Application-RetoldRemote.js')};if(typeof window!=='undefined'){window.RetoldRemoteApplication=module.exports.RetoldRemoteApplication;}},{"./Pict-Application-RetoldRemote.js":137}],139:[function(require,module,exports){/**
  * Shared extension category maps for retold-remote.
  *
  * Used by both client-side providers (GalleryFilterSort) and server-side
@@ -13504,7 +14193,7 @@ for(let tmpKey in RawImageExtensions){ImageExtensions[tmpKey]=true;}const VideoE
  *
  * @param {string} pExtension - Extension with or without leading dot
  * @returns {boolean}
- */function isRawImage(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();return!!RawImageExtensions[tmpExt];}module.exports.RawImageExtensions=RawImageExtensions;module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;module.exports.isRawImage=isRawImage;},{}],132:[function(require,module,exports){/**
+ */function isRawImage(pExtension){let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();return!!RawImageExtensions[tmpExt];}module.exports.RawImageExtensions=RawImageExtensions;module.exports.ImageExtensions=ImageExtensions;module.exports.VideoExtensions=VideoExtensions;module.exports.AudioExtensions=AudioExtensions;module.exports.DocumentExtensions=DocumentExtensions;module.exports.getCategory=getCategory;module.exports.isRawImage=isRawImage;},{}],140:[function(require,module,exports){/**
  * CollectionManager — Add Items Mixin
  *
  * Convenience methods for adding various media types to collections.
@@ -13615,7 +14304,7 @@ tmpDropdown.style.position='fixed';tmpDropdown.style.top='50px';tmpDropdown.styl
 setTimeout(function(){tmpSelf._boundCloseFolderChoice=function(pClickEvent){if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpAnchor){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('click',tmpSelf._boundCloseFolderChoice);// Close on Escape key
 tmpSelf._boundCloseFolderChoiceKey=function(pKeyEvent){if(pKeyEvent.key==='Escape'){tmpSelf.closeFolderChoicePrompt();}};document.addEventListener('keydown',tmpSelf._boundCloseFolderChoiceKey);},10);},/**
 	 * Close the folder choice prompt dropdown.
-	 */closeFolderChoicePrompt:function closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}};},{}],133:[function(require,module,exports){/**
+	 */closeFolderChoicePrompt:function closeFolderChoicePrompt(){let tmpDropdown=document.getElementById('RetoldRemote-FolderChoice-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseFolderChoice){document.removeEventListener('click',this._boundCloseFolderChoice);this._boundCloseFolderChoice=null;}if(this._boundCloseFolderChoiceKey){document.removeEventListener('keydown',this._boundCloseFolderChoiceKey);this._boundCloseFolderChoiceKey=null;}}};},{}],141:[function(require,module,exports){/**
  * CollectionManager — Favorites Mixin
  *
  * Manages the Favorites collection: a special system collection
@@ -13667,7 +14356,7 @@ let tmpArchiveMatch=tmpFilePath.match(/^(.*?\.(zip|7z|rar|tar|tgz|cbz|cbr|tar\.g
 let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(tmpProvider){let tmpHash=tmpProvider.getHashForPath(tmpFilePath);if(tmpHash){tmpItem.Hash=tmpHash;}}this.addItemsToCollection(tmpRemote.FavoritesGUID,[tmpItem],(pError,pData)=>{if(!pError&&pData){tmpRemote.FavoritesCollection=pData;tmpSelf._rebuildFavoritesPathSet(pData);}// Update heart icon
 let tmpTopBar=tmpSelf.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.updateFavoritesIcon==='function'){tmpTopBar.updateFavoritesIcon();}tmpSelf._renderFavoritesPane();let tmpToast=tmpSelf._getToast();if(tmpToast){tmpToast.showToast('Added to favorites');}});}},/**
 	 * Render the favorites pane if the favorites tab is active.
-	 */_renderFavoritesPane:function _renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}};},{}],134:[function(require,module,exports){/**
+	 */_renderFavoritesPane:function _renderFavoritesPane(){let tmpLayoutView=this.pict.views['ContentEditor-Layout'];if(tmpLayoutView&&typeof tmpLayoutView.renderFavoritesList==='function'){tmpLayoutView.renderFavoritesList();}}};},{}],142:[function(require,module,exports){/**
  * CollectionManager — Operation Plan Mixin
  *
  * Methods for creating, executing, and undoing file-operation plans
@@ -13710,7 +14399,7 @@ this.updateCollection(tmpCollection);},/**
 	 *
 	 * @param {string} pItemID - Item ID
 	 */skipItemOperation:function skipItemOperation(pItemID){let tmpRemote=this._getRemote();let tmpCollection=tmpRemote.ActiveCollection;if(!tmpCollection||!tmpCollection.Items){return;}for(let i=0;i<tmpCollection.Items.length;i++){if(tmpCollection.Items[i].ID===pItemID){tmpCollection.Items[i].OperationStatus='skipped';break;}}let tmpPanel=this._getPanelView();if(tmpPanel){tmpPanel.renderContent();}// Save to server in background
-this.updateCollection(tmpCollection);}};},{}],135:[function(require,module,exports){/**
+this.updateCollection(tmpCollection);}};},{}],143:[function(require,module,exports){/**
  * Retold Remote -- AI Sort Manager Provider
  *
  * Client-side state management and API communication for the
@@ -13782,7 +14471,7 @@ let tmpCollManager=tmpSelf._getCollectionManager();if(tmpCollManager){let tmpRem
 	 * Whether a generation is currently in progress.
 	 *
 	 * @returns {boolean}
-	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":58}],136:[function(require,module,exports){/**
+	 */isGenerating(){return this._generating;}}AISortManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=AISortManagerProvider;},{"pict-provider":58}],144:[function(require,module,exports){/**
  * Retold Remote -- Collection Manager Provider
  *
  * Client-side state management and API communication for the
@@ -13962,7 +14651,7 @@ fetch('/api/collections/'+encodeURIComponent(tmpCollection.GUID),{method:'PUT',h
 	 * @param {string} pQuery - Search query
 	 * @returns {Array} Filtered collection summaries
 	 */searchCollections(pQuery){let tmpRemote=this._getRemote();let tmpQuery=(pQuery||'').toLowerCase();if(!tmpQuery){return tmpRemote.Collections;}return tmpRemote.Collections.filter(pCollection=>{let tmpName=(pCollection.Name||'').toLowerCase();let tmpDesc=(pCollection.Description||'').toLowerCase();let tmpTags=(pCollection.Tags||[]).join(' ').toLowerCase();return tmpName.indexOf(tmpQuery)>=0||tmpDesc.indexOf(tmpQuery)>=0||tmpTags.indexOf(tmpQuery)>=0;});}}// -- Mix in method groups from sub-modules --------------------------------
-Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerAddItems);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerOperationPlan);CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"./CollectionManager-AddItems":132,"./CollectionManager-Favorites":133,"./CollectionManager-OperationPlan":134,"pict-provider":58}],137:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
+Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerAddItems);Object.assign(CollectionManagerProvider.prototype,_CollectionManagerOperationPlan);CollectionManagerProvider.default_configuration=_DefaultProviderConfiguration;module.exports=CollectionManagerProvider;},{"./CollectionManager-AddItems":140,"./CollectionManager-Favorites":141,"./CollectionManager-OperationPlan":142,"pict-provider":58}],145:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-FormattingUtilities',AutoInitialize:true,AutoSolveWithApp:false};class FormattingUtilitiesProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';}/**
 	 * Escape HTML special characters for safe insertion into markup.
 	 *
 	 * @param {string} pText - Raw text to escape
@@ -13984,7 +14673,7 @@ Object.assign(CollectionManagerProvider.prototype,_CollectionManagerFavorites);O
 	 * @param {number} pSeconds - Duration in seconds
 	 * @param {boolean} pIncludeMilliseconds - If true, append tenths of a second
 	 * @returns {string} Formatted string like "1:23" or "1:02:34.5"
-	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":58}],138:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
+	 */formatTimestamp(pSeconds,pIncludeMilliseconds){if(pSeconds===null||pSeconds===undefined||isNaN(pSeconds)){return'--';}let tmpHours=Math.floor(pSeconds/3600);let tmpMinutes=Math.floor(pSeconds%3600/60);let tmpSecs=Math.floor(pSeconds%60);let tmpResult;if(tmpHours>0){tmpResult=tmpHours+':'+String(tmpMinutes).padStart(2,'0')+':'+String(tmpSecs).padStart(2,'0');}else{tmpResult=tmpMinutes+':'+String(tmpSecs).padStart(2,'0');}if(pIncludeMilliseconds){let tmpMs=Math.floor(pSeconds%1*10);tmpResult+='.'+tmpMs;}return tmpResult;}}FormattingUtilitiesProvider.default_configuration=_DefaultProviderConfiguration;module.exports=FormattingUtilitiesProvider;},{"pict-provider":58}],146:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryFilterSort',AutoInitialize:true,AutoInitializeOrdinal:0,AutoSolveWithApp:false};class GalleryFilterSortProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}// ──────────────────────────────────────────────
 // Pipeline
 // ──────────────────────────────────────────────
 /**
@@ -14078,7 +14767,7 @@ if(tmpRemote.SearchQuery){let tmpSearchLabel='Search: "'+tmpRemote.SearchQuery+'
 	 * Delete a saved preset.
 	 *
 	 * @param {number} pIndex - index into FilterPresets array
-	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58}],139:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
+	 */deletePreset(pIndex){let tmpRemote=this.pict.AppData.RetoldRemote;if(!tmpRemote||!tmpRemote.FilterPresets){return;}tmpRemote.FilterPresets.splice(pIndex,1);}}GalleryFilterSortProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryFilterSortProvider;},{"../RetoldRemote-ExtensionMaps.js":139,"pict-provider":58}],147:[function(require,module,exports){const libPictProvider=require('pict-provider');const libHandleGalleryKey=require('./keyboard-handlers/KeyHandler-Gallery.js');const libHandleViewerKey=require('./keyboard-handlers/KeyHandler-Viewer.js');const libHandleSidebarKey=require('./keyboard-handlers/KeyHandler-Sidebar.js');const libHandleVideoExplorerKey=require('./keyboard-handlers/KeyHandler-VideoExplorer.js');const libHandleAudioExplorerKey=require('./keyboard-handlers/KeyHandler-AudioExplorer.js');const libHandleImageExplorerKey=require('./keyboard-handlers/KeyHandler-ImageExplorer.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-GalleryNavigation',AutoInitialize:true,AutoSolveWithApp:false};class GalleryNavigationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._columnsPerRow=4;this._keydownBound=false;this._helpPanelVisible=false;this._sidebarFocused=false;this._sidebarCursorIndex=0;}/**
 	 * Calculate how many columns are in the current gallery grid by
 	 * inspecting the rendered DOM.  In list mode this is always 1.
 	 */recalculateColumns(){let tmpRemote=this.pict.AppData.RetoldRemote;// List mode is always a single column
@@ -14268,7 +14957,7 @@ tmpVLCURL='vlc://'+tmpStreamURL;}else{// Windows, macOS, Linux: encode the URL s
 // shell strips the colon from nested http:// URLs.
 tmpVLCURL='vlc://'+encodeURIComponent(tmpStreamURL);}this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator('Opening VLC...');// Use window.location for iOS (more reliable for custom URL schemes
 // on iOS Safari than a programmatic anchor click), anchor for others.
-if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":146,"./keyboard-handlers/KeyHandler-Gallery.js":147,"./keyboard-handlers/KeyHandler-ImageExplorer.js":148,"./keyboard-handlers/KeyHandler-Sidebar.js":149,"./keyboard-handlers/KeyHandler-VideoExplorer.js":150,"./keyboard-handlers/KeyHandler-Viewer.js":151,"pict-provider":58}],140:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
+if(tmpIsIOS){window.location.href=tmpVLCURL;}else{let tmpLink=document.createElement('a');tmpLink.href=tmpVLCURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}}GalleryNavigationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=GalleryNavigationProvider;},{"./keyboard-handlers/KeyHandler-AudioExplorer.js":154,"./keyboard-handlers/KeyHandler-Gallery.js":155,"./keyboard-handlers/KeyHandler-ImageExplorer.js":156,"./keyboard-handlers/KeyHandler-Sidebar.js":157,"./keyboard-handlers/KeyHandler-VideoExplorer.js":158,"./keyboard-handlers/KeyHandler-Viewer.js":159,"pict-provider":58}],148:[function(require,module,exports){const libPictProvider=require('pict-provider');/**
  * Pict-Provider-OperationStatus
  *
  * Client-side singleton that:
@@ -14380,7 +15069,7 @@ let tmpProto=typeof window!=='undefined'&&window.location&&window.location.proto
 });}_scheduleReconnect(){if(!this._wsShouldRun){return;}if(this._wsReconnectTimer){return;}let tmpDelay=RECONNECT_BACKOFF_MS[Math.min(this._wsReconnectAttempt,RECONNECT_BACKOFF_MS.length-1)];this._wsReconnectAttempt++;let tmpSelf=this;this._wsReconnectTimer=setTimeout(function(){tmpSelf._wsReconnectTimer=null;tmpSelf._connectWebSocket();},tmpDelay);}_sendWs(pMessage){if(!this._ws||!this._wsConnected){return;}try{this._ws.send(JSON.stringify(pMessage));}catch(pErr){// ignore
 }}_onWsMessage(pEvent){let tmpData;try{tmpData=JSON.parse(pEvent.data);}catch(pErr){return;}if(!tmpData||typeof tmpData.Type!=='string'){return;}switch(tmpData.Type){case'hello':// Connection handshake — nothing to do
 break;case'progress':if(this._operations.has(tmpData.OperationId)){this.updateOperation(tmpData.OperationId,{Phase:tmpData.Phase,Current:typeof tmpData.Current==='number'?tmpData.Current:undefined,Total:typeof tmpData.Total==='number'?tmpData.Total:undefined,Message:tmpData.Message,Cancelable:typeof tmpData.Cancelable==='boolean'?tmpData.Cancelable:undefined});}break;case'complete':if(this._operations.has(tmpData.OperationId)){this.completeOperation(tmpData.OperationId);}break;case'error':if(this._operations.has(tmpData.OperationId)){this.errorOperation(tmpData.OperationId,{message:tmpData.Error});}break;case'cancelled':if(this._operations.has(tmpData.OperationId)){let tmpOp=this._operations.get(tmpData.OperationId);tmpOp.Status='cancelled';tmpOp.Message='Cancelled';this._render();let tmpSelf=this;setTimeout(function(){tmpSelf._operations.delete(tmpData.OperationId);tmpSelf._render();},600);}break;case'pong':// Heartbeat response — nothing to do
-break;}}}OperationStatusProvider.default_configuration=_DefaultProviderConfiguration;module.exports=OperationStatusProvider;},{"pict-provider":58}],141:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
+break;}}}OperationStatusProvider.default_configuration=_DefaultProviderConfiguration;module.exports=OperationStatusProvider;},{"pict-provider":58}],149:[function(require,module,exports){const libPictProvider=require('pict-provider');const libExtensionMaps=require('../RetoldRemote-ExtensionMaps.js');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-Provider',AutoInitialize:true,AutoSolveWithApp:false};class RetoldRemoteProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);// Client-side cache: path -> hash and hash -> path
 this._pathToHash={};this._hashToPath={};}/**
 	 * Fetch the server's media processing capabilities.
 	 *
@@ -14462,7 +15151,7 @@ if(pData&&pData.Hash&&pData.Path){this.registerHash(pData.Path,pData.Hash);}fCal
 	 *
 	 * @param {string} pExtension - Lowercase extension
 	 * @returns {boolean}
-	 */_isImageExtension(pExtension){return libExtensionMaps.getCategory(pExtension)==='image';}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58}],142:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
+	 */_isImageExtension(pExtension){return libExtensionMaps.getCategory(pExtension)==='image';}}RetoldRemoteProvider.default_configuration=_DefaultProviderConfiguration;module.exports=RetoldRemoteProvider;},{"../RetoldRemote-ExtensionMaps.js":139,"pict-provider":58}],150:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={"ProviderIdentifier":"RetoldRemote-Icons","AutoInitialize":true,"AutoInitializeOrdinal":0,"AutoSolveWithApp":true,"AutoSolveOrdinal":0};// ====================================================================
 // DEFAULT DARK-THEME COLOR PALETTE
 //
 // Designed for retold-remote's dark navy background (#16162B).
@@ -14608,7 +15297,7 @@ return this.getIcon('file',tmpSize);}/**
 // registered in the icon extension map.  The base map imported from
 // pict-section-filebrowser only covers a handful of common formats;
 // this fills in the gaps (mpg, mpeg, ts, mts, 3gp, etc.)
-let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":131,"pict-provider":58,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":68}],143:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ThemeDefinitions=require('./RetoldRemote-ThemeDefinitions');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
+let tmpVideoExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').VideoExtensions);for(let i=0;i<tmpVideoExts.length;i++){let tmpKey='.'+tmpVideoExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-video';}}let tmpAudioExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').AudioExtensions);for(let i=0;i<tmpAudioExts.length;i++){let tmpKey='.'+tmpAudioExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-audio';}}let tmpImageExts=Object.keys(require('../RetoldRemote-ExtensionMaps.js').ImageExtensions);for(let i=0;i<tmpImageExts.length;i++){let tmpKey='.'+tmpImageExts[i];if(!this._extensionMap[tmpKey]){this._extensionMap[tmpKey]='file-image';}}return super.onAfterInitialize();}}module.exports=RetoldRemoteIconProvider;module.exports.default_configuration=_DefaultProviderConfiguration;module.exports.DefaultColors=_DefaultColors;},{"../RetoldRemote-ExtensionMaps.js":139,"pict-provider":58,"pict-section-filebrowser/source/providers/Pict-Provider-FileBrowserIcons.js":68}],151:[function(require,module,exports){const libPictProvider=require('pict-provider');const _ThemeDefinitions=require('./RetoldRemote-ThemeDefinitions');const _ProviderConfiguration={ProviderIdentifier:'RetoldRemote-Theme',AutoInitialize:true,AutoInitializeOrdinal:0};/**
  * Theme provider for retold-remote.
  *
  * Manages 15 themes (5 grey-only + 10 fun) via CSS custom properties.
@@ -14644,7 +15333,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pThemeKey
 	 * @returns {Object|null}
-	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"./RetoldRemote-ThemeDefinitions":145,"pict-provider":58}],144:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
+	 */getTheme(pThemeKey){return this._themes[pThemeKey]||null;}}RetoldRemoteThemeProvider.default_configuration=_ProviderConfiguration;module.exports=RetoldRemoteThemeProvider;},{"./RetoldRemote-ThemeDefinitions":153,"pict-provider":58}],152:[function(require,module,exports){const libPictProvider=require('pict-provider');const _DefaultProviderConfiguration={ProviderIdentifier:'RetoldRemote-ToastNotification',AutoInitialize:true,AutoSolveWithApp:false};class ToastNotificationProvider extends libPictProvider{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this.serviceType='RetoldRemoteProvider';this._overlayTimeout=null;}/**
 	 * Show a brief overlay indicator inside the viewer body.
 	 *
 	 * Reuses the #RetoldRemote-FitIndicator element, creating it if needed.
@@ -14659,7 +15348,7 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 	 *
 	 * @param {string} pMessage - Text to display
 	 * @param {number} pDuration - Milliseconds before removal (default 2000)
-	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":58}],145:[function(require,module,exports){/**
+	 */showToast(pMessage,pDuration){let tmpDuration=pDuration||2000;let tmpExisting=document.querySelector('.retold-remote-toast');if(tmpExisting){tmpExisting.remove();}let tmpToast=document.createElement('div');tmpToast.className='retold-remote-toast';tmpToast.textContent=pMessage;document.body.appendChild(tmpToast);setTimeout(function(){if(tmpToast.parentNode){tmpToast.remove();}},tmpDuration);}}ToastNotificationProvider.default_configuration=_DefaultProviderConfiguration;module.exports=ToastNotificationProvider;},{"pict-provider":58}],153:[function(require,module,exports){/**
  * Theme definitions for retold-remote.
  *
  * Pure data module — 15 themes (5 grey-only, 10 fun, 1 debug).
@@ -14680,12 +15369,12 @@ let tmpRemote=this.pict.AppData.RetoldRemote;if(tmpRemote){tmpRemote.Theme=pThem
 {Key:'neo-tokyo',Name:'Neo-Tokyo',Category:'Fun',Description:'Neon pink on dark navy',Variables:{'--retold-bg-primary':'#0D0D2B','--retold-bg-secondary':'#080820','--retold-bg-tertiary':'#121235','--retold-bg-panel':'#0F0F28','--retold-bg-viewer':'#060615','--retold-bg-hover':'#1A1A42','--retold-bg-selected':'#2A1845','--retold-bg-thumb':'#080820','--retold-text-primary':'#E8E0F0','--retold-text-secondary':'#D0C8E0','--retold-text-muted':'#9088A8','--retold-text-dim':'#6860A0','--retold-text-placeholder':'#504888','--retold-accent':'#FF2D8A','--retold-accent-hover':'#FF5AA0','--retold-border':'#2A2050','--retold-border-light':'#382868','--retold-danger':'#FF4466','--retold-danger-muted':'#AA3355','--retold-scrollbar':'#2A2050','--retold-scrollbar-hover':'#3A3068','--retold-selection-bg':'rgba(255, 45, 138, 0.25)','--retold-focus-outline':'#FF2D8A','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0C8E0',Accent:'#FF2D8A',Muted:'#6860A0',Light:'#121235',WarmBeige:'#141438',TealTint:'#100E30',Lavender:'#141232',AmberTint:'#1A1228',PdfFill:'#1A1028',PdfText:'#FF4466'}},{Key:'cyberpunk',Name:'Cyberpunk',Category:'Fun',Description:'Electric green on black',Variables:{'--retold-bg-primary':'#0A0E0A','--retold-bg-secondary':'#060806','--retold-bg-tertiary':'#0E120E','--retold-bg-panel':'#0C100C','--retold-bg-viewer':'#040604','--retold-bg-hover':'#142014','--retold-bg-selected':'#1A3A1A','--retold-bg-thumb':'#060806','--retold-text-primary':'#C8FFC8','--retold-text-secondary':'#A0D8A0','--retold-text-muted':'#608860','--retold-text-dim':'#406040','--retold-text-placeholder':'#305030','--retold-accent':'#00FF41','--retold-accent-hover':'#44FF77','--retold-border':'#1A2A1A','--retold-border-light':'#224022','--retold-danger':'#FF3333','--retold-danger-muted':'#AA2222','--retold-scrollbar':'#1A2A1A','--retold-scrollbar-hover':'#2A4A2A','--retold-selection-bg':'rgba(0, 255, 65, 0.2)','--retold-focus-outline':'#00FF41','--retold-font-family':"'Lucida Console', 'Courier New', monospace",'--retold-font-mono':"'Lucida Console', 'Courier New', monospace"},IconColors:{Primary:'#A0D8A0',Accent:'#00FF41',Muted:'#406040',Light:'#0E120E',WarmBeige:'#101610',TealTint:'#0C140C',Lavender:'#0E120E',AmberTint:'#141810',PdfFill:'#181010',PdfText:'#FF3333'}},{Key:'hotdog',Name:'Hotdog',Category:'Fun',Description:'Red and mustard yellow, garish',Variables:{'--retold-bg-primary':'#8B0000','--retold-bg-secondary':'#6B0000','--retold-bg-tertiary':'#7B0000','--retold-bg-panel':'#750000','--retold-bg-viewer':'#550000','--retold-bg-hover':'#AA1111','--retold-bg-selected':'#BB3300','--retold-bg-thumb':'#6B0000','--retold-text-primary':'#FFD700','--retold-text-secondary':'#FFC000','--retold-text-muted':'#CC9900','--retold-text-dim':'#AA7700','--retold-text-placeholder':'#886600','--retold-accent':'#FFD700','--retold-accent-hover':'#FFEE44','--retold-border':'#AA2222','--retold-border-light':'#BB3333','--retold-danger':'#FFFF00','--retold-danger-muted':'#CCCC00','--retold-scrollbar':'#AA2222','--retold-scrollbar-hover':'#CC3333','--retold-selection-bg':'rgba(255, 215, 0, 0.3)','--retold-focus-outline':'#FFD700','--retold-font-family':"Impact, 'Arial Black', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#FFC000',Accent:'#FFD700',Muted:'#AA7700',Light:'#7B0000',WarmBeige:'#800000',TealTint:'#6B0000',Lavender:'#780000',AmberTint:'#7A1000',PdfFill:'#6B0000',PdfText:'#FFFF00'}},{Key:'1970s-console',Name:'1970s Console',Category:'Fun',Description:'Amber phosphor on brown-black',Variables:{'--retold-bg-primary':'#1A1000','--retold-bg-secondary':'#140C00','--retold-bg-tertiary':'#1E1400','--retold-bg-panel':'#1C1200','--retold-bg-viewer':'#100A00','--retold-bg-hover':'#2A1C00','--retold-bg-selected':'#3A2800','--retold-bg-thumb':'#140C00','--retold-text-primary':'#FFAA00','--retold-text-secondary':'#DD8800','--retold-text-muted':'#AA6600','--retold-text-dim':'#884400','--retold-text-placeholder':'#663300','--retold-accent':'#FFCC00','--retold-accent-hover':'#FFDD44','--retold-border':'#2A1800','--retold-border-light':'#3A2200','--retold-danger':'#FF4400','--retold-danger-muted':'#AA3300','--retold-scrollbar':'#2A1800','--retold-scrollbar-hover':'#3A2800','--retold-selection-bg':'rgba(255, 204, 0, 0.2)','--retold-focus-outline':'#FFCC00','--retold-font-family':"'Courier New', 'Lucida Console', monospace",'--retold-font-mono':"'Courier New', 'Lucida Console', monospace"},IconColors:{Primary:'#DD8800',Accent:'#FFCC00',Muted:'#884400',Light:'#1E1400',WarmBeige:'#201800',TealTint:'#1A1000',Lavender:'#1C1200',AmberTint:'#221800',PdfFill:'#201000',PdfText:'#FF4400'}},{Key:'1980s-console',Name:'1980s Console',Category:'Fun',Description:'Green phosphor on black',Variables:{'--retold-bg-primary':'#001200','--retold-bg-secondary':'#000E00','--retold-bg-tertiary':'#001600','--retold-bg-panel':'#001400','--retold-bg-viewer':'#000A00','--retold-bg-hover':'#002200','--retold-bg-selected':'#003800','--retold-bg-thumb':'#000E00','--retold-text-primary':'#00FF00','--retold-text-secondary':'#00CC00','--retold-text-muted':'#009900','--retold-text-dim':'#006600','--retold-text-placeholder':'#004400','--retold-accent':'#00FF66','--retold-accent-hover':'#44FF88','--retold-border':'#002A00','--retold-border-light':'#003A00','--retold-danger':'#FF0000','--retold-danger-muted':'#AA0000','--retold-scrollbar':'#002A00','--retold-scrollbar-hover':'#004400','--retold-selection-bg':'rgba(0, 255, 102, 0.2)','--retold-focus-outline':'#00FF66','--retold-font-family':"'Courier New', monospace",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#00CC00',Accent:'#00FF66',Muted:'#006600',Light:'#001600',WarmBeige:'#001A00',TealTint:'#001200',Lavender:'#001400',AmberTint:'#001800',PdfFill:'#140000',PdfText:'#FF0000'}},{Key:'1990s-website',Name:'1990s Web Site',Category:'Fun',Description:'Blue links on grey, beveled',Variables:{'--retold-bg-primary':'#C0C0C0','--retold-bg-secondary':'#B0B0B0','--retold-bg-tertiary':'#A8A8A8','--retold-bg-panel':'#B8B8B8','--retold-bg-viewer':'#D0D0D0','--retold-bg-hover':'#B8B8D0','--retold-bg-selected':'#000080','--retold-bg-thumb':'#B0B0B0','--retold-text-primary':'#000000','--retold-text-secondary':'#000080','--retold-text-muted':'#404040','--retold-text-dim':'#606060','--retold-text-placeholder':'#808080','--retold-accent':'#0000FF','--retold-accent-hover':'#0000CC','--retold-border':'#808080','--retold-border-light':'#A0A0A0','--retold-danger':'#FF0000','--retold-danger-muted':'#990000','--retold-scrollbar':'#808080','--retold-scrollbar-hover':'#606060','--retold-selection-bg':'rgba(0, 0, 128, 0.3)','--retold-focus-outline':'#0000FF','--retold-font-family':"'Times New Roman', Times, serif",'--retold-font-mono':"'Courier New', Courier, monospace"},IconColors:{Primary:'#000080',Accent:'#0000FF',Muted:'#606060',Light:'#A8A8A8',WarmBeige:'#B0B0B0',TealTint:'#A0A0A0',Lavender:'#ABABD0',AmberTint:'#B8B0A0',PdfFill:'#C0A0A0',PdfText:'#FF0000'}},{Key:'early-2000s',Name:'Early 2000s Web',Category:'Fun',Description:'Teal and silver, Web 2.0',Variables:{'--retold-bg-primary':'#E8F4F8','--retold-bg-secondary':'#D0E8EE','--retold-bg-tertiary':'#C0DDE6','--retold-bg-panel':'#D8EEF2','--retold-bg-viewer':'#F0F8FA','--retold-bg-hover':'#B0D4E0','--retold-bg-selected':'#88C4D8','--retold-bg-thumb':'#D0E8EE','--retold-text-primary':'#1A3A4A','--retold-text-secondary':'#2A4A5A','--retold-text-muted':'#5A7A8A','--retold-text-dim':'#7A9AAA','--retold-text-placeholder':'#9ABACA','--retold-accent':'#0099CC','--retold-accent-hover':'#00AADD','--retold-border':'#A0C8D8','--retold-border-light':'#B8D8E4','--retold-danger':'#CC3300','--retold-danger-muted':'#994422','--retold-scrollbar':'#A0C8D8','--retold-scrollbar-hover':'#88B8CC','--retold-selection-bg':'rgba(0, 153, 204, 0.2)','--retold-focus-outline':'#0099CC','--retold-font-family':"Verdana, Geneva, Tahoma, sans-serif",'--retold-font-mono':"'Lucida Console', Monaco, monospace"},IconColors:{Primary:'#2A4A5A',Accent:'#0099CC',Muted:'#7A9AAA',Light:'#C0DDE6',WarmBeige:'#D0E8EE',TealTint:'#B0D8E4',Lavender:'#C8DCE6',AmberTint:'#D8E0D0',PdfFill:'#E0C8C0',PdfText:'#CC3300'}},{Key:'synthwave',Name:'Synthwave',Category:'Fun',Description:'Purple and pink neon',Variables:{'--retold-bg-primary':'#1A0A2E','--retold-bg-secondary':'#140824','--retold-bg-tertiary':'#200E38','--retold-bg-panel':'#1C0C32','--retold-bg-viewer':'#100620','--retold-bg-hover':'#2A1848','--retold-bg-selected':'#3A2060','--retold-bg-thumb':'#140824','--retold-text-primary':'#E8C0F8','--retold-text-secondary':'#D0A8E8','--retold-text-muted':'#9878B8','--retold-text-dim':'#7858A8','--retold-text-placeholder':'#584088','--retold-accent':'#FF71CE','--retold-accent-hover':'#FF99DD','--retold-border':'#302050','--retold-border-light':'#402868','--retold-danger':'#FF4488','--retold-danger-muted':'#AA3366','--retold-scrollbar':'#302050','--retold-scrollbar-hover':'#402868','--retold-selection-bg':'rgba(255, 113, 206, 0.25)','--retold-focus-outline':'#FF71CE','--retold-font-family':"'Trebuchet MS', sans-serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#D0A8E8',Accent:'#FF71CE',Muted:'#7858A8',Light:'#200E38',WarmBeige:'#221040',TealTint:'#1A0C30',Lavender:'#1E0E36',AmberTint:'#241028',PdfFill:'#241020',PdfText:'#FF4488'}},{Key:'solarized-dark',Name:'Solarized Dark',Category:'Fun',Description:"Schoonover's classic palette",Variables:{'--retold-bg-primary':'#002B36','--retold-bg-secondary':'#073642','--retold-bg-tertiary':'#003B4A','--retold-bg-panel':'#00303C','--retold-bg-viewer':'#001E28','--retold-bg-hover':'#0A4858','--retold-bg-selected':'#155868','--retold-bg-thumb':'#073642','--retold-text-primary':'#FDF6E3','--retold-text-secondary':'#EEE8D5','--retold-text-muted':'#93A1A1','--retold-text-dim':'#839496','--retold-text-placeholder':'#657B83','--retold-accent':'#268BD2','--retold-accent-hover':'#45A0E0','--retold-border':'#0A4050','--retold-border-light':'#125868','--retold-danger':'#DC322F','--retold-danger-muted':'#AA2A28','--retold-scrollbar':'#0A4050','--retold-scrollbar-hover':'#125868','--retold-selection-bg':'rgba(38, 139, 210, 0.25)','--retold-focus-outline':'#268BD2','--retold-font-family':"'Source Code Pro', 'Fira Code', monospace",'--retold-font-mono':"'Source Code Pro', 'Fira Code', monospace"},IconColors:{Primary:'#EEE8D5',Accent:'#268BD2',Muted:'#839496',Light:'#003B4A',WarmBeige:'#073642',TealTint:'#004050',Lavender:'#003848',AmberTint:'#0A3A30',PdfFill:'#0A3028',PdfText:'#DC322F'}},{Key:'forest',Name:'Forest',Category:'Fun',Description:'Deep greens and earth browns',Variables:{'--retold-bg-primary':'#1A2018','--retold-bg-secondary':'#141A12','--retold-bg-tertiary':'#1E2620','--retold-bg-panel':'#1C221A','--retold-bg-viewer':'#101410','--retold-bg-hover':'#283828','--retold-bg-selected':'#344834','--retold-bg-thumb':'#141A12','--retold-text-primary':'#D0DCC8','--retold-text-secondary':'#B0C4A8','--retold-text-muted':'#809878','--retold-text-dim':'#607858','--retold-text-placeholder':'#486040','--retold-accent':'#6AAF5C','--retold-accent-hover':'#88CC78','--retold-border':'#2A3A28','--retold-border-light':'#3A4A38','--retold-danger':'#CC4422','--retold-danger-muted':'#884422','--retold-scrollbar':'#2A3A28','--retold-scrollbar-hover':'#3A4A38','--retold-selection-bg':'rgba(106, 175, 92, 0.25)','--retold-focus-outline':'#6AAF5C','--retold-font-family':"'Palatino Linotype', 'Book Antiqua', Palatino, serif",'--retold-font-mono':"'Courier New', monospace"},IconColors:{Primary:'#B0C4A8',Accent:'#6AAF5C',Muted:'#607858',Light:'#1E2620',WarmBeige:'#22281E',TealTint:'#1A221A',Lavender:'#1E2420',AmberTint:'#262218',PdfFill:'#261A18',PdfText:'#CC4422'}},// ===================================================================
 // DEBUG THEME (unique color per container for layout debugging)
 // ===================================================================
-{Key:'mobile-debug',Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}}];module.exports=_ThemeDefinitions;},{}],146:[function(require,module,exports){/**
+{Key:'mobile-debug',Name:'Mobile Container Debug',Category:'Debug',Description:'Unique color per container for layout debugging',Variables:{'--retold-bg-primary':'#FF0000','--retold-bg-secondary':'#00CCCC','--retold-bg-tertiary':'#00AA00','--retold-bg-panel':'#FFAA00','--retold-bg-viewer':'#333333','--retold-bg-hover':'rgba(255, 255, 255, 0.2)','--retold-bg-selected':'rgba(255, 255, 255, 0.3)','--retold-bg-thumb':'#AA00AA','--retold-text-primary':'#FFFFFF','--retold-text-secondary':'#EEEEEE','--retold-text-muted':'#CCCCCC','--retold-text-dim':'#AAAAAA','--retold-text-placeholder':'#888888','--retold-accent':'#FFFF00','--retold-accent-hover':'#FFFF88','--retold-border':'#FFFFFF','--retold-border-light':'#CCCCCC','--retold-danger':'#FF0000','--retold-danger-muted':'#CC4444','--retold-scrollbar':'#888888','--retold-scrollbar-hover':'#AAAAAA','--retold-selection-bg':'rgba(255, 255, 0, 0.3)','--retold-focus-outline':'#FFFF00','--retold-font-family':"system-ui, -apple-system, sans-serif",'--retold-font-mono':"'SF Mono', 'Consolas', monospace"},IconColors:{Primary:'#FFFFFF',Accent:'#FFFF00',Muted:'#CCCCCC',Light:'#333333',WarmBeige:'#FFAA00',TealTint:'#00CCCC',Lavender:'#AA00AA',AmberTint:'#FFAA00',PdfFill:'#FF4444',PdfText:'#FFFFFF'}}];module.exports=_ThemeDefinitions;},{}],154:[function(require,module,exports){/**
  * Audio explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
  * @param {KeyboardEvent} pEvent - The keyboard event
- */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;}}module.exports=handleAudioExplorerKey;},{}],147:[function(require,module,exports){/**
+ */function handleAudioExplorerKey(pGalleryNav,pEvent){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(!tmpAEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();if(tmpAEX._selectionStart>=0){tmpAEX.clearSelection();}else{tmpAEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpAEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpAEX.zoomOut();break;case'0':pEvent.preventDefault();tmpAEX.zoomToFit();break;case'z':case'Z':pEvent.preventDefault();tmpAEX.zoomToSelection();break;case' ':pEvent.preventDefault();tmpAEX.playSelection();break;case'a':case's':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addAudioSnippetToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;}}module.exports=handleAudioExplorerKey;},{}],155:[function(require,module,exports){/**
  * Gallery mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -14695,7 +15384,7 @@ pGalleryNav._showFilterBar();let tmpGalleryView=pGalleryNav.pict.views['RetoldRe
 pGalleryNav._showFilterBar();setTimeout(()=>{let tmpSortSelect=document.getElementById('RetoldRemote-Gallery-Sort');if(tmpSortSelect){tmpSortSelect.focus();}},50);}break;case'c':pEvent.preventDefault();pGalleryNav._toggleSettingsPanel();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpCursorItem=tmpItems[tmpIndex];let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpCursorItem&&tmpQuickGUID){if(tmpCursorItem.Type==='folder'||tmpCursorItem.Type==='archive'){// For folders, prompt user for folder reference vs folder contents
 tmpCollMgr.showFolderChoicePrompt(pChoice=>{let tmpAddItem={Type:pChoice==='contents'?'folder-contents':'folder',Path:tmpCursorItem.Path||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);});}else{// Quick-add the highlighted file item to the active collection
 let tmpAddItem={Type:'file',Path:tmpCursorItem.Path||'',Hash:tmpCursorItem.Hash||'',Label:''};tmpCollMgr.addItemsToCollection(tmpQuickGUID,[tmpAddItem]);}}else{// No active or last-used collection, or no item — open the topbar dropdown
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],148:[function(require,module,exports){/**
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpItem=tmpItems[tmpIndex];if(tmpItem&&tmpItem.Type!=='folder'&&tmpItem.Type!=='archive'){let tmpFilterSort=pGalleryNav.pict.providers['RetoldRemote-GalleryFilterSort'];let tmpCat=tmpFilterSort?tmpFilterSort.getCategory(tmpItem.Extension):'';if(tmpCat==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpItem.Path);}}}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'i':pEvent.preventDefault();{let tmpLayout=pGalleryNav.pict.views['ContentEditor-Layout'];if(tmpLayout){tmpLayout.switchSidebarTab('info');}}break;}}module.exports=handleGalleryKey;},{}],156:[function(require,module,exports){/**
  * Image explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -14703,7 +15392,7 @@ let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeo
  */function handleImageExplorerKey(pGalleryNav,pEvent){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(!tmpIEX){return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();// Escape unwinds one layer at a time: first exit edit mode
 // (if active), then exit new-region selection mode (if active),
 // and only close the whole explorer if neither is active.
-if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._selectionMode){tmpIEX._exitSelectionMode();}else{tmpIEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],149:[function(require,module,exports){/**
+if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._selectionMode){tmpIEX._exitSelectionMode();}else{tmpIEX.goBack();}break;case'+':case'=':pEvent.preventDefault();tmpIEX.zoomIn();break;case'-':case'_':pEvent.preventDefault();tmpIEX.zoomOut();break;case'0':pEvent.preventDefault();tmpIEX.zoomHome();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case's':pEvent.preventDefault();tmpIEX.toggleSelectionMode();break;}}module.exports=handleImageExplorerKey;},{}],157:[function(require,module,exports){/**
  * Sidebar file list keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -14711,7 +15400,7 @@ if(tmpIEX._editingRegionID){tmpIEX._exitRegionEditMode();}else if(tmpIEX._select
  */function handleSidebarKey(pGalleryNav,pEvent){let tmpRows=document.querySelectorAll('#Pict-FileBrowser-DetailRows .pict-fb-detail-row');let tmpCount=tmpRows.length;if(tmpCount===0){// Nothing in the sidebar, bail back to gallery
 pGalleryNav._blurSidebar();return;}switch(pEvent.key){case'ArrowDown':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.min(pGalleryNav._sidebarCursorIndex+1,tmpCount-1));break;case'ArrowUp':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(Math.max(pGalleryNav._sidebarCursorIndex-1,0));break;case'Home':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(0);break;case'End':pEvent.preventDefault();pGalleryNav._moveSidebarCursor(tmpCount-1);break;case'Enter':pEvent.preventDefault();{// Click the focused row to open it (folder or file)
 let tmpRow=tmpRows[pGalleryNav._sidebarCursorIndex];if(tmpRow){// Fire the dblclick handler which opens folders / selects files
-let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],150:[function(require,module,exports){/**
+let tmpDblClickHandler=tmpRow.getAttribute('ondblclick');if(tmpDblClickHandler){new Function(tmpDblClickHandler).call(tmpRow);}}}break;case'Escape':pEvent.preventDefault();pGalleryNav._blurSidebar();break;}}module.exports=handleSidebarKey;},{}],158:[function(require,module,exports){/**
  * Video explorer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -14721,7 +15410,7 @@ if(tmpVEX._previewKeyHandler){tmpVEX.closeFramePreview();}else{tmpVEX.goBack();}
 let tmpSelVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(!tmpSelVEX||tmpSelVEX._selectionStartTime<0||tmpSelVEX._selectionEndTime<0){// No selection active \u2014 do nothing
 break;}let tmpSelCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpSelCollMgr){let tmpStart=Math.min(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpEnd=Math.max(tmpSelVEX._selectionStartTime,tmpSelVEX._selectionEndTime);let tmpSelQuickGUID=tmpSelCollMgr.getQuickAddTargetGUID();if(tmpSelQuickGUID){tmpSelCollMgr.addVideoClipToCollection(tmpSelQuickGUID,tmpStart,tmpEnd);}else{let tmpSelTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpSelTopBar&&typeof tmpSelTopBar.showAddToCollectionDropdown==='function'){tmpSelTopBar.showAddToCollectionDropdown();}}}}break;case'[':pEvent.preventDefault();{// Set selection start marker at currently selected frame's timestamp
 let tmpStartVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpStartVEX&&tmpStartVEX._frameData&&tmpStartVEX._frameData.Frames&&tmpStartVEX._selectedFrameIndex>=0&&tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex]){let tmpTimestamp=tmpStartVEX._frameData.Frames[tmpStartVEX._selectedFrameIndex].Timestamp;tmpStartVEX.setSelectionStart(tmpTimestamp);}}break;case']':pEvent.preventDefault();{// Set selection end marker at currently selected frame's timestamp
-let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case' ':pEvent.preventDefault();{let tmpPlayVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpPlayVEX){tmpPlayVEX.playInBrowser();}}break;}}module.exports=handleVideoExplorerKey;},{}],151:[function(require,module,exports){/**
+let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&&tmpEndVEX._frameData&&tmpEndVEX._frameData.Frames&&tmpEndVEX._selectedFrameIndex>=0&&tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex]){let tmpTimestamp=tmpEndVEX._frameData.Frames[tmpEndVEX._selectedFrameIndex].Timestamp;tmpEndVEX.setSelectionEnd(tmpTimestamp);}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case' ':pEvent.preventDefault();{let tmpPlayVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpPlayVEX){tmpPlayVEX.playInBrowser();}}break;}}module.exports=handleVideoExplorerKey;},{}],159:[function(require,module,exports){/**
  * Viewer mode keyboard handler.
  *
  * @param {GalleryNavigationProvider} pGalleryNav - The provider instance
@@ -14730,7 +15419,7 @@ let tmpEndVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpEndVEX&
 if(tmpRemote.VideoMenuActive&&tmpRemote.CurrentViewerMediaType==='video'){switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();return;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();return;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();return;case'e':pEvent.preventDefault();let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}return;case' ':case'Enter':pEvent.preventDefault();let tmpViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpViewer){tmpViewer.playVideo();}return;case't':pEvent.preventDefault();let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.loadVideoMenuFrame();}return;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();return;case'a':pEvent.preventDefault();{let tmpMenuCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollMgr){let tmpMenuQuickGUID=tmpMenuCollMgr.getQuickAddTargetGUID();if(tmpMenuQuickGUID){tmpMenuCollMgr.addCurrentFileToCollection(tmpMenuQuickGUID);}else{let tmpMenuTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpMenuTopBar&&typeof tmpMenuTopBar.showAddToCollectionDropdown==='function'){tmpMenuTopBar.showAddToCollectionDropdown();}}}}return;case'b':pEvent.preventDefault();{let tmpMenuCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuCollManager){tmpMenuCollManager.togglePanel();}}return;case'h':pEvent.preventDefault();{let tmpMenuFavManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpMenuFavManager){tmpMenuFavManager.toggleFavorite();}}return;}return;}switch(pEvent.key){case'Escape':pEvent.preventDefault();pGalleryNav.closeViewer();break;case'ArrowRight':case'j':pEvent.preventDefault();pGalleryNav.nextFile();break;case'ArrowLeft':case'k':pEvent.preventDefault();pGalleryNav.prevFile();break;case'f':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'i':pEvent.preventDefault();pGalleryNav._toggleFileInfo();break;case' ':pEvent.preventDefault();pGalleryNav._togglePlayPause();break;case'+':case'=':pEvent.preventDefault();pGalleryNav._zoomIn();break;case'-':pEvent.preventDefault();pGalleryNav._zoomOut();break;case'0':pEvent.preventDefault();pGalleryNav._zoomReset();break;case'z':pEvent.preventDefault();pGalleryNav._cycleFitMode();break;case's':pEvent.preventDefault();{let tmpMediaViewer=pGalleryNav.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){let tmpViewerMediaType=tmpRemote.CurrentViewerMediaType;if(tmpViewerMediaType==='document'){// Toggle region selection for EPUB or PDF
 if(typeof tmpMediaViewer.ebookToggleRegionSelect==='function'&&tmpMediaViewer._activeRendition){tmpMediaViewer.ebookToggleRegionSelect();}else if(typeof tmpMediaViewer.pdfToggleRegionSelect==='function'&&tmpMediaViewer._pdfDocument){tmpMediaViewer.pdfToggleRegionSelect();}}}}break;case'Enter':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'v':pEvent.preventDefault();pGalleryNav._streamWithVLC();break;case'a':pEvent.preventDefault();{let tmpCollMgr=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollMgr){let tmpQuickGUID=tmpCollMgr.getQuickAddTargetGUID();if(tmpQuickGUID){// Quick-add the currently viewed file
 tmpCollMgr.addCurrentFileToCollection(tmpQuickGUID);}else{// No active or last-used collection — open the picker
-let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],152:[function(require,module,exports){/**
+let tmpTopBar=pGalleryNav.pict.views['ContentEditor-TopBar'];if(tmpTopBar&&typeof tmpTopBar.showAddToCollectionDropdown==='function'){tmpTopBar.showAddToCollectionDropdown();}}}}break;case'b':pEvent.preventDefault();{let tmpCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpCollManager){tmpCollManager.togglePanel();}}break;case'd':pEvent.preventDefault();pGalleryNav._toggleDistractionFree();break;case'e':pEvent.preventDefault();{let tmpMediaType=tmpRemote.CurrentViewerMediaType;if(tmpMediaType==='video'){let tmpVEX=pGalleryNav.pict.views['RetoldRemote-VideoExplorer'];if(tmpVEX){tmpVEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='audio'){let tmpAEX=pGalleryNav.pict.views['RetoldRemote-AudioExplorer'];if(tmpAEX){tmpAEX.showExplorer(tmpRemote.CurrentViewerFile);}}else if(tmpMediaType==='image'){let tmpIEX=pGalleryNav.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(tmpRemote.CurrentViewerFile);}}}break;case'1':pEvent.preventDefault();pGalleryNav.switchViewerType('image');break;case'2':pEvent.preventDefault();pGalleryNav.switchViewerType('video');break;case'3':pEvent.preventDefault();pGalleryNav.switchViewerType('audio');break;case'4':pEvent.preventDefault();pGalleryNav.switchViewerType('text');break;case'h':pEvent.preventDefault();{let tmpFavCollManager=pGalleryNav.pict.providers['RetoldRemote-CollectionManager'];if(tmpFavCollManager){tmpFavCollManager.toggleFavorite();}}break;}}module.exports=handleViewerKey;},{}],160:[function(require,module,exports){/**
  * MediaViewer — Code Viewer Mixin
  *
  * Syntax-highlighted code display using pict-section-code and CodeJar.
@@ -14762,7 +15451,7 @@ tmpSelf._activeCodeJar=window.CodeJar(tmpEditor,tmpHighlight,{tab:'\t',catchTab:
 tmpEditor.style.whiteSpace='pre';tmpEditor.style.overflowWrap='normal';// Set the content
 tmpSelf._activeCodeJar.updateCode(pText);// Make it read-only
 tmpEditor.setAttribute('contenteditable','false');// Render line numbers
-let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}};},{"pict-section-code":61}],153:[function(require,module,exports){/**
+let tmpLineCount=pText.split('\n').length;let tmpLineHTML='';for(let i=1;i<=tmpLineCount;i++){tmpLineHTML+='<span>'+i+'</span>';}tmpLineNumbers.innerHTML=tmpLineHTML;}).catch(pError=>{let tmpContainer=document.getElementById('RetoldRemote-CodeViewer-Container');if(tmpContainer){tmpContainer.innerHTML='<div class="retold-remote-code-viewer-loading">Failed to load file: '+pError.message+'</div>';}});}};},{"pict-section-code":61}],161:[function(require,module,exports){/**
  * MediaViewer — Ebook Viewer Mixin
  *
  * EPUB/MOBI rendering using epub.js, table of contents,
@@ -14844,7 +15533,7 @@ let tmpToggleBtn=document.getElementById('RetoldRemote-EbookRegionSelectBtn');if
 	 * POSTs to /api/media/subimage-regions and updates the sidebar.
 	 */ebookSaveLabel:function ebookSaveLabel(){let tmpSelf=this;if(!this._pendingEbookSelection){this.pict.providers['RetoldRemote-ToastNotification'].showToast('No selection to save.');return;}let tmpLabelField=document.getElementById('RetoldRemote-EbookLabelField');let tmpLabelValue=tmpLabelField?tmpLabelField.value.trim():'';if(!tmpLabelValue){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Enter a label for the selection.');return;}let tmpRegion=this._pendingEbookSelection;tmpRegion.Label=tmpLabelValue;let tmpPayload={Path:this.pict.AppData.RetoldRemote.CurrentViewerFile,Region:tmpRegion};fetch('/api/media/subimage-regions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpPayload)}).then(pResponse=>{if(!pResponse.ok){throw new Error('HTTP '+pResponse.status);}return pResponse.json();}).then(pData=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Selection saved: '+tmpLabelValue);// Clean up the selection state and UI
 tmpSelf.ebookCancelSelection();// Refresh the sidebar panel if a regions panel method exists
-if(typeof tmpSelf.refreshSubimageRegions==='function'){tmpSelf.refreshSubimageRegions();}}).catch(pError=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to save selection: '+pError.message);tmpSelf.pict.log.error('Ebook selection save error: '+pError.message);});}};},{}],154:[function(require,module,exports){/**
+if(typeof tmpSelf.refreshSubimageRegions==='function'){tmpSelf.refreshSubimageRegions();}}).catch(pError=>{tmpSelf.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to save selection: '+pError.message);tmpSelf.pict.log.error('Ebook selection save error: '+pError.message);});}};},{}],162:[function(require,module,exports){/**
  * MediaViewer — PDF Viewer Mixin
  *
  * Full pdf.js canvas renderer with text layer, page navigation,
@@ -15000,7 +15689,7 @@ tmpOverlaysContainer.style.width=tmpCanvas.offsetWidth+'px';tmpOverlaysContainer
 tmpOverlaysContainer.innerHTML='';let tmpCurrentPage=this._pdfCurrentPage;let tmpScale=this._pdfScale;let tmpDisplayWidth=tmpCanvas.offsetWidth;let tmpCanvasWidth=tmpCanvas.width;let tmpDisplayScale=tmpDisplayWidth/tmpCanvasWidth;for(let i=0;i<this._pdfSavedRegions.length;i++){let tmpRegion=this._pdfSavedRegions[i];// Only show regions for the current page (or regions without a page number)
 if(tmpRegion.PageNumber&&tmpRegion.PageNumber!==tmpCurrentPage){continue;}// Only render visual-region types as overlays
 if(tmpRegion.Type!=='visual-region'){continue;}// Convert PDF coordinates to display pixels
-let tmpLeft=tmpRegion.X*tmpScale*tmpDisplayScale;let tmpTop=tmpRegion.Y*tmpScale*tmpDisplayScale;let tmpWidth=tmpRegion.Width*tmpScale*tmpDisplayScale;let tmpHeight=tmpRegion.Height*tmpScale*tmpDisplayScale;let tmpRectEl=document.createElement('div');tmpRectEl.className='retold-remote-pdf-region-rect';tmpRectEl.style.left=tmpLeft+'px';tmpRectEl.style.top=tmpTop+'px';tmpRectEl.style.width=tmpWidth+'px';tmpRectEl.style.height=tmpHeight+'px';if(tmpRegion.Label){let tmpLabelEl=document.createElement('div');tmpLabelEl.className='retold-remote-pdf-region-label';tmpLabelEl.textContent=tmpRegion.Label;tmpRectEl.appendChild(tmpLabelEl);}tmpOverlaysContainer.appendChild(tmpRectEl);}}};},{}],155:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
+let tmpLeft=tmpRegion.X*tmpScale*tmpDisplayScale;let tmpTop=tmpRegion.Y*tmpScale*tmpDisplayScale;let tmpWidth=tmpRegion.Width*tmpScale*tmpDisplayScale;let tmpHeight=tmpRegion.Height*tmpScale*tmpDisplayScale;let tmpRectEl=document.createElement('div');tmpRectEl.className='retold-remote-pdf-region-rect';tmpRectEl.style.left=tmpLeft+'px';tmpRectEl.style.top=tmpTop+'px';tmpRectEl.style.width=tmpWidth+'px';tmpRectEl.style.height=tmpHeight+'px';if(tmpRegion.Label){let tmpLabelEl=document.createElement('div');tmpLabelEl.className='retold-remote-pdf-region-label';tmpLabelEl.textContent=tmpRegion.Label;tmpRectEl.appendChild(tmpLabelEl);}tmpOverlaysContainer.appendChild(tmpRectEl);}}};},{}],163:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-AudioExplorer",DefaultRenderable:"RetoldRemote-AudioExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteAudioExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._waveformData=null;this._peaks=[];// View state
 this._viewStart=0;// Start of visible range (0..1)
 this._viewEnd=1;// End of visible range (0..1)
 this._minZoom=0.005;// Minimum visible range (0.5% of total)
@@ -15140,7 +15829,7 @@ tmpSelf._applyPendingSelection();tmpSelf._updateSelectionButtons();tmpSelf._draw
 	 * Show an error message.
 	 *
 	 * @param {string} pMessage - Error message
-	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":102}],156:[function(require,module,exports){/**
+	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-AEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-aex-error">'+'<div class="retold-remote-aex-error-message">'+this.pict.providers['RetoldRemote-FormattingUtilities'].escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-aex-nav-btn" onclick="pict.views[\'RetoldRemote-AudioExplorer\'].goBack()">Back to Audio</button>'+'</div>';}}}RetoldRemoteAudioExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteAudioExplorerView;},{"pict-view":110}],164:[function(require,module,exports){/**
  * Retold Remote -- Collections Panel View
  *
  * Right-side flyout panel for managing user-defined collections.
@@ -15226,7 +15915,7 @@ document.getElementById('RetoldRemote-ExportConfirmBtn').onclick=()=>{let tmpDes
 // (individual item count, cancel button, etc.)
 let tmpOpStatus=tmpSelf.pict.providers['RetoldRemote-OperationStatus'];let tmpOp=tmpOpStatus?tmpOpStatus.startOperation({Label:'Exporting collection'+(pCollectionName?': '+pCollectionName:''),Phase:'Starting export…',Cancelable:true}):null;let tmpFetchOptions={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DestinationPath:tmpDestPath})};if(tmpOp&&tmpOp.AbortController){tmpFetchOptions.signal=tmpOp.AbortController.signal;}if(tmpOp){tmpFetchOptions.headers['X-Op-Id']=tmpOp.OperationId;}fetch('/api/collections/'+encodeURIComponent(pGUID)+'/export',tmpFetchOptions).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){if(tmpOp&&tmpOpStatus){tmpOpStatus.completeOperation(tmpOp.OperationId);}let tmpMsg='Exported '+pResult.ExportedCount+' of '+pResult.TotalItems+' items';if(pResult.ErrorCount>0){tmpMsg+=' ('+pResult.ErrorCount+' errors)';}if(pResult.Cancelled){tmpMsg='Export cancelled after '+pResult.ExportedCount+' of '+pResult.TotalItems+' items';}tmpMsg+=' to '+pResult.DestinationPath;if(tmpStatus)tmpStatus.textContent=tmpMsg;if(tmpBtn)tmpBtn.textContent=pResult.Cancelled?'Close':'Done';let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast(tmpMsg);}// Auto-dismiss after a moment (only on success)
 if(!pResult.Cancelled){setTimeout(()=>{if(tmpDialog.parentElement){tmpDialog.parentElement.removeChild(tmpDialog);}},3000);}}else{if(tmpOp&&tmpOpStatus){tmpOpStatus.errorOperation(tmpOp.OperationId,{message:pResult&&pResult.Error||'Export failed'});}let tmpErrMsg=pResult&&pResult.Error||'Export failed';if(tmpStatus)tmpStatus.textContent=tmpErrMsg;if(tmpStatus)tmpStatus.style.color='#e06c75';if(tmpBtn)tmpBtn.textContent='Retry';if(tmpBtn)tmpBtn.disabled=false;}}).catch(pError=>{if(pError&&pError.name==='AbortError'){if(tmpStatus)tmpStatus.textContent='Cancelled';if(tmpBtn)tmpBtn.textContent='Close';if(tmpBtn)tmpBtn.disabled=false;return;}if(tmpOp&&tmpOpStatus){tmpOpStatus.errorOperation(tmpOp.OperationId,pError);}if(tmpStatus)tmpStatus.textContent='Request failed: '+pError.message;if(tmpStatus)tmpStatus.style.color='#e06c75';if(tmpBtn)tmpBtn.textContent='Retry';if(tmpBtn)tmpBtn.disabled=false;});};// Enter key in input triggers export
-if(tmpPathInput){tmpPathInput.onkeydown=pEvent=>{if(pEvent.key==='Enter'){document.getElementById('RetoldRemote-ExportConfirmBtn').click();}if(pEvent.key==='Escape'){tmpDialog.parentElement.removeChild(tmpDialog);}};}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":102}],157:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:``,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
+if(tmpPathInput){tmpPathInput.onkeydown=pEvent=>{if(pEvent.key==='Enter'){document.getElementById('RetoldRemote-ExportConfirmBtn').click();}if(pEvent.key==='Escape'){tmpDialog.parentElement.removeChild(tmpDialog);}};}}}RetoldRemoteCollectionsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteCollectionsPanelView;},{"pict-view":110}],165:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-FileInfoPanel",DefaultRenderable:"RetoldRemote-FileInfoPanel",DefaultDestinationAddress:"#RetoldRemote-Info-Container",AutoRender:false,CSS:``,DefaultTemplateRecordAddress:false,Templates:[{Hash:"RetoldRemote-FileInfoPanel",Template:`<div class="retold-remote-info" id="RetoldRemote-Info-Body"></div>`}],Renderables:[{RenderableHash:"RetoldRemote-FileInfoPanel",TemplateHash:"RetoldRemote-FileInfoPanel",DestinationAddress:"#RetoldRemote-Info-Container"}]};class RetoldRemoteFileInfoPanel extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath=null;this._currentMetadata=null;this._extracting=false;}onAfterRender(){this._refreshForCurrentFile();}/**
 	 * Determine the currently selected file path and fetch metadata.
 	 */_refreshForCurrentFile(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpPath='';// Try content editor current file first
 if(this.pict.AppData.ContentEditor&&this.pict.AppData.ContentEditor.CurrentFile){tmpPath=this.pict.AppData.ContentEditor.CurrentFile;}// Fall back to viewer state
@@ -15277,7 +15966,7 @@ tmpHTML+=`<button class="retold-remote-info-extract-btn" onclick="pict.views['Re
 // Formatting utilities
 // ---------------------------------------------------------------
 _row(pLabel,pValue){return`<div class="retold-remote-info-row"><span class="retold-remote-info-label">${this._esc(String(pLabel))}</span><span class="retold-remote-info-value">${this._esc(String(pValue))}</span></div>`;}_esc(pStr){if(!pStr){return'';}return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}_formatSize(pBytes){if(!pBytes&&pBytes!==0){return'unknown';}let tmpBytes=parseInt(pBytes,10);if(tmpBytes<1024){return tmpBytes+' B';}if(tmpBytes<1024*1024){return(tmpBytes/1024).toFixed(1)+' KB';}if(tmpBytes<1024*1024*1024){return(tmpBytes/(1024*1024)).toFixed(1)+' MB';}return(tmpBytes/(1024*1024*1024)).toFixed(2)+' GB';}_formatDuration(pSeconds){if(!pSeconds&&pSeconds!==0){return'unknown';}let tmpSec=Math.floor(pSeconds);let tmpHours=Math.floor(tmpSec/3600);let tmpMins=Math.floor(tmpSec%3600/60);let tmpRem=tmpSec%60;if(tmpHours>0){return`${tmpHours}:${String(tmpMins).padStart(2,'0')}:${String(tmpRem).padStart(2,'0')}`;}return`${tmpMins}:${String(tmpRem).padStart(2,'0')}`;}_formatBitrate(pBits){if(!pBits){return'unknown';}let tmpBits=parseInt(pBits,10);if(tmpBits<1000){return tmpBits+' bps';}if(tmpBits<1000000){return(tmpBits/1000).toFixed(0)+' kbps';}return(tmpBits/1000000).toFixed(1)+' Mbps';}_formatFrameRate(pRate){if(!pRate){return'unknown';}// ffprobe returns frame rate as "24000/1001" or "30/1"
-if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":102}],158:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:``,Templates:[],Renderables:[]};// Chunked rendering tuning constants
+if(typeof pRate==='string'&&pRate.includes('/')){let tmpParts=pRate.split('/');let tmpNum=parseFloat(tmpParts[0]);let tmpDen=parseFloat(tmpParts[1]);if(tmpDen>0){return(tmpNum/tmpDen).toFixed(3).replace(/\.?0+$/,'')+' fps';}}return pRate+' fps';}_formatDate(pDateStr){if(!pDateStr){return'unknown';}try{let tmpDate=new Date(pDateStr);if(isNaN(tmpDate.getTime())){return String(pDateStr);}return tmpDate.toLocaleDateString()+' '+tmpDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(pError){return String(pDateStr);}}}module.exports=RetoldRemoteFileInfoPanel;module.exports.default_configuration=_ViewConfiguration;},{"pict-view":110}],166:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-Gallery",DefaultRenderable:"RetoldRemote-Gallery-Grid",DefaultDestinationAddress:"#RetoldRemote-Gallery-Container",AutoRender:false,CSS:``,Templates:[],Renderables:[]};// Chunked rendering tuning constants
 const _CHUNKED_RENDER_THRESHOLD=500;// Below this, render synchronously in one shot
 const _CHUNK_FIRST_SIZE=250;// First chunk — appears within one frame
 const _CHUNK_SUBSEQUENT_SIZE=500;// Later chunks — larger for throughput
@@ -15497,7 +16186,7 @@ pEvent.preventDefault();}_hideLongPressTooltip(){if(this._longPressTooltipEl){if
 	 * Get the media category for a file.
 	 */_getCategory(pExtension,pType){if(pType==='folder')return'folder';if(pType==='archive')return'archive';// Delegate to the filter/sort provider if available
 let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){return tmpFilterSort.getCategory(pExtension);}// Fallback
-let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":102}],159:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;this._loading=false;// Selection mode state
+let tmpExt=(pExtension||'').replace(/^\./,'').toLowerCase();if(tmpExt==='png'||tmpExt==='jpg'||tmpExt==='jpeg'||tmpExt==='gif'||tmpExt==='webp')return'image';if(tmpExt==='mp4'||tmpExt==='webm'||tmpExt==='mov')return'video';if(tmpExt==='mp3'||tmpExt==='wav'||tmpExt==='ogg')return'audio';if(tmpExt==='pdf')return'document';return'other';}}RetoldRemoteGalleryView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteGalleryView;},{"pict-view":110}],167:[function(require,module,exports){const libPictView=require('pict-view');const _OSD_CDN_URL='https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js';const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageExplorer",DefaultRenderable:"RetoldRemote-ImageExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._osdViewer=null;this._dziData=null;this._osdLoaded=false;this._loading=false;// Selection mode state
 this._selectionMode=false;this._selectionTracker=null;this._selectionOverlay=null;this._selectionRegion=null;// { X, Y, Width, Height } in image coords
 this._selectionStart=null;// viewport point where drag began
 this._selectionStartScreenPos=null;// screen-pixel position of press (for click-vs-drag filter)
@@ -15914,7 +16603,7 @@ tmpSelf._revertRegion(pRegionID,pPrevious);tmpSelf._renderSavedRegionOverlays();
 	 * Look up a saved region by ID.
 	 */_findSavedRegion(pRegionID){for(let i=0;i<this._savedRegions.length;i++){if(this._savedRegions[i].ID===pRegionID){return this._savedRegions[i];}}return null;}/**
 	 * Cancel handler — also exits edit mode if active.
-	 */cancelSelection(){if(this._editingRegionID){this._exitRegionEditMode();return;}return this._cancelNewSelection();}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":102}],160:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
+	 */cancelSelection(){if(this._editingRegionID){this._exitRegionEditMode();return;}return this._cancelNewSelection();}}RetoldRemoteImageExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageExplorerView;},{"pict-view":110}],168:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-ImageViewer",DefaultRenderable:"RetoldRemote-ImageViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteImageViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._zoomLevel=1;this._naturalWidth=0;this._naturalHeight=0;this._resizeHandler=null;}/**
 	 * Called when the image finishes loading.  Captures the natural
 	 * dimensions and applies the current fit mode.
 	 *
@@ -15960,7 +16649,7 @@ return{width:tmpNW,height:tmpNH};}}}/**
 	 * @param {string} pMode - The mode identifier
 	 */_showFitModeIndicator(pMode){let tmpLabels={'fit':'Fit to Window','auto':'Original if Smaller','original':'Original Size'};let tmpLabel=tmpLabels[pMode]||pMode;this.pict.providers['RetoldRemote-ToastNotification'].showOverlayIndicator(tmpLabel,1200);}/**
 	 * Clean up resize handler when navigating away.
-	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":102}],161:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
+	 */cleanup(){if(this._resizeHandler){window.removeEventListener('resize',this._resizeHandler);this._resizeHandler=null;}}}RetoldRemoteImageViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteImageViewerView;},{"pict-view":110}],169:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-Layout",DefaultRenderable:"RetoldRemote-Layout-Shell",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-Layout-Shell",Template:/*html*/`
 				<div id="ContentEditor-TopBar-Container"></div>
 				<div class="content-editor-body">
 					<div class="content-editor-sidebar-wrap" style="width: 250px;">
@@ -16049,7 +16738,7 @@ let tmpEscapedPath=tmpPath.replace(/'/g,"\\'");tmpHTML+='<div class="retold-remo
 	 */_setupCollectionsResizeHandle(){let tmpHandle=document.querySelector('.retold-remote-collections-resize-handle');let tmpWrap=document.getElementById('RetoldRemote-Collections-Wrap');if(!tmpHandle||!tmpWrap){return;}let tmpSelf=this;let tmpStartX=0;let tmpStartWidth=0;function onDragStart(pEvent){if(tmpWrap.classList.contains('collapsed')){return;}pEvent.preventDefault();tmpSelf._collectionsDragging=true;tmpHandle.classList.add('dragging');let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;tmpStartX=tmpClientX;tmpStartWidth=tmpWrap.getBoundingClientRect().width;document.addEventListener('mousemove',onDragMove);document.addEventListener('mouseup',onDragEnd);document.addEventListener('touchmove',onDragMove,{passive:false});document.addEventListener('touchend',onDragEnd);}function onDragMove(pEvent){if(!tmpSelf._collectionsDragging){return;}pEvent.preventDefault();let tmpClientX=pEvent.touches?pEvent.touches[0].clientX:pEvent.clientX;// Dragging left (negative deltaX) increases width
 let tmpDelta=tmpStartX-tmpClientX;let tmpNewWidth=Math.max(150,Math.min(600,tmpStartWidth+tmpDelta));tmpWrap.style.width=tmpNewWidth+'px';}function onDragEnd(){if(!tmpSelf._collectionsDragging){return;}tmpSelf._collectionsDragging=false;tmpHandle.classList.remove('dragging');let tmpRemote=tmpSelf.pict.AppData.RetoldRemote;tmpRemote.CollectionsPanelWidth=tmpWrap.getBoundingClientRect().width;tmpSelf.pict.PictApplication.saveSettings();document.removeEventListener('mousemove',onDragMove);document.removeEventListener('mouseup',onDragEnd);document.removeEventListener('touchmove',onDragMove);document.removeEventListener('touchend',onDragEnd);// Recalculate gallery columns
 let tmpGalleryNav=tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];if(tmpGalleryNav&&typeof tmpGalleryNav.recalculateColumns==='function'){tmpGalleryNav.recalculateColumns();}}tmpHandle.addEventListener('mousedown',onDragStart);tmpHandle.addEventListener('touchstart',onDragStart,{passive:false});// Double-click collapses the collections panel
-tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":102}],162:[function(require,module,exports){const libPictView=require('pict-view');const _MediaViewerEbookViewer=require('./MediaViewer-EbookViewer');const _MediaViewerCodeViewer=require('./MediaViewer-CodeViewer');const _MediaViewerPdfViewer=require('./MediaViewer-PdfViewer');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
+tmpHandle.addEventListener('dblclick',function(pEvent){pEvent.preventDefault();tmpSelf.toggleCollectionsPanel();});}}RetoldRemoteLayoutView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteLayoutView;},{"pict-view":110}],170:[function(require,module,exports){const libPictView=require('pict-view');const _MediaViewerEbookViewer=require('./MediaViewer-EbookViewer');const _MediaViewerCodeViewer=require('./MediaViewer-CodeViewer');const _MediaViewerPdfViewer=require('./MediaViewer-PdfViewer');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-MediaViewer",DefaultRenderable:"RetoldRemote-MediaViewer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteMediaViewerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._swipeStartX=0;this._swipeStartY=0;this._swipeTouchCount=0;this._swipeHandlers=null;this._dfExitHandlers=null;}/**
 	 * Show the media viewer for a given file.
 	 *
 	 * @param {string} pFilePath  - Relative file path
@@ -16198,7 +16887,7 @@ tmpSelf._loadPdfViewer(tmpPdfURL,pFilePath);}).catch(pError=>{if(tmpContent){let
 	 */_loadFileInfo(pFilePath){let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];if(!tmpProvider){return;}tmpProvider.fetchMediaProbe(pFilePath,(pError,pData)=>{if(!pData){return;}// Populate the info overlay
 let tmpOverlay=document.getElementById('RetoldRemote-FileInfo-Overlay');if(tmpOverlay){let tmpHTML='';if(pData.Size!==undefined){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Size</span><span class="retold-remote-fileinfo-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></div>';}if(pData.Width&&pData.Height){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Dimensions</span><span class="retold-remote-fileinfo-value">'+pData.Width+' x '+pData.Height+'</span></div>';}if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Duration</span><span class="retold-remote-fileinfo-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></div>';}if(pData.Codec){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Codec</span><span class="retold-remote-fileinfo-value">'+pData.Codec+'</span></div>';}if(pData.Format){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Format</span><span class="retold-remote-fileinfo-value">'+pData.Format+'</span></div>';}if(pData.Modified){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Modified</span><span class="retold-remote-fileinfo-value">'+new Date(pData.Modified).toLocaleString()+'</span></div>';}if(pData.Path){tmpHTML+='<div class="retold-remote-fileinfo-row"><span class="retold-remote-fileinfo-label">Path</span><span class="retold-remote-fileinfo-value">'+pData.Path+'</span></div>';}tmpOverlay.innerHTML=tmpHTML;}// Populate the video stats bar (if viewing a video)
 let tmpStatsBar=document.getElementById('RetoldRemote-VideoStats');if(tmpStatsBar){let tmpStatsHTML='';if(pData.Duration){let tmpMin=Math.floor(pData.Duration/60);let tmpSec=Math.floor(pData.Duration%60);tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Duration</span> <span class="retold-remote-video-stat-value">'+tmpMin+':'+(tmpSec<10?'0':'')+tmpSec+'</span></span>';}if(pData.Width&&pData.Height){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Resolution</span> <span class="retold-remote-video-stat-value">'+pData.Width+'×'+pData.Height+'</span></span>';}if(pData.Codec){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Codec</span> <span class="retold-remote-video-stat-value">'+pData.Codec+'</span></span>';}if(pData.Bitrate){let tmpBitrate=pData.Bitrate;let tmpBitrateStr;if(tmpBitrate>=1000000){tmpBitrateStr=(tmpBitrate/1000000).toFixed(1)+' Mbps';}else if(tmpBitrate>=1000){tmpBitrateStr=Math.round(tmpBitrate/1000)+' kbps';}else{tmpBitrateStr=tmpBitrate+' bps';}tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Bitrate</span> <span class="retold-remote-video-stat-value">'+tmpBitrateStr+'</span></span>';}if(pData.Size!==undefined){tmpStatsHTML+='<span><span class="retold-remote-video-stat-label">Size</span> <span class="retold-remote-video-stat-value">'+tmpSelf.pict.providers['RetoldRemote-FormattingUtilities'].formatFileSize(pData.Size)+'</span></span>';}// Preserve the Explore and VLC buttons if they exist
-let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":152,"./MediaViewer-EbookViewer":153,"./MediaViewer-PdfViewer":154,"pict-view":102}],163:[function(require,module,exports){const libPictView=require('pict-view');/**
+let tmpExploreBtn=tmpStatsBar.querySelector('.retold-remote-explore-btn');let tmpExploreHTML=tmpExploreBtn?tmpExploreBtn.outerHTML:'';let tmpVLCBtn=tmpStatsBar.querySelector('.retold-remote-vlc-btn');let tmpVLCHTML=tmpVLCBtn?tmpVLCBtn.outerHTML:'';tmpStatsBar.innerHTML=tmpStatsHTML+tmpExploreHTML+tmpVLCHTML;}});}}Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerEbookViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerCodeViewer);Object.assign(RetoldRemoteMediaViewerView.prototype,_MediaViewerPdfViewer);RetoldRemoteMediaViewerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteMediaViewerView;},{"./MediaViewer-CodeViewer":160,"./MediaViewer-EbookViewer":161,"./MediaViewer-PdfViewer":162,"pict-view":110}],171:[function(require,module,exports){const libPictView=require('pict-view');/**
  * Regions Browser — folder-scoped listing of saved subimage regions
  * across all files.
  *
@@ -16419,7 +17108,7 @@ let tmpTitleEl=document.getElementById('RetoldRemote-RegionsBrowser-Title');if(t
 if(tmpIsImage){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX){tmpIEX.showExplorer(pFilePath);// Wait for the explorer and its regions to load before zooming
 setTimeout(function(){let tmpIEX2=tmpSelf.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX2&&typeof tmpIEX2.zoomToRegion==='function'){tmpIEX2.zoomToRegion(pRegionID);}},900);return;}}// Fallback: open in the media viewer
 let tmpMediaViewer=this.pict.views['RetoldRemote-MediaViewer'];if(tmpMediaViewer){tmpMediaViewer.showMedia(pFilePath,tmpIsImage?'image':'document');// Defer the jump-to-region call to after the viewer settles
-setTimeout(function(){let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.navigateToRegion==='function'){tmpSubPanel.navigateToRegion(pRegionID);}},900);}}}RetoldRemoteRegionsBrowserView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteRegionsBrowserView;},{"pict-view":102}],164:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
+setTimeout(function(){let tmpSubPanel=tmpSelf.pict.views['RetoldRemote-SubimagesPanel'];if(tmpSubPanel&&typeof tmpSubPanel.navigateToRegion==='function'){tmpSubPanel.navigateToRegion(pRegionID);}},900);}}}RetoldRemoteRegionsBrowserView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteRegionsBrowserView;},{"pict-view":110}],172:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SettingsPanel",DefaultRenderable:"RetoldRemote-SettingsPanel",DefaultDestinationAddress:"#RetoldRemote-Settings-Container",AutoRender:false,CSS:``};class RetoldRemoteSettingsPanelView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);}onAfterRender(){super.onAfterRender();this._renderSettingsContent();}_renderSettingsContent(){let tmpContainer=document.getElementById('RetoldRemote-Settings-Container');if(!tmpContainer){return;}let tmpRemote=this.pict.AppData.RetoldRemote;let tmpCapabilities=tmpRemote.ServerCapabilities||{};let tmpHTML='<div class="retold-remote-settings">';// Appearance section (theme dropdown)
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Appearance</div>';tmpHTML+='<div class="retold-remote-settings-row">';tmpHTML+='<span class="retold-remote-settings-label">Theme</span>';tmpHTML+='<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';let tmpThemeProvider=this.pict.providers['RetoldRemote-Theme'];if(tmpThemeProvider){let tmpThemes=tmpThemeProvider.getThemeList();let tmpCurrentTheme=tmpThemeProvider.getCurrentTheme();let tmpCurrentCategory='';for(let i=0;i<tmpThemes.length;i++){let tmpTheme=tmpThemes[i];if(tmpTheme.category!==tmpCurrentCategory){if(tmpCurrentCategory){tmpHTML+='</optgroup>';}tmpHTML+='<optgroup label="'+tmpTheme.category+'">';tmpCurrentCategory=tmpTheme.category;}tmpHTML+='<option value="'+tmpTheme.key+'"'+(tmpTheme.key===tmpCurrentTheme?' selected':'')+'>'+tmpTheme.name+'</option>';}if(tmpCurrentCategory){tmpHTML+='</optgroup>';}}tmpHTML+='</select>';tmpHTML+='</div>';tmpHTML+='</div>';// end appearance section
 // Gallery section
 tmpHTML+='<div class="retold-remote-settings-section">';tmpHTML+='<div class="retold-remote-settings-section-title">Gallery</div>';// View mode
@@ -16472,7 +17161,7 @@ if(pKey==='NamingTemplate'){this._renderSettingsContent();}}/**
 	 * @returns {string}
 	 */_escapeHTML(pStr){if(!pStr)return'';return String(pStr).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}/**
 	 * Re-run the filter/sort pipeline and refresh the gallery.
-	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":102}],165:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
+	 */_refilterGallery(){let tmpRemote=this.pict.AppData.RetoldRemote;let tmpFilterSort=this.pict.providers['RetoldRemote-GalleryFilterSort'];if(tmpFilterSort){tmpFilterSort.runFilterPipeline();}if(tmpRemote.ActiveMode==='gallery'){let tmpGalleryView=this.pict.views['RetoldRemote-Gallery'];if(tmpGalleryView){tmpGalleryView.renderGallery();}}}}RetoldRemoteSettingsPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSettingsPanelView;},{"pict-view":110}],173:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-SubimagesPanel",DefaultRenderable:"RetoldRemote-SubimagesPanel",DefaultDestinationAddress:"#RetoldRemote-Subimages-Container",AutoRender:false,CSS:``};/**
  * Subimages Panel — sidebar tab showing labeled subimage regions
  * for the currently viewed image file.
  *
@@ -16517,7 +17206,7 @@ let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpRemote.ActiveMode
 	 * @param {string} pRegionID - The region ID to delete
 	 */deleteRegion(pRegionID){let tmpIEX=this.pict.views['RetoldRemote-ImageExplorer'];if(tmpIEX&&tmpIEX._currentPath===this._currentPath){// Delegate to the explorer which handles the API call and overlay removal
 tmpIEX.deleteRegion(pRegionID);}else{// Delete directly via API
-let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":102}],166:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
+let tmpSelf=this;let tmpProvider=this.pict.providers['RetoldRemote-Provider'];let tmpPathParam=tmpProvider?tmpProvider._getPathParam(this._currentPath):encodeURIComponent(this._currentPath);fetch('/api/media/subimage-regions/'+encodeURIComponent(pRegionID)+'?path='+tmpPathParam,{method:'DELETE'}).then(pResponse=>pResponse.json()).then(pResult=>{if(pResult&&pResult.Success){tmpSelf._regions=pResult.Regions||[];tmpSelf._renderRegionList();let tmpToast=tmpSelf.pict.providers['RetoldRemote-ToastNotification'];if(tmpToast){tmpToast.showToast('Region deleted');}}}).catch(()=>{});}}}RetoldRemoteSubimagesPanelView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteSubimagesPanelView;},{"pict-view":110}],174:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"ContentEditor-TopBar",DefaultRenderable:"RetoldRemote-TopBar",DefaultDestinationAddress:"#ContentEditor-TopBar-Container",AutoRender:false,CSS:``,Templates:[{Hash:"RetoldRemote-TopBar",Template:/*html*/`
 				<div class="retold-remote-topbar">
 					<button class="retold-remote-topbar-sidebar-toggle" id="RetoldRemote-TopBar-SidebarToggle" onclick="pict.views['ContentEditor-Layout'].toggleSidebar()" title="Toggle Sidebar"></button>
 					<button class="retold-remote-topbar-df-toggle" id="RetoldRemote-TopBar-DFToggle" onclick="pict.views['ContentEditor-TopBar'].toggleDistractionFree()" title="Distraction-free mode (d)"></button>
@@ -16629,7 +17318,7 @@ tmpBtn.style.position='relative';tmpBtn.appendChild(tmpDropdown);// Close on out
 setTimeout(()=>{document.addEventListener('click',tmpSelf._boundCloseDropdown=pClickEvent=>{if(!tmpDropdown.contains(pClickEvent.target)&&pClickEvent.target!==tmpBtn){tmpSelf._closeAddToCollectionDropdown();}});},10);});}/**
 	 * Close the add-to-collection dropdown.
 	 */_closeAddToCollectionDropdown(){let tmpDropdown=document.getElementById('RetoldRemote-AddToCollection-Dropdown');if(tmpDropdown){tmpDropdown.remove();}if(this._boundCloseDropdown){document.removeEventListener('click',this._boundCloseDropdown);this._boundCloseDropdown=null;}// Clear any pending clip context that was never consumed
-let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":102}],167:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
+let tmpManager=this.pict.providers['RetoldRemote-CollectionManager'];if(tmpManager){tmpManager.clearPendingClipContext();}}}RetoldRemoteTopBarView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteTopBarView;},{"pict-view":110}],175:[function(require,module,exports){const libPictView=require('pict-view');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VLCSetup",DefaultRenderable:"RetoldRemote-VLCSetup",DefaultDestinationAddress:"#ContentEditor-Application-Container",AutoRender:false,CSS:``};class RetoldRemoteVLCSetupView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._activePlatformTab=this._detectPlatform();this._modalVisible=false;this._boundKeyHandler=null;}_detectPlatform(){let tmpUA=typeof navigator!=='undefined'?navigator.userAgent:'';if(/iPhone|iPad|iPod/i.test(tmpUA)){return'ios';}// iPadOS 13+ sends a macOS user agent — detect via maxTouchPoints
 if(/Macintosh/i.test(tmpUA)&&typeof navigator!=='undefined'&&navigator.maxTouchPoints>1){return'ios';}if(/Android/i.test(tmpUA)){return'android';}if(/Macintosh|Mac OS X/.test(tmpUA)){return'macos';}if(/Windows/.test(tmpUA)){return'windows';}return'linux';}openModal(){if(this._modalVisible){return;}this._modalVisible=true;// Create the backdrop
 let tmpBackdrop=document.createElement('div');tmpBackdrop.className='retold-remote-vlc-modal-backdrop';tmpBackdrop.id='RetoldRemote-VLCSetup-Backdrop';tmpBackdrop.onclick=pEvent=>{if(pEvent.target===tmpBackdrop){this.closeModal();}};// Create the modal
 let tmpModal=document.createElement('div');tmpModal.className='retold-remote-vlc-modal';// Header
@@ -16649,7 +17338,7 @@ return["Windows Registry Editor Version 5.00","","[HKEY_CLASSES_ROOT\\vlc]","@=\
 // protocol to use it.  The handler URL-decodes the argument because
 // the client percent-encodes the URL to prevent Windows from
 // stripping colons in nested http:// URLs.
-return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":102}],168:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
+return["@echo off","REM VLC Protocol Handler Setup for Windows","REM Run this as Administrator","","REM Create the handler directory","mkdir \"%APPDATA%\\VLCProtocol\" 2>nul","","REM Write the PowerShell handler script","(","echo $url = $args[0]","echo if ^($url -and $url.StartsWith^('vlc://'^)^) { $url = $url.Substring^(6^) }","echo $url = [System.Uri]::UnescapeDataString^($url^)","echo $url = $url.TrimEnd^('/'^)","echo if ^($url^) { Start-Process 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe' -ArgumentList $url }",") > \"%APPDATA%\\VLCProtocol\\handler.ps1\"","","REM Register the protocol in the registry","reg add \"HKCU\\Software\\Classes\\vlc\" /ve /d \"URL:VLC Protocol\" /f","reg add \"HKCU\\Software\\Classes\\vlc\" /v \"URL Protocol\" /d \"\" /f","reg add \"HKCU\\Software\\Classes\\vlc\\shell\\open\\command\" /ve /d \"powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \\\"%APPDATA%\\VLCProtocol\\handler.ps1\\\" \\\"%%1\\\"\" /f","","echo VLC protocol handler installed successfully.","pause"].join('\n');}_getLinuxSetupScript(){return["# Create handler script","mkdir -p ~/.local/bin","cat > ~/.local/bin/vlc-protocol << 'EOF'","#!/bin/bash","URL=\"$1\"","URL=\"${URL#vlc://}\"","URL=$(python3 -c \"import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))\" \"$URL\")","exec vlc \"$URL\" &","EOF","chmod +x ~/.local/bin/vlc-protocol","","# Create .desktop file","cat > ~/.local/share/applications/vlc-protocol.desktop << 'EOF'","[Desktop Entry]","Name=VLC Protocol Handler","Exec=bash -c '~/.local/bin/vlc-protocol %u'","Type=Application","NoDisplay=true","MimeType=x-scheme-handler/vlc;","EOF","","# Register the handler","xdg-mime default vlc-protocol.desktop x-scheme-handler/vlc","update-desktop-database ~/.local/share/applications/","","echo \"VLC protocol handler installed successfully.\""].join('\n');}_copyToClipboard(pText,pLabel){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pText).then(()=>{this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}).catch(()=>{this._fallbackCopy(pText,pLabel);});}else{this._fallbackCopy(pText,pLabel);}}_fallbackCopy(pText,pLabel){let tmpTextarea=document.createElement('textarea');tmpTextarea.value=pText;tmpTextarea.style.position='fixed';tmpTextarea.style.left='-9999px';document.body.appendChild(tmpTextarea);tmpTextarea.select();try{document.execCommand('copy');this.pict.providers['RetoldRemote-ToastNotification'].showToast(pLabel+' copied to clipboard');}catch(pErr){this.pict.providers['RetoldRemote-ToastNotification'].showToast('Failed to copy - please select and copy manually');}document.body.removeChild(tmpTextarea);}copyMacSetup(){this._copyToClipboard(this._getMacSetupScript(),'macOS setup script');}copyWindowsReg(){this._copyToClipboard(this._getWindowsRegFile(),'Registry file');}copyWindowsBatch(){this._copyToClipboard(this._getWindowsBatchScript(),'Batch script');}copyLinuxSetup(){this._copyToClipboard(this._getLinuxSetupScript(),'Linux setup script');}testProtocol(){let tmpIsWindows=/Windows/.test(navigator.userAgent);let tmpIsMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);let tmpSampleURL='https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4';let tmpTestURL=tmpIsWindows||tmpIsMobile?'vlc://'+tmpSampleURL:'vlc://'+encodeURIComponent(tmpSampleURL);let tmpLink=document.createElement('a');tmpLink.href=tmpTestURL;tmpLink.style.display='none';document.body.appendChild(tmpLink);tmpLink.click();document.body.removeChild(tmpLink);}}RetoldRemoteVLCSetupView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVLCSetupView;},{"pict-view":110}],176:[function(require,module,exports){const libPictView=require('pict-view');const _VideoExplorerSelection=require('./VideoExplorer-Selection');const _VideoExplorerCustomFrames=require('./VideoExplorer-CustomFrames');const _VideoExplorerPreview=require('./VideoExplorer-Preview');const _ViewConfiguration={ViewIdentifier:"RetoldRemote-VideoExplorer",DefaultRenderable:"RetoldRemote-VideoExplorer",DefaultDestinationAddress:"#RetoldRemote-Viewer-Container",AutoRender:false,CSS:``};class RetoldRemoteVideoExplorerView extends libPictView{constructor(pFable,pOptions,pServiceHash){super(pFable,pOptions,pServiceHash);this._currentPath='';this._frameData=null;this._selectedFrameIndex=-1;this._frameCount=20;this._fullResFrames=true;this._customFrames=[];// Selection mode and state for timeline range selection
 this._selectionModeActive=false;this._selectionStartTime=-1;this._selectionEndTime=-1;this._isSelectingRange=false;this._isDraggingTimeline=false;this._draggingHandle=null;// 'start', 'end', or null
 // Cached provider references (resolved lazily)
 this._fmt=null;this._provider=null;}// -----------------------------------------------------------------
@@ -16792,7 +17481,7 @@ let tmpTimeline=document.getElementById('RetoldRemote-VEX-Timeline');if(tmpTimel
 	 *
 	 * @param {string} pMessage - Error message
 	 */_showError(pMessage){let tmpBody=document.getElementById('RetoldRemote-VEX-Body');if(tmpBody){tmpBody.innerHTML='<div class="retold-remote-vex-error">'+'<div class="retold-remote-vex-error-message">'+this._getFmt().escapeHTML(pMessage||'An error occurred.')+'</div>'+'<button class="retold-remote-vex-nav-btn" onclick="pict.views[\'RetoldRemote-VideoExplorer\'].goBack()">Back to Video</button>'+'</div>';}}}// -- Mix in method groups from sub-modules --------------------------------
-Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":169,"./VideoExplorer-Preview":170,"./VideoExplorer-Selection":171,"pict-view":102}],169:[function(require,module,exports){/**
+Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerSelection);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerCustomFrames);Object.assign(RetoldRemoteVideoExplorerView.prototype,_VideoExplorerPreview);RetoldRemoteVideoExplorerView.default_configuration=_ViewConfiguration;module.exports=RetoldRemoteVideoExplorerView;},{"./VideoExplorer-CustomFrames":177,"./VideoExplorer-Preview":178,"./VideoExplorer-Selection":179,"pict-view":110}],177:[function(require,module,exports){/**
  * VideoExplorer — Custom Frames Mixin
  *
  * Methods for extracting individual frames at arbitrary timestamps,
@@ -16874,7 +17563,7 @@ tmpEl.scrollIntoView({behavior:'smooth',block:'nearest'});},/**
 	 *
 	 * @param {string} pText - Formatted timestamp like "1:23" or "1:02:34"
 	 * @returns {number} Seconds
-	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],170:[function(require,module,exports){/**
+	 */_parseTimestamp:function _parseTimestamp(pText){if(!pText)return 0;let tmpParts=pText.trim().split(':');if(tmpParts.length===3){return parseInt(tmpParts[0],10)*3600+parseInt(tmpParts[1],10)*60+parseInt(tmpParts[2],10);}if(tmpParts.length===2){return parseInt(tmpParts[0],10)*60+parseInt(tmpParts[1],10);}return parseFloat(pText)||0;}};},{}],178:[function(require,module,exports){/**
  * VideoExplorer — Frame Preview Mixin
  *
  * Full-screen frame preview overlay with keyboard navigation
@@ -16927,7 +17616,7 @@ this._previewKeyHandler=e=>{switch(e.key){case'Escape':e.preventDefault();e.stop
 	 * Update the preview to show the frame at the current position.
 	 */_updatePreviewFrame:function _updatePreviewFrame(){let tmpFrame=this._previewAllFrames[this._previewPosition];if(!tmpFrame||!this._frameData){return;}// For custom frames, use the frame's own CacheKey (may differ from current batch)
 let tmpCacheKey=this._frameData.CacheKey;if(tmpFrame.Type==='custom'&&tmpFrame.CacheKey){tmpCacheKey=tmpFrame.CacheKey;}let tmpURL=this._buildFrameURL(tmpCacheKey,tmpFrame.Filename);let tmpBody=document.getElementById('RetoldRemote-VEX-PreviewBody');if(tmpBody){tmpBody.innerHTML='<img src="'+tmpURL+'" alt="'+this._getFmt().escapeHTML(tmpFrame.Label)+'">';}let tmpTitle=document.getElementById('RetoldRemote-VEX-PreviewTitle');if(tmpTitle){tmpTitle.textContent=tmpFrame.Label;}// Also select the corresponding frame in the grid behind the overlay
-this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],171:[function(require,module,exports){/**
+this._previewType=tmpFrame.Type;this._previewIndex=tmpFrame.Index;if(tmpFrame.Type==='regular'){this.selectFrame(tmpFrame.Index);}}};},{}],179:[function(require,module,exports){/**
  * VideoExplorer — Selection Mixin
  *
  * Methods for timeline range selection: toggling selection mode,
@@ -17018,5 +17707,5 @@ let tmpRange=Math.abs(this._selectionEndTime-this._selectionStartTime);if(tmpRan
 /**
 	 * Save the current selection state to the server (fire-and-forget).
 	 * Called whenever the selection changes.
-	 */_saveState:function _saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}};},{}]},{},[130])(130);});
+	 */_saveState:function _saveState(){if(!this._currentPath){return;}let tmpBody={Path:this._currentPath,SelectionStartTime:this._selectionStartTime,SelectionEndTime:this._selectionEndTime};fetch('/api/media/video-explorer-state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tmpBody)}).catch(()=>{});}};},{}]},{},[138])(138);});
 //# sourceMappingURL=retold-remote.js.map
