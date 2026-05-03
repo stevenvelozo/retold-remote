@@ -36,7 +36,10 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			{ Name: '-l, --logfile [path]', Description: 'Write logs to a file (auto-generates timestamped name if path omitted).', Default: '' });
 
 		this.options.CommandOptions.push(
-			{ Name: '--direct-image-max-mb [mb]', Description: 'Max original-file size (MB) to display an image directly instead of via OpenSeadragon. Set to 0 to always use the explorer. Default 15.', Default: '' });
+			{ Name: '--direct-image-max-px [pixels]', Description: 'Max image pixel dimension (longest side) at-or-below which the viewer loads the source directly with a plain <img> tag. Above this and <= --explorer-launch-px, the server-generated preview is used. Default 5000.', Default: '' });
+
+		this.options.CommandOptions.push(
+			{ Name: '--explorer-launch-px [pixels]', Description: 'Pixel dimension (longest side) above which clicking an image auto-launches the OpenSeadragon explorer. Default 8192.', Default: '' });
 
 		this.addCommand();
 	}
@@ -141,14 +144,24 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 				UltravisorURL: tmpUltravisorURL
 			};
 
-			let tmpDirectMaxMB = this.CommandOptions.directImageMaxMb;
-			if (typeof tmpDirectMaxMB === 'string' && tmpDirectMaxMB.length > 0)
+			let _parsePxOption = (pValue) =>
 			{
-				let tmpMB = parseFloat(tmpDirectMaxMB);
-				if (!isNaN(tmpMB) && tmpMB >= 0)
+				if (typeof pValue !== 'string' || pValue.length === 0)
 				{
-					tmpSetupOptions.DirectDisplayMaxFileSize = Math.round(tmpMB * 1024 * 1024);
+					return null;
 				}
+				let tmpPx = parseInt(pValue, 10);
+				return (!isNaN(tmpPx) && tmpPx >= 0) ? tmpPx : null;
+			};
+			let tmpDirectMaxPx = _parsePxOption(this.CommandOptions.directImageMaxPx);
+			if (tmpDirectMaxPx !== null)
+			{
+				tmpSetupOptions.DirectDisplayMaxPixelDimension = tmpDirectMaxPx;
+			}
+			let tmpExplorerMinPx = _parsePxOption(this.CommandOptions.explorerLaunchPx);
+			if (tmpExplorerMinPx !== null)
+			{
+				tmpSetupOptions.ExplorerLaunchPixelDimension = tmpExplorerMinPx;
 			}
 
 			tmpSetupServer(

@@ -213,22 +213,31 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 
 			// Set up the large-image preview and DZI tile service
 			let tmpImageServiceOptions = { ContentPath: tmpContentPath };
-			let tmpDirectMaxBytes = null;
-			if (typeof pOptions.DirectDisplayMaxFileSize === 'number' && pOptions.DirectDisplayMaxFileSize >= 0)
+			let _resolvePxOption = (pOptionValue, pEnvName) =>
 			{
-				tmpDirectMaxBytes = pOptions.DirectDisplayMaxFileSize;
-			}
-			else if (process.env.RETOLD_DIRECT_IMAGE_MAX_BYTES)
-			{
-				let tmpParsed = parseInt(process.env.RETOLD_DIRECT_IMAGE_MAX_BYTES, 10);
-				if (!isNaN(tmpParsed) && tmpParsed >= 0)
+				if (typeof pOptionValue === 'number' && pOptionValue >= 0)
 				{
-					tmpDirectMaxBytes = tmpParsed;
+					return pOptionValue;
 				}
-			}
-			if (tmpDirectMaxBytes !== null)
+				if (process.env[pEnvName])
+				{
+					let tmpParsed = parseInt(process.env[pEnvName], 10);
+					if (!isNaN(tmpParsed) && tmpParsed >= 0)
+					{
+						return tmpParsed;
+					}
+				}
+				return null;
+			};
+			let tmpDirectMaxPx = _resolvePxOption(pOptions.DirectDisplayMaxPixelDimension, 'RETOLD_DIRECT_IMAGE_MAX_PX');
+			if (tmpDirectMaxPx !== null)
 			{
-				tmpImageServiceOptions.DirectDisplayMaxFileSize = tmpDirectMaxBytes;
+				tmpImageServiceOptions.DirectDisplayMaxPixelDimension = tmpDirectMaxPx;
+			}
+			let tmpExplorerMinPx = _resolvePxOption(pOptions.ExplorerLaunchPixelDimension, 'RETOLD_EXPLORER_LAUNCH_PX');
+			if (tmpExplorerMinPx !== null)
+			{
+				tmpImageServiceOptions.ExplorerLaunchPixelDimension = tmpExplorerMinPx;
 			}
 			let tmpImageService = new libRetoldRemoteImageService(tmpFable, tmpImageServiceOptions);
 
@@ -1972,24 +1981,19 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 									return fNext();
 								}
 
-								// Always surface the original file size (the manifest's FileSize
-								// field gets overwritten with the generated preview's size when
-								// NeedsPreview=true). The client uses OrigFileSize against
-								// DirectDisplayMaxFileSize to decide whether to bypass the
-								// OpenSeadragon explorer / downscaled preview and load the
-								// source image directly.
-								if (pResult && typeof pResult === 'object')
+								// Server decides how the client should render this image
+								// (direct / preview / explorer) from the dimensions Sharp
+								// just measured plus the configured pixel thresholds. The
+								// client just dispatches on RenderMode rather than
+								// recomputing thresholds locally.
+								if (pResult && typeof pResult === 'object' && pResult.Success)
 								{
-									try
-									{
-										let tmpStat = libFs.statSync(tmpAbsPath);
-										pResult.OrigFileSize = tmpStat.size;
-									}
-									catch (pStatError)
-									{
-										// Non-fatal — client will fall through to existing logic
-									}
-									pResult.DirectDisplayMaxFileSize = tmpImageService.options.DirectDisplayMaxFileSize;
+									pResult.RenderMode = tmpImageService.decideRenderMode(
+										pResult.OrigWidth,
+										pResult.OrigHeight,
+										pResult.IsRawFormat);
+									pResult.DirectDisplayMaxPixelDimension = tmpImageService.options.DirectDisplayMaxPixelDimension;
+									pResult.ExplorerLaunchPixelDimension = tmpImageService.options.ExplorerLaunchPixelDimension;
 								}
 
 								pResponse.send(pResult);

@@ -50,11 +50,16 @@ const _DefaultServiceConfiguration =
 	"PreviewQuality": 85,
 	// Only generate preview/tiles for images larger than this (pixels on longest side)
 	"LargeImageThreshold": 4096,
-	// Original-file-size (bytes) at or below which the viewer will load the
-	// image directly instead of routing through the OpenSeadragon explorer or
-	// server-side downscaled preview. Raw camera formats always go through the
-	// preview pipeline regardless of size (browsers can't decode raw). 15 MiB.
-	"DirectDisplayMaxFileSize": 15 * 1024 * 1024
+	// Pixel dimension (longest side) at-or-below which the viewer loads the
+	// source image directly with a plain <img> tag — no server preview, no
+	// OpenSeadragon. Raw camera formats always need a preview because browsers
+	// can't decode them, regardless of dimensions.
+	"DirectDisplayMaxPixelDimension": 5000,
+	// Pixel dimension (longest side) above which the viewer auto-launches the
+	// OpenSeadragon explorer for pan/zoom. Between
+	// DirectDisplayMaxPixelDimension and this, the server-generated downscaled
+	// preview is rendered in the normal viewer.
+	"ExplorerLaunchPixelDimension": 8192
 };
 
 class RetoldRemoteImageService extends libFableServiceProviderBase
@@ -89,6 +94,49 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		// Operation broadcaster — set via setBroadcaster()
 		this._broadcaster = null;
+	}
+
+	/**
+	 * Decide how the client should render an image, given its source
+	 * dimensions and raw-format flag. Centralises the routing rules so the
+	 * front-end just dispatches on the returned mode rather than duplicating
+	 * threshold logic.
+	 *
+	 *   'direct'   — load the source URL into a plain <img> tag.
+	 *   'preview'  — load the server-generated downscaled preview.
+	 *   'explorer' — auto-launch the OpenSeadragon explorer for pan/zoom.
+	 *
+	 * Raw camera formats are always 'preview' (browsers can't decode raw).
+	 * If dimensions are unknown we fall back to 'preview' so the existing
+	 * NeedsPreview/CacheKey path takes over.
+	 *
+	 * @param {number}  pWidth   - Original image width in pixels
+	 * @param {number}  pHeight  - Original image height in pixels
+	 * @param {boolean} pIsRaw   - Whether the source is a raw camera format
+	 * @returns {string} 'direct' | 'preview' | 'explorer'
+	 */
+	decideRenderMode(pWidth, pHeight, pIsRaw)
+	{
+		if (pIsRaw)
+		{
+			return 'preview';
+		}
+		let tmpLongest = Math.max(pWidth || 0, pHeight || 0);
+		if (tmpLongest <= 0)
+		{
+			return 'preview';
+		}
+		let tmpDirectMax = this.options.DirectDisplayMaxPixelDimension;
+		let tmpExplorerMin = this.options.ExplorerLaunchPixelDimension;
+		if (typeof tmpDirectMax === 'number' && tmpDirectMax > 0 && tmpLongest <= tmpDirectMax)
+		{
+			return 'direct';
+		}
+		if (typeof tmpExplorerMin === 'number' && tmpExplorerMin > 0 && tmpLongest > tmpExplorerMin)
+		{
+			return 'explorer';
+		}
+		return 'preview';
 	}
 
 	/**
@@ -1263,11 +1311,30 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		_readSourceMetadata(function (pMetaErr, pSourceMeta)
 		{
+			// Compute aspect-correct target dimensions. The Ultravisor
+			// `rr-image-thumbnail` operation calls Sharp's resize() with both
+			// width and height; without an explicit `fit` Sharp defaults to
+			// `cover`, which CENTER-CROPS to a square. Sending pMaxDim×pMaxDim
+			// here therefore produced square-cropped previews — matching what
+			// the local Sharp path computes (fit:'inside' on pMaxDim) avoids
+			// that crop and keeps the source aspect ratio.
+			let tmpOrigWidth = pSourceMeta.width || 0;
+			let tmpOrigHeight = pSourceMeta.height || 0;
+			let tmpLongest = Math.max(tmpOrigWidth, tmpOrigHeight);
+			let tmpTargetWidth = pMaxDim;
+			let tmpTargetHeight = pMaxDim;
+			if (tmpLongest > 0)
+			{
+				let tmpScale = (tmpLongest > pMaxDim) ? (pMaxDim / tmpLongest) : 1.0;
+				tmpTargetWidth = Math.max(1, Math.round(tmpOrigWidth * tmpScale));
+				tmpTargetHeight = Math.max(1, Math.round(tmpOrigHeight * tmpScale));
+			}
+
 			tmpSelf._dispatcher.triggerOperation('rr-image-thumbnail',
 			{
 				ImageAddress: '>retold-remote/File/' + tmpRelPath,
-				Width: pMaxDim,
-				Height: pMaxDim,
+				Width: tmpTargetWidth,
+				Height: tmpTargetHeight,
 				Format: 'jpeg',
 				Quality: tmpSelf.options.PreviewQuality || 85
 			},
@@ -1293,10 +1360,10 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 					SourcePath: pRelPath,
 					CacheKey: pCacheKey,
 					OutputFilename: pOutputFilename,
-					Width: pMaxDim,
-					Height: pMaxDim,
-					OrigWidth: pSourceMeta.width || 0,
-					OrigHeight: pSourceMeta.height || 0,
+					Width: tmpTargetWidth,
+					Height: tmpTargetHeight,
+					OrigWidth: tmpOrigWidth,
+					OrigHeight: tmpOrigHeight,
 					FileSize: pResult.OutputBuffer.length,
 					NeedsPreview: true,
 					IsRawFormat: pIsRaw,

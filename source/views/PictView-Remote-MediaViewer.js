@@ -469,11 +469,14 @@ class RetoldRemoteMediaViewerView extends libPictView
 	}
 
 	/**
-	 * Probe image dimensions, then decide how to display it:
-	 *   - File ≤ DirectDisplayMaxFileSize (default 15 MiB, non-raw): direct content URL
-	 *   - ≤4096px: load direct content URL in the normal viewer
-	 *   - 4096–8192px: load a server preview in the normal viewer, show Explore button
-	 *   - >8192px: auto-launch the OpenSeadragon image explorer
+	 * Probe image dimensions, then dispatch on the server-decided RenderMode:
+	 *   - 'direct'   — load the source URL into a plain <img>.
+	 *   - 'preview'  — load the server-generated downscaled preview.
+	 *   - 'explorer' — auto-launch the OpenSeadragon explorer.
+	 *
+	 * The thresholds (DirectDisplayMaxPixelDimension,
+	 * ExplorerLaunchPixelDimension) live server-side because the server is
+	 * what measures the image — the client just dispatches.
 	 *
 	 * @param {string} pFilePath   - Relative file path
 	 * @param {string} pContentURL - Direct content URL (fallback)
@@ -496,24 +499,17 @@ class RetoldRemoteMediaViewerView extends libPictView
 					return;
 				}
 
-				// Small-file short-circuit: if the original is within the configured
-				// direct-display budget and the browser can decode it natively,
-				// skip both the server preview and the OpenSeadragon explorer.
-				// Raw camera formats always go through the preview pipeline.
-				if (!pResult.IsRawFormat
-					&& typeof pResult.OrigFileSize === 'number'
-					&& typeof pResult.DirectDisplayMaxFileSize === 'number'
-					&& pResult.DirectDisplayMaxFileSize > 0
-					&& pResult.OrigFileSize <= pResult.DirectDisplayMaxFileSize)
+				// Server tells us which render path to take. If RenderMode is
+				// missing (older server), infer from NeedsPreview as a graceful
+				// fallback: a positive NeedsPreview means use the preview URL,
+				// otherwise direct.
+				let tmpMode = pResult.RenderMode;
+				if (!tmpMode)
 				{
-					tmpSelf._insertImageTag(pContentURL, pFileName, false);
-					return;
+					tmpMode = (pResult.NeedsPreview && pResult.CacheKey) ? 'preview' : 'direct';
 				}
 
-				let tmpLongest = Math.max(pResult.OrigWidth || 0, pResult.OrigHeight || 0);
-
-				// >8192px: auto-launch the OpenSeadragon image explorer
-				if (tmpLongest > 8192)
+				if (tmpMode === 'explorer')
 				{
 					let tmpIEX = tmpSelf.pict.views['RetoldRemote-ImageExplorer'];
 					if (tmpIEX)
@@ -521,11 +517,11 @@ class RetoldRemoteMediaViewerView extends libPictView
 						tmpIEX.showExplorer(pFilePath);
 						return;
 					}
-					// Fall through if explorer view isn't available
+					// Explorer view not available — fall through to preview/direct
+					tmpMode = (pResult.NeedsPreview && pResult.CacheKey) ? 'preview' : 'direct';
 				}
 
-				// 4096–8192px: use the server preview
-				if (pResult.NeedsPreview && pResult.CacheKey)
+				if (tmpMode === 'preview' && pResult.NeedsPreview && pResult.CacheKey)
 				{
 					let tmpPreviewURL = '/api/media/image-preview-file/' +
 						encodeURIComponent(pResult.CacheKey) + '/' +
@@ -535,7 +531,7 @@ class RetoldRemoteMediaViewerView extends libPictView
 					return;
 				}
 
-				// ≤4096px: load the direct content URL
+				// 'direct' (or preview without a cache key) — load source directly
 				tmpSelf._insertImageTag(pContentURL, pFileName, false);
 			})
 			.catch(() =>
