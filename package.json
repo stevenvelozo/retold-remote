@@ -100,6 +100,7 @@
         "pict": "^1.0.365",
         "pict-application": "^1.0.33",
         "pict-provider": "^1.0.12",
+        "pict-provider-theme": "file:../../pict/pict-provider-theme",
         "pict-section-code": "^1.0.4",
         "pict-section-filebrowser": "^0.0.2",
         "pict-service-commandlineutility": "^1.0.19",
