@@ -433,9 +433,9 @@ const _HTML_CONTENT = `<!DOCTYPE html>
 	<meta charset="utf-8">
 	<title>Sample Page</title>
 	<style>
-		body { font-family: system-ui, sans-serif; margin: 2rem; background: #f5f5f5; }
+		body { font-family: system-ui, sans-serif; margin: 2rem; background: var(--theme-color-background-secondary, #f5f5f5); }
 		.card { background: white; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-		.card h2 { margin-top: 0; color: #333; }
+		.card h2 { margin-top: 0; color: var(--theme-color-text-primary, #333); }
 		.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
 		.badge-green { background: #d4edda; color: #155724; }
 		.badge-blue { background: #cce5ff; color: #004085; }

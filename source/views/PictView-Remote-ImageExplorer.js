@@ -337,7 +337,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 		let tmpLoading = document.getElementById('RetoldRemote-IEX-Loading');
 		if (tmpLoading)
 		{
-			tmpLoading.innerHTML = '<div style="padding: 2em; text-align: center; color: #999;">Raw image preview not available.<br>Install dcraw on the server for raw camera format support.</div>';
+			tmpLoading.innerHTML = '<div style="padding: 2em; text-align: center; color: var(--theme-color-text-muted, #999);">Raw image preview not available.<br>Install dcraw on the server for raw camera format support.</div>';
 		}
 	}
 
@@ -1875,7 +1875,7 @@ class RetoldRemoteImageExplorerView extends libPictView
 
 			// Visible dot inside the hit area
 			let tmpDot = document.createElement('div');
-			tmpDot.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#61afef;border:1.5px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.5);';
+			tmpDot.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#61afef;border:1.5px solid var(--theme-color-background-panel, #fff);border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.5);';
 			tmpH.appendChild(tmpDot);
 
 			tmpH.addEventListener('mousedown', function (pEvent)
