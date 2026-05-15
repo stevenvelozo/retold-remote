@@ -2092,18 +2092,20 @@ html, body
 	caret-color: var(--retold-accent);
 	border-radius: 0;
 }
-/* Syntax highlighting colors for dark themes */
-.retold-remote-code-viewer-container .pict-code-editor .keyword { color: #C678DD; }
-.retold-remote-code-viewer-container .pict-code-editor .string { color: #98C379; }
-.retold-remote-code-viewer-container .pict-code-editor .number { color: #D19A66; }
-.retold-remote-code-viewer-container .pict-code-editor .comment { color: #5C6370; font-style: italic; }
-.retold-remote-code-viewer-container .pict-code-editor .operator { color: #56B6C2; }
-.retold-remote-code-viewer-container .pict-code-editor .punctuation { color: #ABB2BF; }
-.retold-remote-code-viewer-container .pict-code-editor .function-name { color: #61AFEF; }
-.retold-remote-code-viewer-container .pict-code-editor .property { color: #E06C75; }
-.retold-remote-code-viewer-container .pict-code-editor .tag { color: #E06C75; }
-.retold-remote-code-viewer-container .pict-code-editor .attr-name { color: #D19A66; }
-.retold-remote-code-viewer-container .pict-code-editor .attr-value { color: #98C379; }
+/* Syntax highlighting — driven by pict-section-theme's Syntax tokens
+   so theme switching coherently recolors keyword/string/comment/etc.
+   Fallbacks preserve the original One Dark-ish dark palette. */
+.retold-remote-code-viewer-container .pict-code-editor .keyword       { color: var(--theme-color-syntax-keyword,     #C678DD); }
+.retold-remote-code-viewer-container .pict-code-editor .string        { color: var(--theme-color-syntax-string,      #98C379); }
+.retold-remote-code-viewer-container .pict-code-editor .number        { color: var(--theme-color-syntax-number,      #D19A66); }
+.retold-remote-code-viewer-container .pict-code-editor .comment       { color: var(--theme-color-syntax-comment,     #5C6370); font-style: italic; }
+.retold-remote-code-viewer-container .pict-code-editor .operator      { color: var(--theme-color-syntax-operator,    #56B6C2); }
+.retold-remote-code-viewer-container .pict-code-editor .punctuation   { color: var(--theme-color-syntax-punctuation, #ABB2BF); }
+.retold-remote-code-viewer-container .pict-code-editor .function-name { color: var(--theme-color-syntax-function,    #61AFEF); }
+.retold-remote-code-viewer-container .pict-code-editor .property      { color: var(--theme-color-syntax-property,    #E06C75); }
+.retold-remote-code-viewer-container .pict-code-editor .tag           { color: var(--theme-color-syntax-tag,         #E06C75); }
+.retold-remote-code-viewer-container .pict-code-editor .attr-name     { color: var(--theme-color-syntax-attrname,    #D19A66); }
+.retold-remote-code-viewer-container .pict-code-editor .attr-value    { color: var(--theme-color-syntax-attrvalue,   #98C379); }
 /* Video wrap with stats bar */
 .retold-remote-video-wrap
 {

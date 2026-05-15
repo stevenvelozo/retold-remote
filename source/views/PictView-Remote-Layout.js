@@ -1,5 +1,31 @@
 const libPictView = require('pict-view');
 
+/**
+ * ContentEditor-Layout — retold-remote's application chrome.
+ *
+ * Overrides retold-content-system's ContentEditor-Layout. Built on
+ * pict-section-modal's shell() API; everything other than the
+ * upload/operation overlays lives in shell panels.
+ *
+ * Panel layout:
+ *
+ *   ┌────────────────────────────────────────────────────────────┐
+ *   │ #Theme-TopBar  (top, fixed, 48px) — BrandMark + Nav + User │
+ *   ├──────────┬──────────────────────────────┬──────────────────┤
+ *   │ #RR-     │ #RR-Content-Container        │ #RR-Collections  │
+ *   │ Sidebar- │  (gallery + viewer)          │ -Container       │
+ *   │ Host     │                              │ (right, collaps) │
+ *   │ (left,   │                              │                  │
+ *   │ tabs,    │                              │                  │
+ *   │ drawer   │                              │                  │
+ *   │ <900px)  │                              │                  │
+ *   └──────────┴──────────────────────────────┴──────────────────┘
+ *
+ * Plus #RetoldRemote-Settings-Panel — a Hidden panel that overlays from
+ * the right when the gear button in the user slot toggles it. No edge
+ * affordance: collapsed = display:none. Gear is the only way in.
+ */
+
 const _ViewConfiguration =
 {
 	ViewIdentifier: "ContentEditor-Layout",
@@ -9,49 +35,70 @@ const _ViewConfiguration =
 
 	AutoRender: false,
 
-	CSS: ``,
+	CSS: /*css*/`
+		/* height: 100% (not 100vh) so Theme-Scale's CSS zoom on <html>
+		   doesn't push panels off-screen. */
+		#ContentEditor-Application-Container
+		{
+			height: 100%;
+			min-height: 0;
+			overflow: hidden;
+		}
+		html, body { height: 100%; margin: 0; padding: 0; }
+		.pict-modal-shell-host { height: 100%; }
+		.pict-modal-shell        { background: var(--theme-color-background-primary, var(--retold-bg-primary, #1E1E1E)); }
+		.pict-modal-shell-panel  { background: var(--theme-color-background-panel,   var(--retold-bg-panel,   #202020)); }
+		.pict-modal-shell-center { background: var(--theme-color-background-primary, var(--retold-bg-primary, #1E1E1E)); }
+
+		/* Gallery + viewer host inside the shell center. */
+		#RetoldRemote-Content-Container
+		{
+			height: 100%;
+			min-height: 0;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+		#RetoldRemote-Gallery-Container,
+		#RetoldRemote-Viewer-Container
+		{
+			flex: 1;
+			min-height: 0;
+		}
+
+		/* The Collections panel's inner div (set up by addPanel) needs to
+		   stretch fully so the CollectionsPanel view can flex its rows. */
+		#RetoldRemote-Collections-Container
+		{
+			height: 100%;
+			min-height: 0;
+			display: flex;
+			flex-direction: column;
+		}
+
+		/* Settings panel destination — themed surface. */
+		#RetoldRemote-Settings-Panel
+		{
+			height: 100%;
+			min-height: 0;
+			overflow-y: auto;
+			background: var(--theme-color-background-panel, var(--retold-bg-panel, #202020));
+			color: var(--theme-color-text-primary, var(--retold-text-primary, #E0E0E0));
+			border-left: 1px solid var(--theme-color-border-default, var(--retold-border-default, #333));
+		}
+	`,
 
 	Templates:
 	[
 		{
 			Hash: "RetoldRemote-Layout-Shell",
+			// Minimal template: the shell takes over the mount div and
+			// builds its own DOM. The operation-status overlay is rendered
+			// here as a sibling so it floats above the shell.
 			Template: /*html*/`
-				<div id="ContentEditor-TopBar-Container"></div>
-				<div class="content-editor-body">
-					<div class="content-editor-sidebar-wrap" style="width: 250px;">
-						<div class="content-editor-sidebar-inner">
-							<div class="content-editor-sidebar-tabs">
-								<button class="content-editor-sidebar-tab active" data-tab="files" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('files')">Files</button>
-								<button class="content-editor-sidebar-tab" data-tab="favorites" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('favorites')">Favorites</button>
-								<button class="content-editor-sidebar-tab" data-tab="info" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('info')">Info</button>
-								<button class="content-editor-sidebar-tab" data-tab="subimages" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('subimages')">Regions</button>
-								<button class="content-editor-sidebar-tab" data-tab="settings" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('settings')">Settings</button>
-								<button class="content-editor-sidebar-tab content-editor-sidebar-tab-collections" data-tab="collections" onclick="pict.views['ContentEditor-Layout'].switchSidebarTab('collections')" style="display:none;">Collections</button>
-							</div>
-							<div class="content-editor-sidebar-pane" data-pane="files" id="ContentEditor-Sidebar-Container"></div>
-							<div class="content-editor-sidebar-pane" data-pane="favorites" id="RetoldRemote-Favorites-Container" style="display:none">
-								<div id="RetoldRemote-Favorites-Body"></div>
-							</div>
-							<div class="content-editor-sidebar-pane" data-pane="info" id="RetoldRemote-Info-Container" style="display:none"></div>
-							<div class="content-editor-sidebar-pane" data-pane="subimages" id="RetoldRemote-Subimages-Container" style="display:none"></div>
-							<div class="content-editor-sidebar-pane" data-pane="settings" id="RetoldRemote-Settings-Container" style="display:none"></div>
-							<div class="content-editor-sidebar-pane" data-pane="collections" id="RetoldRemote-Collections-MobilePane" style="display:none"></div>
-						</div>
-						<div class="content-editor-resize-handle"></div>
-					</div>
-					<div id="RetoldRemote-Content-Container">
-						<div id="RetoldRemote-Gallery-Container"></div>
-						<div id="RetoldRemote-Viewer-Container"></div>
-					</div>
-					<div class="retold-remote-collections-wrap collapsed" id="RetoldRemote-Collections-Wrap" style="width: 300px;">
-						<div class="retold-remote-collections-resize-handle"></div>
-						<div class="retold-remote-collections-inner">
-							<div id="RetoldRemote-Collections-Container"></div>
-						</div>
-					</div>
-				</div>
-				<div class="retold-remote-operation-status" id="RetoldRemote-OperationStatus-Container"></div>
-			`
+<div id="RetoldRemote-Layout-Mount" style="height:100%"></div>
+<div class="retold-remote-operation-status" id="RetoldRemote-OperationStatus-Container"></div>
+`
 		}
 	],
 
@@ -60,7 +107,8 @@ const _ViewConfiguration =
 		{
 			RenderableHash: "RetoldRemote-Layout-Shell",
 			TemplateHash: "RetoldRemote-Layout-Shell",
-			DestinationAddress: "#ContentEditor-Application-Container"
+			DestinationAddress: "#ContentEditor-Application-Container",
+			RenderMethod: "replace"
 		}
 	]
 };
@@ -70,110 +118,157 @@ class RetoldRemoteLayoutView extends libPictView
 	constructor(pFable, pOptions, pServiceHash)
 	{
 		super(pFable, pOptions, pServiceHash);
-
-		this._sidebarDragging = false;
-		this._collectionsDragging = false;
+		this._shell = null;
+		this._shellPanelsBuilt = false;
 	}
 
-	onAfterRender()
+	onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent)
 	{
-		super.onAfterRender();
-
-		// Inject all view CSS into the page
 		this.pict.CSSMap.injectCSS();
 
-		// Set up sidebar resize handle
-		this._setupResizeHandle();
-
-		// Restore sidebar state from settings
-		let tmpRemote = this.pict.AppData.RetoldRemote;
-		if (tmpRemote && tmpRemote.SidebarCollapsed)
+		if (!this._shellPanelsBuilt)
 		{
-			let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
-			if (tmpWrap)
-			{
-				tmpWrap.classList.add('collapsed');
-			}
-		}
-		if (!this.isMobileDrawer() && tmpRemote && tmpRemote.SidebarWidth)
-		{
-			let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
-			if (tmpWrap && !tmpWrap.classList.contains('collapsed'))
-			{
-				tmpWrap.style.width = tmpRemote.SidebarWidth + 'px';
-			}
-		}
-		if (this.isMobileDrawer() && tmpRemote && tmpRemote.SidebarDrawerHeight)
-		{
-			let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
-			if (tmpWrap && !tmpWrap.classList.contains('collapsed'))
-			{
-				tmpWrap.style.height = tmpRemote.SidebarDrawerHeight + 'px';
-			}
+			this._buildShell();
+			this._shellPanelsBuilt = true;
 		}
 
-		// Restore collections panel state from settings
-		if (tmpRemote && tmpRemote.CollectionsPanelOpen)
-		{
-			let tmpCollWrap = document.getElementById('RetoldRemote-Collections-Wrap');
-			if (tmpCollWrap)
-			{
-				tmpCollWrap.classList.remove('collapsed');
-				if (tmpRemote.CollectionsPanelWidth)
-				{
-					tmpCollWrap.style.width = tmpRemote.CollectionsPanelWidth + 'px';
-				}
-			}
-		}
+		this._wireHashChangeListener();
 
-		// Set up collections panel resize handle
-		this._setupCollectionsResizeHandle();
-
-		// Listen for hash changes (browser back/forward)
-		let tmpSelf = this;
-		window.addEventListener('hashchange', () =>
-		{
-			tmpSelf.pict.PictApplication.resolveHash();
-		});
+		return super.onAfterRender(pRenderable, pRenderDestinationAddress, pRecord, pContent);
 	}
 
-	/**
-	 * Detect if we are in mobile drawer mode (narrow viewport).
-	 */
-	isMobileDrawer()
+	_buildShell()
 	{
-		return window.innerWidth <= 600;
+		let tmpModalSection = this.pict.views['Pict-Section-Modal'];
+		if (!tmpModalSection || typeof tmpModalSection.shell !== 'function')
+		{
+			this.pict.log.warn('ContentEditor-Layout: pict-section-modal.shell not available');
+			return;
+		}
+
+		let tmpMount = document.getElementById('RetoldRemote-Layout-Mount');
+		if (!tmpMount)
+		{
+			this.pict.log.warn('ContentEditor-Layout: #RetoldRemote-Layout-Mount not in DOM yet');
+			return;
+		}
+
+		let tmpRemote = (this.pict.AppData && this.pict.AppData.RetoldRemote) || {};
+		let tmpIsMobile = (typeof window !== 'undefined' && window.innerWidth <= 600);
+
+		this._shell = tmpModalSection.shell(tmpMount, { PersistenceKey: 'retold-remote' });
+
+		// Top — theme chrome. Theme-TopBar fills it with BrandMark on the
+		// left, host-supplied NavView (RetoldRemote-TopBar-Nav) for the
+		// breadcrumb + folder summary, and host-supplied UserView
+		// (RetoldRemote-TopBar-User) with action buttons + gear.
+		this._shell.addPanel(
+		{
+			Hash: 'topbar',
+			Side: 'top',
+			Mode: 'fixed',
+			Size: 48,
+			ContentDestinationId: 'Theme-TopBar',
+			ContentView: 'Theme-TopBar'
+		});
+
+		// Left — sidebar with tab strip (Files / Favorites / Info /
+		// Regions / Collections-mobile). Hosted by RetoldRemote-Sidebar.
+		this._shell.addPanel(
+		{
+			Hash: 'sidebar',
+			Side: 'left',
+			Mode: 'resizable',
+			Size: (typeof tmpRemote.SidebarWidth === 'number' && tmpRemote.SidebarWidth > 0) ? tmpRemote.SidebarWidth : 250,
+			MinSize: 150,
+			MaxSize: 600,
+			Collapsed: !!tmpRemote.SidebarCollapsed,
+			Title: 'Files',
+			ContentDestinationId: 'RetoldRemote-Sidebar-Host',
+			ContentView: 'RetoldRemote-Sidebar',
+			ResponsiveDrawer: 900
+		});
+
+		// Right — Collections panel. Starts collapsed; opened via the
+		// toggle button in the topbar's User slot.
+		this._shell.addPanel(
+		{
+			Hash: 'collections',
+			Side: 'right',
+			Mode: 'resizable',
+			Size: (typeof tmpRemote.CollectionsPanelWidth === 'number' && tmpRemote.CollectionsPanelWidth > 0) ? tmpRemote.CollectionsPanelWidth : 300,
+			MinSize: 240,
+			MaxSize: 600,
+			Collapsed: !tmpRemote.CollectionsPanelOpen,
+			Title: 'Collections',
+			ContentDestinationId: 'RetoldRemote-Collections-Container',
+			ContentView: 'RetoldRemote-CollectionsPanel'
+		});
+
+		// Right (overlay, Hidden) — settings panel. Hidden:true means no
+		// edge affordance when collapsed; the gear button in the User
+		// slot is the only way to reveal it. Overlay floats above the
+		// collections panel rather than pushing it aside.
+		this._shell.addPanel(
+		{
+			Hash: 'settings',
+			Side: 'right',
+			Mode: 'resizable',
+			Position: 'overlay',
+			Size: 360,
+			MinSize: 280,
+			MaxSize: 540,
+			Hidden: true,
+			Collapsed: true,
+			ContentDestinationId: 'RetoldRemote-Settings-Panel',
+			ContentView: 'RetoldRemote-SettingsPanel'
+		});
+
+		// Center — gallery / viewer workspace.
+		this._shell.center({ ContentDestinationId: 'RetoldRemote-Content-Container' });
+		// The center destination gets its inner divs after creation so
+		// that the gallery + viewer views have stable host elements.
+		let tmpCenterEl = this._shell.getCenterEl();
+		if (tmpCenterEl)
+		{
+			let tmpContentEl = document.getElementById('RetoldRemote-Content-Container') || tmpCenterEl;
+			if (!document.getElementById('RetoldRemote-Gallery-Container'))
+			{
+				tmpContentEl.innerHTML = '<div id="RetoldRemote-Gallery-Container"></div>'
+					+ '<div id="RetoldRemote-Viewer-Container"></div>';
+			}
+		}
+	}
+
+	// ─────────────────────────────────────────────
+	// Panel accessors used by other views (e.g. the gear button in
+	// TopBar-User → toggleSettingsPanel())
+	// ─────────────────────────────────────────────
+
+	getSidebarPanel()
+	{
+		return this._shell ? this._shell.getPanel('sidebar') : null;
+	}
+
+	getCollectionsPanel()
+	{
+		return this._shell ? this._shell.getPanel('collections') : null;
+	}
+
+	getSettingsPanel()
+	{
+		return this._shell ? this._shell.getPanel('settings') : null;
+	}
+
+	getTopbarPanel()
+	{
+		return this._shell ? this._shell.getPanel('topbar') : null;
 	}
 
 	toggleSidebar()
 	{
-		let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
-		if (!tmpWrap)
-		{
-			return;
-		}
-
-		tmpWrap.classList.toggle('collapsed');
-
-		let tmpRemote = this.pict.AppData.RetoldRemote;
-		let tmpIsCollapsed = tmpWrap.classList.contains('collapsed');
-		tmpRemote.SidebarCollapsed = tmpIsCollapsed;
-
-		// Restore saved dimensions when opening
-		if (!tmpIsCollapsed)
-		{
-			if (this.isMobileDrawer())
-			{
-				let tmpHeight = tmpRemote.SidebarDrawerHeight || Math.round(window.innerHeight * 0.33);
-				tmpWrap.style.height = tmpHeight + 'px';
-			}
-			else if (tmpRemote.SidebarWidth)
-			{
-				tmpWrap.style.width = tmpRemote.SidebarWidth + 'px';
-			}
-		}
-
-		this.pict.PictApplication.saveSettings();
+		let tmpPanel = this.getSidebarPanel();
+		if (tmpPanel) { tmpPanel.toggle(); }
 
 		// Recalculate gallery columns after sidebar resize
 		let tmpNavProvider = this.pict.providers['RetoldRemote-GalleryNavigation'];
@@ -183,251 +278,6 @@ class RetoldRemoteLayoutView extends libPictView
 		}
 	}
 
-	switchSidebarTab(pTab)
-	{
-		// Update tab buttons
-		let tmpTabs = document.querySelectorAll('.content-editor-sidebar-tab');
-		tmpTabs.forEach((pEl) =>
-		{
-			pEl.classList.toggle('active', pEl.getAttribute('data-tab') === pTab);
-		});
-
-		// Update panes
-		let tmpPanes = document.querySelectorAll('.content-editor-sidebar-pane');
-		tmpPanes.forEach((pEl) =>
-		{
-			pEl.style.display = (pEl.getAttribute('data-pane') === pTab) ? '' : 'none';
-		});
-
-		// Subimages tab: render the subimages panel
-		if (pTab === 'subimages')
-		{
-			let tmpSubimagesView = this.pict.views['RetoldRemote-SubimagesPanel'];
-			if (tmpSubimagesView)
-			{
-				tmpSubimagesView.render();
-			}
-		}
-
-		// Render settings panel on demand
-		if (pTab === 'settings')
-		{
-			let tmpSettingsView = this.pict.views['RetoldRemote-SettingsPanel'];
-			if (tmpSettingsView)
-			{
-				tmpSettingsView.render();
-			}
-		}
-
-		// Favorites tab: render the favorites list
-		if (pTab === 'favorites')
-		{
-			this.renderFavoritesList();
-		}
-
-		// Info tab: render the file info panel
-		if (pTab === 'info')
-		{
-			let tmpInfoView = this.pict.views['RetoldRemote-FileInfoPanel'];
-			if (tmpInfoView)
-			{
-				tmpInfoView.render();
-			}
-		}
-
-		// Collections tab: move the collections container into the mobile pane
-		if (pTab === 'collections')
-		{
-			let tmpCollContainer = document.getElementById('RetoldRemote-Collections-Container');
-			let tmpMobilePane = document.getElementById('RetoldRemote-Collections-MobilePane');
-			if (tmpCollContainer && tmpMobilePane && !tmpMobilePane.contains(tmpCollContainer))
-			{
-				tmpMobilePane.appendChild(tmpCollContainer);
-			}
-			// Render and fetch collections
-			let tmpCollView = this.pict.views['RetoldRemote-CollectionsPanel'];
-			if (tmpCollView)
-			{
-				tmpCollView.render();
-			}
-			let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
-			if (tmpManager)
-			{
-				tmpManager.fetchCollections();
-			}
-		}
-		else
-		{
-			// Return collections container to its original home when leaving collections tab
-			let tmpCollContainer = document.getElementById('RetoldRemote-Collections-Container');
-			let tmpOrigParent = document.querySelector('.retold-remote-collections-inner');
-			if (tmpCollContainer && tmpOrigParent && !tmpOrigParent.contains(tmpCollContainer))
-			{
-				tmpOrigParent.appendChild(tmpCollContainer);
-			}
-		}
-
-	}
-
-	/**
-	 * Notify the layout that the currently-viewed file has changed (or been
-	 * cleared). This re-renders whichever sidebar panel is currently visible
-	 * so stale file-scoped content (Info metadata, Regions list, etc.) gets
-	 * refreshed without the user having to click the tab again.
-	 *
-	 * Call this from every viewer that mutates tmpRemote.CurrentViewerFile,
-	 * and from the gallery clear path. Do NOT call it on intra-file navigation
-	 * (PDF page changes, EPUB chapter changes) — those don't change the file.
-	 *
-	 * @param {string} pFilePath - The new current file path (or '' when clearing)
-	 */
-	notifyCurrentFileChanged(pFilePath)
-	{
-		// Find the currently-active sidebar tab
-		let tmpActiveTab = document.querySelector('.content-editor-sidebar-tab.active');
-		if (!tmpActiveTab)
-		{
-			return;
-		}
-		let tmpTab = tmpActiveTab.getAttribute('data-tab');
-
-		// Re-render whichever panel owns file-scoped state. The panel's own
-		// render() already detects whether the file actually changed (via its
-		// internal _currentPath comparison) and re-fetches only when needed.
-		if (tmpTab === 'subimages')
-		{
-			let tmpSubimagesView = this.pict.views['RetoldRemote-SubimagesPanel'];
-			if (tmpSubimagesView)
-			{
-				tmpSubimagesView.render();
-			}
-		}
-		else if (tmpTab === 'info')
-		{
-			let tmpInfoView = this.pict.views['RetoldRemote-FileInfoPanel'];
-			if (tmpInfoView)
-			{
-				tmpInfoView.render();
-			}
-		}
-		// Other tabs (files, favorites, settings, collections) are not
-		// file-scoped, so there's nothing to refresh on file change.
-	}
-
-	_setupResizeHandle()
-	{
-		let tmpSelf = this;
-		let tmpHandle = document.querySelector('.content-editor-resize-handle');
-		let tmpWrap = document.querySelector('.content-editor-sidebar-wrap');
-
-		if (!tmpHandle || !tmpWrap)
-		{
-			return;
-		}
-
-		let tmpStartX = 0;
-		let tmpStartY = 0;
-		let tmpStartWidth = 0;
-		let tmpStartHeight = 0;
-
-		function getClientPos(pEvent)
-		{
-			if (pEvent.touches && pEvent.touches.length > 0)
-			{
-				return { x: pEvent.touches[0].clientX, y: pEvent.touches[0].clientY };
-			}
-			return { x: pEvent.clientX, y: pEvent.clientY };
-		}
-
-		function onDragStart(pEvent)
-		{
-			tmpSelf._sidebarDragging = true;
-			let tmpPos = getClientPos(pEvent);
-			tmpStartX = tmpPos.x;
-			tmpStartY = tmpPos.y;
-			tmpStartWidth = tmpWrap.offsetWidth;
-			tmpStartHeight = tmpWrap.offsetHeight;
-			tmpHandle.classList.add('dragging');
-
-			document.addEventListener('mousemove', onDragMove);
-			document.addEventListener('mouseup', onDragEnd);
-			document.addEventListener('touchmove', onDragMove, { passive: false });
-			document.addEventListener('touchend', onDragEnd);
-			pEvent.preventDefault();
-		}
-
-		function onDragMove(pEvent)
-		{
-			if (!tmpSelf._sidebarDragging)
-			{
-				return;
-			}
-
-			let tmpPos = getClientPos(pEvent);
-
-			if (tmpSelf.isMobileDrawer())
-			{
-				// Vertical resize (top drawer)
-				let tmpNewHeight = tmpStartHeight + (tmpPos.y - tmpStartY);
-				let tmpMaxHeight = Math.round(window.innerHeight * 0.7);
-				tmpNewHeight = Math.max(80, Math.min(tmpNewHeight, tmpMaxHeight));
-				tmpWrap.style.height = tmpNewHeight + 'px';
-			}
-			else
-			{
-				// Horizontal resize (sidebar)
-				let tmpNewWidth = tmpStartWidth + (tmpPos.x - tmpStartX);
-				tmpNewWidth = Math.max(150, Math.min(tmpNewWidth, 600));
-				tmpWrap.style.width = tmpNewWidth + 'px';
-			}
-
-			pEvent.preventDefault();
-		}
-
-		function onDragEnd()
-		{
-			tmpSelf._sidebarDragging = false;
-			tmpHandle.classList.remove('dragging');
-
-			document.removeEventListener('mousemove', onDragMove);
-			document.removeEventListener('mouseup', onDragEnd);
-			document.removeEventListener('touchmove', onDragMove);
-			document.removeEventListener('touchend', onDragEnd);
-
-			// Persist dimensions
-			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
-			if (tmpSelf.isMobileDrawer())
-			{
-				tmpRemote.SidebarDrawerHeight = tmpWrap.offsetHeight;
-			}
-			else
-			{
-				tmpRemote.SidebarWidth = tmpWrap.offsetWidth;
-			}
-			tmpSelf.pict.PictApplication.saveSettings();
-
-			// Recalculate gallery columns
-			let tmpNavProvider = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
-			if (tmpNavProvider)
-			{
-				tmpNavProvider.recalculateColumns();
-			}
-		}
-
-		tmpHandle.addEventListener('mousedown', onDragStart);
-		tmpHandle.addEventListener('touchstart', onDragStart, { passive: false });
-
-		// Double-click/tap on resize handle collapses the sidebar
-		tmpHandle.addEventListener('dblclick', function (pEvent)
-		{
-			pEvent.preventDefault();
-			tmpSelf.toggleSidebar();
-		});
-	}
-
-	/**
-	 * Toggle the right-side collections panel open/closed.
-	 */
 	toggleCollectionsPanel()
 	{
 		let tmpManager = this.pict.providers['RetoldRemote-CollectionManager'];
@@ -437,148 +287,74 @@ class RetoldRemoteLayoutView extends libPictView
 		}
 	}
 
-	/**
-	 * Render the favorites list into the Favorites sidebar pane.
-	 */
-	renderFavoritesList()
+	toggleSettingsPanel()
 	{
-		let tmpBody = document.getElementById('RetoldRemote-Favorites-Body');
-		if (!tmpBody)
-		{
-			return;
-		}
-
-		let tmpRemote = this.pict.AppData.RetoldRemote;
-		let tmpCollection = tmpRemote.FavoritesCollection;
-		let tmpIconProvider = this.pict.providers['RetoldRemote-Icons'];
-		let tmpSelf = this;
-
-		if (!tmpCollection || !Array.isArray(tmpCollection.Items) || tmpCollection.Items.length === 0)
-		{
-			tmpBody.innerHTML = '<div class="retold-remote-favorites-empty">'
-				+ '<div style="font-size:1.5rem; margin-bottom:8px; opacity:0.4;">\u2661</div>'
-				+ 'No favorites yet.<br>Tap \u2661 or press <b>h</b> to favorite files.'
-				+ '</div>';
-			return;
-		}
-
-		let tmpHTML = '';
-
-		for (let i = 0; i < tmpCollection.Items.length; i++)
-		{
-			let tmpItem = tmpCollection.Items[i];
-			let tmpPath = tmpItem.Path || '';
-			let tmpName = tmpPath.split('/').pop() || tmpPath;
-			let tmpExt = tmpName.lastIndexOf('.') >= 0 ? tmpName.substring(tmpName.lastIndexOf('.')) : '';
-
-			// Get icon for the file
-			let tmpIcon = '';
-			if (tmpIconProvider)
-			{
-				tmpIcon = tmpIconProvider.getIconForEntry({ Type: tmpItem.Type === 'folder' ? 'folder' : 'file', Extension: tmpExt }, 16);
-			}
-
-			// Escape single quotes in path for onclick handlers
-			let tmpEscapedPath = tmpPath.replace(/'/g, "\\'");
-
-			tmpHTML += '<div class="retold-remote-favorites-item" onclick="pict.PictApplication.navigateToFile(\'' + tmpEscapedPath + '\')">';
-			tmpHTML += '<span class="retold-remote-favorites-item-icon">' + tmpIcon + '</span>';
-			tmpHTML += '<span class="retold-remote-favorites-item-name" title="' + tmpPath + '">' + tmpName + '</span>';
-			tmpHTML += '<button class="retold-remote-favorites-item-remove" onclick="event.stopPropagation(); pict.providers[\'RetoldRemote-CollectionManager\'].toggleFavorite(\'' + tmpEscapedPath + '\')" title="Remove from favorites">\u00d7</button>';
-			tmpHTML += '</div>';
-		}
-
-		tmpBody.innerHTML = tmpHTML;
+		let tmpPanel = this.getSettingsPanel();
+		if (tmpPanel) { tmpPanel.toggle(); }
 	}
 
 	/**
-	 * Set up the resize handle for the collections panel (right side).
-	 * Dragging LEFT increases width, dragging RIGHT decreases width.
+	 * Mobile-drawer detection retained for compatibility with the
+	 * collections-toggle icon logic and a couple of viewer callers.
+	 * The shell now owns the actual drawer behavior (ResponsiveDrawer:
+	 * 900 on the sidebar panel), so this just reports the same boolean.
 	 */
-	_setupCollectionsResizeHandle()
+	isMobileDrawer()
 	{
-		let tmpHandle = document.querySelector('.retold-remote-collections-resize-handle');
-		let tmpWrap = document.getElementById('RetoldRemote-Collections-Wrap');
-		if (!tmpHandle || !tmpWrap)
-		{
-			return;
-		}
+		return typeof window !== 'undefined' && window.innerWidth <= 900;
+	}
 
+	/**
+	 * Forward to the sidebar view's switchTab. Kept on the Layout
+	 * surface for backwards compatibility with viewers / providers
+	 * that call ContentEditor-Layout.switchSidebarTab().
+	 */
+	switchSidebarTab(pTab)
+	{
+		let tmpSidebar = this.pict.views['RetoldRemote-Sidebar'];
+		if (tmpSidebar && typeof tmpSidebar.switchTab === 'function')
+		{
+			tmpSidebar.switchTab(pTab);
+		}
+	}
+
+	/**
+	 * Forward the file-changed notification so the sidebar can refresh
+	 * file-scoped panes (Info / Regions). Called by viewers when the
+	 * current file changes.
+	 */
+	notifyCurrentFileChanged(pFilePath)
+	{
+		let tmpSidebar = this.pict.views['RetoldRemote-Sidebar'];
+		if (tmpSidebar && typeof tmpSidebar.notifyCurrentFileChanged === 'function')
+		{
+			tmpSidebar.notifyCurrentFileChanged(pFilePath);
+		}
+	}
+
+	/**
+	 * Re-render the favorites list (called after favorites mutations).
+	 */
+	renderFavoritesList()
+	{
+		let tmpSidebar = this.pict.views['RetoldRemote-Sidebar'];
+		if (tmpSidebar && typeof tmpSidebar.renderFavoritesList === 'function')
+		{
+			tmpSidebar.renderFavoritesList();
+		}
+	}
+
+	_wireHashChangeListener()
+	{
+		if (this._hashListenerWired) { return; }
+		this._hashListenerWired = true;
 		let tmpSelf = this;
-		let tmpStartX = 0;
-		let tmpStartWidth = 0;
-
-		function onDragStart(pEvent)
+		window.addEventListener('hashchange', () =>
 		{
-			if (tmpWrap.classList.contains('collapsed'))
+			if (tmpSelf.pict.PictApplication && typeof tmpSelf.pict.PictApplication.resolveHash === 'function')
 			{
-				return;
+				tmpSelf.pict.PictApplication.resolveHash();
 			}
-
-			pEvent.preventDefault();
-			tmpSelf._collectionsDragging = true;
-			tmpHandle.classList.add('dragging');
-
-			let tmpClientX = pEvent.touches ? pEvent.touches[0].clientX : pEvent.clientX;
-			tmpStartX = tmpClientX;
-			tmpStartWidth = tmpWrap.getBoundingClientRect().width;
-
-			document.addEventListener('mousemove', onDragMove);
-			document.addEventListener('mouseup', onDragEnd);
-			document.addEventListener('touchmove', onDragMove, { passive: false });
-			document.addEventListener('touchend', onDragEnd);
-		}
-
-		function onDragMove(pEvent)
-		{
-			if (!tmpSelf._collectionsDragging)
-			{
-				return;
-			}
-			pEvent.preventDefault();
-
-			let tmpClientX = pEvent.touches ? pEvent.touches[0].clientX : pEvent.clientX;
-			// Dragging left (negative deltaX) increases width
-			let tmpDelta = tmpStartX - tmpClientX;
-			let tmpNewWidth = Math.max(150, Math.min(600, tmpStartWidth + tmpDelta));
-			tmpWrap.style.width = tmpNewWidth + 'px';
-		}
-
-		function onDragEnd()
-		{
-			if (!tmpSelf._collectionsDragging)
-			{
-				return;
-			}
-
-			tmpSelf._collectionsDragging = false;
-			tmpHandle.classList.remove('dragging');
-
-			let tmpRemote = tmpSelf.pict.AppData.RetoldRemote;
-			tmpRemote.CollectionsPanelWidth = tmpWrap.getBoundingClientRect().width;
-			tmpSelf.pict.PictApplication.saveSettings();
-
-			document.removeEventListener('mousemove', onDragMove);
-			document.removeEventListener('mouseup', onDragEnd);
-			document.removeEventListener('touchmove', onDragMove);
-			document.removeEventListener('touchend', onDragEnd);
-
-			// Recalculate gallery columns
-			let tmpGalleryNav = tmpSelf.pict.providers['RetoldRemote-GalleryNavigation'];
-			if (tmpGalleryNav && typeof tmpGalleryNav.recalculateColumns === 'function')
-			{
-				tmpGalleryNav.recalculateColumns();
-			}
-		}
-
-		tmpHandle.addEventListener('mousedown', onDragStart);
-		tmpHandle.addEventListener('touchstart', onDragStart, { passive: false });
-
-		// Double-click collapses the collections panel
-		tmpHandle.addEventListener('dblclick', function (pEvent)
-		{
-			pEvent.preventDefault();
-			tmpSelf.toggleCollectionsPanel();
 		});
 	}
 }

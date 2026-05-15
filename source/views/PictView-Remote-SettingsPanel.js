@@ -4,7 +4,7 @@ const _ViewConfiguration =
 {
 	ViewIdentifier: "RetoldRemote-SettingsPanel",
 	DefaultRenderable: "RetoldRemote-SettingsPanel",
-	DefaultDestinationAddress: "#RetoldRemote-Settings-Container",
+	DefaultDestinationAddress: "#RetoldRemote-Settings-Panel",
 	AutoRender: false,
 
 	CSS: ``
@@ -21,11 +21,31 @@ class RetoldRemoteSettingsPanelView extends libPictView
 	{
 		super.onAfterRender();
 		this._renderSettingsContent();
+		this._mountThemeControls();
+	}
+
+	/**
+	 * Mount the pict-section-theme picker / mode toggle / scale select
+	 * into the Appearance section. Called on every render — the parent
+	 * template re-renders rewrite the host div, so we re-mount each
+	 * time to re-populate it.
+	 */
+	_mountThemeControls()
+	{
+		let tmpThemeProvider = this.pict.providers && this.pict.providers['Theme-Section'];
+		if (tmpThemeProvider && typeof tmpThemeProvider.mount === 'function')
+		{
+			tmpThemeProvider.mount(
+			{
+				Container: '#RetoldRemote-Settings-Theme',
+				Views: ['Picker', 'ModeToggle', 'ScaleSelect']
+			});
+		}
 	}
 
 	_renderSettingsContent()
 	{
-		let tmpContainer = document.getElementById('RetoldRemote-Settings-Container');
+		let tmpContainer = document.getElementById('RetoldRemote-Settings-Panel');
 		if (!tmpContainer)
 		{
 			return;
@@ -36,46 +56,12 @@ class RetoldRemoteSettingsPanelView extends libPictView
 
 		let tmpHTML = '<div class="retold-remote-settings">';
 
-		// Appearance section (theme dropdown)
+		// Appearance section — Theme-Section provider mounts the
+		// picker / mode toggle / scale select into #RetoldRemote-Settings-Theme.
 		tmpHTML += '<div class="retold-remote-settings-section">';
 		tmpHTML += '<div class="retold-remote-settings-section-title">Appearance</div>';
-
-		tmpHTML += '<div class="retold-remote-settings-row">';
-		tmpHTML += '<span class="retold-remote-settings-label">Theme</span>';
-		tmpHTML += '<select class="retold-remote-settings-select" onchange="pict.views[\'RetoldRemote-SettingsPanel\'].changeTheme(this.value)">';
-
-		let tmpThemeProvider = this.pict.providers['RetoldRemote-Theme'];
-		if (tmpThemeProvider)
-		{
-			let tmpThemes = tmpThemeProvider.getThemeList();
-			let tmpCurrentTheme = tmpThemeProvider.getCurrentTheme();
-			let tmpCurrentCategory = '';
-
-			for (let i = 0; i < tmpThemes.length; i++)
-			{
-				let tmpTheme = tmpThemes[i];
-				if (tmpTheme.category !== tmpCurrentCategory)
-				{
-					if (tmpCurrentCategory)
-					{
-						tmpHTML += '</optgroup>';
-					}
-					tmpHTML += '<optgroup label="' + tmpTheme.category + '">';
-					tmpCurrentCategory = tmpTheme.category;
-				}
-				tmpHTML += '<option value="' + tmpTheme.key + '"'
-					+ (tmpTheme.key === tmpCurrentTheme ? ' selected' : '')
-					+ '>' + tmpTheme.name + '</option>';
-			}
-			if (tmpCurrentCategory)
-			{
-				tmpHTML += '</optgroup>';
-			}
-		}
-
-		tmpHTML += '</select>';
+		tmpHTML += '<div id="RetoldRemote-Settings-Theme"></div>';
 		tmpHTML += '</div>';
-		tmpHTML += '</div>'; // end appearance section
 
 		// Gallery section
 		tmpHTML += '<div class="retold-remote-settings-section">';
@@ -295,19 +281,6 @@ class RetoldRemoteSettingsPanelView extends libPictView
 		tmpHTML += '</div>'; // end settings
 
 		tmpContainer.innerHTML = tmpHTML;
-	}
-
-	changeTheme(pThemeKey)
-	{
-		let tmpThemeProvider = this.pict.providers['RetoldRemote-Theme'];
-		if (tmpThemeProvider)
-		{
-			tmpThemeProvider.applyTheme(pThemeKey);
-			this.pict.PictApplication.saveSettings();
-
-			// Re-render settings to update dropdown selection
-			this._renderSettingsContent();
-		}
 	}
 
 	changeSetting(pKey, pValue)

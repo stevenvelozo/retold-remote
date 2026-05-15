@@ -1,180 +1,204 @@
 {
-    "name": "retold-remote",
-    "version": "1.0.0",
-    "description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
-    "main": "source/Pict-RetoldRemote-Bundle.js",
-    "bin": {
-        "retold-remote": "source/cli/RetoldRemote-CLI-Run.js",
-        "rr": "source/cli/RetoldRemote-CLI-Run.js",
-        "retold-stack": "source/cli/RetoldRemote-Stack-Run.js"
-    },
-    "files": [
-        "source/",
-        "web-application/",
-        "html/",
-        "css/",
-        "docs/",
-        "README.md",
-        "LICENSE"
-    ],
-    "scripts": {
-        "start": "node source/cli/RetoldRemote-CLI-Run.js",
-        "stack": "node source/cli/RetoldRemote-Stack-Run.js",
-        "build": "npx quack build && npx quack copy",
-        "test": "npx mocha -u tdd --exit --timeout 30000 test/*_tests.js",
-        "prepack": "npm run build",
-        "tests": "npx mocha -u tdd --exit -R spec --grep",
-        "coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
-        "examples": "npx quack examples",
-        "docs": "npx quack prepare-docs ./docs -d ./modules",
-        "docs-serve": "npx quack docs-serve ./docs"
-    },
-    "retoldBeacon": {
-        "displayName": "Retold Remote",
-        "description": "NAS media browser with gallery views and keyboard navigation; serves a content folder over HTTP and registers as a beacon.",
-        "category": "content",
-        "mode": "standalone-service",
-        "bin": "source/cli/RetoldRemote-CLI-Run.js",
-        "argTemplate": [
-            "serve",
-            {
-                "fromLabPath": "ContentPath"
-            },
-            "-p",
-            {
-                "fromLabPath": "Port"
-            },
-            "-u",
-            {
-                "fromLabPath": "UltravisorURL"
-            }
-        ],
-        "healthCheck": {
-            "path": "/"
-        },
-        "defaultPort": 7777,
-        "requiresUltravisor": true,
-        "configForm": {
-            "Fields": [
-                {
-                    "Name": "HostContentPath",
-                    "Label": "Host folder to serve",
-                    "Type": "text",
-                    "Required": true,
-                    "Help": "Absolute path on the host whose contents will be served; bind-mounted read-only into the container at /app/content."
-                }
-            ]
-        },
-        "docker": {
-            "image": "retold-remote",
-            "dockerfile": "retold-remote.Dockerfile",
-            "dataMountPath": "/app/data",
-            "configMountPath": "/app/data/config.json",
-            "contentMountPath": "/app/content",
-            "exposedPort": 7777,
-            "configMounts": [
-                {
-                    "ConfigField": "HostContentPath",
-                    "Target": "/app/content",
-                    "ReadOnly": true
-                }
-            ]
-        }
-    },
-    "author": "steven velozo <steven@velozo.com>",
-    "license": "MIT",
-    "dependencies": {
-        "@xmldom/xmldom": "^0.9.10",
-        "dcraw": "^1.0.3",
-        "epubjs": "^0.3.93",
-        "exifr": "^7.1.3",
-        "fable": "^3.1.72",
-        "fable-serviceproviderbase": "^3.0.19",
-        "fable-ultravisor-client": "^1.0.0",
-        "node-unrar-js": "^2.0.2",
-        "orator": "^6.1.2",
-        "orator-conversion": "^1.0.13",
-        "orator-serviceserver-restify": "^2.0.11",
-        "parime": "^1.0.5",
-        "pdf-parse": "^2.4.5",
-        "pict": "^1.0.368",
-        "pict-application": "^1.0.34",
-        "pict-provider": "^1.0.13",
-        "pict-provider-theme": "^1.0.0",
-        "pict-section-code": "^1.0.11",
-        "pict-section-filebrowser": "^1.0.4",
-        "pict-service-commandlineutility": "^1.0.19",
-        "pict-view": "^1.0.68",
-        "retold-content-system": "^1.0.25",
-        "retold-sharp": "^1.0.0",
-        "ultravisor": "^1.3.9",
-        "ultravisor-beacon": "^1.0.0",
-        "ws": "^8.20.0",
-        "yauzl": "^3.3.0"
-    },
-    "devDependencies": {
-        "pict-docuserve": "^1.3.0",
-        "puppeteer": "^24.42.0",
-        "quackage": "^1.2.3"
-    },
-    "copyFilesSettings": {
-        "whenFileExists": "overwrite"
-    },
-    "copyFiles": [
-        {
-            "from": "./html/*",
-            "to": "./web-application/"
-        },
-        {
-            "from": "./css/**",
-            "to": "./web-application/css/"
-        },
-        {
-            "from": "./node_modules/pict/dist/pict.min.js",
-            "to": "./web-application/js/"
-        },
-        {
-            "from": "./node_modules/pict/dist/pict.min.js.map",
-            "to": "./web-application/js/"
-        },
-        {
-            "from": "./node_modules/jszip/dist/jszip.min.js",
-            "to": "./web-application/js/"
-        },
-        {
-            "from": "./node_modules/epubjs/dist/epub.min.js",
-            "to": "./web-application/js/"
-        },
-        {
-            "from": "./node_modules/pict-docuserve/dist/pict-docuserve.min.js",
-            "to": "./web-application/js/"
-        },
-        {
-            "from": "./node_modules/pict-docuserve/css/docuserve.css",
-            "to": "./web-application/css/"
-        },
-        {
-            "from": "./docs/*.md",
-            "to": "./web-application/docs/"
-        }
-    ],
-    "mocha": {
-        "diff": true,
-        "extension": [
-            "js"
-        ],
-        "package": "./package.json",
-        "reporter": "spec",
-        "slow": "75",
-        "timeout": "5000",
-        "ui": "tdd",
-        "spec": "test/*_tests.js",
-        "watch-files": [
-            "source/**/*.js",
-            "test/**/*.js"
-        ],
-        "watch-ignore": [
-            "lib/vendor"
-        ]
-    }
+	"name": "retold-remote",
+	"version": "1.0.0",
+	"description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
+	"main": "source/Pict-RetoldRemote-Bundle.js",
+	"bin": {
+		"retold-remote": "source/cli/RetoldRemote-CLI-Run.js",
+		"rr": "source/cli/RetoldRemote-CLI-Run.js",
+		"retold-stack": "source/cli/RetoldRemote-Stack-Run.js"
+	},
+	"files": [
+		"source/",
+		"web-application/",
+		"html/",
+		"css/",
+		"docs/",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"start": "node source/cli/RetoldRemote-CLI-Run.js",
+		"stack": "node source/cli/RetoldRemote-Stack-Run.js",
+		"brand": "node node_modules/pict-section-theme/bin/pict-section-theme-brand.js --manifest ../../../Retold-Modules-Manifest.json --module retold-remote --favicons web-application/favicons",
+		"prebuild": "npm run brand",
+		"build": "npx quack build && npx quack copy",
+		"test": "npx mocha -u tdd --exit --timeout 30000 test/*_tests.js",
+		"prepack": "npm run build",
+		"tests": "npx mocha -u tdd --exit -R spec --grep",
+		"coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec",
+		"examples": "npx quack examples",
+		"docs": "npx quack prepare-docs ./docs -d ./modules",
+		"docs-serve": "npx quack docs-serve ./docs"
+	},
+	"retoldBeacon": {
+		"displayName": "Retold Remote",
+		"description": "NAS media browser with gallery views and keyboard navigation; serves a content folder over HTTP and registers as a beacon.",
+		"category": "content",
+		"mode": "standalone-service",
+		"bin": "source/cli/RetoldRemote-CLI-Run.js",
+		"argTemplate": [
+			"serve",
+			{
+				"fromLabPath": "ContentPath"
+			},
+			"-p",
+			{
+				"fromLabPath": "Port"
+			},
+			"-u",
+			{
+				"fromLabPath": "UltravisorURL"
+			}
+		],
+		"healthCheck": {
+			"path": "/"
+		},
+		"defaultPort": 7777,
+		"requiresUltravisor": true,
+		"configForm": {
+			"Fields": [
+				{
+					"Name": "HostContentPath",
+					"Label": "Host folder to serve",
+					"Type": "text",
+					"Required": true,
+					"Help": "Absolute path on the host whose contents will be served; bind-mounted read-only into the container at /app/content."
+				}
+			]
+		},
+		"docker": {
+			"image": "retold-remote",
+			"dockerfile": "retold-remote.Dockerfile",
+			"dataMountPath": "/app/data",
+			"configMountPath": "/app/data/config.json",
+			"contentMountPath": "/app/content",
+			"exposedPort": 7777,
+			"configMounts": [
+				{
+					"ConfigField": "HostContentPath",
+					"Target": "/app/content",
+					"ReadOnly": true
+				}
+			]
+		}
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"dependencies": {
+		"@xmldom/xmldom": "^0.9.10",
+		"dcraw": "^1.0.3",
+		"epubjs": "^0.3.93",
+		"exifr": "^7.1.3",
+		"fable": "^3.1.72",
+		"fable-serviceproviderbase": "^3.0.19",
+		"fable-ultravisor-client": "^1.0.0",
+		"node-unrar-js": "^2.0.2",
+		"orator": "^6.1.2",
+		"orator-conversion": "^1.0.13",
+		"orator-serviceserver-restify": "^2.0.11",
+		"parime": "^1.0.5",
+		"pdf-parse": "^2.4.5",
+		"pict": "^1.0.368",
+		"pict-application": "^1.0.34",
+		"pict-provider": "^1.0.13",
+		"pict-provider-theme": "^1.0.0",
+		"pict-section-code": "^1.0.11",
+		"pict-section-filebrowser": "^1.0.4",
+		"pict-section-modal": "^1.0.1",
+		"pict-section-theme": "^1.0.1",
+		"pict-service-commandlineutility": "^1.0.19",
+		"pict-view": "^1.0.68",
+		"retold-content-system": "^1.0.25",
+		"retold-sharp": "^1.0.0",
+		"ultravisor": "^1.3.9",
+		"ultravisor-beacon": "^1.0.0",
+		"ws": "^8.20.0",
+		"yauzl": "^3.3.0"
+	},
+	"devDependencies": {
+		"pict-docuserve": "^1.3.0",
+		"puppeteer": "^24.42.0",
+		"quackage": "^1.2.3"
+	},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "./html/*",
+			"to": "./web-application/"
+		},
+		{
+			"from": "./css/**",
+			"to": "./web-application/css/"
+		},
+		{
+			"from": "./node_modules/pict/dist/pict.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict/dist/pict.min.js.map",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/jszip/dist/jszip.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/epubjs/dist/epub.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict-docuserve/dist/pict-docuserve.min.js",
+			"to": "./web-application/js/"
+		},
+		{
+			"from": "./node_modules/pict-docuserve/css/docuserve.css",
+			"to": "./web-application/css/"
+		},
+		{
+			"from": "./docs/*.md",
+			"to": "./web-application/docs/"
+		}
+	],
+	"mocha": {
+		"diff": true,
+		"extension": [
+			"js"
+		],
+		"package": "./package.json",
+		"reporter": "spec",
+		"slow": "75",
+		"timeout": "5000",
+		"ui": "tdd",
+		"spec": "test/*_tests.js",
+		"watch-files": [
+			"source/**/*.js",
+			"test/**/*.js"
+		],
+		"watch-ignore": [
+			"lib/vendor"
+		]
+	},
+	"retold": {
+		"brand": {
+			"Hash": "retold-remote",
+			"Name": "Retold Remote",
+			"Tagline": "Browse, view, and curate media on your NAS",
+			"Palette": "twilight",
+			"Icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"frame-retold-remote-filled-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#aa38cf\"/>\n\t\t<g clip-path=\"url(#frame-retold-remote-filled-light)\"><rect x=\"20\" y=\"20\" width=\"56\" height=\"56\" rx=\"8\" fill=\"rgba(255,255,255,0.18)\"/>\n\t\t\t\t\t<path d=\"M 48 30 L 70 48 L 48 66 L 26 48 Z\" fill=\"#df3f7f\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"38\" font-weight=\"700\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">RR</text>\n\t</svg>",
+			"IconType": "svg",
+			"Favicon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#aa38cf\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-light)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">R</text>\n\t</svg>",
+			"FaviconDark": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-dark\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#c787dc\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-dark)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#101418\" letter-spacing=\"-1\">R</text>\n\t</svg>",
+			"Colors": {
+				"Primary": "#aa38cf",
+				"Secondary": "#df3f7f",
+				"PrimaryLight": "#aa38cf",
+				"PrimaryDark": "#c787dc",
+				"SecondaryLight": "#df3f7f",
+				"SecondaryDark": "#e891b4"
+			}
+		}
+	}
 }

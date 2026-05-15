@@ -1,13 +1,15 @@
 const libContentEditorApplication = require('retold-content-system').PictContentEditor;
 
 const libPictSectionFileBrowser = require('pict-section-filebrowser');
+const libPictSectionTheme = require('pict-section-theme');
+
+const libRetoldRemoteBrand = require('./RetoldRemote-Brand.js');
 
 // Providers
 const libProviderRetoldRemote = require('./providers/Pict-Provider-RetoldRemote.js');
 const libProviderGalleryNavigation = require('./providers/Pict-Provider-GalleryNavigation.js');
 const libProviderGalleryFilterSort = require('./providers/Pict-Provider-GalleryFilterSort.js');
 const libProviderRetoldRemoteIcons = require('./providers/Pict-Provider-RetoldRemoteIcons.js');
-const libProviderRetoldRemoteTheme = require('./providers/Pict-Provider-RetoldRemoteTheme-V2.js');
 const libProviderFormattingUtilities = require('./providers/Pict-Provider-FormattingUtilities.js');
 const libProviderToastNotification = require('./providers/Pict-Provider-ToastNotification.js');
 const libProviderOperationStatus = require('./providers/Pict-Provider-OperationStatus.js');
@@ -18,7 +20,10 @@ const libExtensionMaps = require('./RetoldRemote-ExtensionMaps.js');
 
 // Views (replace parent views)
 const libViewLayout = require('./views/PictView-Remote-Layout.js');
-const libViewTopBar = require('./views/PictView-Remote-TopBar.js');
+const libViewTopBarNav = require('./views/PictView-Remote-TopBar-Nav.js');
+const libViewTopBarUser = require('./views/PictView-Remote-TopBar-User.js');
+const libViewTopBarShim = require('./views/PictView-Remote-TopBar.js');
+const libViewSidebar = require('./views/PictView-Remote-Sidebar.js');
 const libViewSettingsPanel = require('./views/PictView-Remote-SettingsPanel.js');
 
 // Views (new)
@@ -55,7 +60,35 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		// Replace parent views with media-focused versions.
 		// Re-registering with the same ViewIdentifier replaces the parent's view.
 		this.pict.addView('ContentEditor-Layout', libViewLayout.default_configuration, libViewLayout);
-		this.pict.addView('ContentEditor-TopBar', libViewTopBar.default_configuration, libViewTopBar);
+
+		// retold-remote-specific Theme-TopBar slot views. Registered BEFORE
+		// re-registering Theme-Section below so the provider finds them by
+		// hash when it wires the topbar.
+		this.pict.addView('RetoldRemote-TopBar-Nav',  libViewTopBarNav.default_configuration,  libViewTopBarNav);
+		this.pict.addView('RetoldRemote-TopBar-User', libViewTopBarUser.default_configuration, libViewTopBarUser);
+		this.pict.addView('RetoldRemote-Sidebar',     libViewSidebar.default_configuration,    libViewSidebar);
+
+		// Compatibility shim: legacy `ContentEditor-TopBar` view ident is
+		// still referenced from many providers/handlers/viewers. The shim
+		// exposes the old method surface and routes calls to the new slot
+		// views or the application's renderTopBar() helper.
+		this.pict.addView('ContentEditor-TopBar', libViewTopBarShim.default_configuration, libViewTopBarShim);
+
+		// Re-register Theme-Section with retold-remote's brand block + slot
+		// view names. Parent's super() already wired it with ContentSystem
+		// brand + ContentEditor-TopBar-Nav/User slot views; this overrides.
+		this.pict.addProvider('Theme-Section',
+		{
+			ApplyDefault: 'retold-default',
+			DefaultMode:  'system',
+			DefaultScale: 1.0,
+			Brand:        libRetoldRemoteBrand,
+			Views:        ['Picker', 'ModeToggle', 'ScaleSelect', 'BrandMark', 'TopBar'],
+			ViewOptions:
+			{
+				TopBar: { NavView: 'RetoldRemote-TopBar-Nav', UserView: 'RetoldRemote-TopBar-User', Height: 48 }
+			}
+		}, libPictSectionTheme);
 
 		// Add new views
 		this.pict.addView('RetoldRemote-Gallery', libViewGallery.default_configuration, libViewGallery);
@@ -76,7 +109,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		this.pict.addProvider('RetoldRemote-GalleryNavigation', libProviderGalleryNavigation.default_configuration, libProviderGalleryNavigation);
 		this.pict.addProvider('RetoldRemote-GalleryFilterSort', libProviderGalleryFilterSort.default_configuration, libProviderGalleryFilterSort);
 		this.pict.addProvider('RetoldRemote-Icons', libProviderRetoldRemoteIcons.default_configuration, libProviderRetoldRemoteIcons);
-		this.pict.addProvider('RetoldRemote-Theme', libProviderRetoldRemoteTheme.default_configuration, libProviderRetoldRemoteTheme);
 		this.pict.addProvider('RetoldRemote-FormattingUtilities', libProviderFormattingUtilities.default_configuration, libProviderFormattingUtilities);
 		this.pict.addProvider('RetoldRemote-ToastNotification', libProviderToastNotification.default_configuration, libProviderToastNotification);
 		this.pict.addProvider('RetoldRemote-OperationStatus', libProviderOperationStatus.default_configuration, libProviderOperationStatus);
@@ -178,14 +210,27 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			}
 		};
 
-		// Load persisted settings
+		// Load persisted settings (theme/mode/scale are owned by
+		// pict-section-theme — its own localStorage scope drives apply).
 		this._loadRemoteSettings();
 
-		// Apply the loaded theme (must happen after _loadRemoteSettings sets Theme)
-		let tmpThemeProvider = this.pict.providers['RetoldRemote-Theme'];
-		if (tmpThemeProvider)
+		// Bridge: forward each Theme-Section apply event's IconColors to
+		// the RetoldRemote-Icons provider so glyph fills stay coherent
+		// with the active theme. Mirrors the behavior of the retired
+		// Pict-Provider-RetoldRemoteTheme-V2.onApply hook.
+		let tmpThemeSection = this.pict.providers && this.pict.providers['Theme-Section'];
+		if (tmpThemeSection && typeof tmpThemeSection.onApply === 'function')
 		{
-			tmpThemeProvider.applyTheme(this.pict.AppData.RetoldRemote.Theme);
+			let tmpSelf = this;
+			tmpThemeSection.onApply(function (pBundle /*, pContext */)
+			{
+				let tmpIconProvider = tmpSelf.pict.providers && tmpSelf.pict.providers['RetoldRemote-Icons'];
+				if (tmpIconProvider && pBundle && pBundle.IconColors
+					&& typeof tmpIconProvider.setColors === 'function')
+				{
+					tmpIconProvider.setColors(pBundle.IconColors);
+				}
+			});
 		}
 
 		// Initialize parent state (ContentEditor AppData)
@@ -216,14 +261,14 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			TopicsFilePath: ''
 		};
 
-		// Render the layout shell
+		// Render the layout shell — this creates the modal-shell DOM,
+		// adds top/left/right/center panels (which auto-render their
+		// ContentView). The Theme-TopBar, Sidebar, Collections panel,
+		// and (hidden) Settings panel all paint as a side effect.
 		this.pict.views['ContentEditor-Layout'].render();
 
-		// Render the topbar
-		this.pict.views['ContentEditor-TopBar'].render();
-
-		// Render the collections panel (starts collapsed)
-		this.pict.views['RetoldRemote-CollectionsPanel'].render();
+		// Render the topbar slot views into the Theme-TopBar destinations.
+		this.renderTopBar();
 
 		// Fetch collections list and ensure favorites collection exists
 		let tmpCollManager = this.pict.providers['RetoldRemote-CollectionManager'];
@@ -233,13 +278,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			{
 				tmpCollManager.ensureFavoritesCollection();
 			});
-		}
-
-		// Update the collections button icon
-		let tmpTopBarView = this.pict.views['ContentEditor-TopBar'];
-		if (tmpTopBarView && typeof tmpTopBarView.updateCollectionsIcon === 'function')
-		{
-			tmpTopBarView.updateCollectionsIcon();
 		}
 
 		let tmpSelf = this;
@@ -345,6 +383,22 @@ class RetoldRemoteApplication extends libContentEditorApplication
 	}
 
 	/**
+	 * Re-render both Theme-TopBar slot views (Nav + User).
+	 *
+	 * The Theme-TopBar row itself is data-free chrome — the BrandMark
+	 * never changes — so only the host-supplied slot views need to
+	 * paint when AppData drives a topbar update (breadcrumb / folder
+	 * info / favorite icon / filter badge / etc).
+	 */
+	renderTopBar()
+	{
+		let tmpNav  = this.pict.views['RetoldRemote-TopBar-Nav'];
+		let tmpUser = this.pict.views['RetoldRemote-TopBar-User'];
+		if (tmpNav)  { tmpNav.render();  }
+		if (tmpUser) { tmpUser.render(); }
+	}
+
+	/**
 	 * Override _getMediaType to use comprehensive extension maps.
 	 *
 	 * The parent class has a hardcoded subset of video/audio/image extensions.
@@ -443,15 +497,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 		}
 
 		// Update the topbar
-		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
-		if (tmpTopBar)
-		{
-			tmpTopBar.updateInfo();
-			if (typeof tmpTopBar.updateFavoritesIcon === 'function')
-			{
-				tmpTopBar.updateFavoritesIcon();
-			}
-		}
+		this.renderTopBar();
 	}
 
 	/**
@@ -485,15 +531,7 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			tmpViewer.showMedia(pFilePath, pMediaType);
 		}
 
-		let tmpTopBar = this.pict.views['ContentEditor-TopBar'];
-		if (tmpTopBar)
-		{
-			tmpTopBar.updateInfo();
-			if (typeof tmpTopBar.updateFavoritesIcon === 'function')
-			{
-				tmpTopBar.updateFavoritesIcon();
-			}
-		}
+		this.renderTopBar();
 	}
 
 	/**
@@ -652,23 +690,13 @@ class RetoldRemoteApplication extends libContentEditorApplication
 							if (!pError && pSummary)
 							{
 								tmpRemote.FolderSummary = pSummary;
-								let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
-								if (tmpTopBar)
-								{
-									tmpTopBar.updateLocation();
-									tmpTopBar.updateInfo();
-								}
+								tmpSelf.renderTopBar();
 							}
 						});
 				}
 				else
 				{
-					let tmpTopBar = tmpSelf.pict.views['ContentEditor-TopBar'];
-					if (tmpTopBar)
-					{
-						tmpTopBar.updateLocation();
-						tmpTopBar.updateInfo();
-					}
+					tmpSelf.renderTopBar();
 				}
 
 				return tmpCallback();
@@ -875,6 +903,12 @@ class RetoldRemoteApplication extends libContentEditorApplication
 
 	/**
 	 * Save RetoldRemote settings to localStorage.
+	 *
+	 * Theme/mode/scale are owned by pict-section-theme (its own
+	 * `pict-section-theme:<hostname>` scope). Sidebar + collections
+	 * panel collapse/size are owned by pict-modal-shell
+	 * (`pict-modal-shell:retold-remote`). Neither set is persisted
+	 * here anymore.
 	 */
 	saveSettings()
 	{
@@ -883,15 +917,12 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			let tmpRemote = this.pict.AppData.RetoldRemote;
 			let tmpSettings =
 			{
-				Theme: tmpRemote.Theme,
 				ViewMode: tmpRemote.ViewMode,
 				ThumbnailSize: tmpRemote.ThumbnailSize,
 				GalleryFilter: tmpRemote.GalleryFilter,
 				ShowHiddenFiles: tmpRemote.ShowHiddenFiles,
 				DistractionFreeShowNav: tmpRemote.DistractionFreeShowNav,
 				ImageFitMode: tmpRemote.ImageFitMode,
-				SidebarCollapsed: tmpRemote.SidebarCollapsed,
-				SidebarWidth: tmpRemote.SidebarWidth,
 				SortField: tmpRemote.SortField,
 				SortDirection: tmpRemote.SortDirection,
 				FilterPresets: tmpRemote.FilterPresets,
@@ -901,8 +932,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				ListShowExtension: tmpRemote.ListShowExtension,
 				ListShowSize: tmpRemote.ListShowSize,
 				ListShowDate: tmpRemote.ListShowDate,
-				CollectionsPanelOpen: tmpRemote.CollectionsPanelOpen,
-				CollectionsPanelWidth: tmpRemote.CollectionsPanelWidth,
 				LastUsedCollectionGUID: tmpRemote.LastUsedCollectionGUID,
 				FavoritesGUID: tmpRemote.FavoritesGUID,
 				AISortSettings: tmpRemote.AISortSettings
@@ -928,7 +957,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				let tmpSettings = JSON.parse(tmpStored);
 				let tmpRemote = this.pict.AppData.RetoldRemote;
 
-				if (tmpSettings.Theme) tmpRemote.Theme = tmpSettings.Theme;
 				if (tmpSettings.ViewMode) tmpRemote.ViewMode = tmpSettings.ViewMode;
 				if (tmpSettings.ThumbnailSize) tmpRemote.ThumbnailSize = tmpSettings.ThumbnailSize;
 				if (tmpSettings.GalleryFilter)
@@ -939,8 +967,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.ShowHiddenFiles) === 'boolean') tmpRemote.ShowHiddenFiles = tmpSettings.ShowHiddenFiles;
 				if (typeof (tmpSettings.DistractionFreeShowNav) === 'boolean') tmpRemote.DistractionFreeShowNav = tmpSettings.DistractionFreeShowNav;
 				if (tmpSettings.ImageFitMode) tmpRemote.ImageFitMode = tmpSettings.ImageFitMode;
-				if (typeof (tmpSettings.SidebarCollapsed) === 'boolean') tmpRemote.SidebarCollapsed = tmpSettings.SidebarCollapsed;
-				if (tmpSettings.SidebarWidth) tmpRemote.SidebarWidth = tmpSettings.SidebarWidth;
 				if (tmpSettings.SortField) tmpRemote.SortField = tmpSettings.SortField;
 				if (tmpSettings.SortDirection) tmpRemote.SortDirection = tmpSettings.SortDirection;
 				if (Array.isArray(tmpSettings.FilterPresets)) tmpRemote.FilterPresets = tmpSettings.FilterPresets;
@@ -950,8 +976,6 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				if (typeof (tmpSettings.ListShowExtension) === 'boolean') tmpRemote.ListShowExtension = tmpSettings.ListShowExtension;
 				if (typeof (tmpSettings.ListShowSize) === 'boolean') tmpRemote.ListShowSize = tmpSettings.ListShowSize;
 				if (typeof (tmpSettings.ListShowDate) === 'boolean') tmpRemote.ListShowDate = tmpSettings.ListShowDate;
-				if (typeof (tmpSettings.CollectionsPanelOpen) === 'boolean') tmpRemote.CollectionsPanelOpen = tmpSettings.CollectionsPanelOpen;
-				if (tmpSettings.CollectionsPanelWidth) tmpRemote.CollectionsPanelWidth = tmpSettings.CollectionsPanelWidth;
 				if (tmpSettings.LastUsedCollectionGUID) tmpRemote.LastUsedCollectionGUID = tmpSettings.LastUsedCollectionGUID;
 				if (tmpSettings.FavoritesGUID) tmpRemote.FavoritesGUID = tmpSettings.FavoritesGUID;
 				if (tmpSettings.AISortSettings && typeof tmpSettings.AISortSettings === 'object')
