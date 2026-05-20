@@ -20,7 +20,7 @@
 # Image size note: Calibre and LibreOffice are each several hundred MB.
 # If you don't need document conversion, use Dockerfile.slim instead.
 
-FROM node:20-slim
+FROM node:22-slim
 
 # Install all optional media processing tools in a single layer.
 # Note: audiowaveform is not in the default Debian repos — retold-remote
