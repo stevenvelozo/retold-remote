@@ -154,10 +154,6 @@
 			"to": "./web-application/js/"
 		},
 		{
-			"from": "./node_modules/pict-docuserve/css/docuserve.css",
-			"to": "./web-application/css/"
-		},
-		{
 			"from": "./docs/*.md",
 			"to": "./web-application/docs/"
 		}
@@ -185,19 +181,19 @@
 		"brand": {
 			"Hash": "retold-remote",
 			"Name": "Retold Remote",
-			"Tagline": "Browse, view, and curate media on your NAS",
-			"Palette": "twilight",
-			"Icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"frame-retold-remote-filled-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#aa38cf\"/>\n\t\t<g clip-path=\"url(#frame-retold-remote-filled-light)\"><rect x=\"20\" y=\"20\" width=\"56\" height=\"56\" rx=\"8\" fill=\"rgba(255,255,255,0.18)\"/>\n\t\t\t\t\t<path d=\"M 48 30 L 70 48 L 48 66 L 26 48 Z\" fill=\"#df3f7f\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"38\" font-weight=\"700\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">RR</text>\n\t</svg>",
+			"Tagline": "Remote access application built on the Retold ecosystem",
+			"Palette": "mix",
+			"Icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"frame-retold-remote-filled-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#cfba3c\"/>\n\t\t<g clip-path=\"url(#frame-retold-remote-filled-light)\"><rect x=\"20\" y=\"20\" width=\"56\" height=\"56\" rx=\"8\" fill=\"rgba(255,255,255,0.18)\"/>\n\t\t\t\t\t<path d=\"M 48 30 L 70 48 L 48 66 L 26 48 Z\" fill=\"#40a7be\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"38\" font-weight=\"700\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">RR</text>\n\t</svg>",
 			"IconType": "svg",
-			"Favicon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#aa38cf\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-light)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">R</text>\n\t</svg>",
-			"FaviconDark": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-dark\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#c787dc\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-dark)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#101418\" letter-spacing=\"-1\">R</text>\n\t</svg>",
+			"Favicon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-light\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#cfba3c\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-light)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#ffffff\" letter-spacing=\"-1\">R</text>\n\t</svg>",
+			"FaviconDark": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 96 96\" width=\"96\" height=\"96\">\n\t\t<defs>\n\t\t\t<clipPath id=\"fav-retold-remote-dark\">\n\t\t\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\"/>\n\t\t\t</clipPath>\n\t\t</defs>\n\t\t<path d=\"M 2 48\n\t\t\tC 2 18.0222416, 18.0222416 2, 48 2\n\t\t\tC 77.9777584 2, 94 18.0222416, 94 48\n\t\t\tC 94 77.9777584, 77.9777584 94, 48 94\n\t\t\tC 18.0222416 94, 2 77.9777584, 2 48 Z\" fill=\"#dcd18a\"/>\n\t\t<g clip-path=\"url(#fav-retold-remote-dark)\"><rect x=\"16\" y=\"16\" width=\"64\" height=\"64\" rx=\"10\" fill=\"rgba(255,255,255,0.22)\"/></g>\n\t\t<text x=\"48\" y=\"50\" text-anchor=\"middle\" dominant-baseline=\"central\"\n\t\t\tfont-family=\"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif\"\n\t\t\tfont-size=\"60\" font-weight=\"800\"\n\t\t\tfill=\"#101418\" letter-spacing=\"-1\">R</text>\n\t</svg>",
 			"Colors": {
-				"Primary": "#aa38cf",
-				"Secondary": "#df3f7f",
-				"PrimaryLight": "#aa38cf",
-				"PrimaryDark": "#c787dc",
-				"SecondaryLight": "#df3f7f",
-				"SecondaryDark": "#e891b4"
+				"Primary": "#cfba3c",
+				"Secondary": "#40a7be",
+				"PrimaryLight": "#cfba3c",
+				"PrimaryDark": "#dcd18a",
+				"SecondaryLight": "#40a7be",
+				"SecondaryDark": "#8ac4d1"
 			}
 		}
 	}
