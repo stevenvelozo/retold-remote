@@ -124,6 +124,16 @@ class RetoldRemoteApplication extends libContentEditorApplication
 			window.pict = this.pict;
 		}
 
+		// Mount the beacon login overlay div before anything else runs.
+		// Inherited from ContentEditorApplication; safe to call here
+		// because the parent's constructor already installed the
+		// WebAuth client (this._WebAuthClient) and registered the
+		// ContentEditor-Login wrapper view.  We deliberately don't
+		// chain to super.onAfterInitializeAsync (the parent's flow
+		// expects editor views we've replaced), so we re-issue the
+		// gate ourselves below.
+		this._ensureLoginOverlayMount();
+
 		// Initialize RetoldRemote-specific state
 		this.pict.AppData.RetoldRemote =
 		{
@@ -371,6 +381,30 @@ class RetoldRemoteApplication extends libContentEditorApplication
 				}
 			});
 		});
+
+		// Boot gate: poll /status to learn the UV's auth mode.  In
+		// authenticated mode show the login overlay; pict-section-login's
+		// CheckSessionOnLoad will hide it if a valid cookie is present.
+		// In promiscuous mode the overlay stays hidden.  This call is
+		// non-blocking; the rest of the init flow already completed
+		// above so we just need to flip the overlay's display state.
+		if (this._WebAuthClient && typeof this._WebAuthClient.loadAuthStatus === 'function')
+		{
+			this._WebAuthClient.loadAuthStatus((pStatusErr) =>
+				{
+					if (pStatusErr)
+					{
+						this.pict.log.warn('RetoldRemote: /status fetch failed during boot: ' + pStatusErr.message);
+					}
+					let tmpAuth = (this.pict.AppData.ContentEditor && this.pict.AppData.ContentEditor.Auth) || {};
+					if (tmpAuth.Mode === 'authenticated')
+					{
+						this._showLoginOverlay();
+						let tmpLoginView = this.pict.views['ContentEditor-Login'];
+						if (tmpLoginView) { tmpLoginView.render(); }
+					}
+				});
+		}
 
 		// Do NOT call super.onAfterInitializeAsync because we have replaced
 		// the full initialization flow above.  Instead call the grandparent's callback.

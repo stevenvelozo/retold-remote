@@ -2639,6 +2639,39 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 									tmpFable.log.warn(`Ultravisor Beacon: registration failed (server may not be running): ${pBeaconError.message}`);
 									tmpFable.log.warn('Ultravisor Beacon: server is still running. Beacon will not be active.');
 								}
+								else
+								{
+									// Beacon up — mount the WebAuth proxy on
+									// retold-remote's Orator server so the
+									// browser app can login through UV.  Same
+									// pattern as the databeacon; non-fatal.
+									try
+									{
+										let libBeaconSDK = require('ultravisor-beacon');
+										if (libBeaconSDK && libBeaconSDK.WebAuth && tmpFable.OratorServiceServer)
+										{
+											libBeaconSDK.WebAuth.install(tmpFable.OratorServiceServer,
+												{
+													UltravisorURL:     pOptions.UltravisorURL,
+													BeaconName:        'retold-remote',
+													BeaconID:          () => (tmpBeacon && typeof tmpBeacon.getBeaconID === 'function' && tmpBeacon.getBeaconID()) || '',
+													CookieName:        'SessionID',
+													RoutePrefix:       '/1.0/',
+													StatusPath:        '/status',
+													// Gate retold-remote's media/file
+													// browsing endpoints; static UI
+													// + auth routes stay public.
+													GatedPathPrefixes: ['/1.0/Files', '/1.0/File', '/1.0/Collections', '/1.0/Thumbnails'],
+													Log:               tmpFable.log
+												});
+											tmpFable.log.info('Retold-Remote Beacon: WebAuth mounted /1.0/{Authenticate,Deauthenticate,CheckSession} + /status proxy');
+										}
+									}
+									catch (pWebAuthErr)
+									{
+										tmpFable.log.warn(`Retold-Remote Beacon: WebAuth install skipped: ${pWebAuthErr && pWebAuthErr.message}`);
+									}
+								}
 
 								// Also register orator-conversion as a separate beacon
 								// so its MediaConversion capability (ImageResize, VideoExtractFrame,
