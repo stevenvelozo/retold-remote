@@ -1,7 +1,7 @@
 {
 	"Name": "retold-remote",
-	"Version": "0.0.25",
+	"Version": "1.0.1",
 	"Description": "Retold Remote - NAS media browser with gallery views and keyboard navigation",
-	"GeneratedAt": "2026-04-10T17:27:56.648Z",
-	"GitCommit": "bead262"
+	"GeneratedAt": "2026-05-22T05:57:28.381Z",
+	"GitCommit": "7113c74"
 }
