@@ -27,7 +27,7 @@ The fix: **build the image on a real computer (your laptop, desktop, dev worksta
 - A few GB of free disk space on the NAS for the loaded image and cache
 - Your media folder somewhere on the NAS (e.g., `/volume1/media`, `/volume1/photo`, `/volume1/video`)
 
-## ⚠ ARCHITECTURE -- READ THIS FIRST ⚠
+## ARCHITECTURE -- READ THIS FIRST
 
 **This is the single most common cause of "videos and large images don't work" on a Synology.** Read it before building anything.
 
