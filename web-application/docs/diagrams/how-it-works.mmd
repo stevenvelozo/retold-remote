@@ -1,0 +1,15 @@
+graph LR
+    subgraph NAS["NAS (retold-remote)"]
+        Cache["Request → Check Cache"]
+        Dispatch["Dispatch command (miss)"]
+        Decode["Decode → Cache → Serve response"]
+        Fallback["Local fallback (dispatch fails)"]
+        Cache --> Dispatch
+        Dispatch --> Decode
+        Cache --> Fallback
+    end
+    subgraph Fast["Fast Machine (Ultravisor)"]
+        UVServer["Ultravisor Server<br/>└─ Beacon Worker<br/>1. Download src<br/>2. Run command<br/>3. Return output"]
+    end
+    Dispatch -->|HTTP| UVServer
+    UVServer -->|base64 result| Decode

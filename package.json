@@ -155,6 +155,10 @@
 		{
 			"from": "./docs/*.md",
 			"to": "./web-application/docs/"
+		},
+		{
+			"from": "./docs/diagrams/*",
+			"to": "./web-application/docs/diagrams/"
 		}
 	],
 	"mocha": {

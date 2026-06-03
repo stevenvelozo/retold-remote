@@ -1,0 +1,11 @@
+graph TD
+    subgraph Stack["retold-stack /mnt/media"]
+        subgraph Main["Main process (retold-remote)"]
+            Orator["Orator HTTP server (port 7000-7999)<br/>├─ Retold Remote routes (/api/media/...)<br/>├─ Orator-Conversion (/api/conversion/1.0/)<br/>└─ Static web app (/)"]
+            BeaconClient["Ultravisor Beacon client<br/>└─ Connects to localhost:54321"]
+        end
+        subgraph Child["Child process (ultravisor)"]
+            UV["├─ Coordinator API (port 54321)<br/>├─ Beacon registry<br/>├─ Work queue journal<br/>└─ Web interface<br/>Datastore: ~/.local/share/ultravisor/datastore/"]
+        end
+    end
+    Main <-->|HTTP| Child

@@ -1,0 +1,11 @@
+graph TD
+    subgraph Container["Container: retold-stack"]
+        Process1["Node process 1 (main): retold-remote<br/>├─ HTTP server on :7777<br/>├─ Orator-Conversion embedded<br/>└─ Ultravisor Beacon client -> connects to :54321"]
+        Process2["Node process 2 (child): ultravisor<br/>├─ HTTP server on :54321<br/>├─ Datastore at /data/ultravisor/datastore<br/>└─ Staging at /data/ultravisor/staging"]
+        Tools["Shell tools: ffmpeg, ffprobe, sharp (native), convert, 7z,<br/>pdftk, pdftoppm, soffice, ebook-convert, audiowaveform, exiftool, dcraw"]
+        Volumes["Volumes:<br/>/media (ro, host media folder)<br/>/cache (rw, named volume: retold-cache)<br/>/data (rw, named volume: ultravisor-data)<br/>/config (rw, named volume: retold-config)"]
+    end
+    RemoteUI["http://nas:7777/<br/>(Retold Remote UI)"]
+    UltravisorUI["http://nas:54321/<br/>(Ultravisor UI)"]
+    Process1 --> RemoteUI
+    Process2 --> UltravisorUI

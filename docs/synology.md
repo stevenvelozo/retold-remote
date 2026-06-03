@@ -540,36 +540,8 @@ Useful for checking installed tools (`which ffmpeg`, `soffice --version`, etc.),
 
 ## Architecture Inside the Container
 
-```
-┌────────────────────────────────────────────────────────────┐
-│ Container: retold-stack                                    │
-│                                                            │
-│  Node process 1 (main): retold-remote                     │
-│   ├─ HTTP server on :7777                                  │
-│   ├─ Orator-Conversion embedded                            │
-│   └─ Ultravisor Beacon client -> connects to :54321        │
-│                                                            │
-│  Node process 2 (child): ultravisor                       │
-│   ├─ HTTP server on :54321                                │
-│   ├─ Datastore at /data/ultravisor/datastore               │
-│   └─ Staging at /data/ultravisor/staging                   │
-│                                                            │
-│  Shell tools available:                                    │
-│   ffmpeg, ffprobe, sharp (native), convert, 7z,           │
-│   pdftk, pdftoppm, soffice, ebook-convert,                │
-│   audiowaveform, exiftool, dcraw                          │
-│                                                            │
-│  Volumes:                                                  │
-│   /media (ro, host media folder)                           │
-│   /cache (rw, named volume: retold-cache)                  │
-│   /data (rw, named volume: ultravisor-data)                │
-│   /config (rw, named volume: retold-config)                │
-└────────────────────────────────────────────────────────────┘
-              │                              │
-              ▼                              ▼
-      http://nas:7777/              http://nas:54321/
-      (Retold Remote UI)            (Ultravisor UI)
-```
+<!-- bespoke diagram: edit diagrams/architecture-inside-the-container.mmd or .hints.json, then: npx pict-renderer-graph build modules/apps/retold-remote/docs -->
+![Architecture Inside the Container](diagrams/architecture-inside-the-container.svg)
 
 ## Uninstalling
 

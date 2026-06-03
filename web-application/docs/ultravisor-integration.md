@@ -8,22 +8,8 @@ retold-remote can offload heavy media processing to a remote machine running an 
 
 When configured, retold-remote dispatches shell commands (ffmpeg, ffprobe, dcraw, ImageMagick, audiowaveform, ebook-convert) to a beacon worker via HTTP instead of running them locally. The beacon downloads the source file from retold-remote's content API, executes the command, and returns the result as base64-encoded data.
 
-```
-NAS (retold-remote)                 Fast Machine (Ultravisor)
-┌──────────────────────┐            ┌──────────────────────┐
-│ Request -> Check Cache│            │ Ultravisor Server    │
-│   ↓ (miss)           │   HTTP     │   └─ Beacon Worker   │
-│ Dispatch command  ───┼──────────►│      1. Download src │
-│                      │            │      2. Run command  │
-│ ◄─ base64 result  ◄──┼────────────┤      3. Return output│
-│   ↓                  │            │                      │
-│ Decode -> Cache       │            └──────────────────────┘
-│ Serve response       │
-│                      │
-│ ↓ (dispatch fails)   │
-│ Local fallback       │
-└──────────────────────┘
-```
+<!-- bespoke diagram: edit diagrams/how-it-works.mmd or .hints.json, then: npx pict-renderer-graph build modules/apps/retold-remote/docs -->
+![How It Works](diagrams/how-it-works.svg)
 
 All caching, metadata, and storage remain on the NAS. Only the tool execution changes.
 

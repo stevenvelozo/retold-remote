@@ -153,36 +153,8 @@ If the launcher reused an already-running Ultravisor (rather than spawning one),
 
 ## Architecture
 
-```
-┌────────────────────────────────────────────────────────────┐
-│  retold-stack /mnt/media                                    │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐  │
-│  │ Main process (retold-remote)                         │  │
-│  │  ┌───────────────────────────────────────────────┐  │  │
-│  │  │ Orator HTTP server (port 7000-7999)           │  │  │
-│  │  │  ├─ Retold Remote routes (/api/media/...)     │  │  │
-│  │  │  ├─ Orator-Conversion (/api/conversion/1.0/)  │  │  │
-│  │  │  └─ Static web app (/)                        │  │  │
-│  │  └───────────────────────────────────────────────┘  │  │
-│  │  ┌───────────────────────────────────────────────┐  │  │
-│  │  │ Ultravisor Beacon client                      │  │  │
-│  │  │  └─ Connects to localhost:54321               │  │  │
-│  │  └───────────────────────────────────────────────┘  │  │
-│  └─────────────────────────────────────────────────────┘  │
-│                          ▲                                  │
-│                          │ HTTP                             │
-│                          ▼                                  │
-│  ┌─────────────────────────────────────────────────────┐  │
-│  │ Child process (ultravisor)                           │  │
-│  │  ├─ Coordinator API (port 54321)                     │  │
-│  │  ├─ Beacon registry                                  │  │
-│  │  ├─ Work queue journal                               │  │
-│  │  └─ Web interface                                    │  │
-│  │  Datastore: ~/.local/share/ultravisor/datastore/     │  │
-│  └─────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────┘
-```
+<!-- bespoke diagram: edit diagrams/architecture.mmd or .hints.json, then: npx pict-renderer-graph build modules/apps/retold-remote/docs -->
+![Architecture](diagrams/architecture.svg)
 
 ## Why Stack Mode?
 
