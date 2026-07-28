@@ -206,7 +206,7 @@ Then start the stack with the included `docker-compose.yml` (which references `r
 
 ### macOS Gotcha: Colima needs the `buildx` plugin
 
-`docker-build-and-save.sh` uses `docker buildx build --platform <arch> ...` so it can cross-build (and so the `--arm64` / `--amd64` flags work).  Docker Desktop ships the `buildx` plugin by default, but [Colima](https://github.com/abiosoft/colima) — the lightweight Docker Desktop replacement most macOS dev hosts use — does **not**.  If you run the script on a Colima-backed CLI without buildx, you'll see:
+`docker-build-and-save.sh` uses `docker buildx build --platform <arch> ...` so it can cross-build (and so the `--arm64` / `--amd64` flags work).  Docker Desktop ships the `buildx` plugin by default, but [Colima](https://github.com/abiosoft/colima) - the lightweight Docker Desktop replacement most macOS dev hosts use - does **not**.  If you run the script on a Colima-backed CLI without buildx, you'll see:
 
 ```text
 [1/3] Building image (this may take 5-15 minutes)...
@@ -215,7 +215,7 @@ unknown flag: --platform
 Usage:  docker [OPTIONS] COMMAND [ARG...]
 ```
 
-That's the docker CLI failing to parse the command line because it doesn't know `buildx` is a subcommand.  Despite the error wording, **this is not an architecture problem** and Colima itself is fine — it just needs the buildx plugin installed alongside it.
+That's the docker CLI failing to parse the command line because it doesn't know `buildx` is a subcommand.  Despite the error wording, **this is not an architecture problem** and Colima itself is fine - it just needs the buildx plugin installed alongside it.
 
 **One-time fix** (Homebrew):
 
@@ -243,7 +243,7 @@ colima stop
 colima start --vm-type vz --cpu 4 --memory 8 --vz-rosetta
 ```
 
-`--vz-rosetta` requires Colima 0.6+; check with `colima version`.  This gives you transparent x86_64 emulation similar to Docker Desktop's default behavior — the `--amd64` builds will then run at near-native speed under Rosetta translation rather than full CPU emulation.
+`--vz-rosetta` requires Colima 0.6+; check with `colima version`.  This gives you transparent x86_64 emulation similar to Docker Desktop's default behavior - the `--amd64` builds will then run at near-native speed under Rosetta translation rather than full CPU emulation.
 
 ### Manual Docker Run
 
