@@ -12,6 +12,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libChildProcess = require('child_process');
 const libUrl = require('url');
 
@@ -46,6 +47,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		this.toolDetector = new libToolDetector();
 		this.capabilities = this.toolDetector.detect();
@@ -502,7 +504,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+				tmpRelPath = this.contentRoots.toRelative(pFullPath);
 			}
 			catch (pErr)
 			{
@@ -598,7 +600,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+				tmpRelPath = this.contentRoots.toRelative(pFullPath);
 			}
 			catch (pErr)
 			{
@@ -916,7 +918,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+				tmpRelPath = this.contentRoots.toRelative(pFullPath);
 			}
 			catch (pErr)
 			{
@@ -1044,7 +1046,7 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pFullPath);
+				tmpRelPath = this.contentRoots.toRelative(pFullPath);
 			}
 			catch (pErr)
 			{

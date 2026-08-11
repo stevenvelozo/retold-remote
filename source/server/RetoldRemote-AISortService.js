@@ -21,6 +21,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 
 const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
 
@@ -55,6 +56,7 @@ class RetoldRemoteAISortService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// Will be set by server setup
 		this._metadataCache = null;
@@ -109,7 +111,7 @@ class RetoldRemoteAISortService extends libFableServiceProviderBase
 	 */
 	_scanAudioFiles(pRelPath, pRecursive)
 	{
-		let tmpAbsDir = libPath.join(this.contentPath, pRelPath);
+		let tmpAbsDir = this.contentRoots.resolve(pRelPath);
 		let tmpFiles = [];
 
 		if (!libFs.existsSync(tmpAbsDir) || !libFs.statSync(tmpAbsDir).isDirectory())

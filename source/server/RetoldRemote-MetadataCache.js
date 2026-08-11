@@ -31,6 +31,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 
@@ -61,6 +62,7 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// Detect tool availability
 		this.hasFfprobe = this._detectCommand('ffprobe -version');
@@ -158,7 +160,7 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 
 		try
 		{
-			let tmpAbsPath = libPath.join(this.contentPath, pRelPath);
+			let tmpAbsPath = this.contentRoots.resolve(pRelPath);
 
 			if (!libFs.existsSync(tmpAbsPath))
 			{
@@ -206,7 +208,7 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 	{
 		try
 		{
-			let tmpAbsPath = libPath.join(this.contentPath, pRelPath);
+			let tmpAbsPath = this.contentRoots.resolve(pRelPath);
 
 			if (!libFs.existsSync(tmpAbsPath))
 			{
@@ -305,7 +307,7 @@ class RetoldRemoteMetadataCache extends libFableServiceProviderBase
 	{
 		try
 		{
-			let tmpAbsPath = libPath.join(this.contentPath, pRelPath);
+			let tmpAbsPath = this.contentRoots.resolve(pRelPath);
 			let tmpStat = libFs.statSync(tmpAbsPath);
 			let tmpCacheKey = this._buildCacheKey(pRelPath, tmpStat.mtimeMs);
 

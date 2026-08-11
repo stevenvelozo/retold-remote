@@ -20,6 +20,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libChildProcess = require('child_process');
 
 const _DefaultServiceConfiguration =
@@ -44,6 +45,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// External dependencies (set via setter methods)
 		this._sharp = null;
@@ -244,7 +246,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 	 */
 	_exportFile(pItem, pPrefix, pDestDir, fCallback)
 	{
-		let tmpSrcPath = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcPath = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcPath))
 		{
 			return fCallback(null, { Error: 'Source file not found: ' + pItem.Path });
@@ -286,7 +288,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 			return fCallback(null, { Error: 'Invalid crop region' });
 		}
 
-		let tmpSrcPath = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcPath = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcPath))
 		{
 			return fCallback(null, { Error: 'Source file not found: ' + pItem.Path });
@@ -326,7 +328,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 			return fCallback(null, { Error: 'ffmpeg not available — cannot export video clip' });
 		}
 
-		let tmpSrcPath = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcPath = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcPath))
 		{
 			return fCallback(null, { Error: 'Source file not found: ' + pItem.Path });
@@ -377,7 +379,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 			return fCallback(null, { Error: 'ffmpeg not available — cannot export video frame' });
 		}
 
-		let tmpSrcPath = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcPath = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcPath))
 		{
 			return fCallback(null, { Error: 'Source file not found: ' + pItem.Path });
@@ -419,7 +421,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 			return fCallback(null, { Error: 'ffmpeg not available — cannot export audio clip' });
 		}
 
-		let tmpSrcPath = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcPath = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcPath))
 		{
 			return fCallback(null, { Error: 'Source file not found: ' + pItem.Path });
@@ -533,7 +535,7 @@ class RetoldRemoteCollectionExportService extends libFableServiceProviderBase
 	 */
 	_exportFolder(pItem, pPrefix, pDestDir, fCallback)
 	{
-		let tmpSrcDir = libPath.join(this.contentPath, pItem.Path);
+		let tmpSrcDir = this.contentRoots.resolve(pItem.Path);
 		if (!libFs.existsSync(tmpSrcDir) || !libFs.statSync(tmpSrcDir).isDirectory())
 		{
 			return fCallback(null, { Error: 'Source folder not found: ' + pItem.Path });

@@ -18,6 +18,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 
 const SOURCE_NAME = 'retold-remote-file-ops';
 
@@ -45,6 +46,7 @@ class RetoldRemoteFileOperationService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		this.fable.log.info('File Operation Service: initialized');
 		this.fable.log.info(`  Content root: ${this.contentPath}`);
@@ -73,7 +75,7 @@ class RetoldRemoteFileOperationService extends libFableServiceProviderBase
 		}
 
 		// Resolve and verify it stays within content root
-		let tmpAbsPath = libPath.join(this.contentPath, tmpPath);
+		let tmpAbsPath = this.contentRoots.resolve(tmpPath);
 		if (!tmpAbsPath.startsWith(this.contentPath))
 		{
 			return null;
@@ -106,8 +108,8 @@ class RetoldRemoteFileOperationService extends libFableServiceProviderBase
 				return fCallback(new Error('Invalid destination path.'));
 			}
 
-			let tmpSourceAbs = libPath.join(this.contentPath, tmpSourceRel);
-			let tmpDestAbs = libPath.join(this.contentPath, tmpDestRel);
+			let tmpSourceAbs = this.contentRoots.resolve(tmpSourceRel);
+			let tmpDestAbs = this.contentRoots.resolve(tmpDestRel);
 
 			if (!libFs.existsSync(tmpSourceAbs))
 			{
@@ -187,13 +189,13 @@ class RetoldRemoteFileOperationService extends libFableServiceProviderBase
 				return fCallback(new Error(`Invalid path at index ${i}.`));
 			}
 
-			let tmpSourceAbs = libPath.join(this.contentPath, tmpSourceRel);
+			let tmpSourceAbs = this.contentRoots.resolve(tmpSourceRel);
 			if (!libFs.existsSync(tmpSourceAbs))
 			{
 				return fCallback(new Error(`Source not found at index ${i}: ${tmpSourceRel}`));
 			}
 
-			let tmpDestAbs = libPath.join(this.contentPath, tmpDestRel);
+			let tmpDestAbs = this.contentRoots.resolve(tmpDestRel);
 			if (libFs.existsSync(tmpDestAbs))
 			{
 				return fCallback(new Error(`Destination already exists at index ${i}: ${tmpDestRel}`));

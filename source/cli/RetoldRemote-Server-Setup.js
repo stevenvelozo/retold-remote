@@ -39,6 +39,7 @@ const libParimeStorage = require('parime/storage');
 const libRetoldRemoteParimeCache = require('../server/RetoldRemote-ParimeCache.js');
 
 const libRetoldRemoteMediaService = require('../server/RetoldRemote-MediaService.js');
+const libRetoldRemoteContentRoots = require('../server/RetoldRemote-ContentRoots.js');
 const libRetoldRemotePathRegistry = require('../server/RetoldRemote-PathRegistry.js');
 const libRetoldRemoteArchiveService = require('../server/RetoldRemote-ArchiveService.js');
 const libRetoldRemoteVideoFrameService = require('../server/RetoldRemote-VideoFrameService.js');
@@ -61,6 +62,7 @@ const libUrl = require('url');
 function setupRetoldRemoteServer(pOptions, fCallback)
 {
 	let tmpContentPath = pOptions.ContentPath;
+	let tmpContentRoots = new libRetoldRemoteContentRoots({ ContentPath: tmpContentPath, ContentRoots: pOptions.ContentRoots });
 	let tmpDistFolder = pOptions.DistPath;
 	let tmpPort = pOptions.Port;
 	let tmpHashedFilenames = (pOptions.HashedFilenames !== false) && (process.env.RETOLD_HASHED_FILENAMES !== 'false');
@@ -74,7 +76,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 		Product: 'Retold-Remote',
 		ProductVersion: require('../../package.json').version,
 		APIServerPort: tmpPort,
-		ContentPath: tmpContentPath,
+		ContentPath: tmpContentPath, ContentRoots: tmpContentRoots,
 		ParimeBinaryStorageRoot: tmpCacheRoot,
 		'Bibliograph-Storage-FS-Path': libPath.join(tmpCacheRoot, 'data'),
 		ParimeBinarySharding:
@@ -156,7 +158,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 	let tmpPathRegistry = new libRetoldRemotePathRegistry(tmpFable,
 	{
 		Enabled: tmpHashedFilenames,
-		ContentPath: tmpContentPath
+		ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 	});
 
 	if (tmpHashedFilenames)
@@ -184,35 +186,35 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Set up the archive service
 			let tmpArchiveService = new libRetoldRemoteArchiveService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the video frame service
 			let tmpVideoFrameService = new libRetoldRemoteVideoFrameService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the audio waveform service
 			let tmpAudioWaveformService = new libRetoldRemoteAudioWaveformService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the ebook conversion service
 			let tmpEbookService = new libRetoldRemoteEbookService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the EPUB metadata extraction service
 			let tmpEpubMetadataService = new libRetoldRemoteEpubMetadataService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the large-image preview and DZI tile service
-			let tmpImageServiceOptions = { ContentPath: tmpContentPath };
+			let tmpImageServiceOptions = { ContentPath: tmpContentPath, ContentRoots: tmpContentRoots };
 			let _resolvePxOption = (pOptionValue, pEnvName) =>
 			{
 				if (typeof pOptionValue === 'number' && pOptionValue >= 0)
@@ -244,25 +246,25 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Set up the subimage region service
 			let tmpSubimageService = new libRetoldRemoteSubimageService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the metadata cache service
 			let tmpMetadataCache = new libRetoldRemoteMetadataCache(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the file operation service
 			let tmpFileOperationService = new libRetoldRemoteFileOperationService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the AI sort service
 			let tmpAISortService = new libRetoldRemoteAISortService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 			tmpAISortService.setMetadataCache(tmpMetadataCache);
 
@@ -273,13 +275,13 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 			// Set up the collection export service
 			let tmpCollectionExportService = new libRetoldRemoteCollectionExportService(tmpFable,
 			{
-				ContentPath: tmpContentPath
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots
 			});
 
 			// Set up the media service
 			let tmpMediaService = new libRetoldRemoteMediaService(tmpFable,
 			{
-				ContentPath: tmpContentPath,
+				ContentPath: tmpContentPath, ContentRoots: tmpContentRoots,
 				APIRoutePrefix: '/api/media',
 				PathRegistry: tmpPathRegistry
 			});
@@ -2624,7 +2626,7 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							{
 								ServerURL: pOptions.UltravisorURL,
 								Name: 'retold-remote',
-								ContentPath: tmpContentPath,
+								ContentPath: tmpContentPath, ContentRoots: tmpContentRoots,
 								ContentBaseURL: '/content/',
 								CacheRoot: tmpCacheRoot,
 								StagingPath: tmpCacheRoot || process.cwd(),

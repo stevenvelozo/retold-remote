@@ -23,6 +23,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libCrypto = require('crypto');
 const libUrl = require('url');
 
@@ -53,6 +54,7 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// Sharp module reference (set by Server-Setup via setSharpModule)
 		this._sharp = null;
@@ -114,7 +116,7 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 	 */
 	_resolveFileStat(pRelPath)
 	{
-		let tmpAbsPath = libPath.join(this.contentPath, pRelPath);
+		let tmpAbsPath = this.contentRoots.resolve(pRelPath);
 
 		// Try direct file first
 		if (libFs.existsSync(tmpAbsPath))
@@ -126,7 +128,7 @@ class RetoldRemoteSubimageService extends libFableServiceProviderBase
 		let tmpArchiveMatch = pRelPath.match(RetoldRemoteSubimageService.ARCHIVE_PATH_PATTERN);
 		if (tmpArchiveMatch)
 		{
-			let tmpArchivePath = libPath.join(this.contentPath, tmpArchiveMatch[1]);
+			let tmpArchivePath = this.contentRoots.resolve(tmpArchiveMatch[1]);
 			if (libFs.existsSync(tmpArchivePath))
 			{
 				return { absPath: tmpArchivePath, stat: libFs.statSync(tmpArchivePath) };

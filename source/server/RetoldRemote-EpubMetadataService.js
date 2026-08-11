@@ -24,6 +24,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libCrypto = require('crypto');
 const libYauzl = require('yauzl');
 
@@ -56,6 +57,7 @@ class RetoldRemoteEpubMetadataService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// Apply explorer state persistence mixin for ebook explorer state
 		libExplorerStateMixin.apply(this, STATE_SOURCE, 'ebook-explorer');

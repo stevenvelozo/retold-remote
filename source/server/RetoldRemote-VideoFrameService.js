@@ -13,6 +13,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 
@@ -50,6 +51,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 
 		// Ultravisor dispatcher — set via setDispatcher()
 		this._dispatcher = null;
@@ -343,7 +345,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+				tmpRelPath = this.contentRoots.toRelative(pAbsPath);
 			}
 			catch (pErr)
 			{
@@ -498,7 +500,7 @@ class RetoldRemoteVideoFrameService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+				tmpRelPath = this.contentRoots.toRelative(pAbsPath);
 			}
 			catch (pErr)
 			{

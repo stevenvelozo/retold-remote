@@ -35,6 +35,7 @@
 const libFableServiceProviderBase = require('fable-serviceproviderbase');
 const libFs = require('fs');
 const libPath = require('path');
+const RetoldRemoteContentRoots = require('./RetoldRemote-ContentRoots.js');
 const libCrypto = require('crypto');
 const libChildProcess = require('child_process');
 const libExtensionMaps = require('../RetoldRemote-ExtensionMaps.js');
@@ -80,6 +81,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 		}
 
 		this.contentPath = libPath.resolve(this.options.ContentPath);
+		this.contentRoots = this.options.ContentRoots || new RetoldRemoteContentRoots({ ContentPath: this.options.ContentPath });
 		this._sharp = null;
 
 		// Track in-flight DZI generation requests to coalesce concurrent requests
@@ -452,7 +454,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+				tmpRelPath = this.contentRoots.toRelative(pAbsPath);
 			}
 			catch (pErr)
 			{
@@ -588,7 +590,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 			let tmpRelPath;
 			try
 			{
-				tmpRelPath = libPath.relative(this.contentPath, pAbsPath);
+				tmpRelPath = this.contentRoots.toRelative(pAbsPath);
 			}
 			catch (pErr)
 			{
@@ -1262,7 +1264,7 @@ class RetoldRemoteImageService extends libFableServiceProviderBase
 
 		try
 		{
-			tmpRelPath = libPath.relative(this.contentPath, pInputPath);
+			tmpRelPath = this.contentRoots.toRelative(pInputPath);
 		}
 		catch (pErr)
 		{
