@@ -56,6 +56,10 @@ suite('RetoldRemote content roots', () =>
 		{
 			libAssert.strictEqual(_roots.toRelative(libPath.resolve('/etc/passwd')), null);
 		});
+		test('a ".." escape out of a NAMED root is refused', () =>
+		{
+			libAssert.throws(() => _roots.resolve('mount_nas/../../etc/passwd'));
+		});
 	});
 
 	suite('most-specific root wins when roots nest', () =>

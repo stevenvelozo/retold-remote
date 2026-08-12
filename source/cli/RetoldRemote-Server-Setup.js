@@ -701,7 +701,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -971,7 +980,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1088,7 +1106,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1173,7 +1200,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1230,7 +1266,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1290,7 +1335,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1345,7 +1399,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1430,7 +1493,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1487,7 +1559,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1548,7 +1629,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1650,7 +1740,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						if (!libFs.existsSync(tmpAbsPath))
 						{
 							pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -1702,7 +1801,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 
 						// For non-EPUB ebooks, convert first then parse the converted EPUB
 						let tmpExt = libPath.extname(tmpAbsPath).toLowerCase().replace('.', '');
@@ -1849,7 +1957,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						let tmpStat;
 						try
 						{
@@ -1902,7 +2019,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 						let tmpStat;
 						try
 						{
@@ -1958,7 +2084,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 
 						if (!libFs.existsSync(tmpAbsPath))
 						{
@@ -2067,7 +2202,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 
 						if (!libFs.existsSync(tmpAbsPath))
 						{
@@ -2213,7 +2357,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpAbsPath = libPath.join(tmpContentPath, tmpRelPath);
+						let tmpAbsPath;
+						try
+						{
+							tmpAbsPath = tmpContentRoots.resolve(tmpRelPath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+							return fNext();
+						}
 
 						// Verify file exists
 						if (!libFs.existsSync(tmpAbsPath))
@@ -2313,7 +2466,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
+						let tmpArchiveAbsPath;
+						try
+						{
+							tmpArchiveAbsPath = tmpContentRoots.resolve(tmpArchiveInfo.archivePath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Error: 'Invalid path.' });
+							return fNext(false);
+						}
 
 						if (!libFs.existsSync(tmpArchiveAbsPath))
 						{
@@ -2389,7 +2551,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 						return fNext();
 					}
 
-					let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
+					let tmpArchiveAbsPath;
+					try
+					{
+						tmpArchiveAbsPath = tmpContentRoots.resolve(tmpArchiveInfo.archivePath);
+					}
+					catch (pResolveError)
+					{
+						pResponse.send(400, { Error: 'Invalid path.' });
+						return fNext(false);
+					}
 
 					tmpArchiveService.extractFile(
 						tmpArchiveAbsPath, tmpArchiveInfo.innerPath,
@@ -2457,7 +2628,16 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 							return fNext();
 						}
 
-						let tmpArchiveAbsPath = libPath.join(tmpContentPath, tmpArchiveInfo.archivePath);
+						let tmpArchiveAbsPath;
+						try
+						{
+							tmpArchiveAbsPath = tmpContentRoots.resolve(tmpArchiveInfo.archivePath);
+						}
+						catch (pResolveError)
+						{
+							pResponse.send(400, { Error: 'Invalid path.' });
+							return fNext(false);
+						}
 
 						tmpArchiveService.extractFile(
 							tmpArchiveAbsPath, tmpArchiveInfo.innerPath,
@@ -2507,7 +2687,22 @@ function setupRetoldRemoteServer(pOptions, fCallback)
 					tmpProcessArchiveMedia(tmpPathParam);
 				});
 
-			// Serve content files at /content/ (for direct media access)
+			// Serve content files at /content/ (for direct media access).
+			// Each NAMED non-default content root gets its own /content/<root>/*
+			// static route so referenced trees (NAS mounts, extra storage) serve
+			// in place. find-my-way ranks these static-prefixed routes above the
+			// /content/* catch-all, so bare paths still hit the default root below
+			// unchanged (single-root deployments register no extra routes here).
+			let tmpNamedContentRoots = tmpContentRoots.roots();
+			Object.keys(tmpNamedContentRoots).forEach(
+				(pRootName) =>
+				{
+					if (pRootName === tmpContentRoots.defaultRoot())
+					{
+						return;
+					}
+					tmpOrator.addStaticRoute(`${tmpNamedContentRoots[pRootName]}/`, 'index.html', `/content/${pRootName}/*`, `/content/${pRootName}/`);
+				});
 			tmpOrator.addStaticRoute(`${tmpContentPath}/`, 'index.html', '/content/*', '/content/');
 
 			// Serve the built web application (main static route)

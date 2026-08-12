@@ -178,7 +178,16 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						return fNext();
 					}
 
-					let tmpFullPath = libPath.join(tmpSelf.contentPath, tmpRelPath);
+					let tmpFullPath;
+					try
+					{
+						tmpFullPath = tmpSelf.contentRoots.resolve(tmpRelPath);
+					}
+					catch (pResolveError)
+					{
+						pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+						return fNext();
+					}
 					if (!libFs.existsSync(tmpFullPath))
 					{
 						pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -188,6 +197,12 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 					let tmpWidth = parseInt(tmpQuery.width, 10) || tmpSelf.options.DefaultThumbnailWidth;
 					let tmpHeight = parseInt(tmpQuery.height, 10) || tmpSelf.options.DefaultThumbnailHeight;
 					let tmpFormat = tmpQuery.format || 'webp';
+					// Thumbnail generation only ever produces WebP or JPEG bytes, so
+					// normalize the requested format to one of those. This keeps the
+					// cache key, the produced bytes, and the Content-Type header in
+					// agreement -- a requested png/jpg/etc. is produced and served as
+					// JPEG rather than JPEG bytes mislabeled as image/png.
+					tmpFormat = (tmpFormat === 'webp') ? 'webp' : 'jpeg';
 
 					// Clamp dimensions
 					tmpWidth = Math.min(Math.max(tmpWidth, 32), 1024);
@@ -261,7 +276,16 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 						return fNext();
 					}
 
-					let tmpFullPath = libPath.join(tmpSelf.contentPath, tmpRelPath);
+					let tmpFullPath;
+					try
+					{
+						tmpFullPath = tmpSelf.contentRoots.resolve(tmpRelPath);
+					}
+					catch (pResolveError)
+					{
+						pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+						return fNext();
+					}
 					if (!libFs.existsSync(tmpFullPath))
 					{
 						pResponse.send(404, { Success: false, Error: 'File not found.' });
@@ -381,9 +405,18 @@ class RetoldRemoteMediaService extends libFableServiceProviderBase
 					let tmpParsedUrl = libUrl.parse(pRequest.url, true);
 					let tmpQuery = tmpParsedUrl.query;
 					let tmpRelPath = tmpSelf._sanitizePath(tmpQuery.path || '');
-					let tmpDirPath = tmpRelPath
-						? libPath.join(tmpSelf.contentPath, tmpRelPath)
-						: tmpSelf.contentPath;
+					let tmpDirPath;
+					try
+					{
+						tmpDirPath = tmpRelPath
+							? tmpSelf.contentRoots.resolve(tmpRelPath)
+							: tmpSelf.contentPath;
+					}
+					catch (pResolveError)
+					{
+						pResponse.send(400, { Success: false, Error: 'Invalid path.' });
+						return fNext();
+					}
 
 					if (!libFs.existsSync(tmpDirPath) || !libFs.statSync(tmpDirPath).isDirectory())
 					{
