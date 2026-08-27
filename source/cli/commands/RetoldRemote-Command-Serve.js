@@ -27,6 +27,9 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 			{ Name: '--cache-server [url]', Description: 'URL of a remote parime cache server (e.g. http://host:9999).', Default: '' });
 
 		this.options.CommandOptions.push(
+			{ Name: '--content-roots [json]', Description: 'JSON object of extra named content roots for multi-root addressing, e.g. \'{"mount_7":"/mnt/nas"}\'. A path param of the form <name>/<rel> resolves against the named root; the [content-path] argument stays the default root. Confinement is enforced per root.', Default: '' });
+
+		this.options.CommandOptions.push(
 			{ Name: '-u, --ultravisor [url]', Description: 'Connect to Ultravisor mesh. URL defaults to http://localhost:54321 if omitted.', Default: '' });
 
 		this.options.CommandOptions.push(
@@ -143,6 +146,27 @@ class RetoldRemoteCommandServe extends libCommandLineCommand
 				CacheServer: tmpCacheServer,
 				UltravisorURL: tmpUltravisorURL
 			};
+
+			// Optional multi-root content addressing: a JSON object of {name: absolutePath} extra roots. The
+			// supervisor/operator passes this so referenced files (NAS mounts, extra storage) resolve in place
+			// as <name>/<rel>. Malformed JSON degrades to single-root rather than failing the whole service.
+			let tmpContentRootsOption = this.CommandOptions.contentRoots;
+			if (typeof tmpContentRootsOption === 'string' && tmpContentRootsOption.trim().length > 0)
+			{
+				try
+				{
+					let tmpParsedRoots = JSON.parse(tmpContentRootsOption);
+					if (tmpParsedRoots && typeof tmpParsedRoots === 'object')
+					{
+						tmpSetupOptions.ContentRoots = tmpParsedRoots;
+						tmpSelf.log.info(`Multi-root content addressing: ${Object.keys(tmpParsedRoots).length} extra root(s) [${Object.keys(tmpParsedRoots).join(', ')}]`);
+					}
+				}
+				catch (pContentRootsError)
+				{
+					tmpSelf.log.error(`Ignoring --content-roots: not valid JSON (${pContentRootsError.message}).`);
+				}
+			}
 
 			let _parsePxOption = (pValue) =>
 			{
