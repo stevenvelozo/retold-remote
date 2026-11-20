@@ -783,12 +783,15 @@ suite
 
 						await _Page.evaluate(() =>
 						{
-							pict.providers['RetoldRemote-Theme'].applyTheme('daylight');
+							pict.providers['Theme'].applyTheme('daylight');
 						});
 						await settle(500);
 
 						let tmpTheme = await _Page.evaluate(
-							() => pict.AppData.RetoldRemote.Theme
+							// The pict-section-theme 'Theme' provider owns the active theme. The old
+							// RetoldRemote-Theme provider is gone, and AppData.RetoldRemote.Theme is
+							// only a static 'twilight' default that nothing updates.
+							() => pict.providers['Theme'].getActiveTheme().Hash
 						);
 						libAssert.strictEqual(tmpTheme, 'daylight', 'Theme should be daylight');
 
@@ -805,12 +808,12 @@ suite
 
 						await _Page.evaluate(() =>
 						{
-							pict.providers['RetoldRemote-Theme'].applyTheme('neo-tokyo');
+							pict.providers['Theme'].applyTheme('neo-tokyo');
 						});
 						await settle(500);
 
 						let tmpTheme = await _Page.evaluate(
-							() => pict.AppData.RetoldRemote.Theme
+							() => pict.providers['Theme'].getActiveTheme().Hash
 						);
 						libAssert.strictEqual(tmpTheme, 'neo-tokyo', 'Theme should be neo-tokyo');
 
@@ -827,12 +830,12 @@ suite
 
 						await _Page.evaluate(() =>
 						{
-							pict.providers['RetoldRemote-Theme'].applyTheme('cyberpunk');
+							pict.providers['Theme'].applyTheme('cyberpunk');
 						});
 						await settle(500);
 
 						let tmpTheme = await _Page.evaluate(
-							() => pict.AppData.RetoldRemote.Theme
+							() => pict.providers['Theme'].getActiveTheme().Hash
 						);
 						libAssert.strictEqual(tmpTheme, 'cyberpunk', 'Theme should be cyberpunk');
 
@@ -846,7 +849,7 @@ suite
 						// Reset to twilight
 						await _Page.evaluate(() =>
 						{
-							pict.providers['RetoldRemote-Theme'].applyTheme('twilight');
+							pict.providers['Theme'].applyTheme('twilight');
 						});
 						await settle(300);
 					}
